@@ -1,0 +1,6128 @@
+WEBVTT
+
+00:00:00.000 --> 00:00:00.500 align:middle line:90%
+
+
+00:00:00.500 --> 00:00:02.500 align:middle line:90%
+[SQUEAKING]
+
+00:00:02.500 --> 00:00:04.500 align:middle line:90%
+[RUSTLING]
+
+00:00:04.500 --> 00:00:06.500 align:middle line:90%
+[CLICKING]
+
+00:00:06.500 --> 00:00:13.000 align:middle line:90%
+
+
+00:00:13.000 --> 00:00:16.160 align:middle line:84%
+SARA BEERY: I hope everyone
+is having a good fall.
+
+00:00:16.160 --> 00:00:18.980 align:middle line:84%
+I don't know if any
+of all of you noticed,
+
+00:00:18.980 --> 00:00:22.580 align:middle line:84%
+but it started to be really
+cold today for the first time.
+
+00:00:22.580 --> 00:00:27.880 align:middle line:84%
+And I went outside, and
+I was like, it begins.
+
+00:00:27.880 --> 00:00:32.680 align:middle line:84%
+So today, we're going to be
+continuing our series digging
+
+00:00:32.680 --> 00:00:34.600 align:middle line:90%
+into representation learning.
+
+00:00:34.600 --> 00:00:36.360 align:middle line:84%
+And specifically,
+I'm going to be
+
+00:00:36.360 --> 00:00:40.320 align:middle line:84%
+introducing the concept of
+similarity-based representation
+
+00:00:40.320 --> 00:00:41.360 align:middle line:90%
+learning.
+
+00:00:41.360 --> 00:00:46.160 align:middle line:84%
+So to start with a
+high-level roadmap,
+
+00:00:46.160 --> 00:00:48.720 align:middle line:84%
+today, we're going to
+be talking about why
+
+00:00:48.720 --> 00:00:51.520 align:middle line:84%
+we want to think about learning
+representations, why learning
+
+00:00:51.520 --> 00:00:56.960 align:middle line:84%
+representations is a good thing,
+try to get a sense of what makes
+
+00:00:56.960 --> 00:01:00.030 align:middle line:84%
+a good representation
+both qualitatively
+
+00:01:00.030 --> 00:01:02.930 align:middle line:84%
+but also exploring some
+dimensions of quantitatively
+
+00:01:02.930 --> 00:01:05.050 align:middle line:84%
+what might make a
+good representation.
+
+00:01:05.050 --> 00:01:08.330 align:middle line:84%
+We'll introduce the
+concept of metric learning.
+
+00:01:08.330 --> 00:01:11.250 align:middle line:84%
+And then we'll dig into
+contrastive representation
+
+00:01:11.250 --> 00:01:14.490 align:middle line:84%
+learning, which is essentially
+different creative ways
+
+00:01:14.490 --> 00:01:18.130 align:middle line:84%
+to self-supervise the idea
+of building a metric space
+
+00:01:18.130 --> 00:01:20.150 align:middle line:90%
+or using metric learning.
+
+00:01:20.150 --> 00:01:22.470 align:middle line:84%
+And we'll talk about what
+contrastive learning does,
+
+00:01:22.470 --> 00:01:24.090 align:middle line:84%
+and then some of the
+different potential models
+
+00:01:24.090 --> 00:01:25.710 align:middle line:84%
+that are using
+contrastive learning.
+
+00:01:25.710 --> 00:01:30.290 align:middle line:84%
+This is a pretty important point
+throughout this entire course
+
+00:01:30.290 --> 00:01:33.170 align:middle line:84%
+because it turns out that many
+of our modern architectures
+
+00:01:33.170 --> 00:01:36.370 align:middle line:84%
+are built on top of some
+form, or some component
+
+00:01:36.370 --> 00:01:41.810 align:middle line:84%
+of contrastive learning and
+contrastive representations.
+
+00:01:41.810 --> 00:01:46.610 align:middle line:90%
+So why learn representations?
+
+00:01:46.610 --> 00:01:48.850 align:middle line:84%
+What are some
+reasons why we might
+
+00:01:48.850 --> 00:01:51.190 align:middle line:84%
+want to learn a
+representation of data?
+
+00:01:51.190 --> 00:01:56.490 align:middle line:90%
+
+
+00:01:56.490 --> 00:01:57.320 align:middle line:90%
+Yeah, over there.
+
+00:01:57.320 --> 00:01:58.820 align:middle line:84%
+AUDIENCE: Use it
+for any many tasks.
+
+00:01:58.820 --> 00:02:01.340 align:middle line:84%
+SARA BEERY: We can use it
+for many tasks, the idea
+
+00:02:01.340 --> 00:02:05.460 align:middle line:84%
+that maybe some representation
+of data is broadly useful.
+
+00:02:05.460 --> 00:02:06.640 align:middle line:90%
+Anything else?
+
+00:02:06.640 --> 00:02:09.940 align:middle line:90%
+
+
+00:02:09.940 --> 00:02:10.580 align:middle line:90%
+Yeah?
+
+00:02:10.580 --> 00:02:11.927 align:middle line:90%
+AUDIENCE: Maybe more compact.
+
+00:02:11.927 --> 00:02:13.760 align:middle line:84%
+SARA BEERY: It might
+be more compact, right.
+
+00:02:13.760 --> 00:02:15.340 align:middle line:84%
+It might be more
+efficient to work
+
+00:02:15.340 --> 00:02:17.300 align:middle line:84%
+with some representation
+of data rather
+
+00:02:17.300 --> 00:02:20.055 align:middle line:84%
+than the original
+data itself, though,
+
+00:02:20.055 --> 00:02:21.180 align:middle line:90%
+of course, that's a choice.
+
+00:02:21.180 --> 00:02:23.097 align:middle line:84%
+You can actually build
+a representation that's
+
+00:02:23.097 --> 00:02:25.300 align:middle line:90%
+larger than your data input.
+
+00:02:25.300 --> 00:02:25.960 align:middle line:90%
+Anyone else?
+
+00:02:25.960 --> 00:02:28.260 align:middle line:84%
+What else makes it--
+yeah, in the back?
+
+00:02:28.260 --> 00:02:29.565 align:middle line:90%
+AUDIENCE: Generalization.
+
+00:02:29.565 --> 00:02:31.440 align:middle line:84%
+SARA BEERY: To improve
+generalization, right.
+
+00:02:31.440 --> 00:02:35.660 align:middle line:84%
+We might want representations
+that actually are capturing
+
+00:02:35.660 --> 00:02:38.020 align:middle line:84%
+some semantic meaning or
+some important components
+
+00:02:38.020 --> 00:02:40.220 align:middle line:84%
+of the things we're
+trying to identify
+
+00:02:40.220 --> 00:02:42.740 align:middle line:90%
+that will generalize well.
+
+00:02:42.740 --> 00:02:45.733 align:middle line:84%
+So I mean, yes, to
+improve generalization--
+
+00:02:45.733 --> 00:02:48.400 align:middle line:84%
+I'm going to trust you that you
+weren't just reading the slides,
+
+00:02:48.400 --> 00:02:51.700 align:middle line:90%
+but power to you if you were--
+
+00:02:51.700 --> 00:02:54.400 align:middle line:84%
+to do more learning things,
+like transfer learning.
+
+00:02:54.400 --> 00:02:57.990 align:middle line:84%
+So often, we talk about this is
+that first point about working
+
+00:02:57.990 --> 00:02:59.310 align:middle line:90%
+for many different tasks.
+
+00:02:59.310 --> 00:03:02.710 align:middle line:84%
+We build some representation
+that then is more easily
+
+00:03:02.710 --> 00:03:05.910 align:middle line:84%
+finetuned in a way that actually
+gives us something that's
+
+00:03:05.910 --> 00:03:09.550 align:middle line:84%
+useful, maybe requiring less
+training data in that finetuning
+
+00:03:09.550 --> 00:03:11.310 align:middle line:90%
+step.
+
+00:03:11.310 --> 00:03:13.750 align:middle line:84%
+And then another version
+is actually maybe
+
+00:03:13.750 --> 00:03:16.830 align:middle line:84%
+to exploit something
+like geometric similarity
+
+00:03:16.830 --> 00:03:18.470 align:middle line:90%
+for new data or queries.
+
+00:03:18.470 --> 00:03:20.530 align:middle line:84%
+So what does geometric
+similarity mean?
+
+00:03:20.530 --> 00:03:24.190 align:middle line:84%
+Well, one thing might have we
+seen the face of this person
+
+00:03:24.190 --> 00:03:26.050 align:middle line:90%
+before, or is it new?
+
+00:03:26.050 --> 00:03:29.110 align:middle line:84%
+There's actually something
+physical and structural
+
+00:03:29.110 --> 00:03:33.590 align:middle line:84%
+about our face that should be
+similar, regardless of maybe
+
+00:03:33.590 --> 00:03:37.150 align:middle line:84%
+the lighting, the
+pose, the orientation.
+
+00:03:37.150 --> 00:03:40.070 align:middle line:84%
+Or another version of something
+like geometric similarity
+
+00:03:40.070 --> 00:03:42.270 align:middle line:90%
+might be in retrieval.
+
+00:03:42.270 --> 00:03:43.750 align:middle line:84%
+Can you build
+representations that
+
+00:03:43.750 --> 00:03:48.290 align:middle line:84%
+let you find items
+similar to a given query?
+
+00:03:48.290 --> 00:03:51.410 align:middle line:84%
+So if I say, hey, here's
+something I just found,
+
+00:03:51.410 --> 00:03:54.050 align:middle line:84%
+have we ever seen something
+similar to this before?
+
+00:03:54.050 --> 00:03:56.680 align:middle line:90%
+
+
+00:03:56.680 --> 00:04:00.600 align:middle line:84%
+Another example might be
+trying to do something improve
+
+00:04:00.600 --> 00:04:04.280 align:middle line:84%
+clustering with side
+information, something
+
+00:04:04.280 --> 00:04:08.920 align:middle line:84%
+about what makes pairs
+similar or dissimilar.
+
+00:04:08.920 --> 00:04:11.980 align:middle line:84%
+And then, possibly, we want to
+do dimensionality reduction--
+
+00:04:11.980 --> 00:04:12.480 align:middle line:90%
+exactly.
+
+00:04:12.480 --> 00:04:14.800 align:middle line:90%
+Can we actually make our--
+
+00:04:14.800 --> 00:04:18.079 align:middle line:84%
+can we store this information
+in a much more compact way?
+
+00:04:18.079 --> 00:04:20.360 align:middle line:84%
+And we can often do
+dimensionality reduction
+
+00:04:20.360 --> 00:04:24.000 align:middle line:84%
+in ways that are
+fundamentally unsupervised.
+
+00:04:24.000 --> 00:04:26.800 align:middle line:84%
+So what are some of the
+things we might expect
+
+00:04:26.800 --> 00:04:28.180 align:middle line:90%
+from such representations?
+
+00:04:28.180 --> 00:04:30.180 align:middle line:84%
+What makes a
+representation good?
+
+00:04:30.180 --> 00:04:35.320 align:middle line:90%
+
+
+00:04:35.320 --> 00:04:36.080 align:middle line:90%
+Yeah?
+
+00:04:36.080 --> 00:04:40.240 align:middle line:84%
+AUDIENCE: It should map objects
+in your higher dimensional space
+
+00:04:40.240 --> 00:04:43.280 align:middle line:84%
+that are similar in
+semantic representation
+
+00:04:43.280 --> 00:04:47.480 align:middle line:84%
+to the very close point
+in your embedding space.
+
+00:04:47.480 --> 00:04:50.200 align:middle line:84%
+SARA BEERY: Yeah, so
+the idea that objects
+
+00:04:50.200 --> 00:04:51.760 align:middle line:84%
+that are semantically
+similar, we
+
+00:04:51.760 --> 00:04:54.860 align:middle line:84%
+actually want them to
+be really close together
+
+00:04:54.860 --> 00:04:56.660 align:middle line:90%
+in that representation space.
+
+00:04:56.660 --> 00:04:58.647 align:middle line:84%
+We want them to
+be close together.
+
+00:04:58.647 --> 00:05:00.480 align:middle line:84%
+Why would we want them
+to be close together?
+
+00:05:00.480 --> 00:05:02.140 align:middle line:90%
+What does that do?
+
+00:05:02.140 --> 00:05:03.580 align:middle line:90%
+Yeah?
+
+00:05:03.580 --> 00:05:05.920 align:middle line:84%
+AUDIENCE: Helps us reject
+disturbances and noise,
+
+00:05:05.920 --> 00:05:06.803 align:middle line:90%
+potentially.
+
+00:05:06.803 --> 00:05:08.220 align:middle line:84%
+SARA BEERY: Yeah,
+it might help us
+
+00:05:08.220 --> 00:05:10.980 align:middle line:84%
+be robust to things like
+disturbances and noise
+
+00:05:10.980 --> 00:05:12.900 align:middle line:84%
+if you move a little
+bit in any direction,
+
+00:05:12.900 --> 00:05:15.940 align:middle line:84%
+if you're not moving
+of far away from things
+
+00:05:15.940 --> 00:05:18.380 align:middle line:90%
+that same semantic category.
+
+00:05:18.380 --> 00:05:20.100 align:middle line:84%
+Why else might we
+want things that are
+
+00:05:20.100 --> 00:05:22.340 align:middle line:90%
+similar to be close together?
+
+00:05:22.340 --> 00:05:23.660 align:middle line:90%
+Yeah, sure?
+
+00:05:23.660 --> 00:05:25.360 align:middle line:84%
+AUDIENCE: [INAUDIBLE]
+the answer,
+
+00:05:25.360 --> 00:05:27.020 align:middle line:84%
+but one reason
+might be that if you
+
+00:05:27.020 --> 00:05:30.620 align:middle line:84%
+think of a downstream function
+which takes the embeddings,
+
+00:05:30.620 --> 00:05:33.500 align:middle line:84%
+but then logically,
+if I'm trying
+
+00:05:33.500 --> 00:05:37.040 align:middle line:84%
+to compute some feature of two
+inputs which are very similar,
+
+00:05:37.040 --> 00:05:40.300 align:middle line:84%
+there's a good chance
+that I want f of x and f
+
+00:05:40.300 --> 00:05:44.500 align:middle line:84%
+of x plus epsilon to have
+very similar y values.
+
+00:05:44.500 --> 00:05:47.500 align:middle line:84%
+SARA BEERY: Yeah, so what
+you said was basically
+
+00:05:47.500 --> 00:05:50.620 align:middle line:84%
+we might want the downstream
+mapping of this embedding
+
+00:05:50.620 --> 00:05:53.670 align:middle line:84%
+space to some maybe
+categorization
+
+00:05:53.670 --> 00:05:56.190 align:middle line:84%
+to be kind of robust, to
+change, and to map things
+
+00:05:56.190 --> 00:05:58.495 align:middle line:84%
+easily from one
+space to another.
+
+00:05:58.495 --> 00:05:59.870 align:middle line:84%
+Actually, there's
+a different way
+
+00:05:59.870 --> 00:06:03.750 align:middle line:84%
+to say that, which is basically
+it's useful if the space is
+
+00:06:03.750 --> 00:06:05.070 align:middle line:90%
+linearly separable.
+
+00:06:05.070 --> 00:06:07.190 align:middle line:84%
+It's a very easy
+function, if you
+
+00:06:07.190 --> 00:06:10.085 align:middle line:84%
+want to learn categorization,
+if different objects that
+
+00:06:10.085 --> 00:06:12.710 align:middle line:84%
+are the same are close together,
+and objects that are different
+
+00:06:12.710 --> 00:06:14.670 align:middle line:84%
+are not close together
+because then you
+
+00:06:14.670 --> 00:06:16.050 align:middle line:90%
+just draw lines between things.
+
+00:06:16.050 --> 00:06:18.310 align:middle line:84%
+It's a very easy
+categorization problem.
+
+00:06:18.310 --> 00:06:24.790 align:middle line:84%
+So a well-separated space is
+also potentially quite useful.
+
+00:06:24.790 --> 00:06:29.550 align:middle line:84%
+So Goodfellow, back in 2016,
+said that, "generally speaking,
+
+00:06:29.550 --> 00:06:33.150 align:middle line:84%
+a good representation is one
+that makes a subsequent learning
+
+00:06:33.150 --> 00:06:34.410 align:middle line:90%
+task easier."
+
+00:06:34.410 --> 00:06:36.590 align:middle line:84%
+That's exactly what you
+were trying to get at.
+
+00:06:36.590 --> 00:06:38.150 align:middle line:90%
+And so what could that mean?
+
+00:06:38.150 --> 00:06:40.030 align:middle line:90%
+What is a good representation?
+
+00:06:40.030 --> 00:06:43.750 align:middle line:84%
+So one framing of
+this is explicitly
+
+00:06:43.750 --> 00:06:45.750 align:middle line:84%
+what we were just
+trying to capture.
+
+00:06:45.750 --> 00:06:48.710 align:middle line:84%
+A good representation
+is both compact,
+
+00:06:48.710 --> 00:06:53.460 align:middle line:90%
+which means it's not too big.
+
+00:06:53.460 --> 00:06:57.400 align:middle line:84%
+We don't want to have more
+capacity than we actually need.
+
+00:06:57.400 --> 00:06:59.620 align:middle line:84%
+This is getting at
+that efficiency angle.
+
+00:06:59.620 --> 00:07:02.640 align:middle line:84%
+You can take in information
+theoretic perspective
+
+00:07:02.640 --> 00:07:04.920 align:middle line:84%
+here and think about
+we want to keep
+
+00:07:04.920 --> 00:07:07.960 align:middle line:84%
+the minimal amount
+of information,
+
+00:07:07.960 --> 00:07:11.600 align:middle line:84%
+but we also need it to be
+what we call explanatory.
+
+00:07:11.600 --> 00:07:14.880 align:middle line:84%
+So that means that it's
+somehow sufficient to capture
+
+00:07:14.880 --> 00:07:18.320 align:middle line:84%
+the dimensions that matter
+in our original data.
+
+00:07:18.320 --> 00:07:20.640 align:middle line:84%
+And the really
+interesting part here
+
+00:07:20.640 --> 00:07:24.040 align:middle line:84%
+is that of course this is going
+to be contextually related
+
+00:07:24.040 --> 00:07:26.000 align:middle line:84%
+to the set of downstream
+tasks we might
+
+00:07:26.000 --> 00:07:28.240 align:middle line:84%
+be interested in
+because something that
+
+00:07:28.240 --> 00:07:31.400 align:middle line:84%
+is sufficient to be explanatory
+for one possible thing
+
+00:07:31.400 --> 00:07:34.320 align:middle line:84%
+might be insufficient
+for another.
+
+00:07:34.320 --> 00:07:37.280 align:middle line:84%
+And so a good
+representation, ideally,
+
+00:07:37.280 --> 00:07:41.120 align:middle line:84%
+would be something that is
+kind of compact and explanatory
+
+00:07:41.120 --> 00:07:42.720 align:middle line:84%
+in a way that
+makes it generalize
+
+00:07:42.720 --> 00:07:45.640 align:middle line:84%
+to many possible
+downstream tasks.
+
+00:07:45.640 --> 00:07:50.730 align:middle line:84%
+So back in 2020,
+there was this work
+
+00:07:50.730 --> 00:07:54.010 align:middle line:84%
+that tried to pose specifically
+the question of not
+
+00:07:54.010 --> 00:07:56.590 align:middle line:84%
+what makes a good
+categorizer, but actually,
+
+00:07:56.590 --> 00:08:01.970 align:middle line:84%
+can we build complexity
+measures that accurately predict
+
+00:08:01.970 --> 00:08:03.433 align:middle line:90%
+the generalization of models?
+
+00:08:03.433 --> 00:08:04.850 align:middle line:84%
+Can you build a
+complexity measure
+
+00:08:04.850 --> 00:08:07.290 align:middle line:84%
+over a representation
+that will predict
+
+00:08:07.290 --> 00:08:11.610 align:middle line:84%
+how well that representation
+will generalize?
+
+00:08:11.610 --> 00:08:15.010 align:middle line:84%
+And it turned out that a couple
+of winning strategies for this
+
+00:08:15.010 --> 00:08:19.670 align:middle line:84%
+specifically looked at both the
+geometry of the representation,
+
+00:08:19.670 --> 00:08:23.390 align:middle line:84%
+so that consistency and
+separation, how tight together,
+
+00:08:23.390 --> 00:08:25.850 align:middle line:84%
+how close together were
+things that were the same, how
+
+00:08:25.850 --> 00:08:28.130 align:middle line:84%
+far apart were things
+that were different,
+
+00:08:28.130 --> 00:08:30.830 align:middle line:84%
+but also robustness
+to perturbations.
+
+00:08:30.830 --> 00:08:34.370 align:middle line:84%
+So if you move a little bit in
+any dimension or any direction,
+
+00:08:34.370 --> 00:08:37.049 align:middle line:84%
+do you actually change
+something fundamental
+
+00:08:37.049 --> 00:08:39.409 align:middle line:90%
+about the representation?
+
+00:08:39.409 --> 00:08:43.450 align:middle line:84%
+And this really
+maps quite well, I
+
+00:08:43.450 --> 00:08:45.850 align:middle line:84%
+think, to some of
+our own intuition
+
+00:08:45.850 --> 00:08:48.530 align:middle line:84%
+about what might make
+something easy to learn.
+
+00:08:48.530 --> 00:08:51.060 align:middle line:84%
+And if you look at this
+specifically on something
+
+00:08:51.060 --> 00:08:56.460 align:middle line:84%
+like CIFAR, CIFAR-10, which is
+a very low dimensional image
+
+00:08:56.460 --> 00:09:00.340 align:middle line:84%
+categorization problem where all
+of the images are very, very low
+
+00:09:00.340 --> 00:09:05.020 align:middle line:84%
+resolution and small, and
+the categories are simple.
+
+00:09:05.020 --> 00:09:09.220 align:middle line:84%
+If you train a classifier
+on CIFAR-10 with the correct
+
+00:09:09.220 --> 00:09:14.540 align:middle line:84%
+labels, and then you look
+at a t-SNE visualization
+
+00:09:14.540 --> 00:09:16.608 align:middle line:84%
+of the representations
+on the training data--
+
+00:09:16.608 --> 00:09:18.900 align:middle line:84%
+so this is the data that
+we've actually already trained
+
+00:09:18.900 --> 00:09:20.100 align:middle line:90%
+the models on--
+
+00:09:20.100 --> 00:09:22.100 align:middle line:84%
+what you see is
+it learns to build
+
+00:09:22.100 --> 00:09:28.320 align:middle line:84%
+a very consistent and
+separable training space.
+
+00:09:28.320 --> 00:09:30.723 align:middle line:84%
+The categories here
+are the same color.
+
+00:09:30.723 --> 00:09:32.140 align:middle line:84%
+And so you can see
+the things that
+
+00:09:32.140 --> 00:09:34.040 align:middle line:84%
+are the same color are
+very close together
+
+00:09:34.040 --> 00:09:36.300 align:middle line:84%
+and they're very well-separated
+from everything else.
+
+00:09:36.300 --> 00:09:38.540 align:middle line:84%
+And, interestingly,
+they're somewhat uniformly
+
+00:09:38.540 --> 00:09:39.627 align:middle line:90%
+distributed in this space.
+
+00:09:39.627 --> 00:09:41.460 align:middle line:84%
+And we'll actually talk
+later in the lecture
+
+00:09:41.460 --> 00:09:44.740 align:middle line:84%
+about this other
+dimension of distribution
+
+00:09:44.740 --> 00:09:46.860 align:middle line:90%
+throughout the space.
+
+00:09:46.860 --> 00:09:52.590 align:middle line:84%
+Now, if you take the same
+model and you randomly
+
+00:09:52.590 --> 00:09:54.750 align:middle line:84%
+generate the labels
+on that training data,
+
+00:09:54.750 --> 00:09:57.990 align:middle line:84%
+and then you train a model
+to recognize what are now
+
+00:09:57.990 --> 00:10:00.230 align:middle line:84%
+basically random
+noise, you still
+
+00:10:00.230 --> 00:10:03.970 align:middle line:84%
+will get clusters because the
+model can learn to memorize.
+
+00:10:03.970 --> 00:10:07.850 align:middle line:84%
+But what you see is that those
+clusters are much less concise.
+
+00:10:07.850 --> 00:10:10.510 align:middle line:90%
+They're much less compact.
+
+00:10:10.510 --> 00:10:13.550 align:middle line:84%
+The colors that
+are the same color
+
+00:10:13.550 --> 00:10:15.910 align:middle line:84%
+are more spread
+out in the space.
+
+00:10:15.910 --> 00:10:18.432 align:middle line:84%
+And they are much
+less separable.
+
+00:10:18.432 --> 00:10:20.390 align:middle line:84%
+So you can imagine that
+this would be much less
+
+00:10:20.390 --> 00:10:23.770 align:middle line:84%
+robust to perturbation because
+if you change in some direction,
+
+00:10:23.770 --> 00:10:28.510 align:middle line:84%
+you're pretty quickly moving
+into another color, let's say.
+
+00:10:28.510 --> 00:10:32.470 align:middle line:84%
+So this is really
+capturing that something
+
+00:10:32.470 --> 00:10:35.430 align:middle line:84%
+that generalizes versus
+something that can't generalize
+
+00:10:35.430 --> 00:10:37.890 align:middle line:84%
+will have this concentration
+or this consistency.
+
+00:10:37.890 --> 00:10:39.990 align:middle line:84%
+Data from the same
+classes close together
+
+00:10:39.990 --> 00:10:43.490 align:middle line:84%
+and separation classes are
+well-separated and robustness.
+
+00:10:43.490 --> 00:10:45.570 align:middle line:84%
+If you move a little
+bit in any direction,
+
+00:10:45.570 --> 00:10:47.280 align:middle line:84%
+you're not crossing
+what we might
+
+00:10:47.280 --> 00:10:50.760 align:middle line:84%
+call a class boundary if you
+train a downstream classifier
+
+00:10:50.760 --> 00:10:53.680 align:middle line:90%
+on this.
+
+00:10:53.680 --> 00:10:57.360 align:middle line:84%
+So what makes a
+good representation?
+
+00:10:57.360 --> 00:10:59.160 align:middle line:90%
+You want it to be compact.
+
+00:10:59.160 --> 00:11:01.440 align:middle line:90%
+We want it to be explanatory.
+
+00:11:01.440 --> 00:11:04.600 align:middle line:84%
+We want to have concentration,
+data from the same classes
+
+00:11:04.600 --> 00:11:05.500 align:middle line:90%
+close together.
+
+00:11:05.500 --> 00:11:06.760 align:middle line:90%
+We want to have separation.
+
+00:11:06.760 --> 00:11:08.400 align:middle line:90%
+Classes are well separated.
+
+00:11:08.400 --> 00:11:12.500 align:middle line:84%
+And we want to have robustness
+to irrelevant perturbations,
+
+00:11:12.500 --> 00:11:15.700 align:middle line:84%
+perturbations that we would not
+want to cross a class boundary.
+
+00:11:15.700 --> 00:11:18.880 align:middle line:84%
+So a nice example of this--
+and we'll get into this later--
+
+00:11:18.880 --> 00:11:22.160 align:middle line:84%
+but if you saw me
+from this angle,
+
+00:11:22.160 --> 00:11:25.860 align:middle line:84%
+you'd want to be robust to me
+looking the other direction.
+
+00:11:25.860 --> 00:11:26.960 align:middle line:90%
+It's still Sarah.
+
+00:11:26.960 --> 00:11:29.340 align:middle line:84%
+It's not, somehow, a
+completely different class.
+
+00:11:29.340 --> 00:11:32.560 align:middle line:84%
+So you might want to be robust
+to a perturbation that's
+
+00:11:32.560 --> 00:11:34.760 align:middle line:90%
+something like pose.
+
+00:11:34.760 --> 00:11:37.240 align:middle line:84%
+So how could we
+encourage a model
+
+00:11:37.240 --> 00:11:39.520 align:middle line:84%
+during training to
+actually achieve
+
+00:11:39.520 --> 00:11:43.360 align:middle line:90%
+this type of representation?
+
+00:11:43.360 --> 00:11:49.810 align:middle line:84%
+So one of the kind
+of high-level ideas
+
+00:11:49.810 --> 00:11:53.190 align:middle line:84%
+that really has had
+a lot of traction
+
+00:11:53.190 --> 00:11:55.490 align:middle line:84%
+here is the idea of
+explicitly encouraging
+
+00:11:55.490 --> 00:11:58.610 align:middle line:84%
+good representations
+via feedback in terms
+
+00:11:58.610 --> 00:12:01.610 align:middle line:90%
+of the similarity of data.
+
+00:12:01.610 --> 00:12:04.670 align:middle line:84%
+So you have pairs of either
+similar or dissimilar inputs.
+
+00:12:04.670 --> 00:12:07.130 align:middle line:84%
+You're not just looking
+at one example at a time.
+
+00:12:07.130 --> 00:12:10.010 align:middle line:84%
+You're actually looking at
+two or maybe three examples
+
+00:12:10.010 --> 00:12:11.810 align:middle line:84%
+and giving information
+to the model
+
+00:12:11.810 --> 00:12:15.130 align:middle line:84%
+about what should be similar
+and what should be dissimilar.
+
+00:12:15.130 --> 00:12:17.090 align:middle line:84%
+So why might this be
+different than just
+
+00:12:17.090 --> 00:12:18.470 align:middle line:90%
+looking at one image at a time?
+
+00:12:18.470 --> 00:12:20.470 align:middle line:84%
+So there's actually a
+really nice example,
+
+00:12:20.470 --> 00:12:23.250 align:middle line:84%
+I think, from psychology
+about the value
+
+00:12:23.250 --> 00:12:26.370 align:middle line:84%
+of this contextualization
+or this comparison.
+
+00:12:26.370 --> 00:12:30.050 align:middle line:84%
+So tell me what an
+elephant looks like.
+
+00:12:30.050 --> 00:12:32.010 align:middle line:90%
+Describe an elephant to me.
+
+00:12:32.010 --> 00:12:37.807 align:middle line:84%
+AUDIENCE: Very big, very
+bulky, and huge-sized.
+
+00:12:37.807 --> 00:12:39.890 align:middle line:84%
+SARA BEERY: OK, very big
+and bulky and huge-sized.
+
+00:12:39.890 --> 00:12:40.930 align:middle line:90%
+AUDIENCE: Large ears.
+
+00:12:40.930 --> 00:12:43.330 align:middle line:90%
+SARA BEERY: Large ears, OK.
+
+00:12:43.330 --> 00:12:45.860 align:middle line:90%
+Anything else?
+
+00:12:45.860 --> 00:12:47.680 align:middle line:90%
+AUDIENCE: I think it has also--
+
+00:12:47.680 --> 00:12:50.420 align:middle line:90%
+
+
+00:12:50.420 --> 00:12:53.120 align:middle line:84%
+yeah, I think I'd also like
+something in the front of it.
+
+00:12:53.120 --> 00:12:57.640 align:middle line:84%
+SARA BEERY: Like
+some big nose, trunk.
+
+00:12:57.640 --> 00:13:01.820 align:middle line:84%
+So now if you knew
+nothing about elephants,
+
+00:13:01.820 --> 00:13:04.740 align:middle line:84%
+you could draw almost
+an infinite set
+
+00:13:04.740 --> 00:13:08.300 align:middle line:84%
+of things that might have
+those characteristics.
+
+00:13:08.300 --> 00:13:12.400 align:middle line:84%
+And probably none of them would
+look very close to an elephant.
+
+00:13:12.400 --> 00:13:17.580 align:middle line:84%
+So now you, in the front
+row, or in the second row,
+
+00:13:17.580 --> 00:13:22.660 align:middle line:84%
+you, pretend I already know
+what a rhinoceros looks like.
+
+00:13:22.660 --> 00:13:25.720 align:middle line:84%
+Now try to describe what an
+elephant looks like to me.
+
+00:13:25.720 --> 00:13:30.420 align:middle line:90%
+
+
+00:13:30.420 --> 00:13:32.348 align:middle line:84%
+AUDIENCE: Instead of a
+trunk, it has a horn.
+
+00:13:32.348 --> 00:13:34.640 align:middle line:84%
+SARA BEERY: OK, so I know
+what a rhinoceros looks like.
+
+00:13:34.640 --> 00:13:36.540 align:middle line:84%
+So now you're
+saying, OK, instead
+
+00:13:36.540 --> 00:13:38.840 align:middle line:84%
+of having a horn in the
+front, take a rhinoceros,
+
+00:13:38.840 --> 00:13:44.230 align:middle line:84%
+but add a long trunk, and
+then maybe add some big ears.
+
+00:13:44.230 --> 00:13:47.190 align:middle line:84%
+I'm actually probably much more
+likely to have an understanding
+
+00:13:47.190 --> 00:13:50.750 align:middle line:84%
+of what that thing is because I
+understand similarity and then
+
+00:13:50.750 --> 00:13:52.870 align:middle line:84%
+these small contrastive
+differences.
+
+00:13:52.870 --> 00:13:55.790 align:middle line:84%
+And I actually think this is a
+really nice, intuitive example
+
+00:13:55.790 --> 00:13:58.710 align:middle line:84%
+of how we think about
+contrastive learning
+
+00:13:58.710 --> 00:14:01.270 align:middle line:84%
+and why this type of contrastive
+signal is so valuable.
+
+00:14:01.270 --> 00:14:03.510 align:middle line:84%
+And I actually think,
+interestingly enough, I
+
+00:14:03.510 --> 00:14:05.030 align:middle line:90%
+work a lot with species.
+
+00:14:05.030 --> 00:14:07.990 align:middle line:84%
+One of the ways that we train
+people in identifying species
+
+00:14:07.990 --> 00:14:10.190 align:middle line:90%
+is almost always contrastively.
+
+00:14:10.190 --> 00:14:12.710 align:middle line:84%
+If I'm teaching you how to
+identify two different types
+
+00:14:12.710 --> 00:14:15.490 align:middle line:84%
+of birds, I'm not
+going to say, oh,
+
+00:14:15.490 --> 00:14:17.510 align:middle line:84%
+I'm going to describe
+this one from scratch
+
+00:14:17.510 --> 00:14:20.570 align:middle line:84%
+with this massive, exhaustive
+list of independent attributes.
+
+00:14:20.570 --> 00:14:23.290 align:middle line:84%
+I'll say it looks a lot
+like this other bird,
+
+00:14:23.290 --> 00:14:26.070 align:middle line:84%
+but the important differences
+are the spot near the eye
+
+00:14:26.070 --> 00:14:27.490 align:middle line:90%
+and the color of the legs.
+
+00:14:27.490 --> 00:14:32.110 align:middle line:84%
+It's this comparative
+difference.
+
+00:14:32.110 --> 00:14:36.830 align:middle line:84%
+So the way that we actually
+try to train things
+
+00:14:36.830 --> 00:14:39.950 align:middle line:84%
+based on similarity
+and dissimilarity,
+
+00:14:39.950 --> 00:14:43.050 align:middle line:84%
+the original proposed
+approach was this thing
+
+00:14:43.050 --> 00:14:45.050 align:middle line:90%
+called metric learning.
+
+00:14:45.050 --> 00:14:47.450 align:middle line:84%
+And essentially, this
+was based on the idea
+
+00:14:47.450 --> 00:14:50.090 align:middle line:84%
+that measuring Euclidean
+distance in your input data
+
+00:14:50.090 --> 00:14:50.590 align:middle line:90%
+space.
+
+00:14:50.590 --> 00:14:52.570 align:middle line:84%
+So for example, looking
+at Euclidean distance
+
+00:14:52.570 --> 00:14:55.050 align:middle line:84%
+between all the pixels
+in one image and another
+
+00:14:55.050 --> 00:14:57.130 align:middle line:90%
+might not be ideal.
+
+00:14:57.130 --> 00:15:00.970 align:middle line:84%
+Instead, we might want to learn
+some metric, some representation
+
+00:15:00.970 --> 00:15:03.810 align:middle line:84%
+that respects some
+desired properties.
+
+00:15:03.810 --> 00:15:06.450 align:middle line:84%
+And so our goal is to learn a
+metric where data points that
+
+00:15:06.450 --> 00:15:08.713 align:middle line:84%
+belong together are
+similar, close together,
+
+00:15:08.713 --> 00:15:10.130 align:middle line:84%
+and data points
+that are different
+
+00:15:10.130 --> 00:15:12.050 align:middle line:90%
+are dissimilar far apart.
+
+00:15:12.050 --> 00:15:15.290 align:middle line:84%
+And then the supervision
+becomes similarity information.
+
+00:15:15.290 --> 00:15:19.970 align:middle line:84%
+So for example, maybe
+you'd have three images
+
+00:15:19.970 --> 00:15:23.850 align:middle line:84%
+of your instructors, and you
+would want to explicitly say
+
+00:15:23.850 --> 00:15:26.210 align:middle line:84%
+that the two images
+of Phil should
+
+00:15:26.210 --> 00:15:28.490 align:middle line:84%
+be closer together
+because they're both Phil,
+
+00:15:28.490 --> 00:15:33.650 align:middle line:84%
+and the image of me would be
+far apart because I'm not Phil.
+
+00:15:33.650 --> 00:15:36.370 align:middle line:84%
+And so, actually,
+how do we do this?
+
+00:15:36.370 --> 00:15:38.810 align:middle line:84%
+So the very, very
+simple version,
+
+00:15:38.810 --> 00:15:42.740 align:middle line:84%
+which is just in one-dimensional
+space, let's assume.
+
+00:15:42.740 --> 00:15:46.060 align:middle line:84%
+Say you have some data
+points x1 through xn,
+
+00:15:46.060 --> 00:15:49.340 align:middle line:84%
+and you have some
+form of supervision.
+
+00:15:49.340 --> 00:15:51.220 align:middle line:84%
+And this supervision
+is not exactly
+
+00:15:51.220 --> 00:15:54.060 align:middle line:84%
+the distances between things
+or how similar or dissimilar
+
+00:15:54.060 --> 00:15:54.860 align:middle line:90%
+there are.
+
+00:15:54.860 --> 00:15:56.660 align:middle line:84%
+We just have
+supervision in terms
+
+00:15:56.660 --> 00:15:59.300 align:middle line:84%
+of which pairs are
+in the same category
+
+00:15:59.300 --> 00:16:01.900 align:middle line:84%
+and which pairs are in
+different categories.
+
+00:16:01.900 --> 00:16:03.900 align:middle line:84%
+So we have some set
+of similar pairs
+
+00:16:03.900 --> 00:16:05.980 align:middle line:84%
+and some set of
+dissimilar pairs.
+
+00:16:05.980 --> 00:16:08.580 align:middle line:84%
+And our goal is to learn
+a linear transformation,
+
+00:16:08.580 --> 00:16:10.740 align:middle line:90%
+z equals Wx.
+
+00:16:10.740 --> 00:16:14.300 align:middle line:84%
+So essentially, we're trying
+to learn this matrix W that
+
+00:16:14.300 --> 00:16:17.500 align:middle line:90%
+will respect this similarity.
+
+00:16:17.500 --> 00:16:20.340 align:middle line:84%
+And so the idea here is that
+we can use Euclidean distance
+
+00:16:20.340 --> 00:16:22.620 align:middle line:90%
+in representation space.
+
+00:16:22.620 --> 00:16:25.780 align:middle line:84%
+And so now if we
+map out, OK, we want
+
+00:16:25.780 --> 00:16:30.340 align:middle line:84%
+the distance between zi
+and xj to be equal to,
+
+00:16:30.340 --> 00:16:34.820 align:middle line:84%
+factored out, the difference
+in terms of xi and xj
+
+00:16:34.820 --> 00:16:38.600 align:middle line:84%
+transpose W transpose W the
+difference between xi and xj.
+
+00:16:38.600 --> 00:16:41.390 align:middle line:84%
+We're were just taking that
+norm and factoring it out.
+
+00:16:41.390 --> 00:16:46.990 align:middle line:84%
+Then you can define, basically,
+this A norm on xi and xj
+
+00:16:46.990 --> 00:16:51.590 align:middle line:84%
+that will be W transpose W,
+which is a positive semidefinite
+
+00:16:51.590 --> 00:16:52.790 align:middle line:90%
+matrix.
+
+00:16:52.790 --> 00:16:54.830 align:middle line:84%
+We like positive
+semidefinite matrices
+
+00:16:54.830 --> 00:16:57.630 align:middle line:84%
+because they're easy to
+work with mathematically.
+
+00:16:57.630 --> 00:17:00.790 align:middle line:84%
+And so this distance
+here actually
+
+00:17:00.790 --> 00:17:04.710 align:middle line:84%
+is explicitly defined as
+the Mahalanobis distance.
+
+00:17:04.710 --> 00:17:08.390 align:middle line:84%
+And so the Mahalanobis
+distance between two points
+
+00:17:08.390 --> 00:17:12.170 align:middle line:84%
+is going to be defined by
+positive semidefinite matrix A.
+
+00:17:12.170 --> 00:17:15.369 align:middle line:84%
+And it's defined
+explicitly as that.
+
+00:17:15.369 --> 00:17:18.990 align:middle line:84%
+And so what you can
+show is that this,
+
+00:17:18.990 --> 00:17:22.790 align:middle line:84%
+if we can learn some of optimal
+A, which essentially would
+
+00:17:22.790 --> 00:17:26.470 align:middle line:84%
+be an optimal W for
+this z equals Wx,
+
+00:17:26.470 --> 00:17:29.910 align:middle line:84%
+then that will actually be
+this transformation that
+
+00:17:29.910 --> 00:17:33.110 align:middle line:84%
+preserves similarity and
+difference maximally.
+
+00:17:33.110 --> 00:17:36.670 align:middle line:84%
+So how could we actually phrase
+that as an optimization problem?
+
+00:17:36.670 --> 00:17:40.060 align:middle line:84%
+How do we learn
+the right W here?
+
+00:17:40.060 --> 00:17:43.120 align:middle line:90%
+
+
+00:17:43.120 --> 00:17:44.140 align:middle line:90%
+Any ideas?
+
+00:17:44.140 --> 00:17:51.560 align:middle line:90%
+
+
+00:17:51.560 --> 00:17:56.520 align:middle line:84%
+So essentially, the
+first proposed approach,
+
+00:17:56.520 --> 00:17:59.880 align:middle line:84%
+and one that was really
+introduced in the paper that
+
+00:17:59.880 --> 00:18:02.320 align:middle line:84%
+defined the term metric
+learning, and they call
+
+00:18:02.320 --> 00:18:06.800 align:middle line:84%
+it distance metric learning,
+was to specifically set this up
+
+00:18:06.800 --> 00:18:10.200 align:middle line:84%
+as an optimization
+problem with a constraint.
+
+00:18:10.200 --> 00:18:13.360 align:middle line:84%
+So here, what we
+can do is we can
+
+00:18:13.360 --> 00:18:17.420 align:middle line:84%
+say we want to find A. We want
+to find positive semidefinite
+
+00:18:17.420 --> 00:18:21.702 align:middle line:84%
+A such that the minimum
+distance of similar--
+
+00:18:21.702 --> 00:18:24.160 align:middle line:84%
+we want to minimize the distance
+between similar points, so
+
+00:18:24.160 --> 00:18:26.760 align:middle line:84%
+between those pairs that
+are known to be similar,
+
+00:18:26.760 --> 00:18:32.000 align:middle line:84%
+while making sure that there
+is at least a distance of 1
+
+00:18:32.000 --> 00:18:36.988 align:middle line:84%
+or some epsilon between
+dissimilar points.
+
+00:18:36.988 --> 00:18:38.530 align:middle line:84%
+So you're essentially
+setting this up
+
+00:18:38.530 --> 00:18:39.770 align:middle line:84%
+as an optimization
+problem, where
+
+00:18:39.770 --> 00:18:41.853 align:middle line:84%
+you're trying to bring the
+things that are similar
+
+00:18:41.853 --> 00:18:44.730 align:middle line:84%
+as close together as possible,
+while enforcing that there is
+
+00:18:44.730 --> 00:18:49.450 align:middle line:84%
+at least some margin around
+any point and any other point
+
+00:18:49.450 --> 00:18:51.005 align:middle line:90%
+that is dissimilar to it.
+
+00:18:51.005 --> 00:18:52.630 align:middle line:84%
+And you can actually
+flip this as well.
+
+00:18:52.630 --> 00:18:55.370 align:middle line:84%
+You can also think
+of it as keeping
+
+00:18:55.370 --> 00:18:58.690 align:middle line:84%
+the distance between similar
+points within some constraint,
+
+00:18:58.690 --> 00:19:03.250 align:middle line:84%
+and maximizing the difference
+between dissimilar points.
+
+00:19:03.250 --> 00:19:06.690 align:middle line:84%
+And there's now a lot
+of different variations
+
+00:19:06.690 --> 00:19:10.130 align:middle line:84%
+of this that have been
+proposed since 2003,
+
+00:19:10.130 --> 00:19:13.650 align:middle line:90%
+which is now over 20 years ago.
+
+00:19:13.650 --> 00:19:17.690 align:middle line:84%
+And it really is something that
+can be explicitly solvable.
+
+00:19:17.690 --> 00:19:21.585 align:middle line:84%
+And you can, again, swap the
+objective and constraint.
+
+00:19:21.585 --> 00:19:24.210 align:middle line:84%
+And there's actually been a lot
+of related ideas and follow-ups
+
+00:19:24.210 --> 00:19:26.710 align:middle line:84%
+to this, things
+like, for example,
+
+00:19:26.710 --> 00:19:28.810 align:middle line:84%
+information theoretic
+metric learning,
+
+00:19:28.810 --> 00:19:31.970 align:middle line:84%
+which explicitly proposed
+preserving distribution
+
+00:19:31.970 --> 00:19:33.210 align:middle line:90%
+information.
+
+00:19:33.210 --> 00:19:36.380 align:middle line:84%
+So for example, relative
+entropy between Gaussians,
+
+00:19:36.380 --> 00:19:38.620 align:middle line:84%
+while trying to observe
+both upper and lower
+
+00:19:38.620 --> 00:19:40.580 align:middle line:90%
+bounds as constraints.
+
+00:19:40.580 --> 00:19:43.220 align:middle line:84%
+But a really simple
+example of what
+
+00:19:43.220 --> 00:19:45.180 align:middle line:84%
+this is, like why you
+might want to learn
+
+00:19:45.180 --> 00:19:49.300 align:middle line:84%
+some projection, some
+linear projection that
+
+00:19:49.300 --> 00:19:52.120 align:middle line:84%
+preserves these similarities and
+dissimilarities, is this one.
+
+00:19:52.120 --> 00:19:53.860 align:middle line:84%
+I think this is
+incredibly intuitive.
+
+00:19:53.860 --> 00:19:58.720 align:middle line:84%
+So say your original data
+was bimodal in some way.
+
+00:19:58.720 --> 00:20:03.713 align:middle line:84%
+There's clearly red
+and blue categories.
+
+00:20:03.713 --> 00:20:05.380 align:middle line:84%
+And then there's one
+mode, where there's
+
+00:20:05.380 --> 00:20:06.797 align:middle line:84%
+red and blue
+categories over here,
+
+00:20:06.797 --> 00:20:08.460 align:middle line:90%
+and one where they're over here.
+
+00:20:08.460 --> 00:20:11.500 align:middle line:84%
+The very, very simple
+optimal projection
+
+00:20:11.500 --> 00:20:14.380 align:middle line:84%
+here would be just
+removing the dimension.
+
+00:20:14.380 --> 00:20:17.960 align:middle line:84%
+Here, it would be
+like along the y-axis.
+
+00:20:17.960 --> 00:20:21.000 align:middle line:84%
+So now you're just projecting
+everything into the same plane.
+
+00:20:21.000 --> 00:20:26.480 align:middle line:84%
+And now they're very easily
+separable from that perspective.
+
+00:20:26.480 --> 00:20:29.718 align:middle line:90%
+
+
+00:20:29.718 --> 00:20:32.260 align:middle line:84%
+There's a lot of improvements
+and developments on top of this
+
+00:20:32.260 --> 00:20:33.790 align:middle line:90%
+that you can do.
+
+00:20:33.790 --> 00:20:39.790 align:middle line:84%
+So one thing is you
+can think about looking
+
+00:20:39.790 --> 00:20:41.910 align:middle line:90%
+at nonlinear transformations.
+
+00:20:41.910 --> 00:20:45.990 align:middle line:84%
+So instead of only learning
+a linear projection W,
+
+00:20:45.990 --> 00:20:49.710 align:middle line:84%
+you can think about doing things
+like deep metric learning, where
+
+00:20:49.710 --> 00:20:53.350 align:middle line:84%
+you're actually explicitly
+learning some of neural network
+
+00:20:53.350 --> 00:20:57.070 align:middle line:84%
+that would map into a space that
+keeps things similar that we
+
+00:20:57.070 --> 00:20:59.867 align:middle line:84%
+want similar and dissimilar
+that we want dissimilar.
+
+00:20:59.867 --> 00:21:01.950 align:middle line:84%
+We've introduced these
+concepts of different types
+
+00:21:01.950 --> 00:21:03.250 align:middle line:90%
+of contrastive losses.
+
+00:21:03.250 --> 00:21:05.110 align:middle line:84%
+We'll get into those
+a little bit more.
+
+00:21:05.110 --> 00:21:07.470 align:middle line:84%
+And then another
+improvement and something
+
+00:21:07.470 --> 00:21:10.510 align:middle line:84%
+that actually is just
+tracked to be quite helpful
+
+00:21:10.510 --> 00:21:13.090 align:middle line:84%
+is the idea of normalizing
+your representations.
+
+00:21:13.090 --> 00:21:15.530 align:middle line:84%
+So instead of then taking
+Euclidean distance,
+
+00:21:15.530 --> 00:21:17.630 align:middle line:84%
+if you normalize
+representations to enforce
+
+00:21:17.630 --> 00:21:21.910 align:middle line:84%
+that all of the distances have
+to live on the hypersphere,
+
+00:21:21.910 --> 00:21:24.590 align:middle line:84%
+then distance would
+be essentially just
+
+00:21:24.590 --> 00:21:25.965 align:middle line:90%
+equivalent to angle.
+
+00:21:25.965 --> 00:21:27.590 align:middle line:84%
+And then you can look
+at inner products
+
+00:21:27.590 --> 00:21:29.310 align:middle line:84%
+to measure similarity
+instead of needing
+
+00:21:29.310 --> 00:21:30.930 align:middle line:90%
+to look at Euclidean distance.
+
+00:21:30.930 --> 00:21:32.640 align:middle line:84%
+And this is nice
+because you don't end up
+
+00:21:32.640 --> 00:21:35.460 align:middle line:84%
+having things that get
+really blown up by scale.
+
+00:21:35.460 --> 00:21:38.060 align:middle line:84%
+You're removing the
+scale complexity.
+
+00:21:38.060 --> 00:21:41.320 align:middle line:90%
+
+
+00:21:41.320 --> 00:21:45.655 align:middle line:84%
+So this deep metric learning
+idea is quite simple.
+
+00:21:45.655 --> 00:21:47.280 align:middle line:84%
+Linear metric learning
+is you're trying
+
+00:21:47.280 --> 00:21:50.458 align:middle line:84%
+to learn some linear
+transformation z equals Wx.
+
+00:21:50.458 --> 00:21:52.000 align:middle line:84%
+Deep metric learning
+is you're trying
+
+00:21:52.000 --> 00:21:54.720 align:middle line:84%
+to learn a nonlinear
+transformation z
+
+00:21:54.720 --> 00:21:58.080 align:middle line:84%
+equals f of x, where now f
+of x is a neural network.
+
+00:21:58.080 --> 00:22:00.320 align:middle line:84%
+And now you're not
+optimizing over the set
+
+00:22:00.320 --> 00:22:02.088 align:middle line:84%
+of positive
+semidefinite matrices.
+
+00:22:02.088 --> 00:22:04.380 align:middle line:84%
+You're optimizing over the
+weights of a neural network.
+
+00:22:04.380 --> 00:22:07.040 align:middle line:84%
+And there, we can use things
+like stochastic gradient descent
+
+00:22:07.040 --> 00:22:09.280 align:middle line:90%
+to do so.
+
+00:22:09.280 --> 00:22:11.400 align:middle line:84%
+So the intuition behind
+this introduction
+
+00:22:11.400 --> 00:22:16.120 align:middle line:84%
+of contrastive losses
+is the following.
+
+00:22:16.120 --> 00:22:19.000 align:middle line:90%
+So say I show you this moth.
+
+00:22:19.000 --> 00:22:22.000 align:middle line:90%
+What kind of moth is that?
+
+00:22:22.000 --> 00:22:24.840 align:middle line:84%
+Anybody really into
+moths in this room?
+
+00:22:24.840 --> 00:22:27.240 align:middle line:90%
+I'm guessing no.
+
+00:22:27.240 --> 00:22:30.500 align:middle line:84%
+Lepidoptera is the scientific
+term for the genus.
+
+00:22:30.500 --> 00:22:33.450 align:middle line:90%
+Anyway, so that's a moth.
+
+00:22:33.450 --> 00:22:36.795 align:middle line:84%
+I actually also don't know
+what kind of moth that is.
+
+00:22:36.795 --> 00:22:37.670 align:middle line:90%
+There's another moth.
+
+00:22:37.670 --> 00:22:38.810 align:middle line:90%
+Are these the same moth?
+
+00:22:38.810 --> 00:22:41.668 align:middle line:90%
+Are they the same kind of moth?
+
+00:22:41.668 --> 00:22:42.210 align:middle line:90%
+AUDIENCE: No.
+
+00:22:42.210 --> 00:22:45.210 align:middle line:90%
+
+
+00:22:45.210 --> 00:22:47.730 align:middle line:84%
+SARA BEERY: It's kind
+of hard to say, right?
+
+00:22:47.730 --> 00:22:50.110 align:middle line:84%
+Well, OK, what if I
+showed you another moth?
+
+00:22:50.110 --> 00:22:53.850 align:middle line:90%
+What if I showed you this moth?
+
+00:22:53.850 --> 00:22:56.170 align:middle line:84%
+If you had to guess, and
+you had to say two of these
+
+00:22:56.170 --> 00:22:59.530 align:middle line:84%
+were the same kind of moth,
+which two would you guess?
+
+00:22:59.530 --> 00:23:00.950 align:middle line:90%
+Yeah, right.
+
+00:23:00.950 --> 00:23:04.090 align:middle line:84%
+So it might be really hard to
+explicitly say whether something
+
+00:23:04.090 --> 00:23:06.050 align:middle line:84%
+is the same or
+different, especially
+
+00:23:06.050 --> 00:23:09.370 align:middle line:84%
+because when you get into
+things like this, actually,
+
+00:23:09.370 --> 00:23:13.650 align:middle line:84%
+there's this dimension of
+what is a category that
+
+00:23:13.650 --> 00:23:14.790 align:middle line:90%
+gets complicated.
+
+00:23:14.790 --> 00:23:16.762 align:middle line:90%
+Is the category all moths?
+
+00:23:16.762 --> 00:23:17.970 align:middle line:90%
+Well, then, they're the same.
+
+00:23:17.970 --> 00:23:19.272 align:middle line:90%
+Is the category white moths?
+
+00:23:19.272 --> 00:23:20.230 align:middle line:90%
+They're still the same.
+
+00:23:20.230 --> 00:23:22.505 align:middle line:84%
+Is it the category white
+moths on green leaves?
+
+00:23:22.505 --> 00:23:23.130 align:middle line:90%
+Still the same.
+
+00:23:23.130 --> 00:23:25.850 align:middle line:90%
+Is the category species of moth?
+
+00:23:25.850 --> 00:23:30.020 align:middle line:84%
+Then maybe we
+don't know anymore.
+
+00:23:30.020 --> 00:23:32.980 align:middle line:84%
+But it's actually very
+easy, regardless of what
+
+00:23:32.980 --> 00:23:37.300 align:middle line:84%
+you want your downstream task
+and the dimension of granularity
+
+00:23:37.300 --> 00:23:40.820 align:middle line:84%
+to be to say those
+two are definitely
+
+00:23:40.820 --> 00:23:43.660 align:middle line:90%
+more similar than that one.
+
+00:23:43.660 --> 00:23:46.220 align:middle line:84%
+So the way we translate
+this into machine learning
+
+00:23:46.220 --> 00:23:48.580 align:middle line:84%
+is we try to build a
+loss that explicitly
+
+00:23:48.580 --> 00:23:51.140 align:middle line:84%
+says that the distance
+between dissimilar pairs
+
+00:23:51.140 --> 00:23:56.060 align:middle line:84%
+must be much larger than the
+distance between similar pairs.
+
+00:23:56.060 --> 00:23:58.540 align:middle line:84%
+And the very initial version
+that was introduced here
+
+00:23:58.540 --> 00:24:01.580 align:middle line:84%
+is this idea of what's called
+triplet loss, which essentially
+
+00:24:01.580 --> 00:24:04.200 align:middle line:84%
+demands that the distance
+between an anchor.
+
+00:24:04.200 --> 00:24:06.820 align:middle line:84%
+So you have one point that
+you say is your anchor point,
+
+00:24:06.820 --> 00:24:10.020 align:middle line:84%
+and then you have two other data
+points that are sent in too.
+
+00:24:10.020 --> 00:24:12.620 align:middle line:84%
+And one of them is
+a positive example
+
+00:24:12.620 --> 00:24:14.195 align:middle line:84%
+of the same as
+that anchor point.
+
+00:24:14.195 --> 00:24:15.820 align:middle line:84%
+And the other one is
+a negative example
+
+00:24:15.820 --> 00:24:17.680 align:middle line:84%
+that's different from
+that anchor point.
+
+00:24:17.680 --> 00:24:20.780 align:middle line:84%
+Now you enforce that the
+distance between the anchor
+
+00:24:20.780 --> 00:24:23.740 align:middle line:84%
+and the negative
+example has to be bigger
+
+00:24:23.740 --> 00:24:26.400 align:middle line:84%
+than the distance between the
+anchor and the positive example,
+
+00:24:26.400 --> 00:24:30.280 align:middle line:84%
+plus some margin-- again,
+this kind of enforced margin.
+
+00:24:30.280 --> 00:24:33.200 align:middle line:84%
+And so what this actually
+looks like in practice
+
+00:24:33.200 --> 00:24:36.200 align:middle line:84%
+is you're just
+explicitly enforcing
+
+00:24:36.200 --> 00:24:39.000 align:middle line:84%
+that you want to have
+some loss that penalizes
+
+00:24:39.000 --> 00:24:42.560 align:middle line:90%
+if that condition is not met.
+
+00:24:42.560 --> 00:24:45.700 align:middle line:84%
+And so then, when you actually
+look at data examples here,
+
+00:24:45.700 --> 00:24:51.120 align:middle line:84%
+so maybe you take in your
+initial data, and in that space,
+
+00:24:51.120 --> 00:24:54.160 align:middle line:84%
+it turns out that,
+incorrectly, your model
+
+00:24:54.160 --> 00:24:58.600 align:middle line:84%
+had put this first horse, the
+anchor horse x, and this monkey
+
+00:24:58.600 --> 00:25:02.640 align:middle line:84%
+closer together than the anchor
+horse and this other horse.
+
+00:25:02.640 --> 00:25:05.220 align:middle line:84%
+And now, after actually
+updating your model,
+
+00:25:05.220 --> 00:25:07.760 align:middle line:84%
+taking a gradient descent step,
+the loss and that gradient
+
+00:25:07.760 --> 00:25:10.440 align:middle line:84%
+would tell you that you needed
+to push, in that representation
+
+00:25:10.440 --> 00:25:13.080 align:middle line:84%
+space, the horse and
+the monkey further
+
+00:25:13.080 --> 00:25:17.600 align:middle line:84%
+apart and the horse and the
+other horse closer together.
+
+00:25:17.600 --> 00:25:21.480 align:middle line:84%
+And the way this actually is
+done is in a triplet network.
+
+00:25:21.480 --> 00:25:23.720 align:middle line:84%
+You would have these
+shared weights.
+
+00:25:23.720 --> 00:25:25.700 align:middle line:84%
+So you have three
+images that go in.
+
+00:25:25.700 --> 00:25:28.250 align:middle line:84%
+You run all three of them
+through the same convolutional
+
+00:25:28.250 --> 00:25:29.410 align:middle line:90%
+neural network.
+
+00:25:29.410 --> 00:25:31.970 align:middle line:84%
+You calculate embeddings
+for all three.
+
+00:25:31.970 --> 00:25:35.170 align:middle line:84%
+You take a triplet loss over
+those three different embeddings
+
+00:25:35.170 --> 00:25:36.810 align:middle line:84%
+based on the anchor,
+the positive,
+
+00:25:36.810 --> 00:25:38.490 align:middle line:84%
+and the negative
+example, and then
+
+00:25:38.490 --> 00:25:44.210 align:middle line:84%
+you back propagate through
+that branch in the graph.
+
+00:25:44.210 --> 00:25:47.610 align:middle line:84%
+And so there are actually quite
+a few different improvements
+
+00:25:47.610 --> 00:25:48.930 align:middle line:90%
+of this.
+
+00:25:48.930 --> 00:25:51.090 align:middle line:84%
+One is actually pretty
+explicitly related
+
+00:25:51.090 --> 00:25:53.010 align:middle line:90%
+to training efficiency.
+
+00:25:53.010 --> 00:25:55.690 align:middle line:84%
+And that's just
+that you can now,
+
+00:25:55.690 --> 00:25:59.730 align:middle line:84%
+instead of sending in all of
+these independent triplets,
+
+00:25:59.730 --> 00:26:01.610 align:middle line:90%
+you can load an entire batch.
+
+00:26:01.610 --> 00:26:03.410 align:middle line:84%
+And now you'll have
+some positive examples
+
+00:26:03.410 --> 00:26:05.490 align:middle line:84%
+and some negative
+examples in that batch.
+
+00:26:05.490 --> 00:26:08.330 align:middle line:84%
+And then you can construct
+every possible triplet
+
+00:26:08.330 --> 00:26:13.082 align:middle line:84%
+of positive and negative and
+calculate the loss over those.
+
+00:26:13.082 --> 00:26:15.290 align:middle line:84%
+And so that way you're
+actually getting more training
+
+00:26:15.290 --> 00:26:15.830 align:middle line:90%
+efficiency.
+
+00:26:15.830 --> 00:26:17.530 align:middle line:84%
+You're making the best use
+of the batch you've already
+
+00:26:17.530 --> 00:26:18.510 align:middle line:90%
+loaded in.
+
+00:26:18.510 --> 00:26:21.390 align:middle line:84%
+And also, in this way,
+you're more likely to sample,
+
+00:26:21.390 --> 00:26:24.730 align:middle line:84%
+for example, these hard
+negatives that give you a signal
+
+00:26:24.730 --> 00:26:27.060 align:middle line:84%
+because, for
+example, if you send
+
+00:26:27.060 --> 00:26:30.140 align:middle line:84%
+in an image or a
+set of three images
+
+00:26:30.140 --> 00:26:33.580 align:middle line:84%
+and your representation
+already captures well
+
+00:26:33.580 --> 00:26:35.940 align:middle line:90%
+that these two are--
+
+00:26:35.940 --> 00:26:37.620 align:middle line:84%
+the positive example
+is closer than
+
+00:26:37.620 --> 00:26:40.020 align:middle line:84%
+the negative example
+with a margin,
+
+00:26:40.020 --> 00:26:41.880 align:middle line:90%
+then you don't get any signal.
+
+00:26:41.880 --> 00:26:43.380 align:middle line:84%
+So the easy stuff
+doesn't actually
+
+00:26:43.380 --> 00:26:47.040 align:middle line:84%
+help you train because you
+don't have any signal saying,
+
+00:26:47.040 --> 00:26:48.280 align:middle line:90%
+ah, no, you got that wrong.
+
+00:26:48.280 --> 00:26:49.600 align:middle line:90%
+You need to move them apart.
+
+00:26:49.600 --> 00:26:51.980 align:middle line:84%
+So you really need to see
+these hard examples, where
+
+00:26:51.980 --> 00:26:54.600 align:middle line:84%
+your model is getting it
+wrong, to be able to get signal
+
+00:26:54.600 --> 00:26:57.267 align:middle line:84%
+and to be able to actually get a
+gradient that trains your model
+
+00:26:57.267 --> 00:26:59.660 align:middle line:90%
+to improve your representation.
+
+00:26:59.660 --> 00:27:03.900 align:middle line:84%
+So if you use this type of
+embedding, what you can see
+
+00:27:03.900 --> 00:27:06.460 align:middle line:90%
+is get clusters.
+
+00:27:06.460 --> 00:27:08.420 align:middle line:84%
+You have done this
+in a way where
+
+00:27:08.420 --> 00:27:11.780 align:middle line:84%
+now things that are similar tend
+to be clustered close together.
+
+00:27:11.780 --> 00:27:14.660 align:middle line:84%
+In this case, this is
+a triplet loss network
+
+00:27:14.660 --> 00:27:18.660 align:middle line:84%
+that was trained over the
+Caltech UCSD Birds data set.
+
+00:27:18.660 --> 00:27:21.380 align:middle line:84%
+And you can see that,
+in this embedding space,
+
+00:27:21.380 --> 00:27:24.550 align:middle line:84%
+things that are close together
+are actually quite similar.
+
+00:27:24.550 --> 00:27:27.230 align:middle line:84%
+Are there some other things
+that this thing has learned
+
+00:27:27.230 --> 00:27:29.130 align:middle line:90%
+beyond maybe similar species?
+
+00:27:29.130 --> 00:27:32.750 align:middle line:90%
+
+
+00:27:32.750 --> 00:27:33.330 align:middle line:90%
+Yeah?
+
+00:27:33.330 --> 00:27:34.247 align:middle line:90%
+AUDIENCE: Environment.
+
+00:27:34.247 --> 00:27:35.557 align:middle line:90%
+SARA BEERY: Environment, yeah.
+
+00:27:35.557 --> 00:27:37.890 align:middle line:84%
+So if you look at, for example,
+that cluster over there,
+
+00:27:37.890 --> 00:27:40.710 align:middle line:84%
+it's a cluster where, yes, all
+of the examples of those birds
+
+00:27:40.710 --> 00:27:43.558 align:middle line:84%
+are terns, the ones that are
+flying against a blue sky.
+
+00:27:43.558 --> 00:27:44.850 align:middle line:90%
+I could tell you they're terns.
+
+00:27:44.850 --> 00:27:47.030 align:middle line:84%
+Maybe some of you guys
+know they're terns.
+
+00:27:47.030 --> 00:27:50.550 align:middle line:84%
+But they're also all pretty
+much birds that are flying
+
+00:27:50.550 --> 00:27:53.390 align:middle line:84%
+and mostly birds that are
+flying against a blue sky.
+
+00:27:53.390 --> 00:27:55.630 align:middle line:84%
+So you can imagine
+that similarity here
+
+00:27:55.630 --> 00:27:58.590 align:middle line:84%
+has may be picked up on some
+more stuff than just maybe what
+
+00:27:58.590 --> 00:28:02.310 align:middle line:84%
+we might be interested
+in terms of similarity.
+
+00:28:02.310 --> 00:28:05.250 align:middle line:84%
+And if you query
+using this, you say,
+
+00:28:05.250 --> 00:28:09.390 align:middle line:84%
+OK, find me nearest neighbors
+in this embedding space,
+
+00:28:09.390 --> 00:28:14.470 align:middle line:84%
+you also do start to learn
+similarity semantically.
+
+00:28:14.470 --> 00:28:19.150 align:middle line:84%
+You start to learn that things
+that look similar are similar
+
+00:28:19.150 --> 00:28:22.350 align:middle line:84%
+and things that look
+different are far apart.
+
+00:28:22.350 --> 00:28:24.280 align:middle line:84%
+And this gets at this
+interesting question
+
+00:28:24.280 --> 00:28:27.820 align:middle line:90%
+of what makes an image similar.
+
+00:28:27.820 --> 00:28:31.280 align:middle line:84%
+So here, these are
+embedding spaces
+
+00:28:31.280 --> 00:28:34.760 align:middle line:84%
+that are trained on
+much larger data sets.
+
+00:28:34.760 --> 00:28:36.740 align:middle line:84%
+And we have some
+reference image.
+
+00:28:36.740 --> 00:28:40.040 align:middle line:84%
+And then we have
+different things
+
+00:28:40.040 --> 00:28:44.120 align:middle line:84%
+that are kind of coming
+in that are potentially
+
+00:28:44.120 --> 00:28:45.580 align:middle line:90%
+similar or dissimilar.
+
+00:28:45.580 --> 00:28:48.880 align:middle line:84%
+And this was a paper, actually,
+of Phil's, where they explicitly
+
+00:28:48.880 --> 00:28:53.560 align:middle line:84%
+asked humans what they thought
+was the most similar, trying
+
+00:28:53.560 --> 00:28:56.240 align:middle line:84%
+to get this sense of how
+does a human brain think
+
+00:28:56.240 --> 00:28:57.198 align:middle line:90%
+about similarity.
+
+00:28:57.198 --> 00:28:59.240 align:middle line:84%
+And it turns out, there's
+a lot of different ways
+
+00:28:59.240 --> 00:29:00.540 align:middle line:90%
+that we think about similarity.
+
+00:29:00.540 --> 00:29:04.520 align:middle line:84%
+We might think about similarity
+in pose, perspective, foreground
+
+00:29:04.520 --> 00:29:07.800 align:middle line:84%
+color, foreground-background
+orientation, the number
+
+00:29:07.800 --> 00:29:09.720 align:middle line:90%
+of items, object shape.
+
+00:29:09.720 --> 00:29:12.320 align:middle line:84%
+There's a lot of different ways
+that things can be similar.
+
+00:29:12.320 --> 00:29:16.160 align:middle line:84%
+And what's the most
+useful way to have things
+
+00:29:16.160 --> 00:29:18.960 align:middle line:84%
+be similar or different based
+on a representation space
+
+00:29:18.960 --> 00:29:20.600 align:middle line:84%
+is probably going
+to be contextualized
+
+00:29:20.600 --> 00:29:25.450 align:middle line:84%
+by some downstream task
+that we're interested in.
+
+00:29:25.450 --> 00:29:28.410 align:middle line:84%
+So how do we actually
+try to make sure
+
+00:29:28.410 --> 00:29:33.450 align:middle line:84%
+that we're showing these images
+that are hard to the models
+
+00:29:33.450 --> 00:29:35.610 align:middle line:90%
+that we get training signal?
+
+00:29:35.610 --> 00:29:40.290 align:middle line:84%
+So we need to find
+basically hard negatives.
+
+00:29:40.290 --> 00:29:42.250 align:middle line:84%
+And this type of
+hard negative mining
+
+00:29:42.250 --> 00:29:46.030 align:middle line:84%
+will often look for
+a misplaced negative.
+
+00:29:46.030 --> 00:29:48.090 align:middle line:84%
+So we need to try
+to find things that
+
+00:29:48.090 --> 00:29:51.850 align:middle line:84%
+have been put closer to the
+anchor than a positive example.
+
+00:29:51.850 --> 00:29:54.050 align:middle line:84%
+And being able to do
+this hard negative mining
+
+00:29:54.050 --> 00:29:56.370 align:middle line:84%
+helps us accelerate
+our learning.
+
+00:29:56.370 --> 00:29:58.430 align:middle line:84%
+The more we can find
+the hard things,
+
+00:29:58.430 --> 00:30:00.850 align:middle line:90%
+the more we train quickly.
+
+00:30:00.850 --> 00:30:02.710 align:middle line:84%
+And one nice example
+of that is this.
+
+00:30:02.710 --> 00:30:04.390 align:middle line:90%
+So here's our moths again.
+
+00:30:04.390 --> 00:30:07.890 align:middle line:84%
+You can imagine that if you saw
+those first two images based
+
+00:30:07.890 --> 00:30:10.290 align:middle line:84%
+on a lot of dimensions
+of similarity,
+
+00:30:10.290 --> 00:30:15.170 align:middle line:84%
+like the pose, the background
+color, the orientation,
+
+00:30:15.170 --> 00:30:18.130 align:middle line:84%
+these are actually more similar
+than this one on the bottom,
+
+00:30:18.130 --> 00:30:20.680 align:middle line:84%
+but in some of semantic
+categorization space,
+
+00:30:20.680 --> 00:30:22.548 align:middle line:84%
+we want to know
+the type of moth.
+
+00:30:22.548 --> 00:30:24.340 align:middle line:84%
+These ones should
+actually be more similar,
+
+00:30:24.340 --> 00:30:25.940 align:middle line:84%
+and that one should
+be further away.
+
+00:30:25.940 --> 00:30:28.460 align:middle line:84%
+And those things like
+pose and background color
+
+00:30:28.460 --> 00:30:31.380 align:middle line:84%
+are actually confounding
+dimensions right there.
+
+00:30:31.380 --> 00:30:34.380 align:middle line:84%
+There are ways that we want
+our model to be invariant.
+
+00:30:34.380 --> 00:30:36.220 align:middle line:84%
+And so finding
+examples like this
+
+00:30:36.220 --> 00:30:38.700 align:middle line:84%
+would be explicitly ways
+to train your model faster
+
+00:30:38.700 --> 00:30:43.580 align:middle line:84%
+to recognize what you
+want to be similar.
+
+00:30:43.580 --> 00:30:49.420 align:middle line:84%
+So this assumes, though, that we
+already know the right answer.
+
+00:30:49.420 --> 00:30:52.420 align:middle line:84%
+It assumes that we know that
+these two moths at the bottom
+
+00:30:52.420 --> 00:30:55.740 align:middle line:84%
+are the same and then that
+one at the top is different.
+
+00:30:55.740 --> 00:30:59.820 align:middle line:84%
+But actually, the idea of
+contrastive representation
+
+00:30:59.820 --> 00:31:02.380 align:middle line:84%
+learning and specifically
+self-supervised contrastive
+
+00:31:02.380 --> 00:31:04.900 align:middle line:84%
+representation learning
+thinks about how
+
+00:31:04.900 --> 00:31:07.460 align:middle line:84%
+we might take these ideas
+from metric learning
+
+00:31:07.460 --> 00:31:11.620 align:middle line:84%
+and also self-supervision to
+build representation spaces that
+
+00:31:11.620 --> 00:31:13.840 align:middle line:90%
+are not explicitly supervised.
+
+00:31:13.840 --> 00:31:17.220 align:middle line:84%
+How do we get a good starting
+point or good representation
+
+00:31:17.220 --> 00:31:20.870 align:middle line:84%
+if we don't necessarily
+have labels?
+
+00:31:20.870 --> 00:31:22.950 align:middle line:84%
+And why might
+that, in some ways,
+
+00:31:22.950 --> 00:31:27.390 align:middle line:84%
+be better than actually training
+something with explicit labels?
+
+00:31:27.390 --> 00:31:30.990 align:middle line:84%
+So a common setup
+for this type of
+
+00:31:30.990 --> 00:31:33.175 align:middle line:84%
+self-supervised
+representation learning
+
+00:31:33.175 --> 00:31:34.550 align:middle line:84%
+would be that
+we're going to have
+
+00:31:34.550 --> 00:31:38.390 align:middle line:84%
+some encoder, some
+function that will map
+
+00:31:38.390 --> 00:31:39.810 align:middle line:90%
+our data onto a hypersphere.
+
+00:31:39.810 --> 00:31:41.852 align:middle line:84%
+So again, we're normalizing
+to enforce everything
+
+00:31:41.852 --> 00:31:43.270 align:middle line:90%
+to be on the hypersphere.
+
+00:31:43.270 --> 00:31:46.870 align:middle line:84%
+And we'll define some
+crossentropy for a softmax
+
+00:31:46.870 --> 00:31:49.510 align:middle line:84%
+classifier that will
+discriminate classes
+
+00:31:49.510 --> 00:31:52.230 align:middle line:90%
+based on similarity.
+
+00:31:52.230 --> 00:31:54.950 align:middle line:84%
+So if we know that these
+two images at the bottom
+
+00:31:54.950 --> 00:31:57.430 align:middle line:84%
+are the same class, and
+this one is different,
+
+00:31:57.430 --> 00:32:00.590 align:middle line:84%
+then we're going to
+try to explicitly pull
+
+00:32:00.590 --> 00:32:04.310 align:middle line:84%
+positive pairs together and
+push negative pairs apart.
+
+00:32:04.310 --> 00:32:08.350 align:middle line:84%
+So essentially,
+this is something
+
+00:32:08.350 --> 00:32:11.210 align:middle line:90%
+like a crossentropy loss.
+
+00:32:11.210 --> 00:32:16.250 align:middle line:84%
+We have an activation of
+a logarithm of something.
+
+00:32:16.250 --> 00:32:20.640 align:middle line:84%
+And this kind of
+looks to us maybe
+
+00:32:20.640 --> 00:32:25.440 align:middle line:84%
+close to a softmax,
+something close to a softmax.
+
+00:32:25.440 --> 00:32:29.600 align:middle line:84%
+So we can use inner
+products to actually do
+
+00:32:29.600 --> 00:32:31.468 align:middle line:84%
+this comparison because
+we've constrained it
+
+00:32:31.468 --> 00:32:32.260 align:middle line:90%
+to the hypersphere.
+
+00:32:32.260 --> 00:32:35.800 align:middle line:84%
+So we can look at the angle
+instead of the distance.
+
+00:32:35.800 --> 00:32:40.100 align:middle line:84%
+So now we're maximizing
+the inner product,
+
+00:32:40.100 --> 00:32:43.560 align:middle line:90%
+which is explicitly trying--
+
+00:32:43.560 --> 00:32:45.540 align:middle line:90%
+sorry, what am I saying?
+
+00:32:45.540 --> 00:32:49.240 align:middle line:84%
+No, no, no, so we want
+we want to make sure
+
+00:32:49.240 --> 00:32:52.660 align:middle line:84%
+that the inner product is
+as close as possible to 1
+
+00:32:52.660 --> 00:32:55.240 align:middle line:84%
+because that would mean
+that they were as close as
+
+00:32:55.240 --> 00:32:57.060 align:middle line:90%
+possible on this sphere.
+
+00:32:57.060 --> 00:33:00.440 align:middle line:90%
+
+
+00:33:00.440 --> 00:33:02.340 align:middle line:84%
+And now instead of
+minimizing distance,
+
+00:33:02.340 --> 00:33:04.520 align:middle line:84%
+we can maximize
+that inner product
+
+00:33:04.520 --> 00:33:07.640 align:middle line:84%
+that minimizes the angle
+between the two of them.
+
+00:33:07.640 --> 00:33:10.480 align:middle line:84%
+And then, essentially,
+what we want to do
+
+00:33:10.480 --> 00:33:13.300 align:middle line:84%
+is we want to make this green
+part as big as possible.
+
+00:33:13.300 --> 00:33:16.068 align:middle line:84%
+So that's maximizing
+the inner product
+
+00:33:16.068 --> 00:33:17.110 align:middle line:90%
+between those two things.
+
+00:33:17.110 --> 00:33:21.050 align:middle line:84%
+And we want to make the red
+part as small as possible, which
+
+00:33:21.050 --> 00:33:23.430 align:middle line:84%
+is going to give us the
+largest possible overall thing.
+
+00:33:23.430 --> 00:33:26.090 align:middle line:90%
+
+
+00:33:26.090 --> 00:33:31.810 align:middle line:84%
+Now we assume, for example,
+that we have a couple
+
+00:33:31.810 --> 00:33:36.010 align:middle line:90%
+dimensions of symmetry, right.
+
+00:33:36.010 --> 00:33:41.930 align:middle line:84%
+You can say that we want to have
+symmetry where we would have
+
+00:33:41.930 --> 00:33:46.370 align:middle line:84%
+essentially if the
+first one is your anchor
+
+00:33:46.370 --> 00:33:48.350 align:middle line:84%
+and the positive example
+is the second one,
+
+00:33:48.350 --> 00:33:50.450 align:middle line:84%
+we want the distance between
+those two be the same
+
+00:33:50.450 --> 00:33:52.070 align:middle line:90%
+as if you flipped the two.
+
+00:33:52.070 --> 00:33:54.182 align:middle line:84%
+So it's enforcing some
+symmetry between them.
+
+00:33:54.182 --> 00:33:55.890 align:middle line:84%
+The distance should
+basically be the same
+
+00:33:55.890 --> 00:33:58.557 align:middle line:84%
+no matter whether your first one
+is the anchor or the second one
+
+00:33:58.557 --> 00:33:59.410 align:middle line:90%
+is the anchor.
+
+00:33:59.410 --> 00:34:01.310 align:middle line:84%
+And we also want to
+match the marginal.
+
+00:34:01.310 --> 00:34:04.170 align:middle line:84%
+And kind of what we mean
+here is for the distribution
+
+00:34:04.170 --> 00:34:06.170 align:middle line:84%
+over all those
+positive pairs, we
+
+00:34:06.170 --> 00:34:09.449 align:middle line:84%
+assume if we marginalize
+over one of those partners,
+
+00:34:09.449 --> 00:34:11.469 align:middle line:84%
+we would end up with
+the data distribution.
+
+00:34:11.469 --> 00:34:15.190 align:middle line:84%
+So it's starting point
+distribution over the data.
+
+00:34:15.190 --> 00:34:22.230 align:middle line:84%
+And so now a really common--
+so yeah, this noise contrastive
+
+00:34:22.230 --> 00:34:24.670 align:middle line:84%
+estimation InfoNCE
+loss, there's a lot
+
+00:34:24.670 --> 00:34:26.870 align:middle line:84%
+of similar losses
+in metric learning
+
+00:34:26.870 --> 00:34:30.150 align:middle line:84%
+that introduce these
+types of ideas.
+
+00:34:30.150 --> 00:34:34.750 align:middle line:84%
+And essentially,
+if we want to try
+
+00:34:34.750 --> 00:34:37.690 align:middle line:84%
+to do this specifically
+self-supervised,
+
+00:34:37.690 --> 00:34:40.830 align:middle line:84%
+so we don't necessarily
+know already
+
+00:34:40.830 --> 00:34:42.810 align:middle line:84%
+that these two things
+are the same category.
+
+00:34:42.810 --> 00:34:45.070 align:middle line:84%
+And instead, we're going
+to do some fancy stuff
+
+00:34:45.070 --> 00:34:49.350 align:middle line:84%
+to try to force our model
+to learn that an input data
+
+00:34:49.350 --> 00:34:51.938 align:middle line:84%
+point is the same as
+itself after running it
+
+00:34:51.938 --> 00:34:53.730 align:middle line:84%
+through a bunch of
+different augmentations,
+
+00:34:53.730 --> 00:34:57.150 align:middle line:84%
+so perturbing it in a
+bunch of different ways.
+
+00:34:57.150 --> 00:35:02.050 align:middle line:84%
+This actually can outperform
+some supervised pretraining,
+
+00:35:02.050 --> 00:35:03.070 align:middle line:90%
+which is interesting.
+
+00:35:03.070 --> 00:35:07.670 align:middle line:84%
+So intuitively,
+for me, it's like,
+
+00:35:07.670 --> 00:35:12.950 align:middle line:84%
+why would we want to
+not have supervision?
+
+00:35:12.950 --> 00:35:16.440 align:middle line:84%
+Well, one thing is if
+our supervision is not
+
+00:35:16.440 --> 00:35:18.320 align:middle line:84%
+well-aligned with
+the actual task
+
+00:35:18.320 --> 00:35:20.860 align:middle line:84%
+that we want to use
+the representation for,
+
+00:35:20.860 --> 00:35:23.160 align:middle line:84%
+we might learn dimensions
+of invariance or dimensions
+
+00:35:23.160 --> 00:35:25.960 align:middle line:84%
+of variance that are
+explicitly unhelpful.
+
+00:35:25.960 --> 00:35:28.320 align:middle line:84%
+But if we just do
+self-supervision,
+
+00:35:28.320 --> 00:35:30.320 align:middle line:84%
+so we're just trying
+to learn something
+
+00:35:30.320 --> 00:35:33.840 align:middle line:84%
+without any explicit
+definition of what
+
+00:35:33.840 --> 00:35:36.440 align:middle line:84%
+is similar or dissimilar
+based on category,
+
+00:35:36.440 --> 00:35:39.880 align:middle line:84%
+that might actually
+be better for a bunch
+
+00:35:39.880 --> 00:35:42.080 align:middle line:84%
+of different possible
+downstream tasks,
+
+00:35:42.080 --> 00:35:44.160 align:middle line:84%
+but not necessarily
+better for everything.
+
+00:35:44.160 --> 00:35:46.560 align:middle line:90%
+It's a little bit nuanced.
+
+00:35:46.560 --> 00:35:48.840 align:middle line:84%
+And again, just talking
+about why we might
+
+00:35:48.840 --> 00:35:50.960 align:middle line:90%
+map to a hypersphere--
+
+00:35:50.960 --> 00:35:54.360 align:middle line:84%
+so here, one thing is more
+stable during training.
+
+00:35:54.360 --> 00:35:57.997 align:middle line:84%
+Why do we not want to have scale
+be a dimension of variance?
+
+00:35:57.997 --> 00:35:59.580 align:middle line:84%
+It's kind of like
+logistic regression.
+
+00:35:59.580 --> 00:36:01.280 align:middle line:90%
+It helps you regularize.
+
+00:36:01.280 --> 00:36:04.920 align:middle line:84%
+And also we get this
+really nice behavior.
+
+00:36:04.920 --> 00:36:08.710 align:middle line:84%
+So if you enforce that
+everything is on a hypersphere.
+
+00:36:08.710 --> 00:36:10.960 align:middle line:84%
+And you enforce that similar
+things are close together
+
+00:36:10.960 --> 00:36:13.293 align:middle line:84%
+on a hypersphere and different
+things are very far apart
+
+00:36:13.293 --> 00:36:14.530 align:middle line:90%
+on a hypersphere.
+
+00:36:14.530 --> 00:36:18.810 align:middle line:84%
+Then you can always build a
+linear classifier, just a slice
+
+00:36:18.810 --> 00:36:21.170 align:middle line:84%
+through that hypersphere,
+that will actually
+
+00:36:21.170 --> 00:36:23.690 align:middle line:90%
+be linearly separable.
+
+00:36:23.690 --> 00:36:25.798 align:middle line:84%
+So there's this nice
+kind of thing where,
+
+00:36:25.798 --> 00:36:27.590 align:middle line:84%
+no matter what, we can
+always enforce that.
+
+00:36:27.590 --> 00:36:29.090 align:middle line:84%
+We build a linear
+classifier on top
+
+00:36:29.090 --> 00:36:31.938 align:middle line:84%
+of that hypersphere
+representation.
+
+00:36:31.938 --> 00:36:33.730 align:middle line:84%
+How do we actually make
+it self-supervised?
+
+00:36:33.730 --> 00:36:37.650 align:middle line:84%
+How do you get this signal
+if you don't actually
+
+00:36:37.650 --> 00:36:40.970 align:middle line:84%
+have labels about what's
+similar and different?
+
+00:36:40.970 --> 00:36:45.770 align:middle line:84%
+So basically, what
+people do is they
+
+00:36:45.770 --> 00:36:48.610 align:middle line:84%
+take all the random stuff,
+randomly uniform drawn
+
+00:36:48.610 --> 00:36:51.850 align:middle line:84%
+from the data as
+negative examples.
+
+00:36:51.850 --> 00:36:55.210 align:middle line:84%
+And as positive examples,
+you take your image,
+
+00:36:55.210 --> 00:36:58.770 align:middle line:84%
+and you do a bunch
+of weird stuff to it.
+
+00:36:58.770 --> 00:37:01.110 align:middle line:84%
+So here, we have this
+original image of a dog,
+
+00:37:01.110 --> 00:37:06.070 align:middle line:84%
+and we can do crop and resize,
+crop, resize, and flip.
+
+00:37:06.070 --> 00:37:07.610 align:middle line:90%
+You can distort the color.
+
+00:37:07.610 --> 00:37:09.950 align:middle line:84%
+You can drop or
+jitter the color.
+
+00:37:09.950 --> 00:37:10.870 align:middle line:90%
+You can rotate it.
+
+00:37:10.870 --> 00:37:12.800 align:middle line:90%
+You can cut chunks out of it.
+
+00:37:12.800 --> 00:37:14.080 align:middle line:90%
+You can add Gaussian noise.
+
+00:37:14.080 --> 00:37:15.317 align:middle line:90%
+You can add Gaussian blur.
+
+00:37:15.317 --> 00:37:16.900 align:middle line:84%
+You can do things
+like Sobel filtering
+
+00:37:16.900 --> 00:37:21.900 align:middle line:84%
+and get you this rough edge
+kind of representation.
+
+00:37:21.900 --> 00:37:24.240 align:middle line:84%
+And so then something
+like SimCLR,
+
+00:37:24.240 --> 00:37:26.860 align:middle line:84%
+which is one of the original
+methods that explicitly tried
+
+00:37:26.860 --> 00:37:29.620 align:middle line:84%
+to teach this type of
+self-supervised contrastive
+
+00:37:29.620 --> 00:37:31.220 align:middle line:90%
+learning--
+
+00:37:31.220 --> 00:37:33.300 align:middle line:84%
+here, for every data
+point in the batch,
+
+00:37:33.300 --> 00:37:35.740 align:middle line:84%
+you would generate two
+different random augmentations
+
+00:37:35.740 --> 00:37:36.640 align:middle line:90%
+of that data point.
+
+00:37:36.640 --> 00:37:39.162 align:middle line:84%
+And those two random
+augmentations are the positives.
+
+00:37:39.162 --> 00:37:40.620 align:middle line:84%
+And essentially,
+the intuition here
+
+00:37:40.620 --> 00:37:44.220 align:middle line:84%
+is you want the exact same
+thing under some reasonable
+
+00:37:44.220 --> 00:37:46.900 align:middle line:84%
+perturbations to be mapped
+very close together,
+
+00:37:46.900 --> 00:37:53.140 align:middle line:84%
+and then some random set of all
+of the other things in the batch
+
+00:37:53.140 --> 00:37:56.500 align:middle line:84%
+are used as negatives
+for that pair.
+
+00:37:56.500 --> 00:37:59.860 align:middle line:84%
+So can anyone think of
+any limitations of this?
+
+00:37:59.860 --> 00:38:00.618 align:middle line:90%
+Yeah?
+
+00:38:00.618 --> 00:38:02.660 align:middle line:84%
+AUDIENCE: If you happen
+to have multiple pictures
+
+00:38:02.660 --> 00:38:04.598 align:middle line:84%
+of the same thing
+in the data set.
+
+00:38:04.598 --> 00:38:06.140 align:middle line:84%
+SARA BEERY: Yeah,
+so what if you have
+
+00:38:06.140 --> 00:38:09.460 align:middle line:84%
+multiple pictures of the
+same thing in the data set?
+
+00:38:09.460 --> 00:38:12.710 align:middle line:84%
+So it turns out, and we'll get
+into this, that that actually
+
+00:38:12.710 --> 00:38:13.770 align:middle line:90%
+is a challenge.
+
+00:38:13.770 --> 00:38:16.470 align:middle line:84%
+And the assumption is
+that, well, maybe there's
+
+00:38:16.470 --> 00:38:19.150 align:middle line:84%
+something in terms of
+similarity that we would still
+
+00:38:19.150 --> 00:38:21.550 align:middle line:84%
+possibly want to capture
+if you have two dogs that
+
+00:38:21.550 --> 00:38:23.670 align:middle line:84%
+are exactly the same
+under perturbation
+
+00:38:23.670 --> 00:38:27.710 align:middle line:84%
+versus another dog, for
+example, or another lab or even
+
+00:38:27.710 --> 00:38:29.910 align:middle line:84%
+another picture of
+that exact same dog.
+
+00:38:29.910 --> 00:38:36.490 align:middle line:84%
+But definitely these types
+of positive negatives,
+
+00:38:36.490 --> 00:38:39.818 align:middle line:84%
+almost in a way, are
+confusing when you're actually
+
+00:38:39.818 --> 00:38:41.110 align:middle line:90%
+learning these representations.
+
+00:38:41.110 --> 00:38:42.830 align:middle line:84%
+And there's explicitly
+work that shows
+
+00:38:42.830 --> 00:38:46.670 align:middle line:84%
+that if you can remove those,
+even by using something
+
+00:38:46.670 --> 00:38:49.070 align:middle line:84%
+like explicit supervision, it
+can actually really improve
+
+00:38:49.070 --> 00:38:50.590 align:middle line:90%
+a representation.
+
+00:38:50.590 --> 00:38:51.270 align:middle line:90%
+Yeah?
+
+00:38:51.270 --> 00:38:53.630 align:middle line:84%
+AUDIENCE: Is there an
+analogy to the perturbations
+
+00:38:53.630 --> 00:39:00.910 align:middle line:84%
+for nonimage data types, for
+example, that are commonly used?
+
+00:39:00.910 --> 00:39:02.815 align:middle line:84%
+SARA BEERY: Yeah,
+so for example here,
+
+00:39:02.815 --> 00:39:04.190 align:middle line:84%
+we're talking
+about SimCLR, which
+
+00:39:04.190 --> 00:39:08.440 align:middle line:84%
+is explicitly an image-focused
+contrastive thing.
+
+00:39:08.440 --> 00:39:14.260 align:middle line:84%
+So those perturbations are
+going to be data-specific.
+
+00:39:14.260 --> 00:39:19.240 align:middle line:84%
+So for example, reasonable
+perturbations on images
+
+00:39:19.240 --> 00:39:22.360 align:middle line:84%
+are things that we actually
+have some intuition that we
+
+00:39:22.360 --> 00:39:23.700 align:middle line:90%
+want to be invariant to.
+
+00:39:23.700 --> 00:39:26.160 align:middle line:84%
+We want to recognize
+the object is the same
+
+00:39:26.160 --> 00:39:28.160 align:middle line:84%
+and is invariant under
+flips, for example.
+
+00:39:28.160 --> 00:39:31.040 align:middle line:84%
+This is a strong assumption
+that we're building in.
+
+00:39:31.040 --> 00:39:32.478 align:middle line:84%
+And there are
+actually some cases
+
+00:39:32.478 --> 00:39:35.020 align:middle line:84%
+where we explicitly don't want
+to build in those assumptions.
+
+00:39:35.020 --> 00:39:36.560 align:middle line:84%
+If your downstream
+representation
+
+00:39:36.560 --> 00:39:38.268 align:middle line:84%
+needs to be able to
+detect the difference
+
+00:39:38.268 --> 00:39:40.280 align:middle line:84%
+between right and
+left shoes, if you
+
+00:39:40.280 --> 00:39:43.100 align:middle line:84%
+use random flipping
+as an augmentation,
+
+00:39:43.100 --> 00:39:45.698 align:middle line:84%
+it makes that almost
+impossible because if you
+
+00:39:45.698 --> 00:39:47.740 align:middle line:84%
+say this is a right shoe
+and this is a right shoe
+
+00:39:47.740 --> 00:39:49.740 align:middle line:84%
+and this is a left shoe
+and this is a left shoe,
+
+00:39:49.740 --> 00:39:52.000 align:middle line:84%
+your model is
+incredibly confused.
+
+00:39:52.000 --> 00:39:56.040 align:middle line:84%
+So the same would be possible
+for any other type of data.
+
+00:39:56.040 --> 00:40:02.000 align:middle line:84%
+Say you had, for example,
+data of specific molecules.
+
+00:40:02.000 --> 00:40:04.760 align:middle line:84%
+You then would have to inject
+some domain knowledge in terms
+
+00:40:04.760 --> 00:40:08.370 align:middle line:84%
+of what types of augmentations
+of those molecules
+
+00:40:08.370 --> 00:40:10.810 align:middle line:84%
+are reasonable, where we
+would kind of want to maintain
+
+00:40:10.810 --> 00:40:12.690 align:middle line:84%
+similarity, and what
+types of augmentations
+
+00:40:12.690 --> 00:40:15.370 align:middle line:84%
+are actually potentially
+unreasonable.
+
+00:40:15.370 --> 00:40:16.730 align:middle line:90%
+Same for text.
+
+00:40:16.730 --> 00:40:18.370 align:middle line:90%
+Same for video.
+
+00:40:18.370 --> 00:40:20.050 align:middle line:84%
+So the choice of
+augmentations actually
+
+00:40:20.050 --> 00:40:22.653 align:middle line:90%
+does become quite important.
+
+00:40:22.653 --> 00:40:24.570 align:middle line:84%
+You can think of a lot
+of different variations
+
+00:40:24.570 --> 00:40:26.970 align:middle line:84%
+of this type of
+contrastive learning
+
+00:40:26.970 --> 00:40:29.530 align:middle line:84%
+that use
+self-supervision-- yeah?
+
+00:40:29.530 --> 00:40:32.350 align:middle line:84%
+AUDIENCE: On the previous
+slide, I just have a question.
+
+00:40:32.350 --> 00:40:35.190 align:middle line:84%
+Why doesn't the model just
+learn something really stupid,
+
+00:40:35.190 --> 00:40:37.910 align:middle line:90%
+like what about this setup?
+
+00:40:37.910 --> 00:40:39.630 align:middle line:84%
+Is it going to
+guarantee, for instance,
+
+00:40:39.630 --> 00:40:42.250 align:middle line:84%
+that two golden
+retrievers are going
+
+00:40:42.250 --> 00:40:45.410 align:middle line:84%
+to-- say you get a different
+image of a golden retriever,
+
+00:40:45.410 --> 00:40:47.530 align:middle line:84%
+and you make two
+augmentations of it,
+
+00:40:47.530 --> 00:40:51.210 align:middle line:84%
+and then you pick a negative
+sample that's now a horse.
+
+00:40:51.210 --> 00:40:53.070 align:middle line:84%
+There's nothing
+about this, I think,
+
+00:40:53.070 --> 00:40:55.237 align:middle line:84%
+that says that those two
+golden retrievers are going
+
+00:40:55.237 --> 00:40:57.250 align:middle line:84%
+to end up close to this
+picture golden retriever
+
+00:40:57.250 --> 00:40:58.910 align:middle line:90%
+in your representation space.
+
+00:40:58.910 --> 00:41:01.930 align:middle line:90%
+
+
+00:41:01.930 --> 00:41:03.910 align:middle line:84%
+SARA BEERY: Right, so
+if you augment this one,
+
+00:41:03.910 --> 00:41:06.680 align:middle line:84%
+you augment that one, that one,
+and you force it close together,
+
+00:41:06.680 --> 00:41:10.035 align:middle line:84%
+there's nothing from this
+particular training step that
+
+00:41:10.035 --> 00:41:11.660 align:middle line:84%
+would say that either
+of them should be
+
+00:41:11.660 --> 00:41:13.940 align:middle line:90%
+closer to the original image.
+
+00:41:13.940 --> 00:41:16.820 align:middle line:84%
+But now you're going to
+sample these over and over
+
+00:41:16.820 --> 00:41:19.060 align:middle line:84%
+during training in many
+different combinations
+
+00:41:19.060 --> 00:41:21.420 align:middle line:84%
+and with many different
+randomizations.
+
+00:41:21.420 --> 00:41:24.500 align:middle line:84%
+And so the assumption
+is, essentially,
+
+00:41:24.500 --> 00:41:27.100 align:middle line:84%
+though there might be
+some things in there that
+
+00:41:27.100 --> 00:41:30.340 align:middle line:84%
+are more or less confusing,
+that generally, over time,
+
+00:41:30.340 --> 00:41:33.540 align:middle line:84%
+you're going to learn that
+golden retriever-like things
+
+00:41:33.540 --> 00:41:35.240 align:middle line:84%
+should all be somewhat
+close together
+
+00:41:35.240 --> 00:41:36.740 align:middle line:84%
+because, more often
+than not, you're
+
+00:41:36.740 --> 00:41:39.340 align:middle line:84%
+going to get two augmentations
+of a golden retriever
+
+00:41:39.340 --> 00:41:41.020 align:middle line:84%
+and a boat, not
+two augmentations
+
+00:41:41.020 --> 00:41:44.340 align:middle line:84%
+of a golden retriever and
+another golden retriever.
+
+00:41:44.340 --> 00:41:45.980 align:middle line:90%
+Does that make sense?
+
+00:41:45.980 --> 00:41:51.180 align:middle line:84%
+So I think it comes out in
+the noise kind of over time
+
+00:41:51.180 --> 00:41:54.460 align:middle line:84%
+and, over many, many
+different types of categories,
+
+00:41:54.460 --> 00:41:57.340 align:middle line:84%
+does equalize or
+get to something
+
+00:41:57.340 --> 00:42:00.740 align:middle line:84%
+that has learned the signal
+you want it to learn.
+
+00:42:00.740 --> 00:42:02.660 align:middle line:84%
+So there are a lot of
+different clever ways
+
+00:42:02.660 --> 00:42:06.630 align:middle line:84%
+to think about how to get
+that similarity signal that
+
+00:42:06.630 --> 00:42:11.070 align:middle line:84%
+isn't necessarily just
+massively augmenting.
+
+00:42:11.070 --> 00:42:12.790 align:middle line:84%
+So one example is
+if you actually
+
+00:42:12.790 --> 00:42:17.830 align:middle line:84%
+have data of
+something like a scene
+
+00:42:17.830 --> 00:42:21.030 align:middle line:84%
+and the depth image
+for that scene,
+
+00:42:21.030 --> 00:42:24.830 align:middle line:84%
+then you can, for example,
+try to learn representations
+
+00:42:24.830 --> 00:42:29.170 align:middle line:84%
+that put things close
+together if it's actually--
+
+00:42:29.170 --> 00:42:32.790 align:middle line:84%
+the image of the scene closely
+matches the depth of the scene.
+
+00:42:32.790 --> 00:42:35.910 align:middle line:84%
+So you can learn
+representations that
+
+00:42:35.910 --> 00:42:38.110 align:middle line:84%
+capture something
+about scene structure
+
+00:42:38.110 --> 00:42:43.190 align:middle line:84%
+by explicitly leveraging
+RGB-D during training.
+
+00:42:43.190 --> 00:42:46.470 align:middle line:84%
+Or you could think about
+representation learning
+
+00:42:46.470 --> 00:42:49.670 align:middle line:84%
+over video, where you take
+frames randomly sampled
+
+00:42:49.670 --> 00:42:52.470 align:middle line:84%
+from the same video as
+positives and a frame
+
+00:42:52.470 --> 00:42:53.883 align:middle line:90%
+from another video as negatives.
+
+00:42:53.883 --> 00:42:55.550 align:middle line:84%
+Now, your model needs
+to learn something
+
+00:42:55.550 --> 00:42:59.430 align:middle line:84%
+about possibly potential
+similarity over time.
+
+00:42:59.430 --> 00:43:03.610 align:middle line:84%
+And there's lots of different
+works that do of thing.
+
+00:43:03.610 --> 00:43:08.890 align:middle line:84%
+You can think about using
+vision language as views
+
+00:43:08.890 --> 00:43:10.450 align:middle line:90%
+in some way of the same scene.
+
+00:43:10.450 --> 00:43:13.545 align:middle line:84%
+You have the text description of
+an image and the image itself.
+
+00:43:13.545 --> 00:43:15.170 align:middle line:84%
+You try to push those
+together, and you
+
+00:43:15.170 --> 00:43:17.570 align:middle line:84%
+try to push them far away
+from an image that doesn't
+
+00:43:17.570 --> 00:43:19.113 align:middle line:90%
+match that text description.
+
+00:43:19.113 --> 00:43:20.530 align:middle line:84%
+So there's a lot
+of ways of trying
+
+00:43:20.530 --> 00:43:23.430 align:middle line:84%
+to think about how you can get
+this self-supervised signal.
+
+00:43:23.430 --> 00:43:25.490 align:middle line:84%
+And a lot of modern
+work actually
+
+00:43:25.490 --> 00:43:27.970 align:middle line:84%
+really is just people
+coming up with creative ways
+
+00:43:27.970 --> 00:43:30.870 align:middle line:84%
+to supervise models
+without requiring labels
+
+00:43:30.870 --> 00:43:32.330 align:middle line:90%
+because labels are--
+
+00:43:32.330 --> 00:43:36.490 align:middle line:84%
+handcrafted, human-generated
+labels are very expensive.
+
+00:43:36.490 --> 00:43:43.210 align:middle line:84%
+So essentially, what
+is this method doing?
+
+00:43:43.210 --> 00:43:47.770 align:middle line:84%
+There's kind of two ingredients
+here to making this work.
+
+00:43:47.770 --> 00:43:51.250 align:middle line:84%
+One is the contrastive
+loss, so which specific form
+
+00:43:51.250 --> 00:43:53.530 align:middle line:90%
+of contrastive loss you use.
+
+00:43:53.530 --> 00:43:55.570 align:middle line:90%
+And the other one is the data.
+
+00:43:55.570 --> 00:43:58.390 align:middle line:84%
+And by the data, I don't just
+mean the underlying data set.
+
+00:43:58.390 --> 00:44:00.410 align:middle line:84%
+I also mean
+specifically which types
+
+00:44:00.410 --> 00:44:02.140 align:middle line:84%
+of positive and
+negative pairs we
+
+00:44:02.140 --> 00:44:04.820 align:middle line:90%
+surface to the model over time.
+
+00:44:04.820 --> 00:44:07.620 align:middle line:84%
+So if we dig into
+the contrastive loss,
+
+00:44:07.620 --> 00:44:10.380 align:middle line:84%
+and we think of this, again, as
+something like a cross entropy
+
+00:44:10.380 --> 00:44:14.940 align:middle line:84%
+loss that tries to distinguish
+between data points,
+
+00:44:14.940 --> 00:44:17.620 align:middle line:84%
+another way that you
+can motivate this loss
+
+00:44:17.620 --> 00:44:20.180 align:middle line:84%
+mathematically is you
+can try to frame it
+
+00:44:20.180 --> 00:44:23.940 align:middle line:84%
+as maximizing the
+mutual information
+
+00:44:23.940 --> 00:44:28.620 align:middle line:84%
+between positive
+examples in the pairs.
+
+00:44:28.620 --> 00:44:32.060 align:middle line:84%
+And so essentially, if
+you think of it that way,
+
+00:44:32.060 --> 00:44:35.980 align:middle line:84%
+you're really just trying
+to maximize a lower
+
+00:44:35.980 --> 00:44:40.980 align:middle line:84%
+bound on mutual information
+between views of the same thing.
+
+00:44:40.980 --> 00:44:44.980 align:middle line:84%
+And there's been some
+interesting work, specifically
+
+00:44:44.980 --> 00:44:50.300 align:middle line:84%
+this work that showed that,
+actually, if, instead of using
+
+00:44:50.300 --> 00:44:55.180 align:middle line:84%
+the standard contrastive losses,
+you just explicitly maximize
+
+00:44:55.180 --> 00:44:58.060 align:middle line:84%
+mutual information alone,
+it actually worsened
+
+00:44:58.060 --> 00:45:00.060 align:middle line:90%
+downstream performance.
+
+00:45:00.060 --> 00:45:02.710 align:middle line:84%
+And looser bounds
+with simpler critics
+
+00:45:02.710 --> 00:45:04.090 align:middle line:90%
+led to better representation.
+
+00:45:04.090 --> 00:45:06.350 align:middle line:84%
+So essentially, the
+contrastive loss
+
+00:45:06.350 --> 00:45:07.770 align:middle line:90%
+has to be doing something else.
+
+00:45:07.770 --> 00:45:10.910 align:middle line:84%
+It's not just maximizing
+the mutual information
+
+00:45:10.910 --> 00:45:13.150 align:middle line:90%
+between things that are similar.
+
+00:45:13.150 --> 00:45:15.110 align:middle line:90%
+So what else is it doing?
+
+00:45:15.110 --> 00:45:17.350 align:middle line:84%
+So we'd said that we had
+a couple of properties
+
+00:45:17.350 --> 00:45:20.010 align:middle line:84%
+that we liked that made
+representations good.
+
+00:45:20.010 --> 00:45:22.650 align:middle line:90%
+We had concentration alignment.
+
+00:45:22.650 --> 00:45:24.790 align:middle line:84%
+So data from the
+same class is close.
+
+00:45:24.790 --> 00:45:27.390 align:middle line:84%
+We had separation, which means
+data from different classes
+
+00:45:27.390 --> 00:45:28.510 align:middle line:90%
+are far apart.
+
+00:45:28.510 --> 00:45:30.390 align:middle line:90%
+We don't lose information.
+
+00:45:30.390 --> 00:45:33.050 align:middle line:84%
+And then we had robustness
+to irrelevant perturbations.
+
+00:45:33.050 --> 00:45:35.430 align:middle line:84%
+We don't want to change
+something in some way
+
+00:45:35.430 --> 00:45:39.070 align:middle line:84%
+that we think is irrelevant and
+have it change or move really
+
+00:45:39.070 --> 00:45:40.330 align:middle line:90%
+far in our space.
+
+00:45:40.330 --> 00:45:43.030 align:middle line:90%
+
+
+00:45:43.030 --> 00:45:48.623 align:middle line:84%
+So you can see how, explicitly,
+the alignment is really
+
+00:45:48.623 --> 00:45:50.290 align:middle line:84%
+built into that loss
+from the beginning.
+
+00:45:50.290 --> 00:45:52.920 align:middle line:84%
+We're saying we want to pull
+similar samples together.
+
+00:45:52.920 --> 00:45:54.170 align:middle line:90%
+So that's enforcing alignment.
+
+00:45:54.170 --> 00:45:56.910 align:middle line:84%
+Similar samples should
+have similar features.
+
+00:45:56.910 --> 00:46:03.920 align:middle line:84%
+And then you can talk about this
+uniformity, which is essentially
+
+00:46:03.920 --> 00:46:06.007 align:middle line:84%
+saying we want to push
+to similar samples apart,
+
+00:46:06.007 --> 00:46:07.840 align:middle line:84%
+and we're pushing all
+the dissimilar samples
+
+00:46:07.840 --> 00:46:08.860 align:middle line:90%
+apart kind of equally.
+
+00:46:08.860 --> 00:46:10.360 align:middle line:84%
+You can imagine
+that the optimal way
+
+00:46:10.360 --> 00:46:14.880 align:middle line:84%
+to do that would be to cover the
+entire hypersphere because if we
+
+00:46:14.880 --> 00:46:16.460 align:middle line:84%
+don't use part of
+the hypersphere,
+
+00:46:16.460 --> 00:46:17.960 align:middle line:84%
+then there's actually
+a way we could
+
+00:46:17.960 --> 00:46:22.040 align:middle line:84%
+have pushed even further apart
+things that are different.
+
+00:46:22.040 --> 00:46:25.280 align:middle line:84%
+So here, this actually pushes
+apart all of the classes.
+
+00:46:25.280 --> 00:46:25.900 align:middle line:90%
+We're here.
+
+00:46:25.900 --> 00:46:28.600 align:middle line:84%
+Every class is, again,
+one point because we've
+
+00:46:28.600 --> 00:46:31.160 align:middle line:84%
+said that the only
+information we have
+
+00:46:31.160 --> 00:46:35.000 align:middle line:84%
+is that this image is the same
+as itself under perturbations.
+
+00:46:35.000 --> 00:46:38.000 align:middle line:84%
+So we're really pushing
+apart all the data points
+
+00:46:38.000 --> 00:46:40.000 align:middle line:84%
+on that hypersphere,
+which is kind
+
+00:46:40.000 --> 00:46:42.880 align:middle line:84%
+of pushing for that uniformity
+in our feature space.
+
+00:46:42.880 --> 00:46:48.000 align:middle line:84%
+And that could be as seen as
+a way to enforce separation.
+
+00:46:48.000 --> 00:46:51.960 align:middle line:84%
+So you can actually see this,
+which is really interesting.
+
+00:46:51.960 --> 00:46:57.480 align:middle line:84%
+So if you take CIFAR-10 and
+you build these encoders that
+
+00:46:57.480 --> 00:47:00.210 align:middle line:84%
+encode them into
+the S1 feature space
+
+00:47:00.210 --> 00:47:03.190 align:middle line:84%
+with the hypersphere on one
+dimension or two dimensions,
+
+00:47:03.190 --> 00:47:05.890 align:middle line:84%
+it's just a circle, and you
+visualize feature distributions
+
+00:47:05.890 --> 00:47:08.170 align:middle line:84%
+on the validation
+set, you can see
+
+00:47:08.170 --> 00:47:10.550 align:middle line:84%
+that if you use unsupervised
+contrastive learning,
+
+00:47:10.550 --> 00:47:13.050 align:middle line:84%
+you get this
+distribution that is
+
+00:47:13.050 --> 00:47:16.770 align:middle line:84%
+properly uniform around that
+circle and that embedding space.
+
+00:47:16.770 --> 00:47:19.930 align:middle line:84%
+Whereas if you actually use
+supervised predictive learning,
+
+00:47:19.930 --> 00:47:23.210 align:middle line:84%
+you get a feature distribution
+that's not uniform.
+
+00:47:23.210 --> 00:47:25.430 align:middle line:84%
+And if you just randomly
+initialize the network,
+
+00:47:25.430 --> 00:47:27.290 align:middle line:90%
+it's far from uniform.
+
+00:47:27.290 --> 00:47:30.590 align:middle line:84%
+We really don't get anything
+close to this uniformity.
+
+00:47:30.590 --> 00:47:32.950 align:middle line:84%
+So you can see that almost
+it's actually happening.
+
+00:47:32.950 --> 00:47:34.090 align:middle line:84%
+Something in the
+way that we're doing
+
+00:47:34.090 --> 00:47:35.715 align:middle line:84%
+these unsupervised
+contrastive learning
+
+00:47:35.715 --> 00:47:38.930 align:middle line:84%
+is really pushing and
+enforcing uniformity
+
+00:47:38.930 --> 00:47:41.330 align:middle line:90%
+across the data points.
+
+00:47:41.330 --> 00:47:43.530 align:middle line:90%
+So how can we quantify this?
+
+00:47:43.530 --> 00:47:45.770 align:middle line:84%
+So the idea is that you
+might want to explicitly
+
+00:47:45.770 --> 00:47:49.690 align:middle line:84%
+be able to study alignment and
+uniformity, so things being
+
+00:47:49.690 --> 00:47:53.390 align:middle line:84%
+close together and things being
+spread apart, using metrics.
+
+00:47:53.390 --> 00:47:57.900 align:middle line:84%
+We want, actually, a way
+to quantify how aligned
+
+00:47:57.900 --> 00:48:00.900 align:middle line:84%
+or how uniform a
+representation is.
+
+00:48:00.900 --> 00:48:04.540 align:middle line:84%
+So for uniform, for
+alignment, we just
+
+00:48:04.540 --> 00:48:07.740 align:middle line:84%
+do something like looking
+at the expectation
+
+00:48:07.740 --> 00:48:12.860 align:middle line:84%
+over the distance between
+features for positive pairs.
+
+00:48:12.860 --> 00:48:13.960 align:middle line:90%
+This is pretty intuitive.
+
+00:48:13.960 --> 00:48:17.300 align:middle line:84%
+So you're just saying
+my alignment metric
+
+00:48:17.300 --> 00:48:20.540 align:middle line:84%
+is how far apart do I think
+any two positive examples are
+
+00:48:20.540 --> 00:48:23.260 align:middle line:90%
+going to be in expectation.
+
+00:48:23.260 --> 00:48:25.540 align:middle line:84%
+And then, for
+uniformity, instead
+
+00:48:25.540 --> 00:48:27.780 align:middle line:84%
+of trying to explicitly
+say the expected
+
+00:48:27.780 --> 00:48:30.820 align:middle line:84%
+difference between
+negative pairs,
+
+00:48:30.820 --> 00:48:33.820 align:middle line:84%
+you can do a transformation
+of this using the Gaussian
+
+00:48:33.820 --> 00:48:35.060 align:middle line:90%
+potential.
+
+00:48:35.060 --> 00:48:38.980 align:middle line:84%
+And then you can look at using
+the logarithm of the expected
+
+00:48:38.980 --> 00:48:41.860 align:middle line:84%
+pairwise Gaussian
+potential, which
+
+00:48:41.860 --> 00:48:45.380 align:middle line:84%
+is essentially e to the
+minus squared distance.
+
+00:48:45.380 --> 00:48:50.500 align:middle line:84%
+And this puts more focus
+on the smallest distances.
+
+00:48:50.500 --> 00:48:53.020 align:middle line:84%
+And this objective
+of goal has a lot
+
+00:48:53.020 --> 00:48:54.400 align:middle line:90%
+of connections throughout math.
+
+00:48:54.400 --> 00:48:56.150 align:middle line:84%
+And it turns out
+the solution that
+
+00:48:56.150 --> 00:49:00.750 align:middle line:84%
+optimizes this is the one
+that maximally spreads out
+
+00:49:00.750 --> 00:49:02.233 align:middle line:90%
+the points on the hypersphere.
+
+00:49:02.233 --> 00:49:04.150 align:middle line:84%
+So the uniform distribution
+on the hypersphere
+
+00:49:04.150 --> 00:49:07.430 align:middle line:84%
+is explicitly the
+solution to this.
+
+00:49:07.430 --> 00:49:11.750 align:middle line:84%
+And so now the uniform
+distribution on the hypersphere
+
+00:49:11.750 --> 00:49:14.150 align:middle line:84%
+becomes the unique
+measure that minimizes
+
+00:49:14.150 --> 00:49:18.790 align:middle line:84%
+expected pairwise potential
+between negative pairs.
+
+00:49:18.790 --> 00:49:21.930 align:middle line:84%
+So now if we want to dig into
+our explicit contrastive loss,
+
+00:49:21.930 --> 00:49:24.410 align:middle line:84%
+one way to do that is
+we take asymptotics.
+
+00:49:24.410 --> 00:49:30.450 align:middle line:84%
+We assume, OK, what happens as
+you take things to infinity?
+
+00:49:30.450 --> 00:49:32.750 align:middle line:84%
+That's a good way to
+understand behavior generally
+
+00:49:32.750 --> 00:49:36.990 align:middle line:84%
+when you're looking at
+mathematical properties.
+
+00:49:36.990 --> 00:49:41.230 align:middle line:84%
+So here, without
+getting too formal,
+
+00:49:41.230 --> 00:49:43.750 align:middle line:84%
+we want to make connections
+between alignment and uniformity
+
+00:49:43.750 --> 00:49:45.950 align:middle line:90%
+and our contrastive loss.
+
+00:49:45.950 --> 00:49:48.310 align:middle line:84%
+So since our definitions
+are expectations,
+
+00:49:48.310 --> 00:49:50.630 align:middle line:84%
+we'll look at the
+asymptotic behavior,
+
+00:49:50.630 --> 00:49:54.800 align:middle line:84%
+specifically taking the limit as
+the number of negative samples
+
+00:49:54.800 --> 00:49:55.960 align:middle line:90%
+goes to infinity.
+
+00:49:55.960 --> 00:50:01.360 align:middle line:84%
+So say we have infinite negative
+examples for any given positive.
+
+00:50:01.360 --> 00:50:03.240 align:middle line:84%
+Then you can reformulate
+this to getting
+
+00:50:03.240 --> 00:50:05.840 align:middle line:84%
+basically the combination
+two different terms that
+
+00:50:05.840 --> 00:50:07.480 align:middle line:90%
+are expectations.
+
+00:50:07.480 --> 00:50:10.760 align:middle line:84%
+And we're putting them
+here in green and in red
+
+00:50:10.760 --> 00:50:14.760 align:middle line:84%
+because, basically, the
+first component of this
+
+00:50:14.760 --> 00:50:18.880 align:middle line:84%
+gets minimized if every single
+point of the same category
+
+00:50:18.880 --> 00:50:21.120 align:middle line:90%
+has the exact same embedding.
+
+00:50:21.120 --> 00:50:25.840 align:middle line:84%
+So essentially, if the distance
+between positive pairs is just 0
+
+00:50:25.840 --> 00:50:28.280 align:middle line:84%
+and the second term
+gets minimized,
+
+00:50:28.280 --> 00:50:30.973 align:middle line:84%
+if those collapsed points
+are-- all the points
+
+00:50:30.973 --> 00:50:32.640 align:middle line:84%
+are spread out as far
+as possible, which
+
+00:50:32.640 --> 00:50:35.280 align:middle line:90%
+is that uniform distribution.
+
+00:50:35.280 --> 00:50:38.760 align:middle line:84%
+So the first term gets
+minimized if and only
+
+00:50:38.760 --> 00:50:41.120 align:middle line:90%
+if f is perfectly aligned.
+
+00:50:41.120 --> 00:50:44.760 align:middle line:84%
+All the things that are same
+are exactly the same embedding.
+
+00:50:44.760 --> 00:50:49.060 align:middle line:84%
+And then the second
+one is minimized
+
+00:50:49.060 --> 00:50:51.400 align:middle line:84%
+if we get perfect uniformity,
+which is explicitly
+
+00:50:51.400 --> 00:50:52.820 align:middle line:84%
+the uniform feature
+distribution,
+
+00:50:52.820 --> 00:50:55.610 align:middle line:84%
+pushing everything as
+far apart as possible.
+
+00:50:55.610 --> 00:50:59.130 align:middle line:84%
+And now these are actually
+measurable quantities.
+
+00:50:59.130 --> 00:51:03.570 align:middle line:84%
+So now you can actually look
+at representation quality
+
+00:51:03.570 --> 00:51:07.330 align:middle line:84%
+as defined by alignment
+versus uniformity
+
+00:51:07.330 --> 00:51:12.770 align:middle line:84%
+and look at how
+accurate, for example,
+
+00:51:12.770 --> 00:51:15.568 align:middle line:84%
+prediction is on
+a validation set.
+
+00:51:15.568 --> 00:51:18.110 align:middle line:84%
+And what you can see is you take
+a bunch of different models,
+
+00:51:18.110 --> 00:51:19.568 align:middle line:84%
+so every single
+one of these points
+
+00:51:19.568 --> 00:51:21.865 align:middle line:84%
+would be a different
+representation space
+
+00:51:21.865 --> 00:51:23.490 align:middle line:84%
+or different thing
+that's been learned,
+
+00:51:23.490 --> 00:51:26.210 align:middle line:84%
+and you can plot them in
+terms of their alignment
+
+00:51:26.210 --> 00:51:29.410 align:middle line:84%
+versus their uniformity as
+measured by these quantities.
+
+00:51:29.410 --> 00:51:32.450 align:middle line:84%
+And you can show that the things
+that have the highest validation
+
+00:51:32.450 --> 00:51:36.490 align:middle line:84%
+accuracy are the best possible
+minimizers of both alignment
+
+00:51:36.490 --> 00:51:37.770 align:middle line:90%
+and uniformity.
+
+00:51:37.770 --> 00:51:40.770 align:middle line:84%
+So this kind of red that
+goes into blue that goes back
+
+00:51:40.770 --> 00:51:44.770 align:middle line:84%
+into red explicitly tells us
+in some nice, measurable way
+
+00:51:44.770 --> 00:51:46.370 align:middle line:84%
+that alignment
+and uniformity are
+
+00:51:46.370 --> 00:51:49.450 align:middle line:84%
+in fact good qualities for
+a representation space,
+
+00:51:49.450 --> 00:51:53.620 align:middle line:84%
+and they map towards good
+accuracy on downstream tasks.
+
+00:51:53.620 --> 00:51:56.980 align:middle line:84%
+And you can show this over
+several different data sets,
+
+00:51:56.980 --> 00:52:00.820 align:middle line:84%
+though you will see that simpler
+data sets show this better
+
+00:52:00.820 --> 00:52:04.340 align:middle line:90%
+than more complicated ones.
+
+00:52:04.340 --> 00:52:07.080 align:middle line:84%
+So what's the
+contrastive loss doing?
+
+00:52:07.080 --> 00:52:09.460 align:middle line:84%
+So the loss function
+itself, we've just shown,
+
+00:52:09.460 --> 00:52:14.060 align:middle line:84%
+explicitly encourages alignment
+and uniformity or concentration
+
+00:52:14.060 --> 00:52:15.620 align:middle line:90%
+and separation.
+
+00:52:15.620 --> 00:52:18.760 align:middle line:84%
+So then what is the selection
+of positive and negative pairs
+
+00:52:18.760 --> 00:52:20.700 align:middle line:90%
+encouraging?
+
+00:52:20.700 --> 00:52:23.500 align:middle line:84%
+We talked about how we generate
+those positive and negative
+
+00:52:23.500 --> 00:52:26.580 align:middle line:84%
+pairs is through maybe all
+these different augmentations.
+
+00:52:26.580 --> 00:52:32.420 align:middle line:84%
+So what are we teaching a
+model via our choice of pairs?
+
+00:52:32.420 --> 00:52:35.220 align:middle line:84%
+So augmentations of the same
+data point should be close.
+
+00:52:35.220 --> 00:52:37.820 align:middle line:90%
+
+
+00:52:37.820 --> 00:52:41.500 align:middle line:84%
+And then we want a
+learned representation
+
+00:52:41.500 --> 00:52:43.380 align:middle line:84%
+that's invariant
+to perturbations
+
+00:52:43.380 --> 00:52:45.000 align:middle line:90%
+induced by data augmentations.
+
+00:52:45.000 --> 00:52:47.180 align:middle line:84%
+So we're trying to
+learn invariance
+
+00:52:47.180 --> 00:52:50.440 align:middle line:84%
+to the set of augmentations
+we explicitly put in.
+
+00:52:50.440 --> 00:52:54.320 align:middle line:84%
+And it turns out that
+finding the right invariances
+
+00:52:54.320 --> 00:52:55.880 align:middle line:90%
+can be really hard.
+
+00:52:55.880 --> 00:52:57.520 align:middle line:84%
+We talked about
+the molecule thing.
+
+00:52:57.520 --> 00:53:01.440 align:middle line:84%
+We talked about in the
+right and left shoe thing.
+
+00:53:01.440 --> 00:53:06.400 align:middle line:84%
+And so there might actually
+be some explicit invariances
+
+00:53:06.400 --> 00:53:08.440 align:middle line:84%
+like, for example,
+the ones we talked
+
+00:53:08.440 --> 00:53:10.467 align:middle line:84%
+about in the geometric
+deep learning lecture
+
+00:53:10.467 --> 00:53:12.300 align:middle line:84%
+that you could actually
+explicitly hardcode.
+
+00:53:12.300 --> 00:53:14.465 align:middle line:84%
+If you want to be
+symmetrically invariant,
+
+00:53:14.465 --> 00:53:15.840 align:middle line:84%
+you could build
+symmetry directly
+
+00:53:15.840 --> 00:53:18.850 align:middle line:90%
+into your representation.
+
+00:53:18.850 --> 00:53:20.600 align:middle line:84%
+And maybe there are
+some cases where you'd
+
+00:53:20.600 --> 00:53:23.320 align:middle line:90%
+want to use one or the other.
+
+00:53:23.320 --> 00:53:26.622 align:middle line:84%
+And it turns out that there are
+a lot of types of invariances
+
+00:53:26.622 --> 00:53:28.080 align:middle line:84%
+that we might want
+to have that can
+
+00:53:28.080 --> 00:53:30.320 align:middle line:84%
+be really difficult to
+define mathematically.
+
+00:53:30.320 --> 00:53:33.400 align:middle line:84%
+And so this kind of experimental
+or maybe slightly more
+
+00:53:33.400 --> 00:53:35.860 align:middle line:84%
+brute force approach of
+just explicitly saying, hey,
+
+00:53:35.860 --> 00:53:39.720 align:middle line:84%
+if I do this to this thing,
+I want it to be the same,
+
+00:53:39.720 --> 00:53:42.160 align:middle line:84%
+you can build those
+invariances in without actually
+
+00:53:42.160 --> 00:53:45.040 align:middle line:84%
+being able to mathematically
+define explicitly
+
+00:53:45.040 --> 00:53:47.060 align:middle line:84%
+what it means to
+be, for example,
+
+00:53:47.060 --> 00:53:50.650 align:middle line:84%
+invariant to pose within
+a scene or distance
+
+00:53:50.650 --> 00:53:53.250 align:middle line:84%
+in these complex
+geometric spaces,
+
+00:53:53.250 --> 00:53:56.810 align:middle line:84%
+particularly for
+nonrigid objects.
+
+00:53:56.810 --> 00:53:59.370 align:middle line:84%
+So what we're saying
+here is essentially
+
+00:53:59.370 --> 00:54:02.050 align:middle line:84%
+that the data is explicitly
+the dimension that
+
+00:54:02.050 --> 00:54:05.490 align:middle line:84%
+encourages the robustness, that
+third category that we really
+
+00:54:05.490 --> 00:54:07.610 align:middle line:90%
+wanted in our representation.
+
+00:54:07.610 --> 00:54:12.690 align:middle line:84%
+That robustness to perturbations
+is coming just from our data.
+
+00:54:12.690 --> 00:54:16.090 align:middle line:84%
+So this means that to
+make all of this work,
+
+00:54:16.090 --> 00:54:19.930 align:middle line:84%
+you specifically want to
+have this set of things that
+
+00:54:19.930 --> 00:54:25.050 align:middle line:84%
+help us get those losses
+to converge and encourage
+
+00:54:25.050 --> 00:54:27.410 align:middle line:90%
+the right types of robustness.
+
+00:54:27.410 --> 00:54:32.490 align:middle line:84%
+And it turns out, for example,
+that these four things,
+
+00:54:32.490 --> 00:54:36.210 align:middle line:84%
+really heavy data augmentation,
+like not just simple stuff,
+
+00:54:36.210 --> 00:54:40.010 align:middle line:84%
+doing really, really weird
+things to your inputs within
+
+00:54:40.010 --> 00:54:42.750 align:middle line:84%
+reason, having these
+projection heads--
+
+00:54:42.750 --> 00:54:44.930 align:middle line:84%
+we'll talk about
+this in a second--
+
+00:54:44.930 --> 00:54:50.380 align:middle line:84%
+having very large batch sizes,
+and selecting the correct data
+
+00:54:50.380 --> 00:54:52.158 align:middle line:84%
+pairs and hard
+negative examples,
+
+00:54:52.158 --> 00:54:53.700 align:middle line:84%
+these are really
+the ingredients that
+
+00:54:53.700 --> 00:54:55.740 align:middle line:84%
+make this self-supervised
+contrastive learning
+
+00:54:55.740 --> 00:54:58.180 align:middle line:90%
+work much better.
+
+00:54:58.180 --> 00:55:01.100 align:middle line:84%
+And you can actually see
+this in the literature.
+
+00:55:01.100 --> 00:55:05.580 align:middle line:84%
+So here, they're explicitly
+ablating in the SimCLR paper
+
+00:55:05.580 --> 00:55:08.020 align:middle line:84%
+how these different
+transformations
+
+00:55:08.020 --> 00:55:09.620 align:middle line:90%
+affect the performance.
+
+00:55:09.620 --> 00:55:11.580 align:middle line:84%
+And it turns out
+that the performance
+
+00:55:11.580 --> 00:55:14.060 align:middle line:84%
+of your downstream
+classifier, if you
+
+00:55:14.060 --> 00:55:16.580 align:middle line:84%
+do self-supervised
+representation learning
+
+00:55:16.580 --> 00:55:21.160 align:middle line:84%
+using only crops, for example,
+is significantly lower,
+
+00:55:21.160 --> 00:55:24.740 align:middle line:84%
+like 15% almost
+lower, than if you
+
+00:55:24.740 --> 00:55:29.060 align:middle line:84%
+use all of the entire set
+of augmentations shown here
+
+00:55:29.060 --> 00:55:30.620 align:middle line:90%
+on the left.
+
+00:55:30.620 --> 00:55:32.660 align:middle line:84%
+So the data
+augmentation definitely
+
+00:55:32.660 --> 00:55:35.580 align:middle line:90%
+plays a huge role here.
+
+00:55:35.580 --> 00:55:37.940 align:middle line:84%
+Another thing that
+actually plays a huge role
+
+00:55:37.940 --> 00:55:40.540 align:middle line:84%
+is this idea of a
+projection head.
+
+00:55:40.540 --> 00:55:44.140 align:middle line:84%
+So here, what people
+found experimentally
+
+00:55:44.140 --> 00:55:48.510 align:middle line:84%
+is that if, instead of applying
+your contrastive loss directly
+
+00:55:48.510 --> 00:55:52.010 align:middle line:84%
+to the feature representation
+you're trying to learn,
+
+00:55:52.010 --> 00:55:55.950 align:middle line:84%
+you enable some learned
+projection g that's
+
+00:55:55.950 --> 00:55:59.230 align:middle line:84%
+quite simple from h, which is
+the representation space you're
+
+00:55:59.230 --> 00:56:03.470 align:middle line:84%
+planning to use, and some
+z where you're actually
+
+00:56:03.470 --> 00:56:07.330 align:middle line:84%
+going to maximize the agreement
+between similar pairs,
+
+00:56:07.330 --> 00:56:09.430 align:middle line:84%
+you're actually applying
+that contrastive loss,
+
+00:56:09.430 --> 00:56:15.448 align:middle line:84%
+that this ends up also really
+helping performance downstream.
+
+00:56:15.448 --> 00:56:16.990 align:middle line:84%
+And g will be
+something quite simple,
+
+00:56:16.990 --> 00:56:20.710 align:middle line:84%
+a linear projection or a very
+small multilayer perceptron.
+
+00:56:20.710 --> 00:56:22.990 align:middle line:84%
+And then so you
+don't actually use z,
+
+00:56:22.990 --> 00:56:24.670 align:middle line:84%
+which is like this
+projected space where
+
+00:56:24.670 --> 00:56:27.330 align:middle line:84%
+you're calculating your
+loss as your representation.
+
+00:56:27.330 --> 00:56:29.550 align:middle line:90%
+Instead, you use h.
+
+00:56:29.550 --> 00:56:32.137 align:middle line:84%
+And this projection had
+improved performance.
+
+00:56:32.137 --> 00:56:34.470 align:middle line:84%
+And I think one of the ways
+that people have intuitively
+
+00:56:34.470 --> 00:56:40.190 align:middle line:84%
+tried to explain it
+is that instead of--
+
+00:56:40.190 --> 00:56:43.870 align:middle line:84%
+it lets the model learn a
+representation that keeps
+
+00:56:43.870 --> 00:56:46.080 align:middle line:90%
+a little bit more variance.
+
+00:56:46.080 --> 00:56:48.400 align:middle line:84%
+So for example, if you're
+trying to explicitly enforce
+
+00:56:48.400 --> 00:56:50.640 align:middle line:84%
+this contrastive
+loss, you're really
+
+00:56:50.640 --> 00:56:56.080 align:middle line:84%
+trying to push things completely
+together that are augmentations
+
+00:56:56.080 --> 00:56:57.480 align:middle line:90%
+of the same object.
+
+00:56:57.480 --> 00:57:00.040 align:middle line:84%
+But actually, maintaining
+some dimensions
+
+00:57:00.040 --> 00:57:03.320 align:middle line:84%
+of variance to some of
+those differences, it seems,
+
+00:57:03.320 --> 00:57:05.680 align:middle line:90%
+may be a helpful thing.
+
+00:57:05.680 --> 00:57:08.180 align:middle line:84%
+This isn't something that's
+been super formalized,
+
+00:57:08.180 --> 00:57:09.880 align:middle line:84%
+but it's some
+high-level intuition
+
+00:57:09.880 --> 00:57:13.200 align:middle line:84%
+for why we might want to use
+this representation as opposed
+
+00:57:13.200 --> 00:57:15.680 align:middle line:84%
+to the thing we're actually
+calculating loss over.
+
+00:57:15.680 --> 00:57:20.160 align:middle line:84%
+And actually, I see some
+synonyms to this in transformers
+
+00:57:20.160 --> 00:57:22.820 align:middle line:84%
+because when you think
+about a transformer,
+
+00:57:22.820 --> 00:57:27.240 align:middle line:84%
+there's one set of projections
+where you're calculating
+
+00:57:27.240 --> 00:57:29.443 align:middle line:90%
+similarity between things.
+
+00:57:29.443 --> 00:57:31.360 align:middle line:84%
+And then there's this
+other set of projections
+
+00:57:31.360 --> 00:57:33.840 align:middle line:84%
+that you use to actually
+pass information.
+
+00:57:33.840 --> 00:57:36.880 align:middle line:84%
+And so it kind of,
+again, seems to suggest
+
+00:57:36.880 --> 00:57:39.935 align:middle line:84%
+that it might be valuable
+to have differences
+
+00:57:39.935 --> 00:57:41.560 align:middle line:84%
+between the
+representations we actually
+
+00:57:41.560 --> 00:57:44.130 align:middle line:84%
+use to keep information
+and the representations
+
+00:57:44.130 --> 00:57:48.290 align:middle line:84%
+we use to calculate
+similarity or difference.
+
+00:57:48.290 --> 00:57:51.530 align:middle line:84%
+So if you actually
+look at this, you
+
+00:57:51.530 --> 00:57:56.690 align:middle line:84%
+can see you have these
+gains between no projection
+
+00:57:56.690 --> 00:58:01.690 align:middle line:84%
+at all versus different
+dimensionalities
+
+00:58:01.690 --> 00:58:05.850 align:middle line:84%
+of those projections and linear
+versus nonlinear projections.
+
+00:58:05.850 --> 00:58:10.290 align:middle line:84%
+And again, h maybe gets
+to keep some invariance
+
+00:58:10.290 --> 00:58:13.690 align:middle line:90%
+to dimensions of augmentation.
+
+00:58:13.690 --> 00:58:16.570 align:middle line:84%
+Batch size has also been
+shown to be really important.
+
+00:58:16.570 --> 00:58:20.710 align:middle line:84%
+So SimCLR uses all the points
+in a batch as negative examples.
+
+00:58:20.710 --> 00:58:24.010 align:middle line:84%
+And it turns out that the number
+of negative examples you have
+
+00:58:24.010 --> 00:58:27.690 align:middle line:84%
+at every given point really
+significantly improves
+
+00:58:27.690 --> 00:58:30.130 align:middle line:84%
+performance, particularly
+when you have--
+
+00:58:30.130 --> 00:58:32.050 align:middle line:84%
+early on in
+training, you can see
+
+00:58:32.050 --> 00:58:35.810 align:middle line:84%
+that the difference is
+close to 10% between having
+
+00:58:35.810 --> 00:58:41.050 align:middle line:84%
+a batch size of 256 versus
+a batch size of 8192.
+
+00:58:41.050 --> 00:58:44.440 align:middle line:84%
+This is another reason why all
+of us are building GPUs-- well,
+
+00:58:44.440 --> 00:58:46.180 align:middle line:90%
+I say all of us--
+
+00:58:46.180 --> 00:58:48.540 align:middle line:84%
+NVIDIA is building
+GPUs that have
+
+00:58:48.540 --> 00:58:50.100 align:middle line:84%
+bigger and bigger
+and bigger memory
+
+00:58:50.100 --> 00:58:52.980 align:middle line:84%
+because we need to be able
+to capture batch sizes that
+
+00:58:52.980 --> 00:58:56.700 align:middle line:84%
+are really big to be able
+to maximize performance.
+
+00:58:56.700 --> 00:58:58.780 align:middle line:84%
+And it turns out this
+is very expensive.
+
+00:58:58.780 --> 00:59:01.260 align:middle line:84%
+Needing to have
+huge batch sizes is
+
+00:59:01.260 --> 00:59:04.260 align:middle line:84%
+costly from a
+computational perspective.
+
+00:59:04.260 --> 00:59:07.040 align:middle line:84%
+And there's a lot of efforts to
+try to make that more efficient.
+
+00:59:07.040 --> 00:59:09.600 align:middle line:84%
+So Moco, for example,
+you can go read.
+
+00:59:09.600 --> 00:59:11.620 align:middle line:84%
+It was an improvement
+upon SimCLR
+
+00:59:11.620 --> 00:59:15.220 align:middle line:84%
+that explicitly tried to make
+that the batch size dimension
+
+00:59:15.220 --> 00:59:18.140 align:middle line:90%
+a little bit more efficient.
+
+00:59:18.140 --> 00:59:21.340 align:middle line:84%
+And then, finally, we
+talked about the selection
+
+00:59:21.340 --> 00:59:23.540 align:middle line:84%
+of negative examples,
+how it's really important
+
+00:59:23.540 --> 00:59:29.080 align:middle line:84%
+to try to make sure that
+negative pairs are informative.
+
+00:59:29.080 --> 00:59:30.800 align:middle line:90%
+We want to find the hard cases.
+
+00:59:30.800 --> 00:59:33.900 align:middle line:84%
+We're actually getting
+signal from our loss.
+
+00:59:33.900 --> 00:59:38.660 align:middle line:84%
+And it turns out that if
+you actually have labels--
+
+00:59:38.660 --> 00:59:42.550 align:middle line:84%
+and so here, labels
+would be maybe categories
+
+00:59:42.550 --> 00:59:44.710 align:middle line:84%
+from your set of
+classes that you're
+
+00:59:44.710 --> 00:59:46.910 align:middle line:84%
+interested in using your
+downstream representation
+
+00:59:46.910 --> 00:59:48.030 align:middle line:90%
+to categorize--
+
+00:59:48.030 --> 00:59:48.530 align:middle line:90%
+that.
+
+00:59:48.530 --> 00:59:51.590 align:middle line:84%
+If you can explicitly
+remove those, quote unquote,
+
+00:59:51.590 --> 00:59:54.910 align:middle line:84%
+"false negative" samples, which
+is basically like you have
+
+00:59:54.910 --> 00:59:58.190 align:middle line:84%
+golden retrievers, and you want
+to not tell your model that
+
+00:59:58.190 --> 01:00:01.910 align:middle line:84%
+another golden retriever
+should be really far apart.
+
+01:00:01.910 --> 01:00:04.575 align:middle line:84%
+And particularly, we want
+that far apart with a margin.
+
+01:00:04.575 --> 01:00:05.950 align:middle line:84%
+So it's not just
+saying it should
+
+01:00:05.950 --> 01:00:06.770 align:middle line:90%
+be a little farther apart.
+
+01:00:06.770 --> 01:00:09.230 align:middle line:84%
+It's really trying to push it
+outside of a margin far away
+
+01:00:09.230 --> 01:00:11.647 align:middle line:84%
+from these points, which is
+something we don't necessarily
+
+01:00:11.647 --> 01:00:12.270 align:middle line:90%
+want.
+
+01:00:12.270 --> 01:00:17.150 align:middle line:84%
+If you remove all of those and
+you use only the true negatives,
+
+01:00:17.150 --> 01:00:20.790 align:middle line:84%
+you actually end up getting
+much higher top one accuracy
+
+01:00:20.790 --> 01:00:22.190 align:middle line:90%
+downstream.
+
+01:00:22.190 --> 01:00:24.230 align:middle line:84%
+But again, this assumes
+that you have access
+
+01:00:24.230 --> 01:00:27.850 align:middle line:84%
+to labeled data for
+all of your data points
+
+01:00:27.850 --> 01:00:29.310 align:middle line:84%
+and that the labeled
+data probably
+
+01:00:29.310 --> 01:00:31.227 align:middle line:84%
+needs to align with the
+downstream task you're
+
+01:00:31.227 --> 01:00:32.830 align:middle line:90%
+interested in.
+
+01:00:32.830 --> 01:00:34.310 align:middle line:84%
+And so then there's
+a lot of people
+
+01:00:34.310 --> 01:00:37.090 align:middle line:84%
+who've looked at how we can
+leverage some supervision,
+
+01:00:37.090 --> 01:00:40.440 align:middle line:84%
+maybe not requiring all the
+points to be labeled, but maybe
+
+01:00:40.440 --> 01:00:42.600 align:middle line:84%
+if you have labels
+for some of them,
+
+01:00:42.600 --> 01:00:45.080 align:middle line:84%
+how we can look at supervised
+or even semi-supervised
+
+01:00:45.080 --> 01:00:47.200 align:middle line:90%
+contrastive learning.
+
+01:00:47.200 --> 01:00:51.600 align:middle line:84%
+And so here, the idea is that
+having the contrastive learning
+
+01:00:51.600 --> 01:00:53.400 align:middle line:84%
+signal, that
+triplet loss signal,
+
+01:00:53.400 --> 01:00:57.040 align:middle line:84%
+you get some more geometric and
+robust feedback than if you just
+
+01:00:57.040 --> 01:00:59.600 align:middle line:90%
+do crossentropy loss.
+
+01:00:59.600 --> 01:01:02.380 align:middle line:84%
+So then if you have images
+from the same class,
+
+01:01:02.380 --> 01:01:04.600 align:middle line:84%
+you can use those
+as positive pairs.
+
+01:01:04.600 --> 01:01:10.540 align:middle line:84%
+Or if you don't actually
+have labels for everything
+
+01:01:10.540 --> 01:01:12.400 align:middle line:84%
+but you do have labels
+for some things,
+
+01:01:12.400 --> 01:01:15.120 align:middle line:84%
+you can use those positive
+examples as anchors
+
+01:01:15.120 --> 01:01:20.140 align:middle line:84%
+and then enforce
+dimensions across,
+
+01:01:20.140 --> 01:01:22.720 align:middle line:84%
+like whether you do or don't
+have supervisory signal that
+
+01:01:22.720 --> 01:01:25.160 align:middle line:84%
+tries to get a little
+bit more structure
+
+01:01:25.160 --> 01:01:27.680 align:middle line:84%
+and handle negatives and
+positives reasonably.
+
+01:01:27.680 --> 01:01:31.240 align:middle line:84%
+And there's a lot of
+work along these lines.
+
+01:01:31.240 --> 01:01:32.160 align:middle line:90%
+Cool.
+
+01:01:32.160 --> 01:01:36.960 align:middle line:84%
+So representation
+learning using similarity
+
+01:01:36.960 --> 01:01:39.490 align:middle line:90%
+seems to be really powerful.
+
+01:01:39.490 --> 01:01:41.490 align:middle line:84%
+So just to finish
+up the class, I
+
+01:01:41.490 --> 01:01:46.990 align:middle line:84%
+want to do a bit of a case study
+with one particular data set.
+
+01:01:46.990 --> 01:01:49.770 align:middle line:84%
+This is the iNaturalist
+2021 data set.
+
+01:01:49.770 --> 01:01:54.210 align:middle line:84%
+It has images of species,
+so 10,000 different species
+
+01:01:54.210 --> 01:01:57.210 align:middle line:84%
+of plants, animals,
+and wildlife, insects.
+
+01:01:57.210 --> 01:01:59.230 align:middle line:84%
+About 2.7 million
+training images--
+
+01:01:59.230 --> 01:02:03.490 align:middle line:84%
+so it's not on the order of
+billions, but it's pretty big--
+
+01:02:03.490 --> 01:02:08.370 align:middle line:84%
+about 50,000 validation images,
+and 500,000 test images.
+
+01:02:08.370 --> 01:02:12.410 align:middle line:84%
+And the interesting
+thing about this data set
+
+01:02:12.410 --> 01:02:15.470 align:middle line:84%
+is it has pretty
+explicit structure.
+
+01:02:15.470 --> 01:02:17.730 align:middle line:84%
+It's species, so you can
+look at the taxonomic tree
+
+01:02:17.730 --> 01:02:19.530 align:middle line:90%
+over the set of categories.
+
+01:02:19.530 --> 01:02:23.050 align:middle line:84%
+And here, if you
+start at the middle,
+
+01:02:23.050 --> 01:02:27.050 align:middle line:84%
+this is high-order branching
+in terms of taxonomic tree.
+
+01:02:27.050 --> 01:02:28.730 align:middle line:90%
+So it's very coarse grained.
+
+01:02:28.730 --> 01:02:32.450 align:middle line:84%
+This would be something like
+the difference between Animalia
+
+01:02:32.450 --> 01:02:33.310 align:middle line:90%
+and Plantae.
+
+01:02:33.310 --> 01:02:34.728 align:middle line:90%
+These are animals versus plants.
+
+01:02:34.728 --> 01:02:36.770 align:middle line:84%
+They're very, very different,
+and this difference
+
+01:02:36.770 --> 01:02:39.470 align:middle line:90%
+is very coarse-grained.
+
+01:02:39.470 --> 01:02:41.870 align:middle line:84%
+And then as, you move
+closer to the edge,
+
+01:02:41.870 --> 01:02:44.950 align:middle line:84%
+you would get things that are
+increasingly more and more
+
+01:02:44.950 --> 01:02:45.650 align:middle line:90%
+similar.
+
+01:02:45.650 --> 01:02:48.510 align:middle line:84%
+So different species
+within the same genera
+
+01:02:48.510 --> 01:02:50.537 align:middle line:84%
+are going to probably be
+quite visually similar,
+
+01:02:50.537 --> 01:02:52.870 align:middle line:84%
+though, of course, there are
+some exceptions from things
+
+01:02:52.870 --> 01:02:54.870 align:middle line:90%
+like mimicry.
+
+01:02:54.870 --> 01:02:57.390 align:middle line:84%
+So at the very fine
+edge, that's where
+
+01:02:57.390 --> 01:03:00.110 align:middle line:84%
+you get things like the
+two moths I keep showing.
+
+01:03:00.110 --> 01:03:03.190 align:middle line:84%
+These are different species,
+but from the same genus.
+
+01:03:03.190 --> 01:03:06.810 align:middle line:84%
+And so you can of unroll
+this level of granularity
+
+01:03:06.810 --> 01:03:10.190 align:middle line:84%
+that's-- we've got this
+proxy for the level of visual
+
+01:03:10.190 --> 01:03:13.350 align:middle line:84%
+granularity in the classes
+coming from the taxonomic tree.
+
+01:03:13.350 --> 01:03:15.550 align:middle line:84%
+So you can roll
+this out on a graph
+
+01:03:15.550 --> 01:03:17.850 align:middle line:84%
+and say, OK, kingdom
+is very coarse-grained.
+
+01:03:17.850 --> 01:03:20.310 align:middle line:84%
+Going down to species
+is very finegrained.
+
+01:03:20.310 --> 01:03:23.910 align:middle line:84%
+So one of the things that's
+quite interesting is if we look
+
+01:03:23.910 --> 01:03:27.850 align:middle line:84%
+at a supervised model
+versus SimCLR or MoCo,
+
+01:03:27.850 --> 01:03:32.150 align:middle line:84%
+these two different approaches
+for self-supervised contrastive
+
+01:03:32.150 --> 01:03:35.350 align:middle line:84%
+learning, and we look at
+accuracy now using a linear
+
+01:03:35.350 --> 01:03:37.120 align:middle line:90%
+probe--
+
+01:03:37.120 --> 01:03:39.520 align:middle line:84%
+so that means basically
+taking a representation space
+
+01:03:39.520 --> 01:03:42.200 align:middle line:84%
+and then just learning a
+linear projection that's going
+
+01:03:42.200 --> 01:03:44.202 align:middle line:90%
+to actually be our categorizer.
+
+01:03:44.202 --> 01:03:46.160 align:middle line:84%
+And we'll actually learn
+that linear projection
+
+01:03:46.160 --> 01:03:47.520 align:middle line:90%
+with supervision.
+
+01:03:47.520 --> 01:03:50.120 align:middle line:84%
+Then we can look at
+the accuracy across
+
+01:03:50.120 --> 01:03:52.120 align:middle line:90%
+these different granularities.
+
+01:03:52.120 --> 01:03:53.760 align:middle line:84%
+And so this black
+line up top, that's
+
+01:03:53.760 --> 01:03:55.140 align:middle line:84%
+supervised training
+from scratch.
+
+01:03:55.140 --> 01:03:57.015 align:middle line:84%
+We're not starting with
+ImageNet or anything.
+
+01:03:57.015 --> 01:03:59.680 align:middle line:84%
+It's just all of this is
+only trained on this data.
+
+01:03:59.680 --> 01:04:01.858 align:middle line:84%
+And then, at the
+bottom, we see what
+
+01:04:01.858 --> 01:04:03.400 align:middle line:84%
+we get from
+self-supervised learning,
+
+01:04:03.400 --> 01:04:05.980 align:middle line:84%
+again with that linear probe
+on the entire data set,
+
+01:04:05.980 --> 01:04:09.640 align:middle line:84%
+so on the whole training data
+set with the linear probe.
+
+01:04:09.640 --> 01:04:13.360 align:middle line:84%
+And what we do is we
+train both the supervised
+
+01:04:13.360 --> 01:04:15.880 align:middle line:84%
+and the self-supervised,
+then the linear probe
+
+01:04:15.880 --> 01:04:19.240 align:middle line:84%
+for the self-supervised
+representation on the finest
+
+01:04:19.240 --> 01:04:21.007 align:middle line:90%
+level, so on the species level.
+
+01:04:21.007 --> 01:04:22.840 align:middle line:84%
+And then instead of
+explicitly training them
+
+01:04:22.840 --> 01:04:25.580 align:middle line:84%
+for these higher-order
+levels, we just roll them up.
+
+01:04:25.580 --> 01:04:28.480 align:middle line:84%
+So you would say, OK, we're
+going to predict at the species
+
+01:04:28.480 --> 01:04:29.060 align:middle line:90%
+level.
+
+01:04:29.060 --> 01:04:31.560 align:middle line:84%
+Now you just aggregate all
+of your category predictions
+
+01:04:31.560 --> 01:04:35.130 align:middle line:84%
+up a level based on that
+graph, on that taxonomic tree.
+
+01:04:35.130 --> 01:04:37.610 align:middle line:84%
+You use that as your
+prediction for the next level,
+
+01:04:37.610 --> 01:04:39.490 align:middle line:90%
+and et cetera.
+
+01:04:39.490 --> 01:04:41.508 align:middle line:84%
+So we're basically training
+on the finest level,
+
+01:04:41.508 --> 01:04:43.050 align:middle line:84%
+but then we're
+evaluating our ability
+
+01:04:43.050 --> 01:04:46.410 align:middle line:84%
+to categorize a coarser
+and coarser levels.
+
+01:04:46.410 --> 01:04:49.630 align:middle line:84%
+And it turns out that if you
+look at this type of data set,
+
+01:04:49.630 --> 01:04:52.790 align:middle line:84%
+you can really see that,
+at this finegrained levels,
+
+01:04:52.790 --> 01:04:55.130 align:middle line:84%
+there's really not
+a small difference.
+
+01:04:55.130 --> 01:05:00.570 align:middle line:84%
+There's about a 30% gap between
+a supervised and self-supervised
+
+01:05:00.570 --> 01:05:02.050 align:middle line:90%
+training on iNaturalist.
+
+01:05:02.050 --> 01:05:05.140 align:middle line:84%
+And if you do the same
+experiment on ImageNet,
+
+01:05:05.140 --> 01:05:06.390 align:middle line:90%
+the gap is much, much smaller.
+
+01:05:06.390 --> 01:05:08.650 align:middle line:90%
+It's more like 7%.
+
+01:05:08.650 --> 01:05:11.810 align:middle line:84%
+And so one reason
+for that is this--
+
+01:05:11.810 --> 01:05:14.030 align:middle line:84%
+ImageNet is a very
+coarse grained data set.
+
+01:05:14.030 --> 01:05:16.490 align:middle line:84%
+The categories are not
+very similar to each other.
+
+01:05:16.490 --> 01:05:20.190 align:middle line:84%
+And you see the same performance
+or the same trend here.
+
+01:05:20.190 --> 01:05:21.930 align:middle line:84%
+The gap is very
+small when you look
+
+01:05:21.930 --> 01:05:25.010 align:middle line:84%
+at these very coarse groupings--
+class, phylum, or kingdom.
+
+01:05:25.010 --> 01:05:27.890 align:middle line:84%
+But then the gap actually
+grows as the evaluation
+
+01:05:27.890 --> 01:05:29.730 align:middle line:90%
+is made more fine grained.
+
+01:05:29.730 --> 01:05:33.495 align:middle line:84%
+And so this
+interestingly captures
+
+01:05:33.495 --> 01:05:35.620 align:middle line:84%
+some of those dimensions
+that we were talking about
+
+01:05:35.620 --> 01:05:38.500 align:middle line:84%
+in terms of the ways that
+we have chosen our data
+
+01:05:38.500 --> 01:05:41.620 align:middle line:84%
+augmentations, the pairs
+that we give the model
+
+01:05:41.620 --> 01:05:44.860 align:middle line:84%
+or don't give the model, and
+the effect that might have.
+
+01:05:44.860 --> 01:05:48.140 align:middle line:84%
+So first, if we look
+at this and we actually
+
+01:05:48.140 --> 01:05:50.820 align:middle line:84%
+try to probe these
+representations that are learned
+
+01:05:50.820 --> 01:05:54.220 align:middle line:84%
+using this kind of query
+approach or this retrieval
+
+01:05:54.220 --> 01:05:56.860 align:middle line:84%
+approach, and we say, OK, we're
+going to start with this image.
+
+01:05:56.860 --> 01:05:59.500 align:middle line:84%
+Now if we take our
+supervised model
+
+01:05:59.500 --> 01:06:03.980 align:middle line:84%
+and we find the nearest
+neighbors in the entire data
+
+01:06:03.980 --> 01:06:08.900 align:middle line:84%
+set, it turns out this
+is a hard problem.
+
+01:06:08.900 --> 01:06:11.060 align:middle line:84%
+And so there are a
+few examples outlined
+
+01:06:11.060 --> 01:06:14.420 align:middle line:84%
+in blue, where we do actually
+get nearest neighbors that
+
+01:06:14.420 --> 01:06:16.660 align:middle line:90%
+are the same species.
+
+01:06:16.660 --> 01:06:19.740 align:middle line:84%
+But then we also get a
+lot of nearest neighbors
+
+01:06:19.740 --> 01:06:21.300 align:middle line:90%
+that are different species.
+
+01:06:21.300 --> 01:06:25.420 align:middle line:84%
+So even with supervision, this
+problem can be quite difficult.
+
+01:06:25.420 --> 01:06:28.375 align:middle line:84%
+And it turns out that as you
+aggregate up the category set,
+
+01:06:28.375 --> 01:06:30.000 align:middle line:84%
+no, these are not
+all the same species,
+
+01:06:30.000 --> 01:06:34.070 align:middle line:84%
+but they are in the
+same of genus or family.
+
+01:06:34.070 --> 01:06:39.670 align:middle line:84%
+But now, if you take the same
+sort of SimCLR representation
+
+01:06:39.670 --> 01:06:42.510 align:middle line:84%
+and you do the same thing,
+you use the same image,
+
+01:06:42.510 --> 01:06:45.630 align:middle line:84%
+and you query into the
+representation space,
+
+01:06:45.630 --> 01:06:50.350 align:middle line:84%
+you can see that none of
+them are the same species.
+
+01:06:50.350 --> 01:06:52.270 align:middle line:90%
+What has the model learned?
+
+01:06:52.270 --> 01:06:53.518 align:middle line:90%
+Yeah?
+
+01:06:53.518 --> 01:06:54.810 align:middle line:90%
+AUDIENCE: Oh, I had a question.
+
+01:06:54.810 --> 01:06:56.430 align:middle line:90%
+SARA BEERY: Yeah.
+
+01:06:56.430 --> 01:06:58.730 align:middle line:84%
+AUDIENCE: It relates to
+a couple slides back.
+
+01:06:58.730 --> 01:07:03.190 align:middle line:84%
+You had the accuracy
+of the supervised
+
+01:07:03.190 --> 01:07:05.452 align:middle line:90%
+and the contrastive learning.
+
+01:07:05.452 --> 01:07:06.910 align:middle line:84%
+So earlier in the
+lecture, you were
+
+01:07:06.910 --> 01:07:10.270 align:middle line:84%
+saying that the representation
+space that contrastive learning
+
+01:07:10.270 --> 01:07:11.833 align:middle line:90%
+learns is uniform.
+
+01:07:11.833 --> 01:07:13.250 align:middle line:84%
+In some sense,
+that's really good.
+
+01:07:13.250 --> 01:07:16.670 align:middle line:84%
+Whereas the supervised
+version won't necessarily
+
+01:07:16.670 --> 01:07:19.310 align:middle line:90%
+learn a uniform embedding space.
+
+01:07:19.310 --> 01:07:22.970 align:middle line:84%
+But you're showing that
+supervised is doing much better,
+
+01:07:22.970 --> 01:07:26.430 align:middle line:84%
+so maybe it's not that important
+to have a uniform embedding
+
+01:07:26.430 --> 01:07:26.930 align:middle line:90%
+space.
+
+01:07:26.930 --> 01:07:30.670 align:middle line:84%
+I'm trying to reconcile
+those two points.
+
+01:07:30.670 --> 01:07:34.800 align:middle line:84%
+SARA BEERY: Yeah, and actually,
+I think this will actually help.
+
+01:07:34.800 --> 01:07:39.740 align:middle line:84%
+So it depends a little
+bit on the signal.
+
+01:07:39.740 --> 01:07:45.640 align:middle line:84%
+So basically, yeah, it's usually
+good to have this separability.
+
+01:07:45.640 --> 01:07:49.140 align:middle line:84%
+But for contrastive
+learning to work well,
+
+01:07:49.140 --> 01:07:53.000 align:middle line:84%
+you need to have a
+good similarity measure
+
+01:07:53.000 --> 01:07:55.440 align:middle line:90%
+for your problem of interest.
+
+01:07:55.440 --> 01:07:57.680 align:middle line:84%
+And so here, what
+I'm trying to show,
+
+01:07:57.680 --> 01:08:02.160 align:middle line:84%
+actually, is that what we've
+learned is we've taken an image
+
+01:08:02.160 --> 01:08:03.820 align:middle line:84%
+and we've augmented
+it in some way,
+
+01:08:03.820 --> 01:08:06.200 align:middle line:84%
+and then we force those
+things to be close together.
+
+01:08:06.200 --> 01:08:10.320 align:middle line:84%
+And it looks like that the types
+of augmentations we're doing is
+
+01:08:10.320 --> 01:08:14.260 align:middle line:84%
+giving us more information
+about contextual similarity--
+
+01:08:14.260 --> 01:08:17.560 align:middle line:84%
+so, in this case, birds
+being held in human hands--
+
+01:08:17.560 --> 01:08:21.220 align:middle line:84%
+than it is giving us information
+about species similarity,
+
+01:08:21.220 --> 01:08:23.920 align:middle line:84%
+which is what we're hoping
+this model will be good at
+
+01:08:23.920 --> 01:08:26.200 align:middle line:90%
+and what we're evaluating it on.
+
+01:08:26.200 --> 01:08:30.609 align:middle line:84%
+So if you don't have
+a similarity measure,
+
+01:08:30.609 --> 01:08:33.450 align:middle line:84%
+where you're choosing
+those positive pairs
+
+01:08:33.450 --> 01:08:35.590 align:middle line:84%
+and saying these are similar
+and this is different
+
+01:08:35.590 --> 01:08:37.930 align:middle line:84%
+that's well aligned with
+your downstream goal, which
+
+01:08:37.930 --> 01:08:40.649 align:middle line:84%
+in this case is
+identifying species, then
+
+01:08:40.649 --> 01:08:43.990 align:middle line:84%
+these contrastive objectives,
+they're giving you uniformity,
+
+01:08:43.990 --> 01:08:46.890 align:middle line:84%
+but they're maybe not giving you
+the uniformity that you want,
+
+01:08:46.890 --> 01:08:51.290 align:middle line:84%
+or they're not giving you
+the similarity that you want.
+
+01:08:51.290 --> 01:08:52.529 align:middle line:90%
+Does that make sense?
+
+01:08:52.529 --> 01:08:56.290 align:middle line:84%
+AUDIENCE: So, in this case, if
+you were able to, say, control
+
+01:08:56.290 --> 01:08:59.970 align:middle line:84%
+for birds versus birds in
+hands, like maybe segment
+
+01:08:59.970 --> 01:09:02.210 align:middle line:84%
+out the birds,
+then do you expect
+
+01:09:02.210 --> 01:09:04.689 align:middle line:84%
+that accuracy to be
+pushed down closer
+
+01:09:04.689 --> 01:09:06.450 align:middle line:90%
+to the supervised accuracy?
+
+01:09:06.450 --> 01:09:09.890 align:middle line:84%
+SARA BEERY: Yeah, so
+I think the point here
+
+01:09:09.890 --> 01:09:12.569 align:middle line:84%
+that I'm trying to
+make is that if you
+
+01:09:12.569 --> 01:09:15.609 align:middle line:84%
+don't have a
+self-supervised signal that
+
+01:09:15.609 --> 01:09:20.210 align:middle line:84%
+is capturing the task that
+you actually have in mind,
+
+01:09:20.210 --> 01:09:24.450 align:middle line:84%
+then it's possible that the
+contrastive objective really
+
+01:09:24.450 --> 01:09:26.290 align:middle line:84%
+will not build a
+representation that
+
+01:09:26.290 --> 01:09:30.220 align:middle line:84%
+is good in the context
+of your downstream task.
+
+01:09:30.220 --> 01:09:34.120 align:middle line:84%
+Yeah, so if you did, if
+we had-- for example,
+
+01:09:34.120 --> 01:09:36.380 align:middle line:84%
+if we had a supervised
+objective here,
+
+01:09:36.380 --> 01:09:37.979 align:middle line:84%
+then you would
+expect it to be much
+
+01:09:37.979 --> 01:09:40.660 align:middle line:84%
+closer to a supervised
+learning objective.
+
+01:09:40.660 --> 01:09:43.939 align:middle line:84%
+And I actually think one of the
+things that I didn't do or--
+
+01:09:43.939 --> 01:09:47.420 align:middle line:84%
+this is some work that
+was led by Elijah Cole.
+
+01:09:47.420 --> 01:09:49.260 align:middle line:84%
+It would be interesting
+to look at taking
+
+01:09:49.260 --> 01:09:51.580 align:middle line:84%
+a contrastive objective,
+where now we're
+
+01:09:51.580 --> 01:09:53.163 align:middle line:84%
+using supervised
+contrastive learning
+
+01:09:53.163 --> 01:09:55.080 align:middle line:84%
+and see how that actually
+affects performance,
+
+01:09:55.080 --> 01:09:56.622 align:middle line:84%
+though I actually
+wouldn't anticipate
+
+01:09:56.622 --> 01:10:01.020 align:middle line:84%
+it would be so different from
+crossentropy loss in this case.
+
+01:10:01.020 --> 01:10:04.100 align:middle line:84%
+So I think this is interesting
+because it kind of points out
+
+01:10:04.100 --> 01:10:07.300 align:middle line:84%
+how the benchmarks
+that we use really
+
+01:10:07.300 --> 01:10:10.980 align:middle line:84%
+influence our idea of what's
+good enough because it turns out
+
+01:10:10.980 --> 01:10:13.500 align:middle line:84%
+that, with ImageNet,
+we're saying, wow,
+
+01:10:13.500 --> 01:10:16.660 align:middle line:84%
+without any labels at all, we're
+still building representations
+
+01:10:16.660 --> 01:10:18.940 align:middle line:84%
+that are very, very close
+to as good as supervised
+
+01:10:18.940 --> 01:10:20.160 align:middle line:90%
+representations.
+
+01:10:20.160 --> 01:10:21.900 align:middle line:84%
+But it turns out
+that that's, again,
+
+01:10:21.900 --> 01:10:23.540 align:middle line:84%
+contextualized on
+the task of interest.
+
+01:10:23.540 --> 01:10:25.820 align:middle line:84%
+With ImageNet, our
+task is coarse-grained.
+
+01:10:25.820 --> 01:10:28.950 align:middle line:84%
+And it turns out, the
+augmentations were building in,
+
+01:10:28.950 --> 01:10:30.950 align:middle line:84%
+they're capturing
+things that make
+
+01:10:30.950 --> 01:10:33.735 align:middle line:84%
+it easy to separate coarse
+grained visual characteristics.
+
+01:10:33.735 --> 01:10:35.110 align:middle line:84%
+Maybe they're
+relying on the fact
+
+01:10:35.110 --> 01:10:37.950 align:middle line:84%
+that, at a coarse-grained
+level, all those birds on hands
+
+01:10:37.950 --> 01:10:38.897 align:middle line:90%
+would be put together.
+
+01:10:38.897 --> 01:10:40.730 align:middle line:84%
+That's fine because we
+just care about bird.
+
+01:10:40.730 --> 01:10:42.470 align:middle line:84%
+We don't care about
+bird categories.
+
+01:10:42.470 --> 01:10:45.430 align:middle line:84%
+But as soon as you have some
+of these categorizations that
+
+01:10:45.430 --> 01:10:49.470 align:middle line:84%
+need to be much more subtle,
+then the augmentations
+
+01:10:49.470 --> 01:10:53.950 align:middle line:84%
+would somehow need
+to capture that well.
+
+01:10:53.950 --> 01:10:55.730 align:middle line:84%
+Yeah, any other
+questions about this?
+
+01:10:55.730 --> 01:10:59.230 align:middle line:90%
+
+
+01:10:59.230 --> 01:11:00.230 align:middle line:90%
+Yeah?
+
+01:11:00.230 --> 01:11:02.430 align:middle line:90%
+AUDIENCE: [INAUDIBLE]
+
+01:11:02.430 --> 01:11:07.910 align:middle line:90%
+
+
+01:11:07.910 --> 01:11:10.750 align:middle line:84%
+SARA BEERY: So the question
+was, does SimCLR or does--
+
+01:11:10.750 --> 01:11:12.790 align:middle line:84%
+I mean, I think
+SimCLR is just one
+
+01:11:12.790 --> 01:11:16.390 align:middle line:84%
+example of a self-supervised
+contrastive objective.
+
+01:11:16.390 --> 01:11:20.190 align:middle line:84%
+Does that usually do
+bad on unseen data?
+
+01:11:20.190 --> 01:11:25.700 align:middle line:84%
+AUDIENCE: [INAUDIBLE] so
+you don't know what it is?
+
+01:11:25.700 --> 01:11:28.600 align:middle line:90%
+
+
+01:11:28.600 --> 01:11:31.360 align:middle line:84%
+SARA BEERY: Sorry, can you try
+to repeat that one more time.
+
+01:11:31.360 --> 01:11:34.460 align:middle line:84%
+AUDIENCE: So in the
+negative samples,
+
+01:11:34.460 --> 01:11:36.060 align:middle line:84%
+we are not doing
+any augmentations.
+
+01:11:36.060 --> 01:11:37.560 align:middle line:90%
+We are not doing anything.
+
+01:11:37.560 --> 01:11:39.360 align:middle line:84%
+So I'm just trying
+to understand how
+
+01:11:39.360 --> 01:11:42.200 align:middle line:84%
+the model sees the negative
+samples [INAUDIBLE]
+
+01:11:42.200 --> 01:11:43.820 align:middle line:90%
+not doing anything on it.
+
+01:11:43.820 --> 01:11:50.760 align:middle line:84%
+So when it sees something which
+is not seen, how does it act?
+
+01:11:50.760 --> 01:11:54.980 align:middle line:84%
+SARA BEERY: So, I mean,
+in a lot of these cases,
+
+01:11:54.980 --> 01:11:56.600 align:middle line:84%
+what we're actually
+showing results
+
+01:11:56.600 --> 01:12:00.000 align:middle line:84%
+on is test data, which is
+unseen during training.
+
+01:12:00.000 --> 01:12:02.965 align:middle line:84%
+So what we are actually
+showing that these things do
+
+01:12:02.965 --> 01:12:04.840 align:middle line:84%
+for some things, like
+ImageNet in particular,
+
+01:12:04.840 --> 01:12:07.560 align:middle line:84%
+do generalize well
+to unseen data.
+
+01:12:07.560 --> 01:12:10.125 align:middle line:84%
+But the point you brought
+up about augmentations
+
+01:12:10.125 --> 01:12:12.500 align:middle line:84%
+on the negative examples--
+and it is an interesting one--
+
+01:12:12.500 --> 01:12:16.320 align:middle line:84%
+and I think, actually, one of
+the things that is kind of funny
+
+01:12:16.320 --> 01:12:19.498 align:middle line:84%
+is if you only did augmentations
+on the positive samples,
+
+01:12:19.498 --> 01:12:22.040 align:middle line:84%
+you never do any augmentations
+on the negative samples, which
+
+01:12:22.040 --> 01:12:24.613 align:middle line:84%
+in practice is not necessarily
+what people are doing,
+
+01:12:24.613 --> 01:12:26.780 align:middle line:84%
+you can imagine that the
+model might learn something
+
+01:12:26.780 --> 01:12:30.540 align:middle line:84%
+about statistic weirdness
+in terms of the input space
+
+01:12:30.540 --> 01:12:34.140 align:middle line:84%
+versus not, like more natural
+statistics, and start picking up
+
+01:12:34.140 --> 01:12:35.300 align:middle line:90%
+on that signal.
+
+01:12:35.300 --> 01:12:38.100 align:middle line:84%
+So that is an interesting bit
+of intuition you brought up.
+
+01:12:38.100 --> 01:12:41.740 align:middle line:84%
+But no, generally,
+I think, actually,
+
+01:12:41.740 --> 01:12:43.960 align:middle line:84%
+because we're showing
+this on unseen test data,
+
+01:12:43.960 --> 01:12:46.120 align:middle line:84%
+I think there is something
+reasonable about that.
+
+01:12:46.120 --> 01:12:52.620 align:middle line:84%
+And we've actually
+found that these types
+
+01:12:52.620 --> 01:12:55.500 align:middle line:84%
+of contrastive objectives, or
+the triplet loss objectives,
+
+01:12:55.500 --> 01:12:58.220 align:middle line:90%
+often will generalize better.
+
+01:12:58.220 --> 01:13:00.380 align:middle line:84%
+So the example, I'm
+specifically going to bring up
+
+01:13:00.380 --> 01:13:04.140 align:middle line:84%
+is this idea of individual
+re-identification.
+
+01:13:04.140 --> 01:13:09.200 align:middle line:84%
+In almost all, for
+example, like Celeb A,
+
+01:13:09.200 --> 01:13:11.700 align:middle line:84%
+this recognizing
+celebrities again,
+
+01:13:11.700 --> 01:13:14.220 align:middle line:84%
+almost all the best
+methods on this type
+
+01:13:14.220 --> 01:13:16.660 align:middle line:84%
+of individual identification,
+where you explicitly
+
+01:13:16.660 --> 01:13:18.500 align:middle line:84%
+want to be able to
+say, even if it's not
+
+01:13:18.500 --> 01:13:21.420 align:middle line:84%
+a category you've seen before--
+so, for example, a human that
+
+01:13:21.420 --> 01:13:23.470 align:middle line:84%
+hasn't been seen
+by the model-- you
+
+01:13:23.470 --> 01:13:25.950 align:middle line:84%
+want a picture of that
+human and another picture
+
+01:13:25.950 --> 01:13:28.210 align:middle line:84%
+of that new human to
+be close together.
+
+01:13:28.210 --> 01:13:30.673 align:middle line:84%
+And it turns out that these
+metric spaces, particularly
+
+01:13:30.673 --> 01:13:32.590 align:middle line:84%
+learned through contrastive
+objectives, things
+
+01:13:32.590 --> 01:13:34.190 align:middle line:84%
+like triplet loss
+and then building up
+
+01:13:34.190 --> 01:13:37.170 align:middle line:84%
+to more and more complex
+contrastive objectives,
+
+01:13:37.170 --> 01:13:39.470 align:middle line:84%
+those explicitly are
+better at that open set
+
+01:13:39.470 --> 01:13:46.350 align:middle line:84%
+clustering problem in a way that
+actually a standard crossentropy
+
+01:13:46.350 --> 01:13:48.750 align:middle line:84%
+loss based on a fixed
+number of categories,
+
+01:13:48.750 --> 01:13:50.630 align:middle line:84%
+there's almost nothing
+you can reasonably
+
+01:13:50.630 --> 01:13:54.410 align:middle line:84%
+say about what will happen when
+you look at new categories.
+
+01:13:54.410 --> 01:13:58.510 align:middle line:84%
+And in practice, actually,
+similarly to this, what we find
+
+01:13:58.510 --> 01:14:01.990 align:middle line:84%
+is that if you use
+classification losses
+
+01:14:01.990 --> 01:14:05.390 align:middle line:84%
+versus contrastive losses, the
+contrastive losses significantly
+
+01:14:05.390 --> 01:14:09.110 align:middle line:84%
+benefit for that open
+set in terms of making
+
+01:14:09.110 --> 01:14:11.430 align:middle line:90%
+things similar close together.
+
+01:14:11.430 --> 01:14:13.830 align:middle line:84%
+AUDIENCE: I guess the reason
+I got confused initially
+
+01:14:13.830 --> 01:14:15.750 align:middle line:84%
+[INAUDIBLE] discussed
+in the lecture
+
+01:14:15.750 --> 01:14:18.836 align:middle line:84%
+that for positive
+samples [INAUDIBLE],
+
+01:14:18.836 --> 01:14:23.040 align:middle line:84%
+but for the negative samples, we
+just randomly pick any images.
+
+01:14:23.040 --> 01:14:25.100 align:middle line:84%
+So I thought we were
+not doing augmentations,
+
+01:14:25.100 --> 01:14:26.880 align:middle line:90%
+and it looks like we are.
+
+01:14:26.880 --> 01:14:29.580 align:middle line:84%
+SARA BEERY: I mean,
+not everything does.
+
+01:14:29.580 --> 01:14:32.120 align:middle line:84%
+But yes, there are cases
+where people do augmentations
+
+01:14:32.120 --> 01:14:33.140 align:middle line:90%
+on negative examples.
+
+01:14:33.140 --> 01:14:35.920 align:middle line:84%
+Yeah, but I think
+that is interesting.
+
+01:14:35.920 --> 01:14:37.020 align:middle line:90%
+Any other questions?
+
+01:14:37.020 --> 01:14:40.600 align:middle line:90%
+
+
+01:14:40.600 --> 01:14:41.840 align:middle line:90%
+Cool.
+
+01:14:41.840 --> 01:14:44.800 align:middle line:84%
+So yeah, to summarize
+again, we tried
+
+01:14:44.800 --> 01:14:46.520 align:middle line:84%
+to capture some
+dimensions of what
+
+01:14:46.520 --> 01:14:50.400 align:middle line:84%
+makes a representation
+good, and specifically
+
+01:14:50.400 --> 01:14:52.480 align:middle line:84%
+that good representations
+might actually
+
+01:14:52.480 --> 01:14:56.280 align:middle line:84%
+be really based on
+similarity and dissimilarity.
+
+01:14:56.280 --> 01:14:57.680 align:middle line:84%
+We said that we
+want to make sure
+
+01:14:57.680 --> 01:15:01.240 align:middle line:84%
+that representations are well
+clustered, that they're compact,
+
+01:15:01.240 --> 01:15:04.600 align:middle line:84%
+and that they're separated,
+so the classes are spread out.
+
+01:15:04.600 --> 01:15:06.820 align:middle line:84%
+We want to preserve
+relevant information,
+
+01:15:06.820 --> 01:15:09.620 align:middle line:84%
+and we want to teach
+relevant invariances.
+
+01:15:09.620 --> 01:15:11.400 align:middle line:84%
+We want the model
+to almost forget
+
+01:15:11.400 --> 01:15:13.220 align:middle line:90%
+the irrelevant information.
+
+01:15:13.220 --> 01:15:15.880 align:middle line:84%
+Where here, we're explicitly
+defining what's irrelevant
+
+01:15:15.880 --> 01:15:19.200 align:middle line:84%
+based on, for example, in those
+self-supervised objectives,
+
+01:15:19.200 --> 01:15:22.210 align:middle line:84%
+showing different augmentations
+that we want the model to be
+
+01:15:22.210 --> 01:15:24.870 align:middle line:84%
+invariant to, and in
+the supervised case,
+
+01:15:24.870 --> 01:15:26.730 align:middle line:84%
+what we're saying is,
+OK, we want the model
+
+01:15:26.730 --> 01:15:28.610 align:middle line:84%
+to be invariant
+to the things that
+
+01:15:28.610 --> 01:15:31.430 align:middle line:84%
+are different about these two
+images of the same category.
+
+01:15:31.430 --> 01:15:34.350 align:middle line:84%
+So that might, for
+example, be the context,
+
+01:15:34.350 --> 01:15:37.770 align:middle line:84%
+the fact that the bird
+is being held in a hand.
+
+01:15:37.770 --> 01:15:39.890 align:middle line:84%
+And then we can do
+this in a supervised
+
+01:15:39.890 --> 01:15:42.490 align:middle line:90%
+or a self-supervised way.
+
+01:15:42.490 --> 01:15:44.290 align:middle line:84%
+And it all comes down
+to the difference
+
+01:15:44.290 --> 01:15:46.290 align:middle line:84%
+between supervised
+and self-supervised,
+
+01:15:46.290 --> 01:15:49.530 align:middle line:84%
+the way that we decide
+what's a similar pair.
+
+01:15:49.530 --> 01:15:51.650 align:middle line:84%
+And so we can actually
+build a lot of knowledge
+
+01:15:51.650 --> 01:15:54.030 align:middle line:84%
+into the systems around
+what should be similar
+
+01:15:54.030 --> 01:15:56.970 align:middle line:84%
+and what should be different
+based on our downstream goals.
+
+01:15:56.970 --> 01:15:57.530 align:middle line:90%
+Cool.
+
+01:15:57.530 --> 01:15:59.330 align:middle line:90%
+All right, any other questions?
+
+01:15:59.330 --> 01:16:00.370 align:middle line:90%
+If so, you can come up.
+
+01:16:00.370 --> 01:16:03.920 align:middle line:84%
+And otherwise, we'll see
+you guys next on Thursday.
+
+01:16:03.920 --> 01:16:20.000 align:middle line:90%

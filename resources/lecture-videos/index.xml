@@ -1,0 +1,179 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Lecture Videos on MIT OpenCourseWare</title>
+    <link>/resources/lecture-videos/</link>
+    <description>Recent content in Lecture Videos on MIT OpenCourseWare</description>
+    <generator>Hugo</generator>
+    <language>en-us</language>
+    <atom:link href="/resources/lecture-videos/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Lec 01. Introduction to Deep Learning</title>
+      <link>/resources/mit6_7960f24_lec01_mp4/data.json</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      <guid>/resources/mit6_7960f24_lec01_mp4/data.json</guid>
+      <description>&lt;p&gt;This video provides a course overview and introduces deep neural networks, covering their fundamental concepts and basic building blocks. It sets the stage for understanding how these models work and what components they are built from.&lt;/p&gt;</description>
+    </item>
+    <item>
+      <title>Lec 02. How to Train a Neural Net</title>
+      <link>/resources/mit6_7960f24_lec02_mp4/data.json</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      <guid>/resources/mit6_7960f24_lec02_mp4/data.json</guid>
+      <description>&lt;p&gt;This video explains how to train a neural network using stochastic gradient descent (SGD), backpropagation, and automatic differentiation, key components of differentiable programming.&lt;/p&gt;</description>
+    </item>
+    <item>
+      <title>Lec 03. Approximation Theory</title>
+      <link>/resources/mit6_7960f24_lec03_mp4/data.json</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      <guid>/resources/mit6_7960f24_lec03_mp4/data.json</guid>
+      <description>&lt;p&gt;How well can you approximate a given function by a DNN? We will explore various facets of this issue, from universal approximation to Barron&amp;rsquo;s theorem. And does increasing the depth provably help for expressivity?&lt;/p&gt;</description>
+    </item>
+    <item>
+      <title>Lec 04. Architectures: Grids</title>
+      <link>/resources/mit6_7960f24_lec04_mp4/data.json</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      <guid>/resources/mit6_7960f24_lec04_mp4/data.json</guid>
+      <description>&lt;p&gt;This lecture will focus mostly on convolutional neural networks, presenting them as a good choice when your data lies on a grid.&lt;/p&gt;</description>
+    </item>
+    <item>
+      <title>Lec 05. Architectures: Graphs</title>
+      <link>/resources/mit6_7960f24_lec05_mp4/data.json</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      <guid>/resources/mit6_7960f24_lec05_mp4/data.json</guid>
+      <description>&lt;p&gt;This lecture covers graph neural networks (GNNs), showing connections to MLPs and CNNs and message-passing algorithms. We will also discuss theoretical limitations on the expressive power of GNNs, and the practical implications of this.&lt;/p&gt;</description>
+    </item>
+    <item>
+      <title>Lec 06. Generalization Theory</title>
+      <link>/resources/mit6_7960f24_lec06_mp4/data.json</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      <guid>/resources/mit6_7960f24_lec06_mp4/data.json</guid>
+      <description>&lt;p&gt;This video covers basic generalization theory, exploring overparameterization, double descent, and the limitations of VC dimension. It also discusses the role of inductive biases in deep learning.&lt;/p&gt;</description>
+    </item>
+    <item>
+      <title>Lec 07. Scaling Rules for Optimization</title>
+      <link>/resources/mit6_7960f24_lec07_mp4/data.json</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      <guid>/resources/mit6_7960f24_lec07_mp4/data.json</guid>
+      <description>&lt;p&gt;This video explores neural computation from a spectral perspective, discusses feature learning and hyperparameter transfer, and presents scaling rules for transferring hyperparameters across network width and depth.&lt;/p&gt;</description>
+    </item>
+    <item>
+      <title>Lec 08. Architectures: Transformers</title>
+      <link>/resources/mit6_7960f24_lec08_mp4/data.json</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      <guid>/resources/mit6_7960f24_lec08_mp4/data.json</guid>
+      <description>&lt;p&gt;This video introduces transformers, focusing on three key ideas: tokens, attention, and positional codes. It also explores how transformers relate to MLPs, GNNs, and CNNs as variations on common principles.&lt;/p&gt;</description>
+    </item>
+    <item>
+      <title>Lec 09. Hacker&#39;s Guide to Deep Learning</title>
+      <link>/resources/mit6_7960f24_lec09_mp4/data.json</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      <guid>/resources/mit6_7960f24_lec09_mp4/data.json</guid>
+      <description>&lt;p&gt;This video shares practical tips and opinionated anecdotes on how to effectively train deep neural networks and get them to perform as intended.&lt;/p&gt;</description>
+    </item>
+    <item>
+      <title>Lec 10. Architectures: Memory</title>
+      <link>/resources/mit6_7960f24_lec10_mp4/data.json</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      <guid>/resources/mit6_7960f24_lec10_mp4/data.json</guid>
+      <description>&lt;p&gt;This video explores architectures for memory and sequence modeling, including recurrent neural networks (RNNs), long short-term memory (LSTM), and related models, highlighting how they retain and process information over time.&lt;/p&gt;</description>
+    </item>
+    <item>
+      <title>Lec 11. Representation Learning: Reconstruction-Based</title>
+      <link>/resources/mit6_7960f24_lec11_mp4/data.json</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      <guid>/resources/mit6_7960f24_lec11_mp4/data.json</guid>
+      <description>&lt;p&gt;This video introduces reconstruction-based representation learning, covering autoencoders, clustering, vector quantization (VQ), and self-supervised learning with reconstruction losses, along with insights into representations in networks and the brain.&lt;/p&gt;</description>
+    </item>
+    <item>
+      <title>Lec 12. Representation Learning: Similarity-Based</title>
+      <link>/resources/mit6_7960f24_lec12_mp4/data.json</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      <guid>/resources/mit6_7960f24_lec12_mp4/data.json</guid>
+      <description>&lt;p&gt;This video covers similarity-based representation learning, including metric learning, contrastive learning, self-supervised and supervised methods, InfoNCE loss, alignment and uniformity principles, and the role of hard negatives.&lt;/p&gt;</description>
+    </item>
+    <item>
+      <title>Lec 13. Representation Learning: Theory</title>
+      <link>/resources/mit6_7960f24_lec13_mp4/data.json</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      <guid>/resources/mit6_7960f24_lec13_mp4/data.json</guid>
+      <description>&lt;p&gt;This video explores the theory behind representation learning, focusing on architectural inductive biases and the connection between neural networks and Gaussian processes.&lt;/p&gt;</description>
+    </item>
+    <item>
+      <title>Lec 14. Generative Models: Basics</title>
+      <link>/resources/mit6_7960f24_lec14_mp4/data.json</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      <guid>/resources/mit6_7960f24_lec14_mp4/data.json</guid>
+      <description>&lt;p&gt;This video covers the basics of generative models, including density and energy models, sampling methods, generative adversarial networks (GANs), autoregressive models, and diffusion models.&lt;/p&gt;</description>
+    </item>
+    <item>
+      <title>Lec 15. Generative Models: Representation Learning Meets Generative Modeling</title>
+      <link>/resources/mit6_7960f24_lec15_mp4/data.json</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      <guid>/resources/mit6_7960f24_lec15_mp4/data.json</guid>
+      <description>&lt;p&gt;This video explores the intersection of representation learning and generative modeling, focusing on variational autoencoders (VAEs) and the use of latent variables.&lt;/p&gt;</description>
+    </item>
+    <item>
+      <title>Lec 16. Generative Models: Conditional Models</title>
+      <link>/resources/mit6_7960f24_lec16_mp4/data.json</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      <guid>/resources/mit6_7960f24_lec16_mp4/data.json</guid>
+      <description>&lt;p&gt;This video covers conditional generative models like cGANs, cVAEs, and conditional diffusion models, plus applications such as paired/unpaired translation, image-to-image, text-to-image, text-to-text, and image-to-text generation.&lt;/p&gt;</description>
+    </item>
+    <item>
+      <title>Lec 17. Generalization: Out-of-Distribution (OOD)</title>
+      <link>/resources/mit6_7960f24_lec17_mp4/data.json</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      <guid>/resources/mit6_7960f24_lec17_mp4/data.json</guid>
+      <description>&lt;p&gt;This video explores out-of-distribution (OOD) generalization, focusing on challenges like adversarial robustness and handling distribution shifts in models.&lt;/p&gt;</description>
+    </item>
+    <item>
+      <title>Lec 18. Transfer Learning: Models</title>
+      <link>/resources/mit6_7960f24_lec18_mp4/data.json</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      <guid>/resources/mit6_7960f24_lec18_mp4/data.json</guid>
+      <description>&lt;p&gt;This video covers transfer learning techniques, including fine-tuning, linear probes, knowledge distillation, and foundation models.&lt;/p&gt;</description>
+    </item>
+    <item>
+      <title>Lec 19. Transfer Learning: Data</title>
+      <link>/resources/mit6_7960f24_lec19_mp4/data.json</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      <guid>/resources/mit6_7960f24_lec19_mp4/data.json</guid>
+      <description>&lt;p&gt;This video explores transfer learning with data, covering generative models as data augmentation, domain adaptation, and prompting techniques.&lt;/p&gt;</description>
+    </item>
+    <item>
+      <title>Lec 20. Scaling Laws</title>
+      <link>/resources/mit6_7960f24_lec20_mp4/data.json</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      <guid>/resources/mit6_7960f24_lec20_mp4/data.json</guid>
+      <description>&lt;p&gt;This video covers scaling laws in neural architectures, including power laws, their limitations, theoretical foundations, and the concept of critical batch size.&lt;/p&gt;</description>
+    </item>
+    <item>
+      <title>Lec 21. Language Models</title>
+      <link>/resources/mit6_7960f24_lec21_mp4/data.json</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      <guid>/resources/mit6_7960f24_lec21_mp4/data.json</guid>
+      <description>&lt;p&gt;This guest lecture walks through prompting, chain-of-thought, and instruction-tuning. It focuses on in-context learning with LMs.&lt;/p&gt;</description>
+    </item>
+    <item>
+      <title>Lec 23. Metrized Deep Learning</title>
+      <link>/resources/mit6_7960f24_lec23_mp4/data.json</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      <guid>/resources/mit6_7960f24_lec23_mp4/data.json</guid>
+      <description>&lt;p&gt;This video presents Jeremy’s research on metrized deep learning, covering modular neural network design, optimization, theory of modules, scaling, and duality principles.&lt;/p&gt;</description>
+    </item>
+    <item>
+      <title>Lec 24. Inference Methods for Deep Learning</title>
+      <link>/resources/mit6_7960f24_lec24_mp4/data.json</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      <guid>/resources/mit6_7960f24_lec24_mp4/data.json</guid>
+      <description>&lt;p&gt;This video covers advanced inference methods in deep learning beyond a simple forward pass, including beam search, chain-of-thought, in-context learning, test-time training, and search-based techniques to enhance learning.&lt;/p&gt;</description>
+    </item>
+    <item>
+      <title>PyTorch Tutorial</title>
+      <link>/resources/mit6_7960f24_review_mp4/data.json</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      <guid>/resources/mit6_7960f24_review_mp4/data.json</guid>
+      <description>&lt;p&gt;This tutorial provides an overview of PyTorch, an open-source deep learning framework. Students are expected to have familiarity with programming, though not necessarily with PyTorch.&lt;/p&gt;</description>
+    </item>
+  </channel>
+</rss>

@@ -1,0 +1,8 @@
+{
+  "title":"mit6_7960_f24.jpg",
+  "description": null,
+  "file": "/courses/6-7960-deep-learning-fall-2024/mit6_7960_f24.jpg",
+  "learning_resource_types": [],
+  "resource_type": "Image",
+  "file_type": "image/jpeg",
+  "image_metadata": {"caption":"Deep learning allows models to perform tasks on photos such as edge detection, colorization, in-painting, and more. (Courtesy of {{% resource_link \"6ff1ab04-0019-409d-b5d1-be694cf5f480\" \"Bar et al\" %}}. Used under CC BY.)","credit":"Courtesy of {{% resource_link \"6ff1ab04-0019-409d-b5d1-be694cf5f480\" \"Bar et al\" %}}. Used under CC BY.","image-alt":"Visual prompt-based in-painting model performing tasks like segmentation, colorization, in-painting, and style transfer."}}

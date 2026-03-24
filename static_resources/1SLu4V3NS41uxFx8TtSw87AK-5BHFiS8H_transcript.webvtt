@@ -1,0 +1,5108 @@
+WEBVTT
+
+00:00:00.000 --> 00:00:01.985 align:middle line:90%
+[SQUEAKING]
+
+00:00:01.985 --> 00:00:02.975 align:middle line:90%
+[RUSTLING]
+
+00:00:02.975 --> 00:00:05.945 align:middle line:90%
+[CLICKING]
+
+00:00:05.945 --> 00:00:13.180 align:middle line:90%
+
+
+00:00:13.180 --> 00:00:15.600 align:middle line:84%
+SARA BEERY: So why
+are we all here?
+
+00:00:15.600 --> 00:00:21.200 align:middle line:84%
+Deep learning has clearly
+been exploding in society.
+
+00:00:21.200 --> 00:00:23.400 align:middle line:84%
+Machine learning
+generally is something
+
+00:00:23.400 --> 00:00:28.040 align:middle line:84%
+that, when I started studying it
+about 13 years ago, didn't work,
+
+00:00:28.040 --> 00:00:30.360 align:middle line:90%
+and now it works.
+
+00:00:30.360 --> 00:00:35.360 align:middle line:84%
+So how many of you here in this
+room used AI in the last week?
+
+00:00:35.360 --> 00:00:39.560 align:middle line:84%
+Yeah, almost everybody,
+probably everybody.
+
+00:00:39.560 --> 00:00:43.920 align:middle line:84%
+And we're seeing massive
+advances in everything from
+
+00:00:43.920 --> 00:00:49.940 align:middle line:84%
+AI-assisted text generation
+to 3D reconstruction,
+
+00:00:49.940 --> 00:00:55.460 align:middle line:84%
+things like NeRF, things like
+AlphaGo, generating images,
+
+00:00:55.460 --> 00:01:00.890 align:middle line:84%
+helping with writing
+code, playing games.
+
+00:01:00.890 --> 00:01:03.850 align:middle line:84%
+This has really started to
+touch almost every dimension
+
+00:01:03.850 --> 00:01:08.370 align:middle line:84%
+of society, and it's definitely
+very exciting to see.
+
+00:01:08.370 --> 00:01:10.090 align:middle line:84%
+And I think that
+hopefully, all of us
+
+00:01:10.090 --> 00:01:14.570 align:middle line:84%
+will learn a lot more about
+what that means in this course.
+
+00:01:14.570 --> 00:01:17.010 align:middle line:90%
+So what is deep learning?
+
+00:01:17.010 --> 00:01:22.250 align:middle line:84%
+First, I would argue that
+one necessary component
+
+00:01:22.250 --> 00:01:25.290 align:middle line:84%
+of deep learning is the
+idea of neural networks.
+
+00:01:25.290 --> 00:01:28.290 align:middle line:84%
+And these are a class of
+machine learning architectures
+
+00:01:28.290 --> 00:01:31.490 align:middle line:84%
+that basically use stacks
+of linear transformations
+
+00:01:31.490 --> 00:01:35.570 align:middle line:84%
+interleaved with
+pointwise non-linearities.
+
+00:01:35.570 --> 00:01:39.330 align:middle line:84%
+And these have really
+been a building block
+
+00:01:39.330 --> 00:01:43.090 align:middle line:84%
+for a lot of the progress
+that we saw in the last slide.
+
+00:01:43.090 --> 00:01:45.650 align:middle line:84%
+But the other really important
+dimension of deep learning
+
+00:01:45.650 --> 00:01:48.250 align:middle line:84%
+is the idea of
+differential programming.
+
+00:01:48.250 --> 00:01:50.810 align:middle line:84%
+And this is essentially
+a programming paradigm
+
+00:01:50.810 --> 00:01:53.810 align:middle line:84%
+where we parameterize
+parts of the program
+
+00:01:53.810 --> 00:01:56.490 align:middle line:84%
+and then let
+gradient-based optimization
+
+00:01:56.490 --> 00:01:59.510 align:middle line:84%
+tune the parameters to
+basically optimize that program
+
+00:01:59.510 --> 00:02:04.190 align:middle line:84%
+or find some of, at least,
+local optimal for that program.
+
+00:02:04.190 --> 00:02:06.510 align:middle line:84%
+And these two things
+together is what
+
+00:02:06.510 --> 00:02:08.392 align:middle line:90%
+we posit make up deep learning.
+
+00:02:08.392 --> 00:02:10.350 align:middle line:84%
+And we're really going
+to dig into both of them
+
+00:02:10.350 --> 00:02:11.990 align:middle line:90%
+in this course.
+
+00:02:11.990 --> 00:02:14.990 align:middle line:84%
+So our philosophy for
+this is that breakthroughs
+
+00:02:14.990 --> 00:02:18.350 align:middle line:84%
+in deep learning have been
+driven by a mixture of theory
+
+00:02:18.350 --> 00:02:20.710 align:middle line:84%
+and practice, and
+both dimensions
+
+00:02:20.710 --> 00:02:24.670 align:middle line:84%
+are really vital for future
+progress in the field.
+
+00:02:24.670 --> 00:02:27.190 align:middle line:84%
+And so along those
+lines, this course
+
+00:02:27.190 --> 00:02:30.030 align:middle line:84%
+should hopefully provide
+both a theoretical grounding
+
+00:02:30.030 --> 00:02:33.110 align:middle line:84%
+in important deep
+learning building blocks,
+
+00:02:33.110 --> 00:02:37.390 align:middle line:84%
+as well as give you practice
+implementing, understanding,
+
+00:02:37.390 --> 00:02:40.190 align:middle line:90%
+and using those blocks.
+
+00:02:40.190 --> 00:02:42.270 align:middle line:84%
+OK, there's still
+a lot of people
+
+00:02:42.270 --> 00:02:44.610 align:middle line:90%
+in the back who are packed in.
+
+00:02:44.610 --> 00:02:47.510 align:middle line:84%
+I don't know if there's any
+way to come further forward.
+
+00:02:47.510 --> 00:02:51.150 align:middle line:90%
+If not, we'll do our best.
+
+00:02:51.150 --> 00:02:56.110 align:middle line:84%
+So the class's coursework is
+going to be 65% problem sets.
+
+00:02:56.110 --> 00:02:57.290 align:middle line:90%
+You'll have five psets.
+
+00:02:57.290 --> 00:02:59.920 align:middle line:84%
+Each will be about
+one to two weeks long.
+
+00:02:59.920 --> 00:03:02.300 align:middle line:84%
+And then there will be some
+combination of pen and paper
+
+00:03:02.300 --> 00:03:04.240 align:middle line:84%
+or, more realistically,
+maybe Overleaf,
+
+00:03:04.240 --> 00:03:07.360 align:middle line:84%
+as well as code that you
+will need to do and submit.
+
+00:03:07.360 --> 00:03:10.058 align:middle line:84%
+And then 35% of the grade
+will be a final project.
+
+00:03:10.058 --> 00:03:11.600 align:middle line:84%
+And this is a research
+project that's
+
+00:03:11.600 --> 00:03:13.880 align:middle line:84%
+focused on deeper understanding
+of some of the topics
+
+00:03:13.880 --> 00:03:15.920 align:middle line:90%
+that we cover in the course.
+
+00:03:15.920 --> 00:03:18.940 align:middle line:84%
+You'll be asked to propose
+something for that project.
+
+00:03:18.940 --> 00:03:21.640 align:middle line:84%
+So there'll be an
+initial project proposal.
+
+00:03:21.640 --> 00:03:24.200 align:middle line:84%
+And then the final project
+will be a blog post
+
+00:03:24.200 --> 00:03:26.360 align:middle line:84%
+that's going to demonstrate
+novel experimentation
+
+00:03:26.360 --> 00:03:27.680 align:middle line:90%
+and visualization.
+
+00:03:27.680 --> 00:03:29.920 align:middle line:84%
+And the hope here is
+that I don't know,
+
+00:03:29.920 --> 00:03:32.760 align:middle line:84%
+many of you-- how many of you
+are machine learning researchers
+
+00:03:32.760 --> 00:03:35.160 align:middle line:84%
+who have already written
+a machine learning paper,
+
+00:03:35.160 --> 00:03:37.580 align:middle line:84%
+as first author, or
+anywhere on the author list?
+
+00:03:37.580 --> 00:03:39.413 align:middle line:90%
+OK, so some.
+
+00:03:39.413 --> 00:03:41.580 align:middle line:84%
+These days, when you write
+a machine learning paper,
+
+00:03:41.580 --> 00:03:43.040 align:middle line:84%
+more often than
+not, you also have
+
+00:03:43.040 --> 00:03:45.320 align:middle line:84%
+to write a blog post
+about that paper.
+
+00:03:45.320 --> 00:03:47.640 align:middle line:84%
+And that's intended
+to be catchy, make
+
+00:03:47.640 --> 00:03:52.020 align:middle line:84%
+people understand the material,
+but really get them engaged.
+
+00:03:52.020 --> 00:03:54.120 align:middle line:84%
+And so one of the
+reasons that we have this
+
+00:03:54.120 --> 00:03:55.880 align:middle line:84%
+as the format of
+our final project
+
+00:03:55.880 --> 00:03:59.250 align:middle line:84%
+is to reflect on the fact that
+this is the reality we live
+
+00:03:59.250 --> 00:04:01.310 align:middle line:84%
+in today, that in machine
+learning research,
+
+00:04:01.310 --> 00:04:05.450 align:middle line:84%
+being able to write a blog-style
+description of the work
+
+00:04:05.450 --> 00:04:07.610 align:middle line:84%
+that you're doing
+and not reduce any
+
+00:04:07.610 --> 00:04:09.970 align:middle line:84%
+of the technical complexity
+or the information
+
+00:04:09.970 --> 00:04:13.130 align:middle line:84%
+that's given across, but
+just do this in this slightly
+
+00:04:13.130 --> 00:04:15.810 align:middle line:84%
+more visual and maybe
+even interactive format is
+
+00:04:15.810 --> 00:04:20.250 align:middle line:84%
+a really valuable skill, and one
+that we hope this can help us
+
+00:04:20.250 --> 00:04:21.170 align:middle line:90%
+think about.
+
+00:04:21.170 --> 00:04:25.850 align:middle line:84%
+And we'll allow groups,
+but only up to two.
+
+00:04:25.850 --> 00:04:28.250 align:middle line:84%
+And another
+important component--
+
+00:04:28.250 --> 00:04:29.990 align:middle line:84%
+we are not able to
+provide compute.
+
+00:04:29.990 --> 00:04:32.990 align:middle line:84%
+We may be able to provide
+some very limited compute,
+
+00:04:32.990 --> 00:04:34.570 align:middle line:90%
+but that's TBD.
+
+00:04:34.570 --> 00:04:37.010 align:middle line:84%
+So do not plan
+your final project
+
+00:04:37.010 --> 00:04:39.370 align:middle line:84%
+to be something where you
+need to get state of the art
+
+00:04:39.370 --> 00:04:44.250 align:middle line:84%
+by crunching a huge architecture
+on a bunch of huge data sets,
+
+00:04:44.250 --> 00:04:46.010 align:middle line:84%
+because it's just
+not going to work.
+
+00:04:46.010 --> 00:04:48.410 align:middle line:84%
+You're not going to be
+able to outcompete OpenAI
+
+00:04:48.410 --> 00:04:50.030 align:middle line:90%
+on this research project.
+
+00:04:50.030 --> 00:04:50.530 align:middle line:90%
+[LAUGHS]
+
+00:04:50.530 --> 00:04:54.770 align:middle line:84%
+So this does not mean you
+can't do good research.
+
+00:04:54.770 --> 00:04:56.970 align:middle line:84%
+And it's important
+to get creative here.
+
+00:04:56.970 --> 00:04:59.190 align:middle line:84%
+And I think it's actually
+a really valuable skill,
+
+00:04:59.190 --> 00:05:03.030 align:middle line:84%
+particularly as certain types of
+large-scale deep learning become
+
+00:05:03.030 --> 00:05:06.470 align:middle line:84%
+more and more centralized, to
+think about how you can still do
+
+00:05:06.470 --> 00:05:09.830 align:middle line:84%
+impactful machine learning
+research in a way that is not
+
+00:05:09.830 --> 00:05:13.230 align:middle line:90%
+just "bigger is better."
+
+00:05:13.230 --> 00:05:18.070 align:middle line:84%
+All right, any questions
+about coursework or logistics?
+
+00:05:18.070 --> 00:05:18.870 align:middle line:90%
+Yeah.
+
+00:05:18.870 --> 00:05:20.790 align:middle line:84%
+AUDIENCE: Is the
+final project expected
+
+00:05:20.790 --> 00:05:24.807 align:middle line:84%
+to be a mix of practical
+and theoretical research?
+
+00:05:24.807 --> 00:05:27.390 align:middle line:84%
+SARA BEERY: So the question was,
+is the final project expected
+
+00:05:27.390 --> 00:05:30.710 align:middle line:84%
+to be a mix of practical
+and theoretical research?
+
+00:05:30.710 --> 00:05:32.290 align:middle line:90%
+I think it depends.
+
+00:05:32.290 --> 00:05:35.590 align:middle line:84%
+It depends on what you want to
+propose as your final project.
+
+00:05:35.590 --> 00:05:37.390 align:middle line:90%
+But I think we're pretty open.
+
+00:05:37.390 --> 00:05:39.610 align:middle line:84%
+What we want is for
+them to be innovative,
+
+00:05:39.610 --> 00:05:42.410 align:middle line:84%
+but that innovation can
+be in an applied sense,
+
+00:05:42.410 --> 00:05:44.250 align:middle line:84%
+or it can be in a more
+theoretical sense.
+
+00:05:44.250 --> 00:05:46.550 align:middle line:84%
+OK, so I'm going to do a
+really high-level overview
+
+00:05:46.550 --> 00:05:50.670 align:middle line:84%
+of the schedule, just to
+give you a rough sense.
+
+00:05:50.670 --> 00:05:53.960 align:middle line:84%
+So today, we're really covering
+basic interest stuff-- course
+
+00:05:53.960 --> 00:05:57.760 align:middle line:84%
+overview, a rough introduction
+to what neural networks are
+
+00:05:57.760 --> 00:05:59.600 align:middle line:84%
+and basic building
+blocks, and, particularly
+
+00:05:59.600 --> 00:06:01.058 align:middle line:84%
+in the context of
+signposting, what
+
+00:06:01.058 --> 00:06:03.560 align:middle line:84%
+we expect you've seen before,
+because this is not an intro
+
+00:06:03.560 --> 00:06:04.660 align:middle line:90%
+to deep learning class.
+
+00:06:04.660 --> 00:06:08.680 align:middle line:84%
+This is advanced
+graduate-level deep learning.
+
+00:06:08.680 --> 00:06:12.040 align:middle line:84%
+And then we're going to
+go into how you actually
+
+00:06:12.040 --> 00:06:14.800 align:middle line:84%
+train a neural net,
+then approximation
+
+00:06:14.800 --> 00:06:17.360 align:middle line:84%
+theory, some different
+architectures, things
+
+00:06:17.360 --> 00:06:19.960 align:middle line:90%
+like grids, graphs.
+
+00:06:19.960 --> 00:06:22.640 align:middle line:84%
+Then we'll hear from
+Jeremy about scaling rules
+
+00:06:22.640 --> 00:06:23.980 align:middle line:90%
+for optimization.
+
+00:06:23.980 --> 00:06:26.720 align:middle line:84%
+And then we'll look at
+generalization theory, more
+
+00:06:26.720 --> 00:06:29.040 align:middle line:84%
+architectures, getting
+into transformers.
+
+00:06:29.040 --> 00:06:32.400 align:middle line:84%
+We'll do a really fun lecture by
+Phil called the hacker's guide
+
+00:06:32.400 --> 00:06:35.400 align:middle line:84%
+to deep learning that I
+think is quite useful.
+
+00:06:35.400 --> 00:06:37.440 align:middle line:84%
+And then we'll
+talk about memory.
+
+00:06:37.440 --> 00:06:39.697 align:middle line:84%
+And then we'll get into
+representation learning.
+
+00:06:39.697 --> 00:06:42.280 align:middle line:84%
+So there, we're going to look
+at reconstruction based and then
+
+00:06:42.280 --> 00:06:45.560 align:middle line:84%
+similarity based and then theory
+of representation learning.
+
+00:06:45.560 --> 00:06:48.460 align:middle line:84%
+Then we'll have a little bit of
+a series on generative models,
+
+00:06:48.460 --> 00:06:51.520 align:middle line:84%
+the basics, how representation
+learning interacts
+
+00:06:51.520 --> 00:06:53.610 align:middle line:84%
+with generative
+modeling, thinking
+
+00:06:53.610 --> 00:06:55.440 align:middle line:90%
+about conditional models.
+
+00:06:55.440 --> 00:06:57.690 align:middle line:84%
+Then we'll talk about
+generalization, and particularly
+
+00:06:57.690 --> 00:06:59.810 align:middle line:84%
+out-of-distribution
+generalization.
+
+00:06:59.810 --> 00:07:01.490 align:middle line:84%
+We'll touch on
+transfer learning,
+
+00:07:01.490 --> 00:07:04.050 align:middle line:84%
+both from a models and
+a data perspective.
+
+00:07:04.050 --> 00:07:06.525 align:middle line:84%
+We'll hear about
+large language models.
+
+00:07:06.525 --> 00:07:09.150 align:middle line:84%
+We'll have some guest lectures
+towards the end of the semester,
+
+00:07:09.150 --> 00:07:10.970 align:middle line:90%
+and those are TBD.
+
+00:07:10.970 --> 00:07:14.010 align:middle line:84%
+Then we'll hear about scaling
+laws, automatic gradient
+
+00:07:14.010 --> 00:07:16.063 align:middle line:84%
+descent, and potentially
+the past and future
+
+00:07:16.063 --> 00:07:17.730 align:middle line:84%
+of deep learning,
+though I think there's
+
+00:07:17.730 --> 00:07:19.730 align:middle line:84%
+some discussion as to
+whether that's going
+
+00:07:19.730 --> 00:07:22.130 align:middle line:90%
+to be a different lecture.
+
+00:07:22.130 --> 00:07:24.410 align:middle line:84%
+And then, I think
+kind of importantly,
+
+00:07:24.410 --> 00:07:28.102 align:middle line:84%
+right towards the end, we will
+have class-wide project office
+
+00:07:28.102 --> 00:07:29.810 align:middle line:84%
+hours where we'll have
+a bunch of the TAs
+
+00:07:29.810 --> 00:07:31.490 align:middle line:84%
+and the instructors
+all come, and we
+
+00:07:31.490 --> 00:07:36.130 align:middle line:84%
+can do open discussion around
+projects before they're due.
+
+00:07:36.130 --> 00:07:40.330 align:middle line:84%
+So the next thing is that we're
+going to host PyTorch tutorials.
+
+00:07:40.330 --> 00:07:43.050 align:middle line:84%
+This is intended for if you're
+not familiar with PyTorch,
+
+00:07:43.050 --> 00:07:44.830 align:middle line:84%
+and you think you
+need a refresher.
+
+00:07:44.830 --> 00:07:47.953 align:middle line:84%
+And we strongly recommend
+that if this is the case,
+
+00:07:47.953 --> 00:07:50.370 align:middle line:84%
+or if you even think it might
+be the case, that you attend
+
+00:07:50.370 --> 00:07:53.070 align:middle line:84%
+one of the two PyTorch tutorials
+we're going to offer next week.
+
+00:07:53.070 --> 00:07:54.990 align:middle line:84%
+So the question is if
+PyTorch is a requirement,
+
+00:07:54.990 --> 00:07:56.490 align:middle line:84%
+or you're allowed to use
+any other frameworks.
+
+00:07:56.490 --> 00:07:58.830 align:middle line:84%
+So you're probably welcome
+to use any other frameworks
+
+00:07:58.830 --> 00:08:01.150 align:middle line:84%
+in your final project, but
+some of the problem sets
+
+00:08:01.150 --> 00:08:03.630 align:middle line:84%
+specifically will
+have code that's
+
+00:08:03.630 --> 00:08:07.030 align:middle line:84%
+already built into PyTorch, and
+you're filling parts of that in.
+
+00:08:07.030 --> 00:08:08.870 align:middle line:84%
+So unless you want
+to rewrite all of it
+
+00:08:08.870 --> 00:08:11.850 align:middle line:84%
+in JAX or something,
+which more power to you,
+
+00:08:11.850 --> 00:08:13.830 align:middle line:84%
+I would recommend
+that you definitely
+
+00:08:13.830 --> 00:08:17.910 align:middle line:84%
+make sure that you are
+familiar with PyTorch.
+
+00:08:17.910 --> 00:08:19.648 align:middle line:90%
+OK.
+
+00:08:19.648 --> 00:08:21.690 align:middle line:84%
+Cool, so I'm going to talk
+about course policies.
+
+00:08:21.690 --> 00:08:23.350 align:middle line:90%
+And this stuff is important.
+
+00:08:23.350 --> 00:08:25.710 align:middle line:84%
+And it's also all
+on the web page.
+
+00:08:25.710 --> 00:08:28.590 align:middle line:84%
+But I think essentially,
+what we want to touch on
+
+00:08:28.590 --> 00:08:31.230 align:middle line:84%
+is what our collaboration
+policy is first.
+
+00:08:31.230 --> 00:08:34.950 align:middle line:84%
+So everyone is required to
+write an individual pset.
+
+00:08:34.950 --> 00:08:37.169 align:middle line:84%
+So when you're actually
+working on your problem sets,
+
+00:08:37.169 --> 00:08:39.030 align:middle line:84%
+do not work on something
+together and then
+
+00:08:39.030 --> 00:08:41.010 align:middle line:84%
+both submit the
+exact same thing.
+
+00:08:41.010 --> 00:08:46.170 align:middle line:84%
+You can work on the
+actual-- the content,
+
+00:08:46.170 --> 00:08:48.450 align:middle line:84%
+you can discuss that with
+peers, TAs, and instructors,
+
+00:08:48.450 --> 00:08:49.950 align:middle line:84%
+but the problem
+sets you submit need
+
+00:08:49.950 --> 00:08:53.080 align:middle line:84%
+to be your own independent
+and individual work.
+
+00:08:53.080 --> 00:08:55.740 align:middle line:84%
+And that also applies to
+the code that you write.
+
+00:08:55.740 --> 00:08:57.420 align:middle line:84%
+So you can discuss
+the code with others,
+
+00:08:57.420 --> 00:08:59.860 align:middle line:84%
+but you need to each write
+your own code separately.
+
+00:08:59.860 --> 00:09:01.860 align:middle line:84%
+There was some confusion
+about this in the past.
+
+00:09:01.860 --> 00:09:04.760 align:middle line:84%
+Just make sure that you're not
+taking the code someone else
+
+00:09:04.760 --> 00:09:08.680 align:middle line:84%
+wrote, running it, and then
+submitting a pset on it.
+
+00:09:08.680 --> 00:09:11.800 align:middle line:84%
+You should absolutely not copy
+or share complete solutions,
+
+00:09:11.800 --> 00:09:14.640 align:middle line:84%
+and you also should not
+ask someone else, hey, this
+
+00:09:14.640 --> 00:09:16.640 align:middle line:90%
+is my solution, is it right?
+
+00:09:16.640 --> 00:09:18.140 align:middle line:84%
+And you shouldn't
+do that in person,
+
+00:09:18.140 --> 00:09:20.200 align:middle line:84%
+and you also
+shouldn't ask, Is this
+
+00:09:20.200 --> 00:09:22.520 align:middle line:90%
+correct? on Piazza or Canvas.
+
+00:09:22.520 --> 00:09:24.660 align:middle line:84%
+So again, the idea is,
+it's your independent work,
+
+00:09:24.660 --> 00:09:26.560 align:middle line:90%
+your independent thought.
+
+00:09:26.560 --> 00:09:29.440 align:middle line:84%
+And I think it matters more that
+you've gone through that process
+
+00:09:29.440 --> 00:09:31.720 align:middle line:84%
+independently than
+actually getting it correct
+
+00:09:31.720 --> 00:09:34.698 align:middle line:84%
+because you'll learn from
+the feedback on your psets
+
+00:09:34.698 --> 00:09:37.240 align:middle line:84%
+better if you submit something
+that you came up with yourself
+
+00:09:37.240 --> 00:09:41.320 align:middle line:84%
+and get feedback on it
+than if you copy somebody.
+
+00:09:41.320 --> 00:09:44.117 align:middle line:84%
+And then if you work with anyone
+on the pset other than TAs
+
+00:09:44.117 --> 00:09:46.200 align:middle line:84%
+and instructors, we ask
+that you write their names
+
+00:09:46.200 --> 00:09:47.100 align:middle line:90%
+at the top of the pset.
+
+00:09:47.100 --> 00:09:49.020 align:middle line:84%
+So if you have a study group,
+you're all working together--
+
+00:09:49.020 --> 00:09:50.600 align:middle line:84%
+we don't care if
+this is 10 people.
+
+00:09:50.600 --> 00:09:52.960 align:middle line:84%
+We don't care if it's, in
+this class, 100 people.
+
+00:09:52.960 --> 00:09:55.180 align:middle line:84%
+But we just want to know
+who was working together.
+
+00:09:55.180 --> 00:09:58.580 align:middle line:84%
+I'd be impressed if you managed
+to come up with a 100-person
+
+00:09:58.580 --> 00:10:00.980 align:middle line:90%
+collaborative group.
+
+00:10:00.980 --> 00:10:06.180 align:middle line:84%
+So AI assistance-- we
+take the exact same policy
+
+00:10:06.180 --> 00:10:08.900 align:middle line:84%
+about things like ChatGPT
+or other AI assistants
+
+00:10:08.900 --> 00:10:10.740 align:middle line:90%
+that we do with humans.
+
+00:10:10.740 --> 00:10:13.000 align:middle line:90%
+So it's a deep learning class.
+
+00:10:13.000 --> 00:10:16.380 align:middle line:84%
+You should be trying out
+the latest technology.
+
+00:10:16.380 --> 00:10:17.900 align:middle line:84%
+The idea is not
+that we're teaching
+
+00:10:17.900 --> 00:10:20.540 align:middle line:90%
+you to ignore what's happening.
+
+00:10:20.540 --> 00:10:25.320 align:middle line:84%
+But we do want you to treat
+them like a human collaborator.
+
+00:10:25.320 --> 00:10:27.720 align:middle line:84%
+Don't ask them to answer
+the question for you.
+
+00:10:27.720 --> 00:10:31.020 align:middle line:84%
+Just try to imagine from
+an ethics perspective
+
+00:10:31.020 --> 00:10:33.460 align:middle line:84%
+that this is like a
+peer in the class.
+
+00:10:33.460 --> 00:10:35.400 align:middle line:84%
+So don't say, what is
+the solution to this?
+
+00:10:35.400 --> 00:10:36.940 align:middle line:84%
+Don't say, write
+the code for me,
+
+00:10:36.940 --> 00:10:38.523 align:middle line:84%
+because you wouldn't
+go to your friend
+
+00:10:38.523 --> 00:10:41.140 align:middle line:84%
+and say, please
+write my code for me.
+
+00:10:41.140 --> 00:10:45.840 align:middle line:84%
+But you're super welcome to use
+them as a discussion partner.
+
+00:10:45.840 --> 00:10:49.000 align:middle line:84%
+Ask them questions
+that are contextual.
+
+00:10:49.000 --> 00:10:50.290 align:middle line:90%
+Go back and forth.
+
+00:10:50.290 --> 00:10:51.070 align:middle line:90%
+That's all fine.
+
+00:10:51.070 --> 00:10:56.150 align:middle line:84%
+But don't treat AI
+collaboration as if they're not
+
+00:10:56.150 --> 00:10:57.350 align:middle line:90%
+a human collaborator.
+
+00:10:57.350 --> 00:10:58.670 align:middle line:90%
+Think of it that way first.
+
+00:10:58.670 --> 00:11:02.392 align:middle line:84%
+Is this something I would
+ask my friend in the class?
+
+00:11:02.392 --> 00:11:04.350 align:middle line:84%
+And then just like you
+can come to office hours
+
+00:11:04.350 --> 00:11:06.850 align:middle line:84%
+and ask a human questions
+about the lecture
+
+00:11:06.850 --> 00:11:09.030 align:middle line:84%
+material, clarifications
+about questions, tips
+
+00:11:09.030 --> 00:11:11.310 align:middle line:84%
+for getting started, you're
+welcome to do the same
+
+00:11:11.310 --> 00:11:13.590 align:middle line:90%
+with AI assistants.
+
+00:11:13.590 --> 00:11:16.150 align:middle line:84%
+Again, you're not allowed
+to ask an expert friend
+
+00:11:16.150 --> 00:11:17.430 align:middle line:90%
+to do your homework for you.
+
+00:11:17.430 --> 00:11:21.110 align:middle line:84%
+Don't ask AI to do
+your homework for you.
+
+00:11:21.110 --> 00:11:24.470 align:middle line:84%
+If you're ever unclear,
+imagine the AI is a human
+
+00:11:24.470 --> 00:11:26.510 align:middle line:90%
+and apply that same norm.
+
+00:11:26.510 --> 00:11:30.455 align:middle line:84%
+And if you work with any AI on
+a pset, similarly to the fact
+
+00:11:30.455 --> 00:11:31.830 align:middle line:84%
+that we're writing
+with humans we
+
+00:11:31.830 --> 00:11:34.670 align:middle line:84%
+collaborated with, please
+write down which AI
+
+00:11:34.670 --> 00:11:36.310 align:middle line:90%
+and how you used it.
+
+00:11:36.310 --> 00:11:38.890 align:middle line:84%
+And, of course, this is
+a bit vague, but again,
+
+00:11:38.890 --> 00:11:41.790 align:middle line:90%
+just kind of honor code.
+
+00:11:41.790 --> 00:11:45.150 align:middle line:84%
+Any questions about
+AI collaboration,
+
+00:11:45.150 --> 00:11:48.520 align:middle line:90%
+or is that reasonably clear?
+
+00:11:48.520 --> 00:11:49.220 align:middle line:90%
+Yeah.
+
+00:11:49.220 --> 00:11:51.380 align:middle line:84%
+AUDIENCE: I had a
+question on the last page.
+
+00:11:51.380 --> 00:11:55.053 align:middle line:84%
+So can we show our work
+to the TAs to [INAUDIBLE]?
+
+00:11:55.053 --> 00:11:55.720 align:middle line:90%
+SARA BEERY: Yes.
+
+00:11:55.720 --> 00:11:58.785 align:middle line:84%
+You're very welcome to
+show your work to the TAs.
+
+00:11:58.785 --> 00:12:00.160 align:middle line:84%
+The TAs are not
+going to tell you
+
+00:12:00.160 --> 00:12:01.618 align:middle line:84%
+how to answer the
+question, though,
+
+00:12:01.618 --> 00:12:05.120 align:middle line:84%
+but they will work with you to
+help you hopefully figure it out
+
+00:12:05.120 --> 00:12:06.480 align:middle line:90%
+on your own.
+
+00:12:06.480 --> 00:12:07.920 align:middle line:90%
+Why are we here?
+
+00:12:07.920 --> 00:12:10.880 align:middle line:90%
+[LAUGHS] What's the goal?
+
+00:12:10.880 --> 00:12:12.640 align:middle line:90%
+So what do we want to do?
+
+00:12:12.640 --> 00:12:17.640 align:middle line:84%
+Why are we all interested in
+things like deep learning?
+
+00:12:17.640 --> 00:12:20.680 align:middle line:84%
+One perspective is that
+we're interested in modeling
+
+00:12:20.680 --> 00:12:24.320 align:middle line:84%
+complex phenomena
+in the real world.
+
+00:12:24.320 --> 00:12:26.400 align:middle line:90%
+What are complex phenomena?
+
+00:12:26.400 --> 00:12:28.220 align:middle line:84%
+Well, you interact
+with them every day,
+
+00:12:28.220 --> 00:12:30.800 align:middle line:84%
+things like natural
+language, images,
+
+00:12:30.800 --> 00:12:33.560 align:middle line:84%
+or visual data in
+general, videos.
+
+00:12:33.560 --> 00:12:37.140 align:middle line:84%
+DNA, ecosystems are
+complex phenomena.
+
+00:12:37.140 --> 00:12:40.280 align:middle line:84%
+Climate change is a
+complex phenomenon.
+
+00:12:40.280 --> 00:12:44.720 align:middle line:84%
+Why is it hard to model complex
+phenomena in the real world?
+
+00:12:44.720 --> 00:12:46.320 align:middle line:90%
+They're complex.
+
+00:12:46.320 --> 00:12:51.300 align:middle line:84%
+[LAUGHS] And so maybe
+one existence proof
+
+00:12:51.300 --> 00:12:54.740 align:middle line:84%
+for deep learning as a solution
+to modeling complex phenomena--
+
+00:12:54.740 --> 00:12:57.160 align:middle line:84%
+possibly, we could talk
+about the human brain.
+
+00:12:57.160 --> 00:12:59.210 align:middle line:84%
+All of you are
+here at MIT, which
+
+00:12:59.210 --> 00:13:01.460 align:middle line:84%
+means you're pretty good at
+modeling complex phenomena
+
+00:13:01.460 --> 00:13:02.880 align:middle line:90%
+in your brain, I'm guessing.
+
+00:13:02.880 --> 00:13:05.660 align:middle line:90%
+
+
+00:13:05.660 --> 00:13:10.780 align:middle line:84%
+So first, today, I'm going
+to just briefly go over
+
+00:13:10.780 --> 00:13:12.240 align:middle line:90%
+how we got where we are today.
+
+00:13:12.240 --> 00:13:15.140 align:middle line:84%
+This is a brief history
+of the field of AI,
+
+00:13:15.140 --> 00:13:17.060 align:middle line:90%
+deep learning in general.
+
+00:13:17.060 --> 00:13:19.140 align:middle line:84%
+And then I'm going to
+go over what we expect
+
+00:13:19.140 --> 00:13:21.100 align:middle line:90%
+you have already seen before.
+
+00:13:21.100 --> 00:13:23.240 align:middle line:84%
+It's OK if you haven't
+seen these things before,
+
+00:13:23.240 --> 00:13:26.500 align:middle line:84%
+but we would expect you then
+to go and brush up on them.
+
+00:13:26.500 --> 00:13:28.940 align:middle line:84%
+So if there's anything that I
+talk about, and you're like,
+
+00:13:28.940 --> 00:13:31.640 align:middle line:84%
+oh, I have never seen
+that, we expect that.
+
+00:13:31.640 --> 00:13:34.700 align:middle line:84%
+That's something you can go look
+at some of the OpenCourseWare
+
+00:13:34.700 --> 00:13:39.180 align:middle line:84%
+courses at MIT, go find lots of
+resources online, and pick it up
+
+00:13:39.180 --> 00:13:40.903 align:middle line:90%
+before you go into this class.
+
+00:13:40.903 --> 00:13:42.820 align:middle line:84%
+And then I'll also talk
+about what we actually
+
+00:13:42.820 --> 00:13:45.190 align:middle line:90%
+cover in the class.
+
+00:13:45.190 --> 00:13:47.290 align:middle line:84%
+So a brief history
+of neural networks--
+
+00:13:47.290 --> 00:13:49.830 align:middle line:84%
+and I think a fun way
+to go through this
+
+00:13:49.830 --> 00:13:52.790 align:middle line:84%
+is looking at this on
+a plot of enthusiasm
+
+00:13:52.790 --> 00:13:55.030 align:middle line:90%
+for neural networks over time.
+
+00:13:55.030 --> 00:13:58.990 align:middle line:84%
+So if we go way back
+to 1958, Rosenblatt
+
+00:13:58.990 --> 00:14:04.270 align:middle line:84%
+introduced the perceptron
+in Psychological Review.
+
+00:14:04.270 --> 00:14:09.750 align:middle line:84%
+And the perceptron was the
+first neural network, arguably.
+
+00:14:09.750 --> 00:14:11.310 align:middle line:84%
+And what this was
+intending to do
+
+00:14:11.310 --> 00:14:15.790 align:middle line:84%
+was recognize or
+categorize images.
+
+00:14:15.790 --> 00:14:18.550 align:middle line:84%
+And the idea was
+essentially that you
+
+00:14:18.550 --> 00:14:22.590 align:middle line:84%
+could take some combination
+of representations--
+
+00:14:22.590 --> 00:14:25.390 align:middle line:84%
+in this case,
+particularly pixels--
+
+00:14:25.390 --> 00:14:28.310 align:middle line:84%
+sum them, put them through
+some non-linearity,
+
+00:14:28.310 --> 00:14:30.910 align:middle line:90%
+and get out a categorization.
+
+00:14:30.910 --> 00:14:32.990 align:middle line:84%
+And really, we'll see
+throughout the course
+
+00:14:32.990 --> 00:14:37.430 align:middle line:84%
+and even today, this idea
+still forms the building block
+
+00:14:37.430 --> 00:14:39.610 align:middle line:84%
+for most of the deep
+learning that we do.
+
+00:14:39.610 --> 00:14:42.830 align:middle line:84%
+And these perceptrons
+are components
+
+00:14:42.830 --> 00:14:44.800 align:middle line:84%
+in many, many, many
+different types
+
+00:14:44.800 --> 00:14:48.000 align:middle line:84%
+of capacities within
+things like ChatGPT.
+
+00:14:48.000 --> 00:14:50.740 align:middle line:84%
+When this paper came
+out back in 1958,
+
+00:14:50.740 --> 00:14:52.680 align:middle line:84%
+people were incredibly
+enthusiastic.
+
+00:14:52.680 --> 00:14:55.800 align:middle line:90%
+It made waves.
+
+00:14:55.800 --> 00:15:00.000 align:middle line:84%
+And then in 1972,
+Minsky and Papert
+
+00:15:00.000 --> 00:15:03.880 align:middle line:84%
+wrote a book called
+Perceptrons, Expanded Edition.
+
+00:15:03.880 --> 00:15:07.280 align:middle line:84%
+And this book takes a very
+critical lens to the idea
+
+00:15:07.280 --> 00:15:09.480 align:middle line:84%
+that a perceptron could
+be seriously considered
+
+00:15:09.480 --> 00:15:10.880 align:middle line:90%
+a model of the brain.
+
+00:15:10.880 --> 00:15:14.560 align:middle line:84%
+And it also carefully and
+mathematically describes
+
+00:15:14.560 --> 00:15:16.720 align:middle line:84%
+and characterizes
+the limitations
+
+00:15:16.720 --> 00:15:19.280 align:middle line:90%
+of what a perceptron can model.
+
+00:15:19.280 --> 00:15:22.600 align:middle line:84%
+And it did so, so
+carefully and so critically
+
+00:15:22.600 --> 00:15:26.400 align:middle line:84%
+that all of a sudden, enthusiasm
+for machine learning really
+
+00:15:26.400 --> 00:15:27.680 align:middle line:90%
+took a dip.
+
+00:15:27.680 --> 00:15:32.720 align:middle line:84%
+So in the '70s, we were not
+excited about neural networks.
+
+00:15:32.720 --> 00:15:37.880 align:middle line:84%
+But then in 1986, this book came
+out called Parallel Distributed
+
+00:15:37.880 --> 00:15:38.840 align:middle line:90%
+Processing.
+
+00:15:38.840 --> 00:15:42.160 align:middle line:84%
+And this was fundamental
+because it introduces
+
+00:15:42.160 --> 00:15:45.100 align:middle line:90%
+the concept of backpropagation.
+
+00:15:45.100 --> 00:15:47.020 align:middle line:84%
+And this was really
+the thing that
+
+00:15:47.020 --> 00:15:49.780 align:middle line:84%
+enabled multilayer
+perceptrons, so not just
+
+00:15:49.780 --> 00:15:51.460 align:middle line:84%
+a single perceptron,
+but actually
+
+00:15:51.460 --> 00:15:54.540 align:middle line:84%
+multiple perceptrons
+stacked on top of each other
+
+00:15:54.540 --> 00:15:57.860 align:middle line:84%
+to actually be reasonably
+trained, reasonably fit,
+
+00:15:57.860 --> 00:16:00.180 align:middle line:84%
+this concept of being
+able to backpropagate
+
+00:16:00.180 --> 00:16:03.580 align:middle line:84%
+a gradient through multiple
+layers of perceptrons.
+
+00:16:03.580 --> 00:16:05.460 align:middle line:84%
+And what this
+enabled you to solve
+
+00:16:05.460 --> 00:16:07.793 align:middle line:84%
+were things like
+the XOR problem.
+
+00:16:07.793 --> 00:16:09.460 align:middle line:84%
+For the first time,
+you could reasonably
+
+00:16:09.460 --> 00:16:11.140 align:middle line:84%
+solve categorization
+problems that
+
+00:16:11.140 --> 00:16:14.660 align:middle line:84%
+were not separable from
+a linear classifier.
+
+00:16:14.660 --> 00:16:16.980 align:middle line:84%
+They pointed to backpropagation
+as a breakthrough.
+
+00:16:16.980 --> 00:16:20.580 align:middle line:84%
+It led us actually
+handle things where
+
+00:16:20.580 --> 00:16:25.820 align:middle line:84%
+you need multiple different
+boundaries and these nonlinear
+
+00:16:25.820 --> 00:16:28.580 align:middle line:84%
+boundaries to be drawn,
+which is only possible if you
+
+00:16:28.580 --> 00:16:30.540 align:middle line:84%
+have multiple layers
+of a perceptron.
+
+00:16:30.540 --> 00:16:32.820 align:middle line:84%
+You'll never be able
+to solve the XOR
+
+00:16:32.820 --> 00:16:36.620 align:middle line:84%
+problem with a single-layer
+neural network.
+
+00:16:36.620 --> 00:16:38.860 align:middle line:84%
+And everyone got
+really excited again.
+
+00:16:38.860 --> 00:16:42.575 align:middle line:84%
+So in the '80s, yet again,
+machine learning was something
+
+00:16:42.575 --> 00:16:44.950 align:middle line:84%
+that people were pumped about,
+and particularly this deep
+
+00:16:44.950 --> 00:16:48.190 align:middle line:84%
+learning neural network
+perspective on machine learning.
+
+00:16:48.190 --> 00:16:54.150 align:middle line:84%
+In 1998, Yann LeCun put out
+convolutional neural networks.
+
+00:16:54.150 --> 00:16:56.830 align:middle line:84%
+There's an awesome demo
+that he has on his web page.
+
+00:16:56.830 --> 00:17:00.270 align:middle line:84%
+I'm sure many of you
+have heard of Yann LeCun.
+
+00:17:00.270 --> 00:17:04.390 align:middle line:84%
+And this seems
+like it would mean
+
+00:17:04.390 --> 00:17:07.750 align:middle line:84%
+that everyone was really excited
+about neural networks again.
+
+00:17:07.750 --> 00:17:11.069 align:middle line:84%
+But if you go to
+NeurIPS in 2000,
+
+00:17:11.069 --> 00:17:14.310 align:middle line:84%
+this is the premier conference
+on machine learning.
+
+00:17:14.310 --> 00:17:16.390 align:middle line:84%
+It evolved from an
+interdisciplinary conference,
+
+00:17:16.390 --> 00:17:22.470 align:middle line:84%
+which was on basically
+the science of the brain
+
+00:17:22.470 --> 00:17:25.710 align:middle line:84%
+and machine learning to
+specifically just a machine
+
+00:17:25.710 --> 00:17:27.109 align:middle line:90%
+learning conference.
+
+00:17:27.109 --> 00:17:31.510 align:middle line:84%
+If you look at that
+conference in 2000,
+
+00:17:31.510 --> 00:17:35.030 align:middle line:84%
+the most predictive words
+in papers in the title
+
+00:17:35.030 --> 00:17:39.550 align:middle line:84%
+for acceptance were "belief
+propagation" and "Gaussian."
+
+00:17:39.550 --> 00:17:43.080 align:middle line:84%
+And the title words most
+predictive of paper rejection
+
+00:17:43.080 --> 00:17:45.720 align:middle line:90%
+were "neural" and "network."
+
+00:17:45.720 --> 00:17:47.080 align:middle line:90%
+[LAUGHTER]
+
+00:17:47.080 --> 00:17:49.940 align:middle line:84%
+So this is what we
+called the AI winter.
+
+00:17:49.940 --> 00:17:51.440 align:middle line:84%
+And one of the
+reasons it was called
+
+00:17:51.440 --> 00:17:54.060 align:middle line:84%
+the AI winter is because even
+though we had the theory,
+
+00:17:54.060 --> 00:17:56.520 align:middle line:84%
+we had the building
+blocks, we didn't actually
+
+00:17:56.520 --> 00:18:01.960 align:middle line:84%
+have the ability to
+train them efficiently.
+
+00:18:01.960 --> 00:18:04.560 align:middle line:84%
+We didn't have the right
+programming perspective,
+
+00:18:04.560 --> 00:18:07.680 align:middle line:84%
+and we didn't have
+the right hardware.
+
+00:18:07.680 --> 00:18:12.800 align:middle line:84%
+But then in 2012, Alex
+Krizhevsky and his co-authors
+
+00:18:12.800 --> 00:18:14.360 align:middle line:90%
+published AlexNet.
+
+00:18:14.360 --> 00:18:20.040 align:middle line:84%
+And AlexNet was also another
+convolutional neural network.
+
+00:18:20.040 --> 00:18:24.600 align:middle line:84%
+But importantly, Alex Krizhevsky
+was a brilliant programmer,
+
+00:18:24.600 --> 00:18:26.320 align:middle line:84%
+and Alex Krizhevsky
+figured out how
+
+00:18:26.320 --> 00:18:29.240 align:middle line:84%
+to program GPUs, graphics
+processing units, that
+
+00:18:29.240 --> 00:18:33.120 align:middle line:84%
+have been developed to
+handle massive-scale parallel
+
+00:18:33.120 --> 00:18:37.960 align:middle line:84%
+multiplications for
+graphics, for video games,
+
+00:18:37.960 --> 00:18:44.100 align:middle line:90%
+and for high-resolution images.
+
+00:18:44.100 --> 00:18:46.460 align:middle line:84%
+But he figured out how to
+program those and repurposed
+
+00:18:46.460 --> 00:18:50.220 align:middle line:84%
+that hardware for the
+training of neural networks.
+
+00:18:50.220 --> 00:18:53.660 align:middle line:84%
+And I can't tell you how much
+of a shot heard around the world
+
+00:18:53.660 --> 00:18:55.540 align:middle line:90%
+this was in our field.
+
+00:18:55.540 --> 00:18:59.940 align:middle line:84%
+But this, for the first
+time, outperformed
+
+00:18:59.940 --> 00:19:03.420 align:middle line:84%
+every single other
+possible method
+
+00:19:03.420 --> 00:19:06.780 align:middle line:90%
+that was out there on ImageNet.
+
+00:19:06.780 --> 00:19:09.380 align:middle line:84%
+ImageNet-- how many of you
+have heard of ImageNet?
+
+00:19:09.380 --> 00:19:10.340 align:middle line:90%
+Yeah.
+
+00:19:10.340 --> 00:19:12.800 align:middle line:84%
+ImageNet was the first
+very large-scale data
+
+00:19:12.800 --> 00:19:14.060 align:middle line:90%
+set of its kind.
+
+00:19:14.060 --> 00:19:16.180 align:middle line:84%
+And I actually
+think that this is
+
+00:19:16.180 --> 00:19:18.260 align:middle line:84%
+an important
+component, what made
+
+00:19:18.260 --> 00:19:20.140 align:middle line:90%
+machine learning start to work.
+
+00:19:20.140 --> 00:19:22.160 align:middle line:84%
+And I would argue
+that, of course,
+
+00:19:22.160 --> 00:19:25.760 align:middle line:84%
+it was the theory
+and the programming,
+
+00:19:25.760 --> 00:19:29.300 align:middle line:84%
+the ability to actually
+efficiently fit these things.
+
+00:19:29.300 --> 00:19:33.900 align:middle line:84%
+But the other really vital
+component was the data.
+
+00:19:33.900 --> 00:19:37.360 align:middle line:84%
+Machine learning does not work
+without large-scale, curated,
+
+00:19:37.360 --> 00:19:40.607 align:middle line:84%
+labeled data in many
+capacities still,
+
+00:19:40.607 --> 00:19:42.190 align:middle line:84%
+though we're getting
+better and better
+
+00:19:42.190 --> 00:19:44.150 align:middle line:90%
+at self-supervised learning.
+
+00:19:44.150 --> 00:19:48.910 align:middle line:84%
+But so all of a
+sudden, we were back.
+
+00:19:48.910 --> 00:19:50.450 align:middle line:90%
+Everyone was enthusiastic again.
+
+00:19:50.450 --> 00:19:52.470 align:middle line:84%
+And actually, if
+you look, these were
+
+00:19:52.470 --> 00:19:56.110 align:middle line:84%
+hype cycles of about
+28 years, both of them.
+
+00:19:56.110 --> 00:20:00.990 align:middle line:84%
+And so the question is, where
+are we going to be in 2028?
+
+00:20:00.990 --> 00:20:04.350 align:middle line:90%
+So it's 2024 now.
+
+00:20:04.350 --> 00:20:08.030 align:middle line:84%
+It's 2024, so in four years,
+where are we going to be?
+
+00:20:08.030 --> 00:20:11.610 align:middle line:84%
+So one argument would be, OK,
+we're in another hype cycle.
+
+00:20:11.610 --> 00:20:15.030 align:middle line:84%
+But I would actually argue
+that that's probably not true.
+
+00:20:15.030 --> 00:20:17.990 align:middle line:84%
+Another one would be
+that we're just way
+
+00:20:17.990 --> 00:20:19.850 align:middle line:84%
+off the deep end in
+terms of enthusiasm,
+
+00:20:19.850 --> 00:20:23.830 align:middle line:84%
+and by 2028, we'll be in
+some-- out in the stratosphere.
+
+00:20:23.830 --> 00:20:26.710 align:middle line:84%
+Or possibly we're doing
+something like this.
+
+00:20:26.710 --> 00:20:28.430 align:middle line:84%
+Maybe in 2028,
+we're going to hit
+
+00:20:28.430 --> 00:20:31.452 align:middle line:84%
+some new plane of
+enthusiasm, and then
+
+00:20:31.452 --> 00:20:32.910 align:middle line:84%
+we'll start to
+realize limitations,
+
+00:20:32.910 --> 00:20:34.350 align:middle line:90%
+and we'll oscillate again.
+
+00:20:34.350 --> 00:20:35.696 align:middle line:90%
+Yeah?
+
+00:20:35.696 --> 00:20:38.340 align:middle line:84%
+AUDIENCE: Could AI take
+over society by 2028?
+
+00:20:38.340 --> 00:20:39.840 align:middle line:84%
+SARA BEERY: [LAUGHS]
+So the question
+
+00:20:39.840 --> 00:20:42.640 align:middle line:84%
+is, will AI take
+over society by 2028?
+
+00:20:42.640 --> 00:20:44.560 align:middle line:90%
+My answer is, let's see.
+
+00:20:44.560 --> 00:20:46.160 align:middle line:90%
+[LAUGHS]
+
+00:20:46.160 --> 00:20:47.800 align:middle line:90%
+So what's deep learning today?
+
+00:20:47.800 --> 00:20:51.560 align:middle line:84%
+What are the components
+that make it up?
+
+00:20:51.560 --> 00:20:55.080 align:middle line:84%
+First, I think a really
+important one is Autograd.
+
+00:20:55.080 --> 00:20:58.445 align:middle line:84%
+These are coding languages
+like PyTorch and TensorFlow
+
+00:20:58.445 --> 00:21:00.320 align:middle line:84%
+that give us a really
+clever way to do things
+
+00:21:00.320 --> 00:21:04.040 align:middle line:84%
+like implement the chain
+rule in software, making
+
+00:21:04.040 --> 00:21:06.480 align:middle line:90%
+good use of available hardware.
+
+00:21:06.480 --> 00:21:09.420 align:middle line:84%
+And this has enabled
+us to do things
+
+00:21:09.420 --> 00:21:11.940 align:middle line:84%
+like approximate the
+gradient of any function,
+
+00:21:11.940 --> 00:21:14.080 align:middle line:90%
+even if it's an approximation.
+
+00:21:14.080 --> 00:21:17.140 align:middle line:84%
+These are a really important
+component of deep learning.
+
+00:21:17.140 --> 00:21:19.383 align:middle line:84%
+And if you do anything
+with deep learning,
+
+00:21:19.383 --> 00:21:21.300 align:middle line:84%
+I doubt that you're doing
+what Krizhevsky did.
+
+00:21:21.300 --> 00:21:23.260 align:middle line:84%
+I doubt that you're programming
+these things from scratch.
+
+00:21:23.260 --> 00:21:25.635 align:middle line:84%
+You're almost certainly working
+with existing programming
+
+00:21:25.635 --> 00:21:28.640 align:middle line:84%
+languages that are built
+for machine learning.
+
+00:21:28.640 --> 00:21:32.678 align:middle line:84%
+Its billion-plus data point
+datasets, things like LAION.
+
+00:21:32.678 --> 00:21:34.720 align:middle line:84%
+So that scale of data that
+I talked about before,
+
+00:21:34.720 --> 00:21:37.740 align:middle line:84%
+this is an incredibly important
+component of all of this.
+
+00:21:37.740 --> 00:21:41.820 align:middle line:84%
+Parallel training on
+thousands of GPUs--
+
+00:21:41.820 --> 00:21:45.060 align:middle line:84%
+again, this is what
+we're looking at today--
+
+00:21:45.060 --> 00:21:46.920 align:middle line:84%
+billion-plus parameter
+architectures,
+
+00:21:46.920 --> 00:21:51.020 align:middle line:84%
+and this number just keeps
+increasing, million-plus
+
+00:21:51.020 --> 00:21:52.900 align:middle line:90%
+dollar training costs.
+
+00:21:52.900 --> 00:21:55.300 align:middle line:84%
+So, of course, it's
+not public knowledge
+
+00:21:55.300 --> 00:21:57.980 align:middle line:84%
+how much it costs to train
+something like GPT 4.0.
+
+00:21:57.980 --> 00:22:03.900 align:middle line:84%
+But I would bet it's definitely
+in the many millions.
+
+00:22:03.900 --> 00:22:06.467 align:middle line:84%
+Shockingly good results-- I
+don't know about any of you.
+
+00:22:06.467 --> 00:22:08.800 align:middle line:84%
+I mean, I've been working in
+this field now for a while,
+
+00:22:08.800 --> 00:22:13.380 align:middle line:84%
+and I think we've been seeing
+results recently that I didn't
+
+00:22:13.380 --> 00:22:16.860 align:middle line:84%
+anticipate seeing in my lifetime
+from when I started, back when
+
+00:22:16.860 --> 00:22:18.380 align:middle line:90%
+things didn't work.
+
+00:22:18.380 --> 00:22:20.360 align:middle line:84%
+So that's been both
+exciting to see,
+
+00:22:20.360 --> 00:22:23.372 align:middle line:84%
+and also sometimes, I think, for
+many of us a bit overwhelming,
+
+00:22:23.372 --> 00:22:25.580 align:middle line:84%
+because you're like, oh,
+gosh, the problems I thought
+
+00:22:25.580 --> 00:22:27.540 align:middle line:84%
+were problems aren't
+problems anymore.
+
+00:22:27.540 --> 00:22:29.580 align:middle line:90%
+So what are the problems?
+
+00:22:29.580 --> 00:22:33.180 align:middle line:84%
+Of course, I work
+in the world of--
+
+00:22:33.180 --> 00:22:36.710 align:middle line:84%
+I work a lot on
+biodiversity loss
+
+00:22:36.710 --> 00:22:38.423 align:middle line:84%
+at a global scale
+using machine learning.
+
+00:22:38.423 --> 00:22:40.590 align:middle line:84%
+And I would say that
+biodiversity loss is definitely
+
+00:22:40.590 --> 00:22:43.048 align:middle line:84%
+still a problem, and one that
+machine learning is sometimes
+
+00:22:43.048 --> 00:22:46.630 align:middle line:84%
+helping, but often also
+hurting, because the carbon
+
+00:22:46.630 --> 00:22:52.030 align:middle line:84%
+costs of actually training
+these models is significant.
+
+00:22:52.030 --> 00:22:56.250 align:middle line:84%
+But all of these
+massive things-- massive
+
+00:22:56.250 --> 00:22:57.310 align:middle line:90%
+isn't necessary.
+
+00:22:57.310 --> 00:22:59.950 align:middle line:84%
+So things like Stable Diffusion
+are actually pretty lightweight
+
+00:22:59.950 --> 00:23:01.890 align:middle line:90%
+and were incredibly impactful.
+
+00:23:01.890 --> 00:23:06.150 align:middle line:84%
+So things don't always
+need to be big to be good.
+
+00:23:06.150 --> 00:23:08.390 align:middle line:84%
+And then I think another
+really important component
+
+00:23:08.390 --> 00:23:11.510 align:middle line:84%
+of deep learning today is
+the idea that it is primarily
+
+00:23:11.510 --> 00:23:13.590 align:middle line:84%
+an open source
+community where we have
+
+00:23:13.590 --> 00:23:15.990 align:middle line:90%
+what we call modular reuse.
+
+00:23:15.990 --> 00:23:19.750 align:middle line:84%
+So people take weights that were
+trained by one person with one
+
+00:23:19.750 --> 00:23:20.370 align:middle line:90%
+architecture.
+
+00:23:20.370 --> 00:23:22.870 align:middle line:84%
+They might take that and use
+that entire thing as a module
+
+00:23:22.870 --> 00:23:24.990 align:middle line:84%
+within another,
+larger system that
+
+00:23:24.990 --> 00:23:27.230 align:middle line:84%
+has many different
+components that are being
+
+00:23:27.230 --> 00:23:29.670 align:middle line:90%
+pulled from different things.
+
+00:23:29.670 --> 00:23:32.447 align:middle line:84%
+Now, I think that this open
+source perspective is really
+
+00:23:32.447 --> 00:23:35.030 align:middle line:84%
+something that's driven a lot
+of progress in machine learning.
+
+00:23:35.030 --> 00:23:36.447 align:middle line:84%
+But also one of
+the things that we
+
+00:23:36.447 --> 00:23:38.850 align:middle line:84%
+have been seeing in
+the last few years
+
+00:23:38.850 --> 00:23:42.650 align:middle line:84%
+is that things are less and
+less likely to be open source.
+
+00:23:42.650 --> 00:23:45.130 align:middle line:84%
+You might have an API,
+but you aren't necessarily
+
+00:23:45.130 --> 00:23:47.930 align:middle line:84%
+going to get the weights and
+the architecture for something
+
+00:23:47.930 --> 00:23:50.770 align:middle line:90%
+like GPT 4.0.
+
+00:23:50.770 --> 00:23:53.410 align:middle line:84%
+So for the rest of
+the lecture, this
+
+00:23:53.410 --> 00:23:55.570 align:middle line:84%
+is the signposting
+I'm going to use.
+
+00:23:55.570 --> 00:23:58.795 align:middle line:84%
+Looking back, this is what
+we expect you've seen before.
+
+00:23:58.795 --> 00:24:00.170 align:middle line:84%
+The green looking
+forward, that's
+
+00:24:00.170 --> 00:24:02.170 align:middle line:84%
+what we're going to
+cover in this class.
+
+00:24:02.170 --> 00:24:05.170 align:middle line:84%
+All right, pretty
+straightforward.
+
+00:24:05.170 --> 00:24:07.330 align:middle line:84%
+I expect you have
+seen gradient descent
+
+00:24:07.330 --> 00:24:09.970 align:middle line:90%
+before you come to this class.
+
+00:24:09.970 --> 00:24:13.450 align:middle line:84%
+So gradient descent
+essentially is the idea
+
+00:24:13.450 --> 00:24:17.938 align:middle line:84%
+that we're trying to
+optimize some cost function.
+
+00:24:17.938 --> 00:24:19.730 align:middle line:84%
+And the way we're going
+to do that is we're
+
+00:24:19.730 --> 00:24:24.290 align:middle line:84%
+finding some minimum over a set
+of all of our training data,
+
+00:24:24.290 --> 00:24:27.650 align:middle line:84%
+some minimum set of parameters,
+where then the loss is actually
+
+00:24:27.650 --> 00:24:30.530 align:middle line:84%
+minimized for all of those
+different data points.
+
+00:24:30.530 --> 00:24:33.220 align:middle line:84%
+So what this actually
+looks like in practice,
+
+00:24:33.220 --> 00:24:35.300 align:middle line:84%
+you're trying to find
+some theta star, which
+
+00:24:35.300 --> 00:24:37.620 align:middle line:84%
+is like your optimal
+set of model parameters
+
+00:24:37.620 --> 00:24:39.320 align:middle line:84%
+that minimize your
+cost function.
+
+00:24:39.320 --> 00:24:41.620 align:middle line:84%
+And so maybe you start
+somewhere random,
+
+00:24:41.620 --> 00:24:44.900 align:middle line:84%
+and then you calculate
+your gradient.
+
+00:24:44.900 --> 00:24:47.820 align:middle line:84%
+Now you update the
+weights of that model
+
+00:24:47.820 --> 00:24:50.840 align:middle line:84%
+in the direction of the
+gradient, and you step through,
+
+00:24:50.840 --> 00:24:53.180 align:middle line:90%
+et cetera, et cetera.
+
+00:24:53.180 --> 00:24:56.620 align:middle line:84%
+And I think many of you have
+probably seen this before,
+
+00:24:56.620 --> 00:24:59.020 align:middle line:84%
+and we'll talk in
+an upcoming lecture,
+
+00:24:59.020 --> 00:25:01.020 align:middle line:84%
+cover some of the different
+dimensions of things
+
+00:25:01.020 --> 00:25:03.940 align:middle line:84%
+like stochastic gradient
+descent, et cetera.
+
+00:25:03.940 --> 00:25:08.260 align:middle line:84%
+But we're assuming that
+you've seen this idea before,
+
+00:25:08.260 --> 00:25:12.060 align:middle line:84%
+probably in intro to ML
+lecture, for example.
+
+00:25:12.060 --> 00:25:15.180 align:middle line:84%
+Covering in this class, we'll go
+into a little bit more detail,
+
+00:25:15.180 --> 00:25:17.060 align:middle line:84%
+backprop and
+specifically this idea
+
+00:25:17.060 --> 00:25:19.540 align:middle line:90%
+of differential programming.
+
+00:25:19.540 --> 00:25:21.980 align:middle line:84%
+So what does it actually look
+like to build programming
+
+00:25:21.980 --> 00:25:26.580 align:middle line:84%
+languages that are structured
+around the idea of optimality
+
+00:25:26.580 --> 00:25:29.780 align:middle line:84%
+and optimizing through gradient
+descent for different components
+
+00:25:29.780 --> 00:25:32.030 align:middle line:90%
+of that architecture?
+
+00:25:32.030 --> 00:25:33.910 align:middle line:84%
+And I think one of
+the things that's fun
+
+00:25:33.910 --> 00:25:37.470 align:middle line:84%
+is thinking about what are
+you actually optimizing for,
+
+00:25:37.470 --> 00:25:42.150 align:middle line:84%
+and what are you pushing
+the gradients through to?
+
+00:25:42.150 --> 00:25:47.910 align:middle line:84%
+So here, one iteration
+of gradient descent
+
+00:25:47.910 --> 00:25:50.590 align:middle line:84%
+is essentially
+something like this,
+
+00:25:50.590 --> 00:25:54.910 align:middle line:90%
+and we have some learning rate.
+
+00:25:54.910 --> 00:25:57.590 align:middle line:84%
+And all of that, we're going
+to go into in a lot more detail
+
+00:25:57.590 --> 00:26:00.430 align:middle line:84%
+next Tuesday where we're
+going to be talking about,
+
+00:26:00.430 --> 00:26:02.230 align:middle line:84%
+where does this
+actually come through,
+
+00:26:02.230 --> 00:26:05.630 align:middle line:84%
+how do we think about what
+some of these choices are,
+
+00:26:05.630 --> 00:26:08.950 align:middle line:84%
+and how we actually
+build out the learning
+
+00:26:08.950 --> 00:26:11.590 align:middle line:90%
+structure for backprop.
+
+00:26:11.590 --> 00:26:13.190 align:middle line:84%
+I do expect that
+you've seen things
+
+00:26:13.190 --> 00:26:16.110 align:middle line:84%
+like multilayer perceptrons
+and nonlinearities, things
+
+00:26:16.110 --> 00:26:18.430 align:middle line:90%
+like ReLUs, before.
+
+00:26:18.430 --> 00:26:21.710 align:middle line:84%
+So computational neural network
+is often some form of vector
+
+00:26:21.710 --> 00:26:23.670 align:middle line:90%
+in, vector out.
+
+00:26:23.670 --> 00:26:25.990 align:middle line:84%
+And this arrow that goes
+from vector in to vector
+
+00:26:25.990 --> 00:26:27.870 align:middle line:84%
+out is a lot of what
+we're going to be
+
+00:26:27.870 --> 00:26:30.370 align:middle line:90%
+talking about in this class.
+
+00:26:30.370 --> 00:26:33.570 align:middle line:84%
+What computation
+does that cover?
+
+00:26:33.570 --> 00:26:35.070 align:middle line:84%
+How does that
+actually build out?
+
+00:26:35.070 --> 00:26:36.695 align:middle line:84%
+So one cool thing
+about neural networks
+
+00:26:36.695 --> 00:26:40.490 align:middle line:84%
+is that they often are reusing
+the same simple computational
+
+00:26:40.490 --> 00:26:42.610 align:middle line:90%
+units over and over again.
+
+00:26:42.610 --> 00:26:46.250 align:middle line:84%
+So there's often a lot of
+the same kinds of computation
+
+00:26:46.250 --> 00:26:49.157 align:middle line:84%
+that are being
+repeated and reused.
+
+00:26:49.157 --> 00:26:51.490 align:middle line:84%
+And what these actually look
+like, these building blocks
+
+00:26:51.490 --> 00:26:54.130 align:middle line:84%
+that are being used
+over and over again,
+
+00:26:54.130 --> 00:26:57.610 align:middle line:84%
+they're often some
+combination of a linear layer.
+
+00:26:57.610 --> 00:27:00.250 align:middle line:84%
+So here-- and we will be
+sticking with this type
+
+00:27:00.250 --> 00:27:02.570 align:middle line:84%
+of notation for the
+rest of the class--
+
+00:27:02.570 --> 00:27:05.450 align:middle line:84%
+what we call z sub j, so
+some component of this output
+
+00:27:05.450 --> 00:27:08.570 align:middle line:84%
+representation in
+that linear layer,
+
+00:27:08.570 --> 00:27:13.490 align:middle line:84%
+that would be a sum over i
+of some weight times each
+
+00:27:13.490 --> 00:27:18.570 align:middle line:84%
+of those input components--
+basically, pretty simple.
+
+00:27:18.570 --> 00:27:21.507 align:middle line:84%
+And that can also be written
+essentially this way, where
+
+00:27:21.507 --> 00:27:23.090 align:middle line:84%
+you have some set
+of weights, and then
+
+00:27:23.090 --> 00:27:25.110 align:middle line:84%
+you also incorporate
+a bias term.
+
+00:27:25.110 --> 00:27:27.210 align:middle line:84%
+And this is a term
+that does not actually
+
+00:27:27.210 --> 00:27:29.160 align:middle line:84%
+take in any of those
+input components.
+
+00:27:29.160 --> 00:27:31.500 align:middle line:90%
+It's just a bias.
+
+00:27:31.500 --> 00:27:34.780 align:middle line:84%
+And that can also be written
+in a vectorized notation, which
+
+00:27:34.780 --> 00:27:36.580 align:middle line:84%
+makes everything
+much more simple.
+
+00:27:36.580 --> 00:27:41.140 align:middle line:84%
+So again, just with a focus on
+the notation, that output unit z
+
+00:27:41.140 --> 00:27:46.100 align:middle line:84%
+sub j is x, that input
+vector, transposed times
+
+00:27:46.100 --> 00:27:49.220 align:middle line:84%
+w sub j, so the set of weights
+that correspond to that output
+
+00:27:49.220 --> 00:27:52.580 align:middle line:90%
+component and that bias term.
+
+00:27:52.580 --> 00:27:54.702 align:middle line:84%
+And then what we
+consider theta-- so
+
+00:27:54.702 --> 00:27:56.660 align:middle line:84%
+that's all the parameters
+of the model-- that's
+
+00:27:56.660 --> 00:28:01.140 align:middle line:84%
+the set of all the weight
+terms and all the bias terms.
+
+00:28:01.140 --> 00:28:02.748 align:middle line:84%
+So what actually
+makes a neural net
+
+00:28:02.748 --> 00:28:04.540 align:middle line:84%
+a neural net is the
+fact that it's not just
+
+00:28:04.540 --> 00:28:06.620 align:middle line:90%
+linear combinations of inputs.
+
+00:28:06.620 --> 00:28:10.860 align:middle line:84%
+You also have some sort
+of nonlinear function
+
+00:28:10.860 --> 00:28:12.920 align:middle line:90%
+that is mapping your outputs.
+
+00:28:12.920 --> 00:28:15.180 align:middle line:84%
+And that's something
+like g sub z.
+
+00:28:15.180 --> 00:28:16.620 align:middle line:84%
+And in this case,
+that's something
+
+00:28:16.620 --> 00:28:18.482 align:middle line:90%
+like a pointwise non-linearity.
+
+00:28:18.482 --> 00:28:20.940 align:middle line:84%
+So that's an important dimension
+that these non-linearities
+
+00:28:20.940 --> 00:28:23.140 align:middle line:90%
+are usually pointwise.
+
+00:28:23.140 --> 00:28:25.860 align:middle line:84%
+So one possible non-linearity
+would be this one.
+
+00:28:25.860 --> 00:28:29.990 align:middle line:84%
+g sub z would be 1 if z is
+greater than 0, or 0 otherwise.
+
+00:28:29.990 --> 00:28:32.650 align:middle line:84%
+Is this a good choice of
+non-linearity for a neural net?
+
+00:28:32.650 --> 00:28:33.357 align:middle line:90%
+AUDIENCE: No.
+
+00:28:33.357 --> 00:28:34.190 align:middle line:90%
+SARA BEERY: Why not?
+
+00:28:34.190 --> 00:28:36.030 align:middle line:84%
+AUDIENCE: It's not
+differentiable?
+
+00:28:36.030 --> 00:28:39.070 align:middle line:84%
+SARA BEERY: Yeah, so it's
+not differentiable, exactly.
+
+00:28:39.070 --> 00:28:43.890 align:middle line:84%
+And why is the fact that it's
+not differentiable not good?
+
+00:28:43.890 --> 00:28:44.390 align:middle line:90%
+Yeah.
+
+00:28:44.390 --> 00:28:47.350 align:middle line:84%
+AUDIENCE: Because it
+hinders backpropagation.
+
+00:28:47.350 --> 00:28:49.150 align:middle line:84%
+SARA BEERY: It hinders
+backpropagation.
+
+00:28:49.150 --> 00:28:51.070 align:middle line:90%
+Why?
+
+00:28:51.070 --> 00:28:53.470 align:middle line:84%
+AUDIENCE: It makes
+the [INAUDIBLE] set
+
+00:28:53.470 --> 00:28:55.430 align:middle line:90%
+harder [INAUDIBLE].
+
+00:28:55.430 --> 00:28:57.210 align:middle line:84%
+SARA BEERY: Yeah, so
+the directionality.
+
+00:28:57.210 --> 00:29:01.750 align:middle line:84%
+If you're anywhere
+on this graph,
+
+00:29:01.750 --> 00:29:04.550 align:middle line:84%
+you don't know which
+way to go, essentially.
+
+00:29:04.550 --> 00:29:05.950 align:middle line:90%
+The gradient is zero.
+
+00:29:05.950 --> 00:29:08.610 align:middle line:84%
+So you can try to take
+a gradient ascent step.
+
+00:29:08.610 --> 00:29:13.430 align:middle line:84%
+You're not going to move because
+the gradient is zero, exactly.
+
+00:29:13.430 --> 00:29:18.870 align:middle line:84%
+So this roughly is called a
+perceptron, this linear input
+
+00:29:18.870 --> 00:29:22.270 align:middle line:90%
+plus a pointwise non-linearity.
+
+00:29:22.270 --> 00:29:26.970 align:middle line:84%
+And you actually can arguably
+do linear classification
+
+00:29:26.970 --> 00:29:27.950 align:middle line:90%
+with a perceptron.
+
+00:29:27.950 --> 00:29:30.730 align:middle line:84%
+So if you take a
+really simple version
+
+00:29:30.730 --> 00:29:34.330 align:middle line:84%
+of this where your input is
+just two-dimensional, x1, x2,
+
+00:29:34.330 --> 00:29:37.610 align:middle line:84%
+and you have some w1/w2 learned
+weight terms that you use
+
+00:29:37.610 --> 00:29:39.910 align:middle line:84%
+to combine to get z,
+which is your hidden unit,
+
+00:29:39.910 --> 00:29:43.770 align:middle line:84%
+and then you map that
+via a function to y,
+
+00:29:43.770 --> 00:29:46.770 align:middle line:84%
+you then define z as
+x transpose w plus b.
+
+00:29:46.770 --> 00:29:51.170 align:middle line:84%
+And y is now some
+function g of z.
+
+00:29:51.170 --> 00:29:54.570 align:middle line:84%
+What this looks like
+for any set of values
+
+00:29:54.570 --> 00:29:56.970 align:middle line:84%
+will be something like
+this, where you essentially
+
+00:29:56.970 --> 00:29:58.610 align:middle line:90%
+have almost a ramp.
+
+00:29:58.610 --> 00:30:04.290 align:middle line:84%
+It's a clear and
+standard gradient across.
+
+00:30:04.290 --> 00:30:06.150 align:middle line:90%
+Why would it look like this?
+
+00:30:06.150 --> 00:30:10.750 align:middle line:84%
+So why is it smooth and
+reasonably straight?
+
+00:30:10.750 --> 00:30:14.330 align:middle line:90%
+
+
+00:30:14.330 --> 00:30:17.890 align:middle line:84%
+I maybe didn't pose that
+question super clearly.
+
+00:30:17.890 --> 00:30:21.330 align:middle line:84%
+So essentially, the
+reason that mapping it
+
+00:30:21.330 --> 00:30:24.330 align:middle line:84%
+looks like this is
+because it's a plane.
+
+00:30:24.330 --> 00:30:28.940 align:middle line:84%
+So any two-dimensional
+version of this
+
+00:30:28.940 --> 00:30:33.780 align:middle line:84%
+is going to be a plane
+with some orientation.
+
+00:30:33.780 --> 00:30:36.200 align:middle line:84%
+And then very
+straightforward, actually,
+
+00:30:36.200 --> 00:30:38.140 align:middle line:84%
+to turn that into a
+linear classifier,
+
+00:30:38.140 --> 00:30:39.580 align:middle line:84%
+because all you're
+doing is taking
+
+00:30:39.580 --> 00:30:41.820 align:middle line:90%
+some threshold on that plane.
+
+00:30:41.820 --> 00:30:43.900 align:middle line:84%
+So even a single-layer
+neural network
+
+00:30:43.900 --> 00:30:46.040 align:middle line:84%
+can perform linear
+classification
+
+00:30:46.040 --> 00:30:47.580 align:middle line:84%
+because now this
+threshold, that's
+
+00:30:47.580 --> 00:30:50.320 align:middle line:84%
+basically what that stepwise
+non-linearity is giving you.
+
+00:30:50.320 --> 00:30:55.180 align:middle line:84%
+It's giving you something that
+is thresholded at some value.
+
+00:30:55.180 --> 00:30:57.160 align:middle line:84%
+And so even with
+something quite simple,
+
+00:30:57.160 --> 00:30:59.060 align:middle line:90%
+you can do classification.
+
+00:30:59.060 --> 00:31:02.655 align:middle line:84%
+Now, that's assuming that your
+data is linearly separable.
+
+00:31:02.655 --> 00:31:04.280 align:middle line:84%
+So if you have training
+data like this,
+
+00:31:04.280 --> 00:31:08.340 align:middle line:84%
+which is linearly separable,
+and now you want to find some
+
+00:31:08.340 --> 00:31:12.020 align:middle line:84%
+optimal set of weights and
+biases that will minimize some
+
+00:31:12.020 --> 00:31:16.500 align:middle line:84%
+loss term where now, again, this
+loss is the difference between
+
+00:31:16.500 --> 00:31:19.940 align:middle line:84%
+the true value-- so here,
+the true value is 1 or 0--
+
+00:31:19.940 --> 00:31:23.620 align:middle line:84%
+and the functional mapping
+of the inputs to something
+
+00:31:23.620 --> 00:31:25.128 align:middle line:90%
+like that value.
+
+00:31:25.128 --> 00:31:26.670 align:middle line:84%
+If you have something
+like this, this
+
+00:31:26.670 --> 00:31:28.150 align:middle line:90%
+is what we'd call a bad fit.
+
+00:31:28.150 --> 00:31:31.030 align:middle line:90%
+You have 7 misclassifications.
+
+00:31:31.030 --> 00:31:33.270 align:middle line:84%
+You're wrong about more
+things than you're right.
+
+00:31:33.270 --> 00:31:35.510 align:middle line:84%
+And all of those
+red values, those
+
+00:31:35.510 --> 00:31:38.950 align:middle line:84%
+are going to give you a high
+value in your loss function.
+
+00:31:38.950 --> 00:31:42.550 align:middle line:84%
+Or you could find something
+that's like an OK fit,
+
+00:31:42.550 --> 00:31:45.090 align:middle line:90%
+less misclassifications.
+
+00:31:45.090 --> 00:31:48.030 align:middle line:84%
+And maybe this is something
+that your model updates to
+
+00:31:48.030 --> 00:31:50.110 align:middle line:90%
+after a single gradient step.
+
+00:31:50.110 --> 00:31:53.070 align:middle line:84%
+Your decision surface is linear,
+and now you're fiddling around
+
+00:31:53.070 --> 00:31:56.990 align:middle line:90%
+with what that classifier is--
+
+00:31:56.990 --> 00:32:00.910 align:middle line:84%
+basically, which values of
+weights and biases you need.
+
+00:32:00.910 --> 00:32:02.427 align:middle line:84%
+And then maybe
+after a few steps,
+
+00:32:02.427 --> 00:32:04.510 align:middle line:84%
+you would find something
+that is a good fit, where
+
+00:32:04.510 --> 00:32:07.190 align:middle line:84%
+you're not actually
+misclassifying anything.
+
+00:32:07.190 --> 00:32:09.590 align:middle line:84%
+So it is possible
+to do classification
+
+00:32:09.590 --> 00:32:12.210 align:middle line:84%
+of linear things,
+linearly separable things,
+
+00:32:12.210 --> 00:32:14.310 align:middle line:84%
+even with something
+like a perceptron that's
+
+00:32:14.310 --> 00:32:16.670 align:middle line:84%
+doing these really
+simple thresholding-based
+
+00:32:16.670 --> 00:32:19.270 align:middle line:90%
+non-linearities.
+
+00:32:19.270 --> 00:32:21.870 align:middle line:84%
+But like we said,
+this actually would
+
+00:32:21.870 --> 00:32:24.970 align:middle line:90%
+be really difficult to learn.
+
+00:32:24.970 --> 00:32:29.850 align:middle line:84%
+So instead, maybe you would
+try something like a tanh.
+
+00:32:29.850 --> 00:32:33.930 align:middle line:84%
+So this is another
+pointwise non-linearity.
+
+00:32:33.930 --> 00:32:38.610 align:middle line:84%
+And it was one of the earliest
+ones that people looked at.
+
+00:32:38.610 --> 00:32:40.130 align:middle line:84%
+The things that
+are nice about this
+
+00:32:40.130 --> 00:32:42.970 align:middle line:84%
+is it's bounded between minus
+1 and 1, so none of the values
+
+00:32:42.970 --> 00:32:44.747 align:middle line:90%
+are super huge.
+
+00:32:44.747 --> 00:32:46.330 align:middle line:84%
+And you get saturation
+of the gradient
+
+00:32:46.330 --> 00:32:48.070 align:middle line:84%
+for super large or
+super small inputs.
+
+00:32:48.070 --> 00:32:51.550 align:middle line:84%
+You're not getting
+explosions necessarily.
+
+00:32:51.550 --> 00:32:53.450 align:middle line:84%
+But also, if you start
+out somewhere that's
+
+00:32:53.450 --> 00:32:55.010 align:middle line:84%
+really far from the
+center, you don't
+
+00:32:55.010 --> 00:32:58.170 align:middle line:84%
+have a lot of training signal
+because we're getting close to 0
+
+00:32:58.170 --> 00:32:59.730 align:middle line:90%
+in our gradient.
+
+00:32:59.730 --> 00:33:01.730 align:middle line:84%
+And so those
+gradients do go to 0
+
+00:33:01.730 --> 00:33:04.690 align:middle line:84%
+as we go to infinity
+in either direction.
+
+00:33:04.690 --> 00:33:07.610 align:middle line:90%
+The outputs are centered at 0.
+
+00:33:07.610 --> 00:33:12.370 align:middle line:84%
+So the tanh of z can also be
+written as 2 times the sigmoid
+
+00:33:12.370 --> 00:33:13.890 align:middle line:90%
+of 2z minus 1.
+
+00:33:13.890 --> 00:33:16.450 align:middle line:84%
+So let's look at what that
+sigmoid function looks like.
+
+00:33:16.450 --> 00:33:19.810 align:middle line:84%
+So in this case, this
+is a sigmoid, 1 over 1
+
+00:33:19.810 --> 00:33:25.090 align:middle line:84%
+plus e to the minus
+h or e to the minus--
+
+00:33:25.090 --> 00:33:26.400 align:middle line:90%
+the notation is wrong.
+
+00:33:26.400 --> 00:33:28.500 align:middle line:90%
+It should be minus z.
+
+00:33:28.500 --> 00:33:31.420 align:middle line:84%
+This can be interpreted as
+the firing rate of a neuron.
+
+00:33:31.420 --> 00:33:34.280 align:middle line:84%
+That was one interpretation
+of it initially.
+
+00:33:34.280 --> 00:33:38.580 align:middle line:84%
+It's bounded between 0 and
+1, so it's not ever negative.
+
+00:33:38.580 --> 00:33:40.620 align:middle line:84%
+Again, you have saturation
+of that gradient
+
+00:33:40.620 --> 00:33:43.460 align:middle line:84%
+for super large or
+super small inputs.
+
+00:33:43.460 --> 00:33:46.380 align:middle line:90%
+And all those gradients go to 0.
+
+00:33:46.380 --> 00:33:48.758 align:middle line:84%
+And the outputs themselves
+are centered around 0.5.
+
+00:33:48.758 --> 00:33:50.300 align:middle line:84%
+So this is kind of
+poor conditioning.
+
+00:33:50.300 --> 00:33:52.460 align:middle line:90%
+It's slightly biased.
+
+00:33:52.460 --> 00:33:55.140 align:middle line:84%
+In practice, we don't
+actually use this.
+
+00:33:55.140 --> 00:33:57.660 align:middle line:84%
+So instead, in
+practice, what we often
+
+00:33:57.660 --> 00:33:59.660 align:middle line:84%
+use is something called
+a rectified linear unit,
+
+00:33:59.660 --> 00:34:01.060 align:middle line:90%
+or a ReLU.
+
+00:34:01.060 --> 00:34:05.620 align:middle line:84%
+And this is just
+the max of 0 and z.
+
+00:34:05.620 --> 00:34:08.760 align:middle line:84%
+And this is unbounded
+on the positive side,
+
+00:34:08.760 --> 00:34:12.219 align:middle line:84%
+so it can go all the way to
+infinity, which can result in,
+
+00:34:12.219 --> 00:34:14.580 align:middle line:84%
+for example, sometimes things
+like exploding gradients,
+
+00:34:14.580 --> 00:34:16.460 align:middle line:84%
+because the values
+can get very large.
+
+00:34:16.460 --> 00:34:18.860 align:middle line:84%
+But it's super
+efficient to implement.
+
+00:34:18.860 --> 00:34:23.070 align:middle line:84%
+Essentially, the derivatives
+are just that step function.
+
+00:34:23.070 --> 00:34:25.860 align:middle line:84%
+And it also seems to help
+speed up convergence.
+
+00:34:25.860 --> 00:34:28.110 align:middle line:84%
+So in that Krizhevsky paper,
+they showed that they got
+
+00:34:28.110 --> 00:34:32.469 align:middle line:84%
+something like a 6x speed-up
+using a ReLU over using
+
+00:34:32.469 --> 00:34:34.830 align:middle line:84%
+something like a tanh in
+terms of converging that model
+
+00:34:34.830 --> 00:34:36.110 align:middle line:90%
+and learning.
+
+00:34:36.110 --> 00:34:39.050 align:middle line:84%
+The drawback is that if you're
+strongly in the negative region,
+
+00:34:39.050 --> 00:34:41.429 align:middle line:90%
+the unit's what we call dead.
+
+00:34:41.429 --> 00:34:44.429 align:middle line:84%
+There is no gradient,
+and so you essentially
+
+00:34:44.429 --> 00:34:46.750 align:middle line:84%
+have this gradient
+collapse, where
+
+00:34:46.750 --> 00:34:51.431 align:middle line:84%
+you can no longer learn from
+that component of the vector.
+
+00:34:51.431 --> 00:34:53.389 align:middle line:84%
+But this is our default
+choice, and it's widely
+
+00:34:53.389 --> 00:34:54.710 align:middle line:90%
+used in current models.
+
+00:34:54.710 --> 00:34:56.969 align:middle line:84%
+There's lots of
+slight tweaks to this,
+
+00:34:56.969 --> 00:34:59.870 align:middle line:84%
+but this is really,
+really common.
+
+00:34:59.870 --> 00:35:02.910 align:middle line:84%
+So then the last thing I want
+to talk about in this section
+
+00:35:02.910 --> 00:35:04.630 align:middle line:90%
+is stacking layers.
+
+00:35:04.630 --> 00:35:06.590 align:middle line:84%
+So we talked about
+a single version
+
+00:35:06.590 --> 00:35:09.590 align:middle line:84%
+of this, where you have
+your linear projection,
+
+00:35:09.590 --> 00:35:11.278 align:middle line:84%
+and then you have
+a non-linearity.
+
+00:35:11.278 --> 00:35:13.070 align:middle line:84%
+But now you can take
+that, and you can just
+
+00:35:13.070 --> 00:35:14.910 align:middle line:90%
+stack another one on top of it.
+
+00:35:14.910 --> 00:35:18.675 align:middle line:84%
+So now both z and
+h are hidden units.
+
+00:35:18.675 --> 00:35:20.550 align:middle line:84%
+They're somewhere in
+the middle of the model.
+
+00:35:20.550 --> 00:35:23.010 align:middle line:84%
+We don't necessarily--
+they're not seen
+
+00:35:23.010 --> 00:35:25.730 align:middle line:90%
+at the inputs or the outputs.
+
+00:35:25.730 --> 00:35:27.210 align:middle line:84%
+And essentially,
+then, you can also
+
+00:35:27.210 --> 00:35:28.850 align:middle line:84%
+remember that all
+of these things
+
+00:35:28.850 --> 00:35:32.450 align:middle line:84%
+are stacked on top of each
+other, almost in parallel
+
+00:35:32.450 --> 00:35:34.610 align:middle line:84%
+as well, because all of
+these inputs are mapping
+
+00:35:34.610 --> 00:35:37.090 align:middle line:84%
+to the different components
+of the output vector.
+
+00:35:37.090 --> 00:35:40.490 align:middle line:84%
+And so you have weights for all
+of those different dimensions.
+
+00:35:40.490 --> 00:35:45.010 align:middle line:84%
+So this means that h, our
+output of the first layer,
+
+00:35:45.010 --> 00:35:48.370 align:middle line:84%
+is going to be g, that
+pointwise non-linearity, applied
+
+00:35:48.370 --> 00:35:54.050 align:middle line:84%
+to now instead of vectorized
+w transpose x sub j to give us
+
+00:35:54.050 --> 00:35:57.370 align:middle line:84%
+the individual j-th component,
+you can actually just think
+
+00:35:57.370 --> 00:35:59.910 align:middle line:84%
+of this now as a matrix
+multiplied by a vector,
+
+00:35:59.910 --> 00:36:02.810 align:middle line:84%
+all of the weights for all
+of those different dimensions
+
+00:36:02.810 --> 00:36:06.810 align:middle line:84%
+multiplied by the vector x plus
+the vector of all your biases,
+
+00:36:06.810 --> 00:36:07.810 align:middle line:90%
+b1.
+
+00:36:07.810 --> 00:36:10.690 align:middle line:84%
+So now you have this
+cleaner notation.
+
+00:36:10.690 --> 00:36:15.450 align:middle line:84%
+And then now y is again g, that
+same pointwise non-linearity
+
+00:36:15.450 --> 00:36:20.060 align:middle line:84%
+applied on top of your
+outputs of your first thing,
+
+00:36:20.060 --> 00:36:23.780 align:middle line:84%
+but now with h, multiplied
+by that vector of all
+
+00:36:23.780 --> 00:36:26.060 align:middle line:84%
+your second-layer
+weights and added
+
+00:36:26.060 --> 00:36:28.020 align:middle line:84%
+with your second-layer
+bias term.
+
+00:36:28.020 --> 00:36:31.175 align:middle line:84%
+And so now, your set theta,
+your model representation,
+
+00:36:31.175 --> 00:36:33.300 align:middle line:84%
+is the set of all of the
+different weights from all
+
+00:36:33.300 --> 00:36:35.620 align:middle line:84%
+the different layers, as well as
+all the different biases in all
+
+00:36:35.620 --> 00:36:36.495 align:middle line:90%
+the different layers.
+
+00:36:36.495 --> 00:36:37.780 align:middle line:90%
+Oh, thank you.
+
+00:36:37.780 --> 00:36:38.280 align:middle line:90%
+Oh, yeah.
+
+00:36:38.280 --> 00:36:39.198 align:middle line:90%
+Thank you.
+
+00:36:39.198 --> 00:36:40.740 align:middle line:84%
+AUDIENCE: Based off
+your application,
+
+00:36:40.740 --> 00:36:42.600 align:middle line:84%
+how do you choose your
+activation function?
+
+00:36:42.600 --> 00:36:44.740 align:middle line:84%
+What are the parameters of
+what might be considered
+
+00:36:44.740 --> 00:36:49.380 align:middle line:84%
+a good model or, I guess,
+a good activation function
+
+00:36:49.380 --> 00:36:52.820 align:middle line:84%
+based off of what you want
+to use your model for?
+
+00:36:52.820 --> 00:36:54.760 align:middle line:84%
+SARA BEERY: So you're
+asking, in practice,
+
+00:36:54.760 --> 00:36:58.420 align:middle line:84%
+are there any best practices for
+choosing the non-linearity based
+
+00:36:58.420 --> 00:37:02.100 align:middle line:90%
+on different types of data.
+
+00:37:02.100 --> 00:37:03.940 align:middle line:84%
+I think in the literature,
+there's maybe--
+
+00:37:03.940 --> 00:37:06.120 align:middle line:90%
+you can see it coming out.
+
+00:37:06.120 --> 00:37:12.220 align:middle line:84%
+But often, people really
+do use ReLU quite a lot.
+
+00:37:12.220 --> 00:37:17.150 align:middle line:84%
+But I wouldn't say that there's
+any great general rules of thumb
+
+00:37:17.150 --> 00:37:17.710 align:middle line:90%
+there.
+
+00:37:17.710 --> 00:37:25.690 align:middle line:90%
+And often-- yeah.
+
+00:37:25.690 --> 00:37:27.190 align:middle line:84%
+I would say there's
+different things
+
+00:37:27.190 --> 00:37:30.650 align:middle line:84%
+that people have converged upon
+based on experimental success.
+
+00:37:30.650 --> 00:37:33.715 align:middle line:84%
+So you'll see in the
+literature like, oh, yeah,
+
+00:37:33.715 --> 00:37:35.590 align:middle line:84%
+everything in this line
+of work on these data
+
+00:37:35.590 --> 00:37:38.350 align:middle line:84%
+sets with these things,
+they're always using
+
+00:37:38.350 --> 00:37:40.650 align:middle line:90%
+one or the other component.
+
+00:37:40.650 --> 00:37:42.250 align:middle line:90%
+And then people build on that.
+
+00:37:42.250 --> 00:37:44.690 align:middle line:84%
+Sometimes that's called grad
+student gradient descent
+
+00:37:44.690 --> 00:37:47.310 align:middle line:84%
+[LAUGHS] because
+you're essentially
+
+00:37:47.310 --> 00:37:49.790 align:middle line:84%
+writing research papers and
+learning from those research
+
+00:37:49.790 --> 00:37:53.110 align:middle line:84%
+papers what parameters in terms
+of things like your activation
+
+00:37:53.110 --> 00:37:54.170 align:middle line:90%
+functions make sense.
+
+00:37:54.170 --> 00:37:57.830 align:middle line:84%
+But yeah, I don't know that
+I have great rules of thumb
+
+00:37:57.830 --> 00:37:59.470 align:middle line:84%
+of, oh, for this
+type of application,
+
+00:37:59.470 --> 00:38:02.790 align:middle line:84%
+you should always
+use this or that.
+
+00:38:02.790 --> 00:38:03.950 align:middle line:90%
+Do you?
+
+00:38:03.950 --> 00:38:05.710 align:middle line:84%
+AUDIENCE: Yeah, it's
+not a hard science.
+
+00:38:05.710 --> 00:38:06.608 align:middle line:90%
+SARA BEERY: Yeah.
+
+00:38:06.608 --> 00:38:08.150 align:middle line:84%
+AUDIENCE: But it's
+usually about what
+
+00:38:08.150 --> 00:38:10.910 align:middle line:84%
+makes the network more trainable
+rather than trying to model
+
+00:38:10.910 --> 00:38:12.550 align:middle line:90%
+a certain kind of data.
+
+00:38:12.550 --> 00:38:14.630 align:middle line:84%
+There are a couple of
+examples, like using
+
+00:38:14.630 --> 00:38:18.210 align:middle line:84%
+a sinusoidal non-linearity
+to pick out some for you,
+
+00:38:18.210 --> 00:38:19.130 align:middle line:90%
+if you'd like.
+
+00:38:19.130 --> 00:38:21.490 align:middle line:84%
+There are a few examples
+that do but usually not.
+
+00:38:21.490 --> 00:38:25.450 align:middle line:84%
+And [INAUDIBLE] does deep
+learning has a great answer
+
+00:38:25.450 --> 00:38:26.262 align:middle line:90%
+to that question.
+
+00:38:26.262 --> 00:38:26.970 align:middle line:90%
+SARA BEERY: Yeah.
+
+00:38:26.970 --> 00:38:28.370 align:middle line:84%
+So what Jeremy was
+saying is basically,
+
+00:38:28.370 --> 00:38:29.470 align:middle line:90%
+it's not a hard science.
+
+00:38:29.470 --> 00:38:31.450 align:middle line:84%
+We don't have
+theoretical guarantees
+
+00:38:31.450 --> 00:38:34.250 align:middle line:90%
+of this is what you should do.
+
+00:38:34.250 --> 00:38:36.190 align:middle line:84%
+But in practice,
+there are-- yeah,
+
+00:38:36.190 --> 00:38:38.325 align:middle line:90%
+there's counterexamples to that.
+
+00:38:38.325 --> 00:38:40.450 align:middle line:84%
+So if you know, for example,
+that your features are
+
+00:38:40.450 --> 00:38:43.370 align:middle line:84%
+sinusoidal, it maybe makes
+sense to try to pick out
+
+00:38:43.370 --> 00:38:44.630 align:middle line:90%
+Fourier representations.
+
+00:38:44.630 --> 00:38:46.130 align:middle line:84%
+You're working in
+the Fourier space,
+
+00:38:46.130 --> 00:38:49.530 align:middle line:84%
+then maybe you should use
+a sinusoidal activation.
+
+00:38:49.530 --> 00:38:52.710 align:middle line:84%
+Anyway, but yes, I wish that
+we better understood it.
+
+00:38:52.710 --> 00:38:55.650 align:middle line:84%
+And that's, I think, why
+we need a lot more research
+
+00:38:55.650 --> 00:38:57.610 align:middle line:84%
+on the theoretical
+side of understanding,
+
+00:38:57.610 --> 00:39:02.210 align:middle line:84%
+how do we actually choose
+these things appropriately
+
+00:39:02.210 --> 00:39:04.570 align:middle line:84%
+instead of maybe learning
+everything from scratch
+
+00:39:04.570 --> 00:39:07.710 align:middle line:84%
+or doing it experimentally,
+burning all those trees?
+
+00:39:07.710 --> 00:39:10.590 align:middle line:90%
+
+
+00:39:10.590 --> 00:39:11.090 align:middle line:90%
+Cool.
+
+00:39:11.090 --> 00:39:12.730 align:middle line:84%
+So the parameters
+of our model are now
+
+00:39:12.730 --> 00:39:14.188 align:middle line:84%
+all the different
+layers of weights
+
+00:39:14.188 --> 00:39:17.020 align:middle line:84%
+and all the different
+layers of biases.
+
+00:39:17.020 --> 00:39:20.060 align:middle line:84%
+And so like we said, you
+can do linear classification
+
+00:39:20.060 --> 00:39:21.040 align:middle line:90%
+with a perceptron.
+
+00:39:21.040 --> 00:39:23.020 align:middle line:90%
+But the fun thing is-- oops--
+
+00:39:23.020 --> 00:39:25.660 align:middle line:84%
+you can do non-linear
+classification with a deep net,
+
+00:39:25.660 --> 00:39:29.380 align:middle line:84%
+even if that deep net is
+just a two-layer perceptron.
+
+00:39:29.380 --> 00:39:33.340 align:middle line:84%
+So here, now we've built a
+double-layer model, still
+
+00:39:33.340 --> 00:39:34.480 align:middle line:90%
+only in two dimensions.
+
+00:39:34.480 --> 00:39:38.020 align:middle line:84%
+So now we have mapped
+through essentially just
+
+00:39:38.020 --> 00:39:40.500 align:middle line:84%
+this simple non-linearity
+in between these two
+
+00:39:40.500 --> 00:39:42.140 align:middle line:90%
+different layers.
+
+00:39:42.140 --> 00:39:44.020 align:middle line:84%
+Now if we look at
+what this looks like,
+
+00:39:44.020 --> 00:39:48.500 align:middle line:84%
+that first layer is giving
+us one kind of ramp.
+
+00:39:48.500 --> 00:39:50.540 align:middle line:84%
+The second layer gives
+us a different ramp
+
+00:39:50.540 --> 00:39:52.340 align:middle line:84%
+because it's a
+different linear model.
+
+00:39:52.340 --> 00:39:55.380 align:middle line:84%
+And now if you do this
+non-linear combination of them,
+
+00:39:55.380 --> 00:39:58.740 align:middle line:84%
+essentially what you get out
+is you can actually map--
+
+00:39:58.740 --> 00:40:01.780 align:middle line:84%
+it's almost like think about
+the intersection of one ramp
+
+00:40:01.780 --> 00:40:03.140 align:middle line:90%
+with another ramp.
+
+00:40:03.140 --> 00:40:07.460 align:middle line:84%
+You get a kind of triangular,
+almost a pyramidal component
+
+00:40:07.460 --> 00:40:10.520 align:middle line:84%
+that will be higher
+than everything else.
+
+00:40:10.520 --> 00:40:13.600 align:middle line:84%
+And so now you can still take
+a simple threshold of that,
+
+00:40:13.600 --> 00:40:16.237 align:middle line:84%
+and now you can get out a
+non-linear classification.
+
+00:40:16.237 --> 00:40:18.820 align:middle line:84%
+And, of course, you can expand
+this into many more dimensions.
+
+00:40:18.820 --> 00:40:21.680 align:middle line:84%
+But this is, I think, some
+nice, simple intuition building
+
+00:40:21.680 --> 00:40:25.640 align:middle line:84%
+as to why you start getting
+non-linear models when you're
+
+00:40:25.640 --> 00:40:30.600 align:middle line:84%
+taking linear combinations,
+but with these non-linearities.
+
+00:40:30.600 --> 00:40:31.320 align:middle line:90%
+Cool.
+
+00:40:31.320 --> 00:40:34.520 align:middle line:84%
+So another-- so we expect
+that you've seen a lot of that
+
+00:40:34.520 --> 00:40:35.400 align:middle line:90%
+before.
+
+00:40:35.400 --> 00:40:37.062 align:middle line:84%
+But moving forward,
+one of the things
+
+00:40:37.062 --> 00:40:38.520 align:middle line:84%
+we are going to
+cover in this class
+
+00:40:38.520 --> 00:40:41.120 align:middle line:90%
+is what we can approximate.
+
+00:40:41.120 --> 00:40:44.080 align:middle line:84%
+So what do we know about
+what is possible to
+
+00:40:44.080 --> 00:40:47.000 align:middle line:90%
+approximate with deep learning?
+
+00:40:47.000 --> 00:40:50.280 align:middle line:84%
+So one dimension of that
+is representational power.
+
+00:40:50.280 --> 00:40:52.000 align:middle line:90%
+So you have a single layer.
+
+00:40:52.000 --> 00:40:55.800 align:middle line:84%
+You can do any linear
+decision surface.
+
+00:40:55.800 --> 00:40:57.800 align:middle line:84%
+If you have 2-plus
+layers, in theory,
+
+00:40:57.800 --> 00:41:01.280 align:middle line:84%
+you can actually
+represent any function.
+
+00:41:01.280 --> 00:41:03.280 align:middle line:84%
+And this is assuming,
+of course, that you
+
+00:41:03.280 --> 00:41:05.040 align:middle line:84%
+have some non-trivial
+non-linearity
+
+00:41:05.040 --> 00:41:06.898 align:middle line:84%
+between those layers
+because if you don't
+
+00:41:06.898 --> 00:41:08.440 align:middle line:84%
+have that non-linearity,
+it turns out
+
+00:41:08.440 --> 00:41:11.520 align:middle line:84%
+that a linear layer and
+another linear layer, this
+
+00:41:11.520 --> 00:41:13.130 align:middle line:90%
+is just a linear combination.
+
+00:41:13.130 --> 00:41:14.210 align:middle line:90%
+It's still linear.
+
+00:41:14.210 --> 00:41:16.130 align:middle line:90%
+So you need that non-linearity.
+
+00:41:16.130 --> 00:41:18.750 align:middle line:84%
+But doing that, you can
+actually approximate anything.
+
+00:41:18.750 --> 00:41:20.210 align:middle line:84%
+And one way to
+think about it is,
+
+00:41:20.210 --> 00:41:24.970 align:middle line:84%
+given some amount of
+capacity, some number
+
+00:41:24.970 --> 00:41:28.350 align:middle line:84%
+of different dimensions
+that you can do,
+
+00:41:28.350 --> 00:41:30.470 align:middle line:84%
+you can actually
+approximate any function.
+
+00:41:30.470 --> 00:41:35.390 align:middle line:84%
+This is a rough,
+hand-wavy intuition thing.
+
+00:41:35.390 --> 00:41:44.843 align:middle line:84%
+But as you're shrinking the
+size of these different vertical
+
+00:41:44.843 --> 00:41:47.010 align:middle line:84%
+things, you're getting
+something like a Riemann sum.
+
+00:41:47.010 --> 00:41:48.610 align:middle line:84%
+You can approximate
+any integral as long
+
+00:41:48.610 --> 00:41:50.110 align:middle line:84%
+as you have enough
+capacity in terms
+
+00:41:50.110 --> 00:41:52.890 align:middle line:84%
+of the number of small things
+that you're building up.
+
+00:41:52.890 --> 00:41:57.450 align:middle line:84%
+So this gets at basically one of
+the issues, which is efficiency.
+
+00:41:57.450 --> 00:41:59.130 align:middle line:84%
+So in theory, you
+could approximate
+
+00:41:59.130 --> 00:42:03.490 align:middle line:84%
+any complicated function
+with a sufficiently wide
+
+00:42:03.490 --> 00:42:04.550 align:middle line:90%
+two-layer network.
+
+00:42:04.550 --> 00:42:06.970 align:middle line:84%
+So this means not two
+dimensions, maybe thousands
+
+00:42:06.970 --> 00:42:09.330 align:middle line:90%
+or millions of dimensions.
+
+00:42:09.330 --> 00:42:13.660 align:middle line:84%
+But in practice, that's
+actually very inefficient.
+
+00:42:13.660 --> 00:42:16.420 align:middle line:84%
+So a narrow deep
+model, maybe something
+
+00:42:16.420 --> 00:42:19.380 align:middle line:84%
+that only has much fewer
+dimensions in terms
+
+00:42:19.380 --> 00:42:22.360 align:middle line:84%
+of the size of each vector
+or each input and output,
+
+00:42:22.360 --> 00:42:25.420 align:middle line:84%
+but now many, many, many
+more stacked layers,
+
+00:42:25.420 --> 00:42:27.760 align:middle line:84%
+you might be able to, with
+a lot less parameters,
+
+00:42:27.760 --> 00:42:30.540 align:middle line:84%
+approximate the same
+complex function.
+
+00:42:30.540 --> 00:42:32.080 align:middle line:84%
+In practice, we do
+find that's true.
+
+00:42:32.080 --> 00:42:34.137 align:middle line:90%
+More layers helps.
+
+00:42:34.137 --> 00:42:36.220 align:middle line:84%
+And we'll get into this a
+little bit in lecture 3,
+
+00:42:36.220 --> 00:42:39.060 align:middle line:84%
+which is about approximation
+theory, the theory of what
+
+00:42:39.060 --> 00:42:41.482 align:middle line:90%
+it is possible to approximate.
+
+00:42:41.482 --> 00:42:42.940 align:middle line:84%
+And then the other
+thing that we're
+
+00:42:42.940 --> 00:42:45.420 align:middle line:84%
+going to cover in this
+class is architectures.
+
+00:42:45.420 --> 00:42:47.640 align:middle line:84%
+So when we talk
+about deep networks,
+
+00:42:47.640 --> 00:42:50.420 align:middle line:84%
+really, often, we're talking
+about something that's roughly
+
+00:42:50.420 --> 00:42:54.520 align:middle line:84%
+like this, some cascade of
+repeated simple computations,
+
+00:42:54.520 --> 00:42:56.860 align:middle line:84%
+each of these linear
+and then linear models
+
+00:42:56.860 --> 00:42:58.740 align:middle line:90%
+with a non-linearity.
+
+00:42:58.740 --> 00:43:00.540 align:middle line:84%
+And then with every
+increasing layer,
+
+00:43:00.540 --> 00:43:03.120 align:middle line:84%
+we're getting more
+abstracted representations.
+
+00:43:03.120 --> 00:43:05.740 align:middle line:84%
+You're getting a
+higher capacity model.
+
+00:43:05.740 --> 00:43:08.380 align:middle line:84%
+And this means it can form
+more complex and abstract
+
+00:43:08.380 --> 00:43:09.620 align:middle line:90%
+calculations.
+
+00:43:09.620 --> 00:43:13.660 align:middle line:84%
+Whereas a shallow network, if
+it's not sufficiently wide,
+
+00:43:13.660 --> 00:43:16.800 align:middle line:84%
+it could maybe only efficiently
+compute simple things
+
+00:43:16.800 --> 00:43:19.135 align:middle line:84%
+like maybe finding
+edges, a deep network
+
+00:43:19.135 --> 00:43:20.760 align:middle line:84%
+could efficiently
+compute harder things
+
+00:43:20.760 --> 00:43:24.640 align:middle line:84%
+like recognizing this clownfish
+or translating English
+
+00:43:24.640 --> 00:43:27.080 align:middle line:90%
+to Chinese.
+
+00:43:27.080 --> 00:43:29.760 align:middle line:84%
+And so this classification
+of complex things,
+
+00:43:29.760 --> 00:43:31.360 align:middle line:84%
+essentially, your
+whole function f
+
+00:43:31.360 --> 00:43:36.440 align:middle line:84%
+of x is now this stacked
+or almost chain-like
+
+00:43:36.440 --> 00:43:39.280 align:middle line:84%
+mapping from your final
+layer, which is then
+
+00:43:39.280 --> 00:43:42.400 align:middle line:84%
+a functional mapping
+of your previous layer,
+
+00:43:42.400 --> 00:43:46.160 align:middle line:84%
+and in and in and in and in,
+all the way back to that input.
+
+00:43:46.160 --> 00:43:47.720 align:middle line:84%
+And there's a lot
+of different ways
+
+00:43:47.720 --> 00:43:49.680 align:middle line:84%
+that we've learned to
+build these mappings
+
+00:43:49.680 --> 00:43:52.080 align:middle line:84%
+for different types
+of problems and based
+
+00:43:52.080 --> 00:43:54.260 align:middle line:84%
+on the structure of the
+data we're trying to model.
+
+00:43:54.260 --> 00:43:55.260 align:middle line:90%
+And we'll get into that.
+
+00:43:55.260 --> 00:43:58.540 align:middle line:84%
+We'll talk about CNNs, GNNs,
+transformers, and RNNs,
+
+00:43:58.540 --> 00:44:01.440 align:middle line:84%
+so convolutional neural
+networks, graph neural networks,
+
+00:44:01.440 --> 00:44:05.182 align:middle line:84%
+transformers, and
+recurrent neural networks.
+
+00:44:05.182 --> 00:44:06.640 align:middle line:84%
+And then the other
+thing that we're
+
+00:44:06.640 --> 00:44:08.265 align:middle line:84%
+going to be talking
+about in this class
+
+00:44:08.265 --> 00:44:12.250 align:middle line:84%
+is when and why
+we can generalize.
+
+00:44:12.250 --> 00:44:13.950 align:middle line:90%
+So why do deep nets generalize?
+
+00:44:13.950 --> 00:44:15.930 align:middle line:84%
+Essentially, deep nets
+have so many parameters,
+
+00:44:15.930 --> 00:44:18.190 align:middle line:84%
+they could just act
+like lookup tables.
+
+00:44:18.190 --> 00:44:20.350 align:middle line:84%
+They would just regurgitate
+the training data.
+
+00:44:20.350 --> 00:44:23.070 align:middle line:84%
+But instead, they seem to
+learn rules that generalize.
+
+00:44:23.070 --> 00:44:25.110 align:middle line:84%
+And this actually
+defies classical theory.
+
+00:44:25.110 --> 00:44:27.850 align:middle line:84%
+So the classical
+theory basically
+
+00:44:27.850 --> 00:44:31.710 align:middle line:84%
+says that if your model
+is overparameterized,
+
+00:44:31.710 --> 00:44:33.030 align:middle line:90%
+it will overfit.
+
+00:44:33.030 --> 00:44:37.570 align:middle line:84%
+There's this capacity
+versus risk or error curve
+
+00:44:37.570 --> 00:44:40.070 align:middle line:84%
+where if you don't
+have enough capacity,
+
+00:44:40.070 --> 00:44:41.770 align:middle line:84%
+you're going to
+underfit the model.
+
+00:44:41.770 --> 00:44:44.810 align:middle line:84%
+And then with too much capacity,
+you're going to overfit.
+
+00:44:44.810 --> 00:44:47.570 align:middle line:84%
+But in practice-- and this
+is from this paper "Double
+
+00:44:47.570 --> 00:44:48.850 align:middle line:90%
+Descent"--
+
+00:44:48.850 --> 00:44:53.610 align:middle line:84%
+what we see is that in this
+modern interpolating regime,
+
+00:44:53.610 --> 00:44:56.510 align:middle line:84%
+we go past that point of
+being overparameterized,
+
+00:44:56.510 --> 00:44:59.330 align:middle line:84%
+and we're actually then
+able to actually pass
+
+00:44:59.330 --> 00:45:01.450 align:middle line:84%
+some interpolation
+threshold or ability
+
+00:45:01.450 --> 00:45:03.090 align:middle line:84%
+to have enough
+capacity in the model
+
+00:45:03.090 --> 00:45:05.270 align:middle line:84%
+to interpolate between
+the data points.
+
+00:45:05.270 --> 00:45:08.460 align:middle line:84%
+We're actually able to then
+potentially get even better,
+
+00:45:08.460 --> 00:45:10.760 align:middle line:84%
+even though the models are
+massively overparameterized.
+
+00:45:10.760 --> 00:45:11.355 align:middle line:90%
+Yeah.
+
+00:45:11.355 --> 00:45:12.980 align:middle line:84%
+AUDIENCE: What do
+you mean by capacity?
+
+00:45:12.980 --> 00:45:13.980 align:middle line:84%
+SARA BEERY: Capacity
+is the number
+
+00:45:13.980 --> 00:45:15.440 align:middle line:90%
+of parameters in the model.
+
+00:45:15.440 --> 00:45:17.380 align:middle line:84%
+So that's both the
+width and the depth,
+
+00:45:17.380 --> 00:45:22.140 align:middle line:84%
+basically how many values are
+captured in those model weights?
+
+00:45:22.140 --> 00:45:23.500 align:middle line:90%
+Yeah.
+
+00:45:23.500 --> 00:45:26.180 align:middle line:90%
+Yeah.
+
+00:45:26.180 --> 00:45:27.900 align:middle line:90%
+Yes, thank you.
+
+00:45:27.900 --> 00:45:31.420 align:middle line:84%
+AUDIENCE: And how does that
+relate to the size of the data
+
+00:45:31.420 --> 00:45:33.140 align:middle line:90%
+samples that you're passing?
+
+00:45:33.140 --> 00:45:34.580 align:middle line:90%
+SARA BEERY: Yeah.
+
+00:45:34.580 --> 00:45:38.240 align:middle line:84%
+So that is not a
+dimension on this plot,
+
+00:45:38.240 --> 00:45:39.920 align:middle line:84%
+but it definitely
+is also related.
+
+00:45:39.920 --> 00:45:42.980 align:middle line:84%
+So if you have--
+but it's related
+
+00:45:42.980 --> 00:45:44.500 align:middle line:90%
+in a different dimension.
+
+00:45:44.500 --> 00:45:47.420 align:middle line:84%
+If you're learning
+from fewer data points,
+
+00:45:47.420 --> 00:45:51.760 align:middle line:84%
+it's very easy to learn to maybe
+overfit to those data points.
+
+00:45:51.760 --> 00:45:54.760 align:middle line:84%
+So you could think of that
+honestly, in another way,
+
+00:45:54.760 --> 00:45:57.100 align:middle line:84%
+maybe as being a different
+dimension of capacity here,
+
+00:45:57.100 --> 00:45:59.720 align:middle line:84%
+where it's like almost the
+capacity of your training data.
+
+00:45:59.720 --> 00:46:02.403 align:middle line:84%
+But, of course, there's
+not a direct translation.
+
+00:46:02.403 --> 00:46:04.320 align:middle line:84%
+But so if you don't have
+enough training data,
+
+00:46:04.320 --> 00:46:06.570 align:middle line:84%
+you also can't learn to
+interpolate between those data
+
+00:46:06.570 --> 00:46:09.960 align:middle line:84%
+points because you don't have
+enough coverage of the data
+
+00:46:09.960 --> 00:46:12.255 align:middle line:90%
+distribution.
+
+00:46:12.255 --> 00:46:13.380 align:middle line:90%
+I live in that world a lot.
+
+00:46:13.380 --> 00:46:16.680 align:middle line:84%
+We often don't have
+enough data to learn
+
+00:46:16.680 --> 00:46:19.820 align:middle line:84%
+a general representation
+without a lot of handy tricks.
+
+00:46:19.820 --> 00:46:22.000 align:middle line:84%
+We will talk about some
+of those different tricks
+
+00:46:22.000 --> 00:46:23.708 align:middle line:84%
+in this class, some
+of the different ways
+
+00:46:23.708 --> 00:46:26.800 align:middle line:84%
+that we try to convince
+models not to overfit to data
+
+00:46:26.800 --> 00:46:30.560 align:middle line:84%
+and try to learn to
+generalize beyond maybe what
+
+00:46:30.560 --> 00:46:31.992 align:middle line:90%
+is captured in the data.
+
+00:46:31.992 --> 00:46:33.950 align:middle line:84%
+But I think that dimension
+is really important,
+
+00:46:33.950 --> 00:46:36.240 align:middle line:84%
+and it's one of the
+reasons that none of this
+
+00:46:36.240 --> 00:46:39.160 align:middle line:84%
+was possible until we started
+building big enough data sets,
+
+00:46:39.160 --> 00:46:41.360 align:middle line:84%
+where you had enough
+coverage of the space
+
+00:46:41.360 --> 00:46:43.520 align:middle line:84%
+that you wanted to
+model in your data
+
+00:46:43.520 --> 00:46:46.460 align:middle line:84%
+to be able to start
+interpolating between them.
+
+00:46:46.460 --> 00:46:46.960 align:middle line:90%
+Yeah.
+
+00:46:46.960 --> 00:46:48.835 align:middle line:84%
+AUDIENCE: Can you just
+clarify the difference
+
+00:46:48.835 --> 00:46:51.520 align:middle line:84%
+between overfitting
+and overparameterized?
+
+00:46:51.520 --> 00:46:54.420 align:middle line:90%
+SARA BEERY: Oh, yeah.
+
+00:46:54.420 --> 00:46:55.920 align:middle line:84%
+So, I mean, I think
+this paper would
+
+00:46:55.920 --> 00:46:58.220 align:middle line:84%
+be great to read to be
+able to really get into it.
+
+00:46:58.220 --> 00:47:00.720 align:middle line:84%
+But essentially,
+the idea here is
+
+00:47:00.720 --> 00:47:02.280 align:middle line:84%
+that in the previous
+literature, we
+
+00:47:02.280 --> 00:47:06.270 align:middle line:84%
+said that at some point, if
+you had too many parameters,
+
+00:47:06.270 --> 00:47:09.450 align:middle line:84%
+you were going to overfit and
+learn a model that actually
+
+00:47:09.450 --> 00:47:12.490 align:middle line:84%
+generalized worse because based
+on the amount of data that you
+
+00:47:12.490 --> 00:47:17.010 align:middle line:84%
+had, it was going to-- there's a
+classical example where you have
+
+00:47:17.010 --> 00:47:18.510 align:middle line:90%
+three data points.
+
+00:47:18.510 --> 00:47:23.513 align:middle line:84%
+And if you try to learn a
+12-dimensional function,
+
+00:47:23.513 --> 00:47:25.930 align:middle line:84%
+it will learn something like
+this to fit those data points
+
+00:47:25.930 --> 00:47:26.510 align:middle line:90%
+perfectly.
+
+00:47:26.510 --> 00:47:28.690 align:middle line:84%
+But actually, it's not
+likely to generalize
+
+00:47:28.690 --> 00:47:32.170 align:middle line:84%
+because it's basically
+too spiky or too peaky.
+
+00:47:32.170 --> 00:47:34.250 align:middle line:84%
+So that's the idea
+of overfitting.
+
+00:47:34.250 --> 00:47:36.370 align:middle line:84%
+But this idea of
+overparameterized
+
+00:47:36.370 --> 00:47:39.450 align:middle line:84%
+is basically instead of saying
+underfitting and overfitting,
+
+00:47:39.450 --> 00:47:42.090 align:middle line:84%
+now we're saying that the new
+paradigm is underparametrized
+
+00:47:42.090 --> 00:47:43.630 align:middle line:90%
+and overparameterized.
+
+00:47:43.630 --> 00:47:45.410 align:middle line:84%
+And what they're
+basically saying
+
+00:47:45.410 --> 00:47:50.370 align:middle line:84%
+is that you maybe can't
+be too overparameterized,
+
+00:47:50.370 --> 00:47:53.570 align:middle line:84%
+though this perspective
+is one that doesn't
+
+00:47:53.570 --> 00:47:56.010 align:middle line:90%
+take into account resources.
+
+00:47:56.010 --> 00:48:00.370 align:middle line:84%
+So there's many, many
+people and places and places
+
+00:48:00.370 --> 00:48:02.970 align:middle line:84%
+that are at MIT, but even
+actually in this class,
+
+00:48:02.970 --> 00:48:05.245 align:middle line:84%
+where we don't have
+infinite compute resources.
+
+00:48:05.245 --> 00:48:06.620 align:middle line:84%
+So actually, what
+you really want
+
+00:48:06.620 --> 00:48:08.820 align:middle line:84%
+is some optimal point
+on this curve where
+
+00:48:08.820 --> 00:48:12.380 align:middle line:84%
+you get good performance,
+but you're not maybe
+
+00:48:12.380 --> 00:48:14.140 align:middle line:84%
+using resources
+that you don't have,
+
+00:48:14.140 --> 00:48:17.460 align:middle line:90%
+super, super large memory GPUs.
+
+00:48:17.460 --> 00:48:19.260 align:middle line:90%
+Yeah?
+
+00:48:19.260 --> 00:48:21.100 align:middle line:84%
+AUDIENCE: When you gave
+the example of using
+
+00:48:21.100 --> 00:48:24.860 align:middle line:84%
+two very wide layers versus
+multiple narrow ones,
+
+00:48:24.860 --> 00:48:27.680 align:middle line:84%
+[INAUDIBLE] there's
+a rule of thumb about
+
+00:48:27.680 --> 00:48:30.420 align:middle line:84%
+which is better for about
+the interpretability
+
+00:48:30.420 --> 00:48:31.700 align:middle line:90%
+between the two?
+
+00:48:31.700 --> 00:48:33.260 align:middle line:90%
+SARA BEERY: Yeah.
+
+00:48:33.260 --> 00:48:35.100 align:middle line:84%
+OK, we're definitely
+going to get
+
+00:48:35.100 --> 00:48:38.260 align:middle line:84%
+into this a lot more in
+some of the later lectures,
+
+00:48:38.260 --> 00:48:44.500 align:middle line:84%
+these choices between breadth
+versus depth in models.
+
+00:48:44.500 --> 00:48:47.920 align:middle line:84%
+But at a very high
+level, your intuition,
+
+00:48:47.920 --> 00:48:50.580 align:middle line:84%
+I think, that you're
+getting at is correct.
+
+00:48:50.580 --> 00:48:54.602 align:middle line:90%
+If you have only two layers--
+
+00:48:54.602 --> 00:48:56.060 align:middle line:84%
+actually, maybe
+not, because if you
+
+00:48:56.060 --> 00:48:59.080 align:middle line:84%
+have two almost infinite
+parameter layers,
+
+00:48:59.080 --> 00:49:02.540 align:middle line:84%
+really, really high dimensional
+space is hard to interpret.
+
+00:49:02.540 --> 00:49:06.600 align:middle line:84%
+If you have lower dimensional
+space over many, many different
+
+00:49:06.600 --> 00:49:09.580 align:middle line:84%
+now stacked versions
+of these layers,
+
+00:49:09.580 --> 00:49:11.140 align:middle line:90%
+it's also hard to interpret.
+
+00:49:11.140 --> 00:49:14.840 align:middle line:84%
+So I would say like in ecology,
+for example, people often
+
+00:49:14.840 --> 00:49:16.520 align:middle line:84%
+still use just
+generative additive
+
+00:49:16.520 --> 00:49:18.575 align:middle line:84%
+models of a bunch of
+different linear things
+
+00:49:18.575 --> 00:49:20.200 align:middle line:84%
+because they need
+the interpretability,
+
+00:49:20.200 --> 00:49:22.680 align:middle line:90%
+or they feel like they do.
+
+00:49:22.680 --> 00:49:25.920 align:middle line:84%
+And anytime you get
+to larger numbers
+
+00:49:25.920 --> 00:49:29.000 align:middle line:84%
+of parameters in either
+dimension, that interpretability
+
+00:49:29.000 --> 00:49:31.265 align:middle line:90%
+gets more difficult.
+
+00:49:31.265 --> 00:49:32.640 align:middle line:84%
+AUDIENCE: I was
+just going to add
+
+00:49:32.640 --> 00:49:38.440 align:middle line:84%
+that even in, let's say OpenAI,
+it's a closely guarded secret
+
+00:49:38.440 --> 00:49:40.720 align:middle line:84%
+what recipe of
+width versus depth
+
+00:49:40.720 --> 00:49:43.760 align:middle line:90%
+that they use in GPT whatever.
+
+00:49:43.760 --> 00:49:46.000 align:middle line:84%
+If you can come up with
+a really scientific way
+
+00:49:46.000 --> 00:49:48.240 align:middle line:84%
+to answer that question,
+you could go and get
+
+00:49:48.240 --> 00:49:49.040 align:middle line:90%
+a job there and--
+
+00:49:49.040 --> 00:49:50.660 align:middle line:90%
+SARA BEERY: Make 7 figures.
+
+00:49:50.660 --> 00:49:51.600 align:middle line:90%
+[LAUGHS]
+
+00:49:51.600 --> 00:49:52.603 align:middle line:90%
+AUDIENCE: [INAUDIBLE]
+
+00:49:52.603 --> 00:49:54.520 align:middle line:84%
+SARA BEERY: Yeah, so
+what Jeremy is saying is,
+
+00:49:54.520 --> 00:49:58.080 align:middle line:84%
+there's no perfect prescription
+or recipe for width versus depth
+
+00:49:58.080 --> 00:49:59.520 align:middle line:90%
+and what's optimal.
+
+00:49:59.520 --> 00:50:02.010 align:middle line:90%
+Yeah.
+
+00:50:02.010 --> 00:50:05.410 align:middle line:84%
+So the simplicity hypothesis
+in classical theory
+
+00:50:05.410 --> 00:50:08.570 align:middle line:84%
+basically says that big models
+learn complicated functions
+
+00:50:08.570 --> 00:50:09.990 align:middle line:90%
+and overfit the data.
+
+00:50:09.990 --> 00:50:13.450 align:middle line:84%
+And the emerging theory is
+that deep networks actually
+
+00:50:13.450 --> 00:50:16.027 align:middle line:84%
+learn simple functions
+that generalize.
+
+00:50:16.027 --> 00:50:18.610 align:middle line:84%
+And we're going to talk about
+this a lot more in a theoretical
+
+00:50:18.610 --> 00:50:21.510 align:middle line:84%
+and a more experimental
+lecture around generalization,
+
+00:50:21.510 --> 00:50:24.570 align:middle line:90%
+both in and out of distribution.
+
+00:50:24.570 --> 00:50:26.490 align:middle line:84%
+So again, what I've
+expected you to see
+
+00:50:26.490 --> 00:50:29.970 align:middle line:84%
+before-- softmax,
+cross-entropy loss-- basically,
+
+00:50:29.970 --> 00:50:32.222 align:middle line:84%
+we have this model
+that we're trying
+
+00:50:32.222 --> 00:50:34.430 align:middle line:84%
+to use to learn to classify
+something like clownfish.
+
+00:50:34.430 --> 00:50:37.778 align:middle line:84%
+And we assume that we've seen
+some of these really basic loss
+
+00:50:37.778 --> 00:50:39.070 align:middle line:90%
+functions that we use for this.
+
+00:50:39.070 --> 00:50:43.210 align:middle line:84%
+So for example, if you have
+this as your last layer,
+
+00:50:43.210 --> 00:50:45.010 align:middle line:84%
+and now you have some
+set of categories
+
+00:50:45.010 --> 00:50:47.370 align:middle line:84%
+you're trying to learn
+to categorize over,
+
+00:50:47.370 --> 00:50:49.770 align:middle line:84%
+the simple version of this
+is you take the argmax,
+
+00:50:49.770 --> 00:50:52.490 align:middle line:84%
+and you say, OK, well, the
+thing that's darkest on here
+
+00:50:52.490 --> 00:50:54.450 align:middle line:90%
+is clownfish.
+
+00:50:54.450 --> 00:50:57.130 align:middle line:84%
+And then the loss that
+you would calculate
+
+00:50:57.130 --> 00:51:01.600 align:middle line:84%
+is, OK, the actual correct
+ground truth label is clownfish,
+
+00:51:01.600 --> 00:51:04.460 align:middle line:84%
+and then the error between those
+two, in this case, is zero.
+
+00:51:04.460 --> 00:51:05.400 align:middle line:90%
+So it's small.
+
+00:51:05.400 --> 00:51:08.860 align:middle line:84%
+So you've gotten the
+correct prediction.
+
+00:51:08.860 --> 00:51:12.300 align:middle line:84%
+And then maybe, actually,
+the real ground truth label
+
+00:51:12.300 --> 00:51:14.718 align:middle line:84%
+is grizzly bear, and
+you've said clownfish.
+
+00:51:14.718 --> 00:51:16.760 align:middle line:84%
+Now what you'd want is
+for your loss to be large.
+
+00:51:16.760 --> 00:51:18.580 align:middle line:84%
+So you want some
+loss function that
+
+00:51:18.580 --> 00:51:21.340 align:middle line:84%
+does a good job of punishing
+you when you're wrong
+
+00:51:21.340 --> 00:51:24.660 align:middle line:84%
+and not punishing you
+when you're right.
+
+00:51:24.660 --> 00:51:26.620 align:middle line:84%
+And the way we
+actually do this often
+
+00:51:26.620 --> 00:51:31.320 align:middle line:84%
+is if you assume the net output
+is some normalized vector,
+
+00:51:31.320 --> 00:51:33.380 align:middle line:84%
+then you can think of
+this as a probability
+
+00:51:33.380 --> 00:51:37.300 align:middle line:84%
+distribution over different
+possible object classes.
+
+00:51:37.300 --> 00:51:39.720 align:middle line:84%
+And so what you want this
+loss function on the right,
+
+00:51:39.720 --> 00:51:42.020 align:middle line:84%
+this is called
+cross-entropy loss.
+
+00:51:42.020 --> 00:51:43.980 align:middle line:84%
+This essentially
+indicates the distance
+
+00:51:43.980 --> 00:51:47.740 align:middle line:84%
+between what the model believes
+the output distribution should
+
+00:51:47.740 --> 00:51:50.760 align:middle line:84%
+be and what the input
+distribution actually is,
+
+00:51:50.760 --> 00:51:53.840 align:middle line:84%
+which in this case is what
+we call a one hot encoding,
+
+00:51:53.840 --> 00:51:56.860 align:middle line:84%
+or essentially a vector that's 0
+everywhere except for the place
+
+00:51:56.860 --> 00:51:59.238 align:middle line:84%
+where it's correct,
+where it's 1.
+
+00:51:59.238 --> 00:52:01.280 align:middle line:84%
+And so essentially, it's
+just telling the network
+
+00:52:01.280 --> 00:52:04.400 align:middle line:84%
+to maximize the probability
+of the training data, which
+
+00:52:04.400 --> 00:52:07.200 align:middle line:84%
+forces the output to be a
+reasonably good probability
+
+00:52:07.200 --> 00:52:09.940 align:middle line:84%
+model of the object
+class, given the image,
+
+00:52:09.940 --> 00:52:12.280 align:middle line:84%
+assuming you have
+enough training data.
+
+00:52:12.280 --> 00:52:15.140 align:middle line:84%
+So what this looks like in
+practice, you say clownfish,
+
+00:52:15.140 --> 00:52:17.960 align:middle line:84%
+the ground truth
+label is clownfish.
+
+00:52:17.960 --> 00:52:22.600 align:middle line:84%
+Maybe this is your
+prediction, so now the score
+
+00:52:22.600 --> 00:52:24.720 align:middle line:84%
+is basically saying,
+this is how much better
+
+00:52:24.720 --> 00:52:27.040 align:middle line:90%
+you could have done--
+
+00:52:27.040 --> 00:52:28.740 align:middle line:84%
+how much better you
+could have done,
+
+00:52:28.740 --> 00:52:31.760 align:middle line:84%
+which is the difference between
+the amount of probability
+
+00:52:31.760 --> 00:52:33.000 align:middle line:90%
+you gave the class clownfish.
+
+00:52:33.000 --> 00:52:34.420 align:middle line:84%
+I'm putting probability
+in quotes here.
+
+00:52:34.420 --> 00:52:35.880 align:middle line:84%
+It's super important to
+know that these are not
+
+00:52:35.880 --> 00:52:36.900 align:middle line:90%
+true probabilities.
+
+00:52:36.900 --> 00:52:39.360 align:middle line:90%
+They're scores.
+
+00:52:39.360 --> 00:52:42.360 align:middle line:84%
+And then that red
+is the dimension
+
+00:52:42.360 --> 00:52:43.473 align:middle line:90%
+that you could do better.
+
+00:52:43.473 --> 00:52:45.640 align:middle line:84%
+And that's telling you the
+direction of the gradient
+
+00:52:45.640 --> 00:52:47.960 align:middle line:90%
+you want to go in.
+
+00:52:47.960 --> 00:52:50.780 align:middle line:84%
+So maybe grizzly bear,
+you got it correct.
+
+00:52:50.780 --> 00:52:51.620 align:middle line:90%
+It's grizzly bear.
+
+00:52:51.620 --> 00:52:58.000 align:middle line:84%
+Now the amount that's left
+over is small versus actually
+
+00:52:58.000 --> 00:53:02.487 align:middle line:84%
+if it's chameleon, and
+you're saying iguana.
+
+00:53:02.487 --> 00:53:04.070 align:middle line:84%
+Essentially, this
+thing is normalized,
+
+00:53:04.070 --> 00:53:06.330 align:middle line:84%
+so if you put a lot more
+probability on one thing, then
+
+00:53:06.330 --> 00:53:07.788 align:middle line:84%
+the correct answer,
+then you end up
+
+00:53:07.788 --> 00:53:10.330 align:middle line:84%
+with a much smaller amount
+that now you're looking
+
+00:53:10.330 --> 00:53:12.810 align:middle line:90%
+at the difference between it.
+
+00:53:12.810 --> 00:53:16.170 align:middle line:84%
+And basically, the idea with
+all of this in deep learning
+
+00:53:16.170 --> 00:53:18.730 align:middle line:84%
+is you're taking all
+these different weights
+
+00:53:18.730 --> 00:53:23.170 align:middle line:84%
+in your massive model, and then
+you're fiddling around with them
+
+00:53:23.170 --> 00:53:25.170 align:middle line:84%
+until you match the
+desired output for all
+
+00:53:25.170 --> 00:53:26.410 align:middle line:90%
+your training data.
+
+00:53:26.410 --> 00:53:29.650 align:middle line:84%
+You're basically just
+wiggling around all
+
+00:53:29.650 --> 00:53:30.810 align:middle line:90%
+these different weights.
+
+00:53:30.810 --> 00:53:33.390 align:middle line:84%
+So you're going through
+your training data,
+
+00:53:33.390 --> 00:53:36.250 align:middle line:84%
+you're predicting something,
+you're calculating a loss,
+
+00:53:36.250 --> 00:53:38.995 align:middle line:84%
+and you're doing this for
+many different data samples.
+
+00:53:38.995 --> 00:53:40.370 align:middle line:84%
+And you're doing
+it over and over
+
+00:53:40.370 --> 00:53:42.330 align:middle line:84%
+and over again until the
+model gets everything
+
+00:53:42.330 --> 00:53:46.930 align:middle line:84%
+right, or as close to
+everything right as possible.
+
+00:53:46.930 --> 00:53:48.810 align:middle line:84%
+We also expect that
+you've seen some amount
+
+00:53:48.810 --> 00:53:52.370 align:middle line:84%
+of parallel processing and the
+idea of tensors before this.
+
+00:53:52.370 --> 00:53:54.570 align:middle line:84%
+So this is the idea that
+a lot of this stuff,
+
+00:53:54.570 --> 00:53:56.950 align:middle line:84%
+because it's repeated
+calculations,
+
+00:53:56.950 --> 00:53:58.310 align:middle line:90%
+you can be done in batch.
+
+00:53:58.310 --> 00:54:01.430 align:middle line:84%
+So each of these individual
+losses for the individual data
+
+00:54:01.430 --> 00:54:03.722 align:middle line:84%
+points, well, it's all
+going to be summed anyway.
+
+00:54:03.722 --> 00:54:05.430 align:middle line:84%
+So you can do it in
+parallel, and now you
+
+00:54:05.430 --> 00:54:09.950 align:middle line:84%
+can take these batches and more
+efficiently calculate that sum.
+
+00:54:09.950 --> 00:54:13.950 align:middle line:84%
+And so look, you take the same
+layer for all three of these,
+
+00:54:13.950 --> 00:54:16.310 align:middle line:84%
+you can stack them,
+and now essentially you
+
+00:54:16.310 --> 00:54:20.470 align:middle line:84%
+get this matrix that's
+features multiplied by images.
+
+00:54:20.470 --> 00:54:22.630 align:middle line:84%
+And so that's what
+your tensors are.
+
+00:54:22.630 --> 00:54:24.550 align:middle line:84%
+They're these
+multi-dimensional arrays,
+
+00:54:24.550 --> 00:54:26.910 align:middle line:84%
+and every single layer
+is some representation
+
+00:54:26.910 --> 00:54:29.230 align:middle line:90%
+of the input data.
+
+00:54:29.230 --> 00:54:31.090 align:middle line:84%
+And actually,
+everything is a tensor.
+
+00:54:31.090 --> 00:54:33.470 align:middle line:84%
+A tensor is just a
+multi-dimensional matrix.
+
+00:54:33.470 --> 00:54:36.990 align:middle line:84%
+So you can say, OK, here's our
+mathematical representation
+
+00:54:36.990 --> 00:54:38.190 align:middle line:90%
+of this model.
+
+00:54:38.190 --> 00:54:40.810 align:middle line:84%
+But you can also just
+represent it this way.
+
+00:54:40.810 --> 00:54:44.650 align:middle line:84%
+You have these vectors of
+your different input values,
+
+00:54:44.650 --> 00:54:46.330 align:middle line:84%
+and now you have
+your batch dimension,
+
+00:54:46.330 --> 00:54:49.610 align:middle line:84%
+which is now this vertical
+stacking of all those layers.
+
+00:54:49.610 --> 00:54:52.070 align:middle line:84%
+And now you multiply that
+by your weights matrix,
+
+00:54:52.070 --> 00:54:53.790 align:middle line:84%
+and you get out your
+output, and then
+
+00:54:53.790 --> 00:54:55.810 align:middle line:84%
+you run that through a
+pointwise non-linearity,
+
+00:54:55.810 --> 00:54:58.460 align:middle line:84%
+and then again, just another
+matrix multiplication.
+
+00:54:58.460 --> 00:55:00.480 align:middle line:84%
+And then you get your
+output z2, and then you
+
+00:55:00.480 --> 00:55:02.320 align:middle line:84%
+take that non-linearity,
+and you get y.
+
+00:55:02.320 --> 00:55:05.480 align:middle line:84%
+So this is why
+the fact that GPUs
+
+00:55:05.480 --> 00:55:07.480 align:middle line:84%
+can do so many
+multiplications in parallel
+
+00:55:07.480 --> 00:55:10.640 align:middle line:84%
+was important, because we can
+rewrite all of these models
+
+00:55:10.640 --> 00:55:13.140 align:middle line:84%
+as just essentially
+sets of multiplications.
+
+00:55:13.140 --> 00:55:15.040 align:middle line:84%
+And we'll go into this
+in a lot more detail
+
+00:55:15.040 --> 00:55:16.490 align:middle line:90%
+as well in the future.
+
+00:55:16.490 --> 00:55:18.240 align:middle line:84%
+So what we're going
+to cover in this class
+
+00:55:18.240 --> 00:55:20.740 align:middle line:84%
+is how deep networks
+represent data.
+
+00:55:20.740 --> 00:55:29.120 align:middle line:84%
+So essentially, it's
+this idea, where
+
+00:55:29.120 --> 00:55:33.280 align:middle line:84%
+deep networks are a more compact
+way of representing knowledge
+
+00:55:33.280 --> 00:55:34.400 align:middle line:90%
+in data.
+
+00:55:34.400 --> 00:55:39.360 align:middle line:84%
+And previous methods we saw
+were more like lookup tables.
+
+00:55:39.360 --> 00:55:41.160 align:middle line:84%
+But there's other
+and maybe better ways
+
+00:55:41.160 --> 00:55:43.400 align:middle line:84%
+to learn a mapping
+between input and output
+
+00:55:43.400 --> 00:55:47.640 align:middle line:84%
+that basically assume that there
+are these lower-level building
+
+00:55:47.640 --> 00:55:50.880 align:middle line:84%
+blocks that are useful for many
+different possible downstream
+
+00:55:50.880 --> 00:55:51.680 align:middle line:90%
+tasks.
+
+00:55:51.680 --> 00:55:53.880 align:middle line:84%
+So one nice example
+is the idea of trying
+
+00:55:53.880 --> 00:55:56.290 align:middle line:84%
+to learn a classifier
+for the letter T.
+
+00:55:56.290 --> 00:55:58.470 align:middle line:84%
+So if you want to learn
+to classify the letter T,
+
+00:55:58.470 --> 00:56:00.762 align:middle line:84%
+you could try to build a
+classifier just for the letter
+
+00:56:00.762 --> 00:56:03.690 align:middle line:84%
+T. Or you could take a
+classifier that classifies
+
+00:56:03.690 --> 00:56:06.450 align:middle line:84%
+lines, and you could
+say, OK, here's a line,
+
+00:56:06.450 --> 00:56:09.090 align:middle line:84%
+and then you could rotate, have
+a rotation of that classifier,
+
+00:56:09.090 --> 00:56:10.530 align:middle line:90%
+and you'd say, here's a line.
+
+00:56:10.530 --> 00:56:13.410 align:middle line:84%
+And now all you have to do is
+understand the connection point
+
+00:56:13.410 --> 00:56:14.550 align:middle line:90%
+between these two lines.
+
+00:56:14.550 --> 00:56:19.770 align:middle line:84%
+So that line classifier is
+reusable in some combination
+
+00:56:19.770 --> 00:56:21.390 align:middle line:90%
+to get a T classifier.
+
+00:56:21.390 --> 00:56:22.830 align:middle line:90%
+And that's the basic idea here.
+
+00:56:22.830 --> 00:56:27.550 align:middle line:84%
+And actually in
+this post hoc way,
+
+00:56:27.550 --> 00:56:29.915 align:middle line:84%
+we've analyzed what
+is learned in layers
+
+00:56:29.915 --> 00:56:31.790 align:middle line:84%
+of things like convolutional
+neural networks.
+
+00:56:31.790 --> 00:56:34.690 align:middle line:84%
+And we do see that you'll
+get low-level representations
+
+00:56:34.690 --> 00:56:35.870 align:middle line:90%
+in the earlier layers.
+
+00:56:35.870 --> 00:56:38.330 align:middle line:84%
+Then they get combined
+into more and more complex
+
+00:56:38.330 --> 00:56:42.290 align:middle line:84%
+representations in
+those later layers.
+
+00:56:42.290 --> 00:56:44.150 align:middle line:84%
+And you can actually
+see this as well.
+
+00:56:44.150 --> 00:56:48.170 align:middle line:84%
+If you take an input
+image, and you take those,
+
+00:56:48.170 --> 00:56:52.650 align:middle line:84%
+and you cluster them in some
+low-level representation
+
+00:56:52.650 --> 00:56:56.002 align:middle line:84%
+of the space for each layer, the
+layers earlier on in the network
+
+00:56:56.002 --> 00:56:58.710 align:middle line:84%
+are not going to cluster well by
+category, because they're really
+
+00:56:58.710 --> 00:57:00.350 align:middle line:84%
+just categorizing
+things like, does it
+
+00:57:00.350 --> 00:57:04.550 align:middle line:84%
+have directional orientations
+of light and dark gradients
+
+00:57:04.550 --> 00:57:05.710 align:middle line:90%
+in the pixels?
+
+00:57:05.710 --> 00:57:08.210 align:middle line:84%
+But actually, when you get
+towards the end of the network,
+
+00:57:08.210 --> 00:57:09.910 align:middle line:84%
+it's learning more
+concepts, and that's
+
+00:57:09.910 --> 00:57:12.327 align:middle line:84%
+where you start getting these
+clusters of different things
+
+00:57:12.327 --> 00:57:14.550 align:middle line:90%
+like fish.
+
+00:57:14.550 --> 00:57:19.750 align:middle line:84%
+And we will talk about actually
+how that representation learns
+
+00:57:19.750 --> 00:57:23.390 align:middle line:84%
+and is structured through space
+in a bunch of different lectures
+
+00:57:23.390 --> 00:57:25.430 align:middle line:84%
+on representation learning,
+where we talk about
+
+00:57:25.430 --> 00:57:29.655 align:middle line:84%
+reconstruction,
+similarity, and theory.
+
+00:57:29.655 --> 00:57:32.030 align:middle line:84%
+We're also going to cover
+generative models going forward
+
+00:57:32.030 --> 00:57:33.350 align:middle line:90%
+in the class.
+
+00:57:33.350 --> 00:57:35.670 align:middle line:84%
+And this is things like
+text-based and image-based
+
+00:57:35.670 --> 00:57:37.070 align:middle line:90%
+generation.
+
+00:57:37.070 --> 00:57:39.470 align:middle line:84%
+And we'll cover basics,
+representations,
+
+00:57:39.470 --> 00:57:42.670 align:middle line:90%
+and conditional models.
+
+00:57:42.670 --> 00:57:44.590 align:middle line:84%
+And then we're going
+to cover in this class
+
+00:57:44.590 --> 00:57:46.870 align:middle line:84%
+how to think about
+weight reuse and some
+
+00:57:46.870 --> 00:57:48.670 align:middle line:84%
+of the efficiencies
+in terms of training
+
+00:57:48.670 --> 00:57:50.630 align:middle line:84%
+if you're able to
+reuse components
+
+00:57:50.630 --> 00:57:53.800 align:middle line:90%
+of previously trained models.
+
+00:57:53.800 --> 00:57:57.380 align:middle line:84%
+So here, again, this
+idea that, all right,
+
+00:57:57.380 --> 00:58:02.320 align:middle line:84%
+well, you learned this thing to
+categorize pictures of animals,
+
+00:58:02.320 --> 00:58:04.560 align:middle line:84%
+and now maybe you
+want to categorize
+
+00:58:04.560 --> 00:58:06.620 align:middle line:84%
+some sort of satellite
+imagery, well,
+
+00:58:06.620 --> 00:58:10.360 align:middle line:84%
+actually, a lot of those
+initial components about lines
+
+00:58:10.360 --> 00:58:13.000 align:middle line:84%
+and orientations and
+structures, those
+
+00:58:13.000 --> 00:58:14.620 align:middle line:90%
+are useful for both of these.
+
+00:58:14.620 --> 00:58:19.320 align:middle line:84%
+So what do we really need to
+learn from scratch versus what
+
+00:58:19.320 --> 00:58:22.160 align:middle line:84%
+is generally useful in terms
+of the representations that
+
+00:58:22.160 --> 00:58:24.343 align:middle line:90%
+are learned?
+
+00:58:24.343 --> 00:58:25.760 align:middle line:84%
+And this is really
+valuable if you
+
+00:58:25.760 --> 00:58:28.180 align:middle line:84%
+don't have big data
+or big compute,
+
+00:58:28.180 --> 00:58:31.240 align:middle line:84%
+if you can pre-generate
+representations that then you
+
+00:58:31.240 --> 00:58:34.320 align:middle line:84%
+can learn on top of without
+needing to learn everything
+
+00:58:34.320 --> 00:58:36.920 align:middle line:90%
+from scratch.
+
+00:58:36.920 --> 00:58:39.640 align:middle line:84%
+And so we'll get
+into whether or not
+
+00:58:39.640 --> 00:58:42.380 align:middle line:84%
+these things are
+generalizable or transferable
+
+00:58:42.380 --> 00:58:43.880 align:middle line:84%
+in these transfer
+learning lectures,
+
+00:58:43.880 --> 00:58:46.400 align:middle line:84%
+where we talk about
+models and data.
+
+00:58:46.400 --> 00:58:49.800 align:middle line:84%
+And then finally, we'll
+talk about scaling.
+
+00:58:49.800 --> 00:58:53.890 align:middle line:84%
+So when you think about
+the scale of a brain,
+
+00:58:53.890 --> 00:58:57.830 align:middle line:84%
+something like this little
+worm only has 302 neurons,
+
+00:58:57.830 --> 00:59:02.650 align:middle line:84%
+so you can think of that
+as 302 different values
+
+00:59:02.650 --> 00:59:03.850 align:middle line:90%
+in its neural network.
+
+00:59:03.850 --> 00:59:06.570 align:middle line:90%
+A fruit fly is 15,000.
+
+00:59:06.570 --> 00:59:09.970 align:middle line:84%
+Human beings have
+100 billion, roughly.
+
+00:59:09.970 --> 00:59:13.110 align:middle line:84%
+Elephants have 250 billion
+neurons in their brains.
+
+00:59:13.110 --> 00:59:14.570 align:middle line:90%
+I work with elephants a lot.
+
+00:59:14.570 --> 00:59:15.590 align:middle line:90%
+They're amazing.
+
+00:59:15.590 --> 00:59:18.530 align:middle line:90%
+
+
+00:59:18.530 --> 00:59:21.675 align:middle line:84%
+And we'll talk about
+scale and deep learning
+
+00:59:21.675 --> 00:59:23.050 align:middle line:84%
+and what this
+means, and actually
+
+00:59:23.050 --> 00:59:24.450 align:middle line:84%
+get into some of the
+really great questions
+
+00:59:24.450 --> 00:59:26.130 align:middle line:84%
+that different people
+asked in terms of,
+
+00:59:26.130 --> 00:59:30.210 align:middle line:84%
+how does maybe scaling rules
+change when you're thinking
+
+00:59:30.210 --> 00:59:32.472 align:middle line:84%
+about optimization, what
+are the laws of scaling,
+
+00:59:32.472 --> 00:59:33.930 align:middle line:84%
+and how do we think
+about something
+
+00:59:33.930 --> 00:59:38.690 align:middle line:84%
+like automatically learning
+how to best optimize a model?
+
+00:59:38.690 --> 00:59:39.730 align:middle line:90%
+Great.
+
+00:59:39.730 --> 00:59:43.290 align:middle line:84%
+So I tried to cover
+today how we got
+
+00:59:43.290 --> 00:59:46.790 align:middle line:84%
+where we are today, basically
+just honestly mostly joking,
+
+00:59:46.790 --> 00:59:49.810 align:middle line:84%
+but definitely a brief history
+of these fluctuation and hype
+
+00:59:49.810 --> 00:59:50.890 align:middle line:90%
+cycles.
+
+00:59:50.890 --> 00:59:53.950 align:middle line:84%
+I would say that
+everyone's pretty clear
+
+00:59:53.950 --> 00:59:58.670 align:middle line:84%
+that we're currently in a really
+hypey part of the hype cycle.
+
+00:59:58.670 --> 01:00:03.610 align:middle line:84%
+What we expected you maybe saw
+before and also very high level,
+
+01:00:03.610 --> 01:00:06.670 align:middle line:84%
+some of the things we're
+going to cover in this class.
+
+01:00:06.670 --> 01:00:11.110 align:middle line:84%
+So I'm happy to, if anyone
+has any final questions--
+
+01:00:11.110 --> 01:00:12.191 align:middle line:90%
+yeah.
+
+01:00:12.191 --> 01:00:13.566 align:middle line:84%
+AUDIENCE: Slightly
+underweighted,
+
+01:00:13.566 --> 01:00:17.110 align:middle line:84%
+but would you be
+willing to share
+
+01:00:17.110 --> 01:00:19.930 align:middle line:84%
+an estimate for how many data
+it will take this first lecture
+
+01:00:19.930 --> 01:00:22.148 align:middle line:90%
+to get a million views?
+
+01:00:22.148 --> 01:00:24.190 align:middle line:84%
+SARA BEERY: How long it'll
+take the first lecture
+
+01:00:24.190 --> 01:00:25.180 align:middle line:90%
+to get how many views?
+
+01:00:25.180 --> 01:00:26.430 align:middle line:90%
+AUDIENCE: Let's say a million.
+
+01:00:26.430 --> 01:00:28.150 align:middle line:84%
+SARA BEERY: Well, I mean,
+honestly, the intro lecture
+
+01:00:28.150 --> 01:00:29.990 align:middle line:84%
+is probably going to
+be the least watched
+
+01:00:29.990 --> 01:00:32.910 align:middle line:84%
+of all the lectures
+[LAUGHS] because it's just
+
+01:00:32.910 --> 01:00:34.490 align:middle line:90%
+a bunch of course logistics.
+
+01:00:34.490 --> 01:00:36.190 align:middle line:90%
+We might even edit those out.
+
+01:00:36.190 --> 01:00:37.730 align:middle line:90%
+But great question.
+
+01:00:37.730 --> 01:00:39.540 align:middle line:90%
+I have no idea.
+
+01:00:39.540 --> 01:00:51.000 align:middle line:90%

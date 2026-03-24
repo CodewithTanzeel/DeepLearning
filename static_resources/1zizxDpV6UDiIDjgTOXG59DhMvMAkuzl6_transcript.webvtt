@@ -1,0 +1,6450 @@
+WEBVTT
+
+00:00:00.000 --> 00:00:00.500 align:middle line:90%
+
+
+00:00:00.500 --> 00:00:01.976 align:middle line:90%
+[SQUEAKING]
+
+00:00:01.976 --> 00:00:03.944 align:middle line:90%
+[RUSTLING]
+
+00:00:03.944 --> 00:00:06.404 align:middle line:90%
+[CLICKING]
+
+00:00:06.404 --> 00:00:12.890 align:middle line:90%
+
+
+00:00:12.890 --> 00:00:13.640 align:middle line:90%
+PHILLIP ISOLA: OK.
+
+00:00:13.640 --> 00:00:14.660 align:middle line:90%
+Welcome again, everyone.
+
+00:00:14.660 --> 00:00:15.660 align:middle line:90%
+Sorry for the delay.
+
+00:00:15.660 --> 00:00:17.080 align:middle line:90%
+So, yeah, we'll get started.
+
+00:00:17.080 --> 00:00:20.240 align:middle line:84%
+Today is going to be
+about transformers.
+
+00:00:20.240 --> 00:00:24.760 align:middle line:84%
+So hopefully you're all excited,
+because this is the architecture
+
+00:00:24.760 --> 00:00:25.940 align:middle line:90%
+that you should use today.
+
+00:00:25.940 --> 00:00:27.310 align:middle line:90%
+Like, this will change.
+
+00:00:27.310 --> 00:00:29.060 align:middle line:84%
+Next year, there'll
+be a new architecture.
+
+00:00:29.060 --> 00:00:30.440 align:middle line:90%
+Don't worry, things will change.
+
+00:00:30.440 --> 00:00:32.780 align:middle line:84%
+But this is the one that
+will get you the jobs today.
+
+00:00:32.780 --> 00:00:33.280 align:middle line:90%
+OK.
+
+00:00:33.280 --> 00:00:36.760 align:middle line:84%
+This is going to be a little
+bit more of a practical lecture.
+
+00:00:36.760 --> 00:00:40.640 align:middle line:84%
+With graph nets, we talked
+about the general class
+
+00:00:40.640 --> 00:00:44.008 align:middle line:84%
+of all the functions that
+could represent, and so forth.
+
+00:00:44.008 --> 00:00:45.800 align:middle line:84%
+And there's so many
+different possible ways
+
+00:00:45.800 --> 00:00:47.825 align:middle line:90%
+of parameterizing graph nets.
+
+00:00:47.825 --> 00:00:49.200 align:middle line:84%
+But with transformers,
+we're just
+
+00:00:49.200 --> 00:00:52.520 align:middle line:84%
+going to say there's one
+concrete instantiation that
+
+00:00:52.520 --> 00:00:53.100 align:middle line:90%
+works.
+
+00:00:53.100 --> 00:00:55.780 align:middle line:84%
+And that's what we'll
+learn about today.
+
+00:00:55.780 --> 00:01:00.490 align:middle line:84%
+So we'll talk about three key
+ideas behind transformers.
+
+00:01:00.490 --> 00:01:03.850 align:middle line:84%
+One is this idea of
+operating over tokens.
+
+00:01:03.850 --> 00:01:06.210 align:middle line:84%
+The next, this is going to
+be the only thing that's
+
+00:01:06.210 --> 00:01:06.893 align:middle line:90%
+actually new.
+
+00:01:06.893 --> 00:01:08.310 align:middle line:84%
+It's going to be
+called attention.
+
+00:01:08.310 --> 00:01:12.035 align:middle line:84%
+Everything else will actually
+be just new names for old ideas.
+
+00:01:12.035 --> 00:01:13.410 align:middle line:84%
+And the last one
+we'll be talking
+
+00:01:13.410 --> 00:01:15.952 align:middle line:84%
+more about, positional encoding,
+which we've seen a few times
+
+00:01:15.952 --> 00:01:17.770 align:middle line:90%
+now.
+
+00:01:17.770 --> 00:01:19.770 align:middle line:84%
+And then I'll show a few
+different architectures
+
+00:01:19.770 --> 00:01:22.650 align:middle line:84%
+and some ways of
+using these things.
+
+00:01:22.650 --> 00:01:25.470 align:middle line:84%
+And so, as I said, there's
+so many architectures,
+
+00:01:25.470 --> 00:01:28.250 align:middle line:84%
+but right now there's
+just one to rule them all.
+
+00:01:28.250 --> 00:01:30.450 align:middle line:84%
+This is the one-ring
+architecture.
+
+00:01:30.450 --> 00:01:30.950 align:middle line:90%
+Don't worry.
+
+00:01:30.950 --> 00:01:31.673 align:middle line:90%
+It will change.
+
+00:01:31.673 --> 00:01:33.590 align:middle line:84%
+This isn't going to be
+the final architecture,
+
+00:01:33.590 --> 00:01:37.450 align:middle line:90%
+but this is the one right now.
+
+00:01:37.450 --> 00:01:43.730 align:middle line:84%
+So there's this interesting
+book called Don Quixote,
+
+00:01:43.730 --> 00:01:46.370 align:middle line:90%
+written by Pierre Menard.
+
+00:01:46.370 --> 00:01:49.970 align:middle line:84%
+And you probably are thinking
+I'm saying something wrong.
+
+00:01:49.970 --> 00:01:52.930 align:middle line:90%
+It's written by Cervantes.
+
+00:01:52.930 --> 00:01:57.370 align:middle line:84%
+But there's a short story
+that another guy, Borges,
+
+00:01:57.370 --> 00:02:00.770 align:middle line:84%
+wrote about this guy,
+Pierre Menard, that
+
+00:02:00.770 --> 00:02:04.730 align:middle line:84%
+rewrote the Don Quixote,
+word for word, exactly
+
+00:02:04.730 --> 00:02:07.610 align:middle line:84%
+the same words, but with
+entirely new meaning.
+
+00:02:07.610 --> 00:02:10.449 align:middle line:84%
+And in a short
+story, the meaning
+
+00:02:10.449 --> 00:02:13.110 align:middle line:84%
+is new because the
+context is different.
+
+00:02:13.110 --> 00:02:17.130 align:middle line:84%
+It's a different historical
+era, and the life of Pierre
+
+00:02:17.130 --> 00:02:19.690 align:middle line:84%
+is different than the
+life of Cervantes.
+
+00:02:19.690 --> 00:02:23.413 align:middle line:84%
+And you're going to hear
+the same exact story.
+
+00:02:23.413 --> 00:02:25.830 align:middle line:84%
+And if you read this, you would
+read the same exact story,
+
+00:02:25.830 --> 00:02:27.810 align:middle line:84%
+but it'd have entirely new
+meaning, because the context is
+
+00:02:27.810 --> 00:02:28.570 align:middle line:90%
+different.
+
+00:02:28.570 --> 00:02:30.328 align:middle line:84%
+And I think that's
+going to be a theme
+
+00:02:30.328 --> 00:02:32.870 align:middle line:84%
+of the lecture today, and also
+the theme of this whole class.
+
+00:02:32.870 --> 00:02:35.790 align:middle line:84%
+We'll keep on telling you the
+same things, maybe word for word
+
+00:02:35.790 --> 00:02:36.830 align:middle line:90%
+the same things.
+
+00:02:36.830 --> 00:02:39.090 align:middle line:84%
+But because you have new
+knowledge and new connections
+
+00:02:39.090 --> 00:02:41.330 align:middle line:84%
+you can make, it'll
+have new meaning.
+
+00:02:41.330 --> 00:02:45.342 align:middle line:84%
+So this is like a few
+pages, short story.
+
+00:02:45.342 --> 00:02:47.050 align:middle line:84%
+If you want to read
+it, it's kind of fun.
+
+00:02:47.050 --> 00:02:51.130 align:middle line:84%
+It's called Pierre Menard,
+author of The Quixote.
+
+00:02:51.130 --> 00:02:57.580 align:middle line:90%
+So, everything old is new again.
+
+00:02:57.580 --> 00:02:59.760 align:middle line:84%
+We're going to be riffing
+on the same themes.
+
+00:02:59.760 --> 00:03:02.240 align:middle line:84%
+So let's go back to
+convolutional architectures.
+
+00:03:02.240 --> 00:03:04.740 align:middle line:84%
+We're going to see a
+limitation of them.
+
+00:03:04.740 --> 00:03:07.540 align:middle line:84%
+So let's say that I want
+to ask, how many birds
+
+00:03:07.540 --> 00:03:08.295 align:middle line:90%
+are in this image.
+
+00:03:08.295 --> 00:03:09.920 align:middle line:84%
+We saw that you can
+do that with a CNN.
+
+00:03:09.920 --> 00:03:12.560 align:middle line:84%
+You chop it up into pieces,
+you process with filters,
+
+00:03:12.560 --> 00:03:15.820 align:middle line:84%
+you aggregate the results,
+you count the birds.
+
+00:03:15.820 --> 00:03:17.860 align:middle line:84%
+But what if I want to
+say, is the top right
+
+00:03:17.860 --> 00:03:21.540 align:middle line:84%
+bird the same species
+as the bottom left bird?
+
+00:03:21.540 --> 00:03:23.100 align:middle line:90%
+So can a CNN do this?
+
+00:03:23.100 --> 00:03:25.700 align:middle line:84%
+Well, sure, if it's deep enough,
+if the receptive fields are
+
+00:03:25.700 --> 00:03:26.960 align:middle line:90%
+big enough, it can do it.
+
+00:03:26.960 --> 00:03:29.140 align:middle line:84%
+But it might not be the
+best way of doing that.
+
+00:03:29.140 --> 00:03:32.860 align:middle line:84%
+Because, remember, the
+CNN filters are all local.
+
+00:03:32.860 --> 00:03:35.740 align:middle line:84%
+And local filters are not
+going to be the most effective
+
+00:03:35.740 --> 00:03:38.900 align:middle line:84%
+at making assessments about
+relationships that are more
+
+00:03:38.900 --> 00:03:41.380 align:middle line:90%
+global in nature or distant.
+
+00:03:41.380 --> 00:03:44.120 align:middle line:84%
+So CNNs, they're built
+around this idea of locality.
+
+00:03:44.120 --> 00:03:46.460 align:middle line:84%
+They factorize the
+signal processing problem
+
+00:03:46.460 --> 00:03:51.020 align:middle line:84%
+into little local pieces that
+get put together, step by step.
+
+00:03:51.020 --> 00:03:53.260 align:middle line:84%
+So they have the
+strong locality bias.
+
+00:03:53.260 --> 00:03:55.000 align:middle line:90%
+And that can be a good thing.
+
+00:03:55.000 --> 00:03:56.860 align:middle line:84%
+That's good for a
+lot of problems.
+
+00:03:56.860 --> 00:03:58.460 align:middle line:84%
+If I want to
+understand something
+
+00:03:58.460 --> 00:04:00.800 align:middle line:84%
+about the population
+in this room,
+
+00:04:00.800 --> 00:04:03.000 align:middle line:84%
+I don't need to go
+and look at Mars.
+
+00:04:03.000 --> 00:04:05.340 align:middle line:84%
+I can just locally look at
+what's going on in this room.
+
+00:04:05.340 --> 00:04:07.900 align:middle line:84%
+Most signals have--
+the things that
+
+00:04:07.900 --> 00:04:10.120 align:middle line:84%
+matter to assessing them
+are all kind of local.
+
+00:04:10.120 --> 00:04:11.920 align:middle line:84%
+There's a smoothness
+to the world.
+
+00:04:11.920 --> 00:04:13.440 align:middle line:84%
+But that's not
+always a good idea.
+
+00:04:13.440 --> 00:04:16.060 align:middle line:84%
+And so transformers
+try to get around that.
+
+00:04:16.060 --> 00:04:19.140 align:middle line:84%
+Here's just a diagram looking
+at the receptive fields,
+
+00:04:19.140 --> 00:04:21.820 align:middle line:90%
+essentially, of a simple CNN.
+
+00:04:21.820 --> 00:04:24.740 align:middle line:84%
+So this is a two-layer
+convolutional network.
+
+00:04:24.740 --> 00:04:28.460 align:middle line:84%
+It's convolutional because every
+output neuron in this layer
+
+00:04:28.460 --> 00:04:32.300 align:middle line:84%
+is going to be taking input
+from just a local patch
+
+00:04:32.300 --> 00:04:34.460 align:middle line:90%
+of the first layer.
+
+00:04:34.460 --> 00:04:38.600 align:middle line:84%
+So it's like a length 3
+filter over the input.
+
+00:04:38.600 --> 00:04:40.940 align:middle line:84%
+And if it's
+convolutional, the weights
+
+00:04:40.940 --> 00:04:43.500 align:middle line:84%
+would be shared among
+all these filters.
+
+00:04:43.500 --> 00:04:44.500 align:middle line:90%
+But notice what happens.
+
+00:04:44.500 --> 00:04:46.460 align:middle line:84%
+If I want to make
+some assessment
+
+00:04:46.460 --> 00:04:49.180 align:middle line:84%
+about the relationship
+between the first input
+
+00:04:49.180 --> 00:04:54.350 align:middle line:84%
+variable x1 and the seventh
+dimension of input X7.
+
+00:04:54.350 --> 00:04:57.030 align:middle line:84%
+So on the second
+layer of the network,
+
+00:04:57.030 --> 00:04:59.530 align:middle line:84%
+let's say this is the input,
+this is the first hidden layer,
+
+00:04:59.530 --> 00:05:01.030 align:middle line:90%
+and this is the output.
+
+00:05:01.030 --> 00:05:05.650 align:middle line:84%
+On this layer, only
+these hashed nodes,
+
+00:05:05.650 --> 00:05:11.030 align:middle line:84%
+these hashed neurons have
+some dependency on x7.
+
+00:05:11.030 --> 00:05:14.110 align:middle line:84%
+And for x1, it's
+these two over here.
+
+00:05:14.110 --> 00:05:16.790 align:middle line:84%
+And on the next layer,
+the receptive field
+
+00:05:16.790 --> 00:05:21.050 align:middle line:84%
+expands out by one, because the
+filter is a length 3 filter.
+
+00:05:21.050 --> 00:05:23.410 align:middle line:84%
+And so you get a receptive
+field that expands by one.
+
+00:05:23.410 --> 00:05:25.010 align:middle line:84%
+You can just trace
+the arrows back,
+
+00:05:25.010 --> 00:05:30.990 align:middle line:90%
+see which neurons get some--
+
+00:05:30.990 --> 00:05:33.690 align:middle line:84%
+imagine some dye is
+dropped onto that neuron,
+
+00:05:33.690 --> 00:05:36.330 align:middle line:84%
+and the dye bleeds out over
+the edges of this graph.
+
+00:05:36.330 --> 00:05:37.850 align:middle line:90%
+Which ones is it going to hit?
+
+00:05:37.850 --> 00:05:40.150 align:middle line:84%
+Which are in the support
+of this neuron here?
+
+00:05:40.150 --> 00:05:44.250 align:middle line:84%
+So it's just x1 is in the
+support of this neuron,
+
+00:05:44.250 --> 00:05:45.610 align:middle line:90%
+this neuron and that neuron.
+
+00:05:45.610 --> 00:05:48.850 align:middle line:84%
+And x7 is the support of the
+three neurons on the right.
+
+00:05:48.850 --> 00:05:52.550 align:middle line:84%
+But if that's my output layer
+and I only have this depth 2
+
+00:05:52.550 --> 00:05:55.390 align:middle line:84%
+convolutional network, then
+no neuron in the output
+
+00:05:55.390 --> 00:05:59.010 align:middle line:84%
+has gotten dye from
+both x1 and x7.
+
+00:05:59.010 --> 00:06:00.790 align:middle line:84%
+So it's impossible
+for this architecture
+
+00:06:00.790 --> 00:06:02.710 align:middle line:84%
+to have made a
+decision that depends
+
+00:06:02.710 --> 00:06:07.950 align:middle line:84%
+on the joint configuration
+of x1 and x7.
+
+00:06:07.950 --> 00:06:09.490 align:middle line:84%
+So I can always
+make a deeper CNN,
+
+00:06:09.490 --> 00:06:11.430 align:middle line:84%
+but this dye just
+bleeds out slowly
+
+00:06:11.430 --> 00:06:12.850 align:middle line:90%
+in convolutional networks.
+
+00:06:12.850 --> 00:06:15.570 align:middle line:90%
+
+
+00:06:15.570 --> 00:06:19.210 align:middle line:84%
+So the idea of attention
+is to say, well,
+
+00:06:19.210 --> 00:06:24.590 align:middle line:84%
+let's have an operation that
+allows us to look more globally.
+
+00:06:24.590 --> 00:06:27.043 align:middle line:84%
+But the problem, there's
+another way of doing this.
+
+00:06:27.043 --> 00:06:28.710 align:middle line:84%
+What is another way
+that we saw that you
+
+00:06:28.710 --> 00:06:33.412 align:middle line:84%
+can have neural networks
+that process data globally?
+
+00:06:33.412 --> 00:06:34.870 align:middle line:84%
+What is one of the
+architectures we
+
+00:06:34.870 --> 00:06:38.690 align:middle line:84%
+saw that doesn't have this
+locality bias of CNNs?
+
+00:06:38.690 --> 00:06:40.250 align:middle line:90%
+Anyone want to shout out?
+
+00:06:40.250 --> 00:06:41.430 align:middle line:90%
+AUDIENCE: Fully connected.
+
+00:06:41.430 --> 00:06:44.310 align:middle line:84%
+PHILLIP ISOLA: Fully connected
+network, just a vanilla MLP.
+
+00:06:44.310 --> 00:06:48.160 align:middle line:84%
+And a vanilla MLP with
+fully connected layers,
+
+00:06:48.160 --> 00:06:51.500 align:middle line:84%
+every single output neuron is
+connected to every input neuron.
+
+00:06:51.500 --> 00:06:55.180 align:middle line:84%
+So information is aggregated
+immediately globally.
+
+00:06:55.180 --> 00:06:57.760 align:middle line:84%
+But CNN said no, no, we want
+to chop it up and factorize
+
+00:06:57.760 --> 00:06:58.600 align:middle line:90%
+the problem.
+
+00:06:58.600 --> 00:07:01.220 align:middle line:84%
+And then attention says, OK,
+no, we want to look globally,
+
+00:07:01.220 --> 00:07:04.333 align:middle line:84%
+but we don't want to have
+every neuron connected
+
+00:07:04.333 --> 00:07:06.000 align:middle line:84%
+to every neuron,
+because that would just
+
+00:07:06.000 --> 00:07:07.260 align:middle line:90%
+be too much processing.
+
+00:07:07.260 --> 00:07:11.300 align:middle line:84%
+That would mean that for
+a mapping from Rn to Rn,
+
+00:07:11.300 --> 00:07:14.260 align:middle line:84%
+we'd have n squared edges
+and n squared parameters.
+
+00:07:14.260 --> 00:07:17.400 align:middle line:84%
+And it would just be too compute
+heavy, too many parameters,
+
+00:07:17.400 --> 00:07:19.520 align:middle line:90%
+too much to learn.
+
+00:07:19.520 --> 00:07:21.840 align:middle line:84%
+Attention says, well,
+we'll look globally,
+
+00:07:21.840 --> 00:07:23.500 align:middle line:84%
+but we'll look
+sparsely globally.
+
+00:07:23.500 --> 00:07:25.520 align:middle line:84%
+So when you get a
+new question, you'll
+
+00:07:25.520 --> 00:07:28.298 align:middle line:84%
+just attend to the parts of
+the input signal that matter.
+
+00:07:28.298 --> 00:07:29.840 align:middle line:84%
+So if I want to
+count how many birds,
+
+00:07:29.840 --> 00:07:32.080 align:middle line:90%
+I'll attend to these locations.
+
+00:07:32.080 --> 00:07:34.720 align:middle line:84%
+It's exactly coming
+from the idea
+
+00:07:34.720 --> 00:07:38.665 align:middle line:84%
+of attention in the human brain
+or in your own life experience.
+
+00:07:38.665 --> 00:07:40.040 align:middle line:84%
+You can attend to
+the things that
+
+00:07:40.040 --> 00:07:41.382 align:middle line:90%
+are relevant to your problem.
+
+00:07:41.382 --> 00:07:43.840 align:middle line:84%
+If your problem changes, you'll
+attend to different things.
+
+00:07:43.840 --> 00:07:46.620 align:middle line:84%
+So you'll attend
+to these two birds
+
+00:07:46.620 --> 00:07:48.960 align:middle line:84%
+if the question is the
+top right bird the same
+
+00:07:48.960 --> 00:07:50.300 align:middle line:90%
+as the bottom left bird.
+
+00:07:50.300 --> 00:07:52.508 align:middle line:84%
+And if the question is, what
+is the color of the sky,
+
+00:07:52.508 --> 00:07:56.280 align:middle line:84%
+you'll just attend to the
+sky region of the image.
+
+00:07:56.280 --> 00:07:58.260 align:middle line:84%
+So that's the intuitive
+idea of attention.
+
+00:07:58.260 --> 00:08:00.280 align:middle line:84%
+It's meant to model
+what humans might
+
+00:08:00.280 --> 00:08:03.240 align:middle line:84%
+be doing when they
+process images
+
+00:08:03.240 --> 00:08:05.847 align:middle line:90%
+or other types of signals.
+
+00:08:05.847 --> 00:08:07.680 align:middle line:84%
+And we're going to talk
+about mathematically
+
+00:08:07.680 --> 00:08:09.200 align:middle line:90%
+how that can be done.
+
+00:08:09.200 --> 00:08:13.320 align:middle line:84%
+So I'm going to go through
+these three architectural pieces
+
+00:08:13.320 --> 00:08:14.645 align:middle line:90%
+of transformers.
+
+00:08:14.645 --> 00:08:16.020 align:middle line:84%
+Attention will be
+the second one.
+
+00:08:16.020 --> 00:08:17.860 align:middle line:84%
+That's really the new
+one in transformers.
+
+00:08:17.860 --> 00:08:19.520 align:middle line:84%
+And then tokens and
+positional encodes
+
+00:08:19.520 --> 00:08:22.280 align:middle line:84%
+will be just the same
+as you've seen before.
+
+00:08:22.280 --> 00:08:27.040 align:middle line:84%
+So new idea-- not really new,
+but sort of new idea-- number 1
+
+00:08:27.040 --> 00:08:28.120 align:middle line:90%
+is tokens.
+
+00:08:28.120 --> 00:08:32.400 align:middle line:84%
+So it's a new name for what we
+actually saw in the GNN lecture.
+
+00:08:32.400 --> 00:08:34.480 align:middle line:84%
+So a token is a
+vector of neurons.
+
+00:08:34.480 --> 00:08:39.440 align:middle line:84%
+This is how I'll define it
+for the purpose of our course.
+
+00:08:39.440 --> 00:08:43.520 align:middle line:84%
+So in the GNN lecture, we talked
+about node attribute vectors
+
+00:08:43.520 --> 00:08:44.970 align:middle line:90%
+or node feature vectors.
+
+00:08:44.970 --> 00:08:47.410 align:middle line:84%
+So every node has a
+vector associated with it.
+
+00:08:47.410 --> 00:08:49.850 align:middle line:84%
+And we're going to give
+that just a new name, which
+
+00:08:49.850 --> 00:08:51.050 align:middle line:90%
+is a token.
+
+00:08:51.050 --> 00:08:53.210 align:middle line:84%
+So a token is a
+vector of neurons.
+
+00:08:53.210 --> 00:08:55.090 align:middle line:84%
+And the way to think
+of it is that it's
+
+00:08:55.090 --> 00:08:57.730 align:middle line:84%
+like a little
+encapsulated factor
+
+00:08:57.730 --> 00:08:59.410 align:middle line:90%
+in my computational graph.
+
+00:08:59.410 --> 00:09:02.570 align:middle line:84%
+It's going to be a little
+packet of information that
+
+00:09:02.570 --> 00:09:08.930 align:middle line:84%
+will be a little bundle of
+information that will all be
+
+00:09:08.930 --> 00:09:10.850 align:middle line:90%
+processed in a modular fashion.
+
+00:09:10.850 --> 00:09:12.270 align:middle line:90%
+So we'll have a set of tokens.
+
+00:09:12.270 --> 00:09:13.850 align:middle line:84%
+And these are the
+units that we're
+
+00:09:13.850 --> 00:09:16.130 align:middle line:90%
+operating over in transformers.
+
+00:09:16.130 --> 00:09:18.330 align:middle line:84%
+So in graph nets, the
+tokens were the nodes
+
+00:09:18.330 --> 00:09:20.970 align:middle line:84%
+of the graph or the
+feature vectors associated
+
+00:09:20.970 --> 00:09:23.450 align:middle line:90%
+with the nodes.
+
+00:09:23.450 --> 00:09:26.390 align:middle line:84%
+So we can have an
+array of neurons,
+
+00:09:26.390 --> 00:09:30.330 align:middle line:84%
+and that's what we operate
+over in MLPs and vanilla
+
+00:09:30.330 --> 00:09:32.090 align:middle line:90%
+neural networks.
+
+00:09:32.090 --> 00:09:33.970 align:middle line:84%
+But in transformers,
+we should always
+
+00:09:33.970 --> 00:09:38.050 align:middle line:84%
+be thinking about the basic data
+structure as an array of tokens,
+
+00:09:38.050 --> 00:09:39.730 align:middle line:84%
+as opposed to an
+array of neurons.
+
+00:09:39.730 --> 00:09:41.290 align:middle line:84%
+So it's an array
+of vectors or array
+
+00:09:41.290 --> 00:09:43.855 align:middle line:84%
+of little encapsulated
+bits of information.
+
+00:09:43.855 --> 00:09:45.730 align:middle line:84%
+You could also generalize
+the notion of token
+
+00:09:45.730 --> 00:09:48.010 align:middle line:84%
+to be not a vector,
+but it's some array
+
+00:09:48.010 --> 00:09:49.488 align:middle line:90%
+of structured information.
+
+00:09:49.488 --> 00:09:52.030 align:middle line:84%
+In transformers, the structured
+information is just a vector,
+
+00:09:52.030 --> 00:09:53.780 align:middle line:84%
+but there might be
+generalizations to this
+
+00:09:53.780 --> 00:09:58.190 align:middle line:84%
+that come about later in
+2025 for the next year.
+
+00:09:58.190 --> 00:10:02.130 align:middle line:84%
+So I do want to note that
+I'm using the word "token"
+
+00:10:02.130 --> 00:10:04.467 align:middle line:84%
+in a way that is not
+completely standard.
+
+00:10:04.467 --> 00:10:07.050 align:middle line:84%
+I'm using it in a way that shows
+up in various computer vision
+
+00:10:07.050 --> 00:10:10.650 align:middle line:84%
+literature, but is a little bit
+less common in natural language
+
+00:10:10.650 --> 00:10:11.270 align:middle line:90%
+processing.
+
+00:10:11.270 --> 00:10:13.170 align:middle line:84%
+So in natural
+language processing,
+
+00:10:13.170 --> 00:10:15.810 align:middle line:84%
+people mostly talk
+about tokens as being
+
+00:10:15.810 --> 00:10:18.390 align:middle line:84%
+the discrete units of the
+vocabulary that we're modeling.
+
+00:10:18.390 --> 00:10:20.850 align:middle line:84%
+So it's like a
+token is the letter
+
+00:10:20.850 --> 00:10:25.015 align:middle line:84%
+A, B, C. There's 26 tokens
+for the English alphabet.
+
+00:10:25.015 --> 00:10:27.390 align:middle line:84%
+Or we could tokenize with a
+different kind of vocabulary.
+
+00:10:27.390 --> 00:10:30.270 align:middle line:84%
+It could be that every English
+word is a separate token.
+
+00:10:30.270 --> 00:10:33.050 align:middle line:84%
+So there's discrete units of the
+vocabulary that I'm operating
+
+00:10:33.050 --> 00:10:35.730 align:middle line:84%
+over is what natural
+language people usually
+
+00:10:35.730 --> 00:10:36.550 align:middle line:90%
+mean by the tokens.
+
+00:10:36.550 --> 00:10:40.220 align:middle line:84%
+But it's a kind of
+weird definition.
+
+00:10:40.220 --> 00:10:44.380 align:middle line:84%
+I prefer to think of the tokens
+as the chunks of information
+
+00:10:44.380 --> 00:10:46.550 align:middle line:84%
+that you are factorizing
+your problem into.
+
+00:10:46.550 --> 00:10:48.300 align:middle line:84%
+It's a more general
+definition, and that's
+
+00:10:48.300 --> 00:10:50.258 align:middle line:84%
+the one we're going to
+go with in this lecture.
+
+00:10:50.258 --> 00:10:52.500 align:middle line:90%
+So token is a vector of neurons.
+
+00:10:52.500 --> 00:10:57.140 align:middle line:84%
+And a set of tokens is how
+I will represent some data.
+
+00:10:57.140 --> 00:11:01.137 align:middle line:84%
+So just like I
+could have ConvNets
+
+00:11:01.137 --> 00:11:02.720 align:middle line:84%
+that operate over
+an array of neurons,
+
+00:11:02.720 --> 00:11:05.420 align:middle line:84%
+I could have convolution
+over tokens that operates
+
+00:11:05.420 --> 00:11:06.780 align:middle line:90%
+over an array of tokens.
+
+00:11:06.780 --> 00:11:09.275 align:middle line:84%
+That would just be like
+multi-channel convolution.
+
+00:11:09.275 --> 00:11:10.900 align:middle line:84%
+So I can have different
+data structures
+
+00:11:10.900 --> 00:11:12.567 align:middle line:84%
+built on top of tokens,
+where now tokens
+
+00:11:12.567 --> 00:11:14.580 align:middle line:84%
+are the new units, the
+new encapsulated units
+
+00:11:14.580 --> 00:11:17.120 align:middle line:90%
+of atomic information.
+
+00:11:17.120 --> 00:11:20.040 align:middle line:84%
+In a neural net, we have
+scalar valued neurons.
+
+00:11:20.040 --> 00:11:23.460 align:middle line:84%
+In a token neural net, we
+have vector valued units.
+
+00:11:23.460 --> 00:11:26.420 align:middle line:90%
+
+
+00:11:26.420 --> 00:11:30.695 align:middle line:84%
+And we could have a set that's
+unstructured, unordered.
+
+00:11:30.695 --> 00:11:32.320 align:middle line:84%
+And we could also
+have a set of tokens.
+
+00:11:32.320 --> 00:11:35.500 align:middle line:84%
+And in transformer land, the
+main thing we operate over
+
+00:11:35.500 --> 00:11:37.400 align:middle line:84%
+is actually sets, as
+opposed to arrays.
+
+00:11:37.400 --> 00:11:41.840 align:middle line:84%
+But there's always variations on
+this theme that you can make up.
+
+00:11:41.840 --> 00:11:44.940 align:middle line:84%
+So let's use an image
+processing example.
+
+00:11:44.940 --> 00:11:48.620 align:middle line:84%
+But I want to just make
+sure we keep in mind
+
+00:11:48.620 --> 00:11:52.220 align:middle line:84%
+that transformers, maybe
+why they're so popular
+
+00:11:52.220 --> 00:11:56.460 align:middle line:84%
+is because they're very
+agnostic to the domain.
+
+00:11:56.460 --> 00:12:00.000 align:middle line:84%
+The recipe is once you turn
+your data into a set of tokens,
+
+00:12:00.000 --> 00:12:01.407 align:middle line:90%
+then you just use a transformer.
+
+00:12:01.407 --> 00:12:03.740 align:middle line:84%
+And this is one of the reasons
+they just dominate across
+
+00:12:03.740 --> 00:12:04.840 align:middle line:90%
+so many different domains.
+
+00:12:04.840 --> 00:12:08.177 align:middle line:84%
+And basically, all domains
+where deep learning is applied
+
+00:12:08.177 --> 00:12:10.260 align:middle line:84%
+that I know of, I think
+transformers are currently
+
+00:12:10.260 --> 00:12:13.340 align:middle line:84%
+the most popular
+way of doing it,
+
+00:12:13.340 --> 00:12:16.820 align:middle line:84%
+or at least the most
+performant way of doing it.
+
+00:12:16.820 --> 00:12:19.580 align:middle line:84%
+So that's one of the
+powers is they're very
+
+00:12:19.580 --> 00:12:22.140 align:middle line:90%
+agnostic to the input signal.
+
+00:12:22.140 --> 00:12:25.160 align:middle line:84%
+Their previous
+methods, like CNNs,
+
+00:12:25.160 --> 00:12:27.300 align:middle line:84%
+were much more tied to
+the locality properties
+
+00:12:27.300 --> 00:12:28.500 align:middle line:90%
+of the signal.
+
+00:12:28.500 --> 00:12:31.542 align:middle line:84%
+So how do you turn
+your data into tokens?
+
+00:12:31.542 --> 00:12:33.000 align:middle line:84%
+And then we'll just
+process tokens.
+
+00:12:33.000 --> 00:12:35.160 align:middle line:84%
+That's the general
+idea of transformers.
+
+00:12:35.160 --> 00:12:37.750 align:middle line:84%
+First, the domain expert
+turns data into tokens,
+
+00:12:37.750 --> 00:12:42.150 align:middle line:84%
+and then generic transformer
+processes tokens.
+
+00:12:42.150 --> 00:12:44.428 align:middle line:84%
+So for images, this is the
+standard way of doing it.
+
+00:12:44.428 --> 00:12:46.970 align:middle line:84%
+But you can imagine a lot of
+other ways that one could do it.
+
+00:12:46.970 --> 00:12:49.190 align:middle line:84%
+But you just break up
+the image into patches.
+
+00:12:49.190 --> 00:12:51.470 align:middle line:84%
+Just like a ConvNet, you
+chop it up into patches,
+
+00:12:51.470 --> 00:12:54.270 align:middle line:84%
+and then you turn each
+patch into a token
+
+00:12:54.270 --> 00:12:57.310 align:middle line:84%
+by just projecting it
+into a flat vector.
+
+00:12:57.310 --> 00:12:59.630 align:middle line:84%
+And you could use
+some matrix that you
+
+00:12:59.630 --> 00:13:03.070 align:middle line:84%
+multiply the pixel
+values by W tokenize
+
+00:13:03.070 --> 00:13:04.592 align:middle line:90%
+to get a D dimensional vector.
+
+00:13:04.592 --> 00:13:06.050 align:middle line:84%
+And that could be
+a learned matrix,
+
+00:13:06.050 --> 00:13:08.030 align:middle line:84%
+or it could be
+somehow hard-coded.
+
+00:13:08.030 --> 00:13:11.750 align:middle line:90%
+So just a linear operation.
+
+00:13:11.750 --> 00:13:14.850 align:middle line:84%
+And I've basically
+already said this--
+
+00:13:14.850 --> 00:13:16.590 align:middle line:84%
+but when operating
+over pixels, we're
+
+00:13:16.590 --> 00:13:19.950 align:middle line:84%
+operating over
+scalar-valued measurements.
+
+00:13:19.950 --> 00:13:21.830 align:middle line:84%
+What's the red
+color at that pixel?
+
+00:13:21.830 --> 00:13:23.230 align:middle line:84%
+When operating
+over tokens, we're
+
+00:13:23.230 --> 00:13:26.310 align:middle line:84%
+representing the
+input as an array
+
+00:13:26.310 --> 00:13:27.770 align:middle line:90%
+of vector-valued measurements.
+
+00:13:27.770 --> 00:13:30.630 align:middle line:84%
+And the vectors are
+just the projection
+
+00:13:30.630 --> 00:13:33.590 align:middle line:84%
+of a set of RGB
+measurements in a patch
+
+00:13:33.590 --> 00:13:39.110 align:middle line:84%
+onto a fixed dimensional
+vector in Rd.
+
+00:13:39.110 --> 00:13:39.730 align:middle line:90%
+Question?
+
+00:13:39.730 --> 00:13:42.310 align:middle line:84%
+AUDIENCE: All the tokens
+are generally the same size?
+
+00:13:42.310 --> 00:13:43.790 align:middle line:90%
+PHILLIP ISOLA: Yeah, they do.
+
+00:13:43.790 --> 00:13:46.630 align:middle line:84%
+So do all tokens generally
+have the same size?
+
+00:13:46.630 --> 00:13:47.570 align:middle line:90%
+Yeah, usually they do.
+
+00:13:47.570 --> 00:13:52.630 align:middle line:84%
+They're generically like
+a set of vectors in Rd.
+
+00:13:52.630 --> 00:13:56.480 align:middle line:84%
+And that is an interesting
+thing to maybe do
+
+00:13:56.480 --> 00:13:58.230 align:middle line:84%
+for a final project
+or a research project.
+
+00:13:58.230 --> 00:14:01.350 align:middle line:84%
+I think variable size tokens
+could be really interesting.
+
+00:14:01.350 --> 00:14:03.910 align:middle line:84%
+It's not a standard
+way of doing it.
+
+00:14:03.910 --> 00:14:06.550 align:middle line:84%
+Probably there are some
+challenges with hardware.
+
+00:14:06.550 --> 00:14:09.170 align:middle line:84%
+Another idea of transformers
+is that they just match really,
+
+00:14:09.170 --> 00:14:13.148 align:middle line:84%
+really well to the GPU hardware
+and the software that we use.
+
+00:14:13.148 --> 00:14:14.690 align:middle line:84%
+And if you have
+variable-size tokens,
+
+00:14:14.690 --> 00:14:16.690 align:middle line:84%
+now there's something you
+have to keep track of.
+
+00:14:16.690 --> 00:14:20.730 align:middle line:84%
+And how do how do you map
+that onto your hardware?
+
+00:14:20.730 --> 00:14:21.790 align:middle line:90%
+It might be non-trivial.
+
+00:14:21.790 --> 00:14:23.470 align:middle line:90%
+Question in the very back.
+
+00:14:23.470 --> 00:14:26.725 align:middle line:90%
+AUDIENCE: [INAUDIBLE]
+
+00:14:26.725 --> 00:14:27.960 align:middle line:90%
+
+
+00:14:27.960 --> 00:14:29.210 align:middle line:90%
+PHILLIP ISOLA: Yeah, question.
+
+00:14:29.210 --> 00:14:30.650 align:middle line:84%
+If you're tokenizing
+an image, do you
+
+00:14:30.650 --> 00:14:31.890 align:middle line:90%
+want your patches to overlap?
+
+00:14:31.890 --> 00:14:34.300 align:middle line:84%
+And the answer is in
+standard architectures,
+
+00:14:34.300 --> 00:14:36.730 align:middle line:90%
+no, you generally don't overlap.
+
+00:14:36.730 --> 00:14:37.980 align:middle line:90%
+But that might be a good idea.
+
+00:14:37.980 --> 00:14:39.300 align:middle line:84%
+Just like in
+convolutional networks,
+
+00:14:39.300 --> 00:14:40.700 align:middle line:84%
+you can set the stride
+that's a parameter.
+
+00:14:40.700 --> 00:14:42.500 align:middle line:84%
+And you can have that
+same parameter here.
+
+00:14:42.500 --> 00:14:44.640 align:middle line:84%
+But the current
+standard way of doing it
+
+00:14:44.640 --> 00:14:46.740 align:middle line:90%
+is no overlap, as far as I know.
+
+00:14:46.740 --> 00:14:47.708 align:middle line:90%
+That might change.
+
+00:14:47.708 --> 00:14:49.500 align:middle line:84%
+We'll hear one more,
+and then I'll move on.
+
+00:14:49.500 --> 00:14:51.048 align:middle line:84%
+AUDIENCE: So are
+the tokens just,
+
+00:14:51.048 --> 00:14:52.840 align:middle line:84%
+like when you take the
+patches, the patches
+
+00:14:52.840 --> 00:14:53.967 align:middle line:90%
+are also just pixels.
+
+00:14:53.967 --> 00:14:54.800 align:middle line:90%
+PHILLIP ISOLA: Yeah.
+
+00:14:54.800 --> 00:14:56.758 align:middle line:84%
+AUDIENCE: And it would
+just be the tokens would
+
+00:14:56.758 --> 00:14:59.320 align:middle line:90%
+be the pixels in vector form.
+
+00:14:59.320 --> 00:15:01.640 align:middle line:90%
+PHILLIP ISOLA: Yeah.
+
+00:15:01.640 --> 00:15:03.640 align:middle line:84%
+The question is, are
+the patches just pixels.
+
+00:15:03.640 --> 00:15:04.400 align:middle line:90%
+Yes.
+
+00:15:04.400 --> 00:15:07.340 align:middle line:84%
+So you flatten the patch
+into just a list of numbers.
+
+00:15:07.340 --> 00:15:10.160 align:middle line:84%
+It's a long vector that
+is the length, depending
+
+00:15:10.160 --> 00:15:11.400 align:middle line:90%
+on the size of the patch.
+
+00:15:11.400 --> 00:15:14.080 align:middle line:84%
+And then you project that
+into a whatever dimensionality
+
+00:15:14.080 --> 00:15:18.120 align:middle line:84%
+you want to process
+D dimensions.
+
+00:15:18.120 --> 00:15:22.000 align:middle line:90%
+So you can tokenize anything.
+
+00:15:22.000 --> 00:15:24.320 align:middle line:90%
+And again, this is the power.
+
+00:15:24.320 --> 00:15:27.165 align:middle line:84%
+The general strategy is you take
+your signal, your data you're
+
+00:15:27.165 --> 00:15:29.040 align:middle line:84%
+processing, you chop it
+up into little chunks
+
+00:15:29.040 --> 00:15:33.582 align:middle line:84%
+where the chunks make sense
+as the units of your domain.
+
+00:15:33.582 --> 00:15:35.040 align:middle line:84%
+So usually that
+means local chunks,
+
+00:15:35.040 --> 00:15:38.320 align:middle line:84%
+because locality is a
+very good inductive bias.
+
+00:15:38.320 --> 00:15:40.520 align:middle line:84%
+So in images, the
+standard thing is chop up
+
+00:15:40.520 --> 00:15:42.480 align:middle line:90%
+into non-overlapping patches.
+
+00:15:42.480 --> 00:15:44.040 align:middle line:84%
+In language, the
+standard thing is
+
+00:15:44.040 --> 00:15:46.840 align:middle line:84%
+to chop up into little
+snippets of words
+
+00:15:46.840 --> 00:15:48.520 align:middle line:90%
+which are called byte pairs.
+
+00:15:48.520 --> 00:15:53.040 align:middle line:84%
+So I won't go into the
+details, but basically
+
+00:15:53.040 --> 00:15:55.360 align:middle line:84%
+the kind of phonemes or
+the units of the language
+
+00:15:55.360 --> 00:15:57.680 align:middle line:84%
+that you're operating
+it over, you
+
+00:15:57.680 --> 00:16:01.920 align:middle line:84%
+could operate over single
+characters or three characters
+
+00:16:01.920 --> 00:16:04.200 align:middle line:84%
+or entire words, but
+the one that people like
+
+00:16:04.200 --> 00:16:05.620 align:middle line:90%
+is just called a byte pair.
+
+00:16:05.620 --> 00:16:10.160 align:middle line:84%
+It's like two byte
+representations of the language.
+
+00:16:10.160 --> 00:16:12.180 align:middle line:84%
+So you can learn
+this for English.
+
+00:16:12.180 --> 00:16:14.380 align:middle line:84%
+And there might be a byte
+pair that represents T-H,
+
+00:16:14.380 --> 00:16:18.480 align:middle line:84%
+and there might be a byte
+pair that represents I-N-G. So
+
+00:16:18.480 --> 00:16:22.340 align:middle line:84%
+that's how you carve up English
+and other natural language.
+
+00:16:22.340 --> 00:16:24.440 align:middle line:84%
+And how you carve up
+sounds will often just
+
+00:16:24.440 --> 00:16:26.980 align:middle line:84%
+be chop into chunks like
+you do for an image.
+
+00:16:26.980 --> 00:16:30.530 align:middle line:90%
+
+
+00:16:30.530 --> 00:16:33.290 align:middle line:84%
+So once you have done
+that, then everything else
+
+00:16:33.290 --> 00:16:34.430 align:middle line:90%
+is domain agnostic.
+
+00:16:34.430 --> 00:16:36.930 align:middle line:84%
+So this is the only part where
+you have to actually consider
+
+00:16:36.930 --> 00:16:37.870 align:middle line:90%
+your input domain.
+
+00:16:37.870 --> 00:16:39.822 align:middle line:84%
+I mean, yes, when you
+think about the loss
+
+00:16:39.822 --> 00:16:41.530 align:middle line:84%
+function and other
+formulations, yes, you
+
+00:16:41.530 --> 00:16:42.780 align:middle line:90%
+think about your input domain.
+
+00:16:42.780 --> 00:16:45.330 align:middle line:90%
+But this is the main part.
+
+00:16:45.330 --> 00:16:48.670 align:middle line:84%
+So here's a notation
+that we're going to use.
+
+00:16:48.670 --> 00:16:52.210 align:middle line:84%
+So we're going to think of
+the tokens as just vectors.
+
+00:16:52.210 --> 00:16:55.290 align:middle line:84%
+And I'm often going to
+describe an array of tokens
+
+00:16:55.290 --> 00:16:57.667 align:middle line:84%
+or a set of tokens,
+because it will turn out
+
+00:16:57.667 --> 00:16:59.750 align:middle line:84%
+that actually the ordering
+is going to not matter.
+
+00:16:59.750 --> 00:17:02.690 align:middle line:84%
+We'll have architectures that
+are permutation invariant
+
+00:17:02.690 --> 00:17:06.310 align:middle line:84%
+over the ordering of the rows
+of that matrix as this matrix T.
+
+00:17:06.310 --> 00:17:08.589 align:middle line:84%
+So I'm going to just
+transpose my token vectors.
+
+00:17:08.589 --> 00:17:10.089 align:middle line:84%
+Now they're going
+to be row vectors.
+
+00:17:10.089 --> 00:17:11.869 align:middle line:90%
+I'm going to stack them up.
+
+00:17:11.869 --> 00:17:14.890 align:middle line:84%
+And that will be this
+matrix T that will
+
+00:17:14.890 --> 00:17:16.349 align:middle line:90%
+simplify a lot of the math.
+
+00:17:16.349 --> 00:17:17.849 align:middle line:84%
+So when we're
+operating over tokens,
+
+00:17:17.849 --> 00:17:19.390 align:middle line:90%
+this is the notation we'll use.
+
+00:17:19.390 --> 00:17:22.401 align:middle line:84%
+We have n tokens in the
+rows and d channels.
+
+00:17:22.401 --> 00:17:24.609 align:middle line:84%
+So we're going to use the
+same dimensionality for all
+
+00:17:24.609 --> 00:17:26.490 align:middle line:90%
+tokens to answer that question.
+
+00:17:26.490 --> 00:17:29.167 align:middle line:84%
+And if you've tried to use
+different dimensionality,
+
+00:17:29.167 --> 00:17:30.750 align:middle line:84%
+the notation will
+become more complex.
+
+00:17:30.750 --> 00:17:34.870 align:middle line:84%
+And you'd have to do
+some more bookkeeping.
+
+00:17:34.870 --> 00:17:39.210 align:middle line:90%
+And yeah, it would be harder.
+
+00:17:39.210 --> 00:17:44.170 align:middle line:84%
+So just like with
+regular old MLPs
+
+00:17:44.170 --> 00:17:47.350 align:middle line:84%
+in networks built out of tokens,
+we have two basic operations.
+
+00:17:47.350 --> 00:17:49.270 align:middle line:84%
+One is a linear
+combination operation.
+
+00:17:49.270 --> 00:17:53.270 align:middle line:84%
+And the other is a
+unit-wise nonlinearity.
+
+00:17:53.270 --> 00:17:55.310 align:middle line:84%
+So what is a linear
+combination operation?
+
+00:17:55.310 --> 00:17:58.210 align:middle line:84%
+It's just a generalization
+of the linear combination
+
+00:17:58.210 --> 00:17:59.290 align:middle line:90%
+over neurons.
+
+00:17:59.290 --> 00:18:01.310 align:middle line:84%
+So here's a linear
+combination over neurons.
+
+00:18:01.310 --> 00:18:02.650 align:middle line:90%
+This is a linear layer.
+
+00:18:02.650 --> 00:18:06.170 align:middle line:84%
+I have x in is a set of
+scalars-- x1, x2, x3.
+
+00:18:06.170 --> 00:18:09.330 align:middle line:84%
+And x out is just
+another scalar.
+
+00:18:09.330 --> 00:18:12.770 align:middle line:84%
+And I have a weighted
+combination, w1 times x1,
+
+00:18:12.770 --> 00:18:13.890 align:middle line:90%
+and so forth.
+
+00:18:13.890 --> 00:18:19.990 align:middle line:84%
+This is the regular old linear
+layer going from R3 to R1.
+
+00:18:19.990 --> 00:18:22.733 align:middle line:84%
+So what is a linear combination
+of tokens look like?
+
+00:18:22.733 --> 00:18:24.900 align:middle line:84%
+Oh, and right, we just can
+write that in matrix form
+
+00:18:24.900 --> 00:18:26.140 align:middle line:90%
+as w times x in.
+
+00:18:26.140 --> 00:18:29.917 align:middle line:84%
+You've done that a lot on the
+P sets and in other places.
+
+00:18:29.917 --> 00:18:31.500 align:middle line:84%
+A linear combination
+of tokens is just
+
+00:18:31.500 --> 00:18:34.300 align:middle line:84%
+going to be a weighted
+combination of vectors.
+
+00:18:34.300 --> 00:18:37.380 align:middle line:84%
+So I'll have vectors
+with D dimensions.
+
+00:18:37.380 --> 00:18:40.363 align:middle line:84%
+But if I only have three
+tokens, three such vectors,
+
+00:18:40.363 --> 00:18:41.780 align:middle line:84%
+I'll have three
+weights that I can
+
+00:18:41.780 --> 00:18:44.380 align:middle line:84%
+learn or decide to set
+the values of to create
+
+00:18:44.380 --> 00:18:45.860 align:middle line:90%
+a linear combination.
+
+00:18:45.860 --> 00:18:50.977 align:middle line:84%
+So it's going to be a weight
+times the first vector,
+
+00:18:50.977 --> 00:18:52.560 align:middle line:84%
+plus a weight times
+the second vector,
+
+00:18:52.560 --> 00:18:55.860 align:middle line:84%
+plus a weight times
+the third vector.
+
+00:18:55.860 --> 00:19:00.460 align:middle line:84%
+So you can represent that,
+again, in matrix notation,
+
+00:19:00.460 --> 00:19:07.380 align:middle line:84%
+if we're using our T where T
+is n rows by d columns, where
+
+00:19:07.380 --> 00:19:09.700 align:middle line:84%
+d is the dimensionality
+of each token vector.
+
+00:19:09.700 --> 00:19:12.260 align:middle line:84%
+Then w times that
+matrix T is just
+
+00:19:12.260 --> 00:19:16.160 align:middle line:84%
+like taking a linear
+combination of the rows.
+
+00:19:16.160 --> 00:19:20.260 align:middle line:84%
+So you can already see here that
+the token linear combination
+
+00:19:20.260 --> 00:19:23.140 align:middle line:84%
+is less expressive than
+if I did the same thing
+
+00:19:23.140 --> 00:19:26.060 align:middle line:84%
+over all the individual neurons
+that make up those tokens.
+
+00:19:26.060 --> 00:19:29.100 align:middle line:84%
+It's like a low rank
+transformation over the neurons,
+
+00:19:29.100 --> 00:19:31.660 align:middle line:84%
+because I only have
+three weights that
+
+00:19:31.660 --> 00:19:33.500 align:middle line:84%
+determine that
+combination, but I actually
+
+00:19:33.500 --> 00:19:36.820 align:middle line:84%
+have 12 neurons that make
+up all of those tokens.
+
+00:19:36.820 --> 00:19:38.620 align:middle line:84%
+And so you normally
+would have 12 weights
+
+00:19:38.620 --> 00:19:43.300 align:middle line:84%
+if it were just a linear
+combination of neurons.
+
+00:19:43.300 --> 00:19:48.000 align:middle line:84%
+So this is a less
+expressive family of layers.
+
+00:19:48.000 --> 00:19:52.900 align:middle line:84%
+In fact, it's a
+low rank operation.
+
+00:19:52.900 --> 00:19:56.080 align:middle line:84%
+But we're thinking of the
+tokens as these bundles,
+
+00:19:56.080 --> 00:19:58.400 align:middle line:84%
+these encapsulated
+units of operations.
+
+00:19:58.400 --> 00:20:00.860 align:middle line:84%
+We've just now defined how
+to take linear combinations
+
+00:20:00.860 --> 00:20:04.668 align:middle line:90%
+of those encapsulated units.
+
+00:20:04.668 --> 00:20:06.460 align:middle line:84%
+So the next thing we
+need is the equivalent
+
+00:20:06.460 --> 00:20:09.100 align:middle line:84%
+of a ReLU, the
+point-wise nonlinearity.
+
+00:20:09.100 --> 00:20:11.960 align:middle line:84%
+And with tokens, we can have
+a token-wise nonlinearity.
+
+00:20:11.960 --> 00:20:13.800 align:middle line:84%
+Instead of being a
+neuron-wise nonlinearity,
+
+00:20:13.800 --> 00:20:15.900 align:middle line:84%
+it will be a nonlinearity
+that operates
+
+00:20:15.900 --> 00:20:19.220 align:middle line:84%
+on each token independently
+and identically.
+
+00:20:19.220 --> 00:20:23.510 align:middle line:84%
+So here's my point-wise
+nonlinearity from MLPs.
+
+00:20:23.510 --> 00:20:26.730 align:middle line:84%
+We have x out is equal to,
+for each dimension of x in,
+
+00:20:26.730 --> 00:20:28.890 align:middle line:84%
+we just take a ReLU
+of that dimension.
+
+00:20:28.890 --> 00:20:31.470 align:middle line:90%
+
+
+00:20:31.470 --> 00:20:33.390 align:middle line:84%
+And a token-wise
+nonlinearity is just
+
+00:20:33.390 --> 00:20:36.350 align:middle line:84%
+going to be, for each token
+in my array of tokens,
+
+00:20:36.350 --> 00:20:38.750 align:middle line:84%
+I will pass it through
+a nonlinear function F.
+
+00:20:38.750 --> 00:20:41.110 align:middle line:84%
+And it will be the same
+nonlinear function applied
+
+00:20:41.110 --> 00:20:44.950 align:middle line:90%
+to every single token.
+
+00:20:44.950 --> 00:20:50.530 align:middle line:84%
+So typically in transformers,
+F is going to be itself an MLP.
+
+00:20:50.530 --> 00:20:52.450 align:middle line:84%
+So transformers are like
+a meta architecture.
+
+00:20:52.450 --> 00:20:53.910 align:middle line:84%
+Like, the units of
+the architecture
+
+00:20:53.910 --> 00:20:57.950 align:middle line:90%
+are other neural networks.
+
+00:20:57.950 --> 00:21:00.750 align:middle line:84%
+And you can also think of
+this operation as equivalent
+
+00:21:00.750 --> 00:21:03.910 align:middle line:84%
+to a convolutional
+filter that is run
+
+00:21:03.910 --> 00:21:05.990 align:middle line:90%
+across the sequence of tokens.
+
+00:21:05.990 --> 00:21:09.403 align:middle line:84%
+It's a 1 by 1
+convolutional filter.
+
+00:21:09.403 --> 00:21:10.570 align:middle line:90%
+So what does that look like?
+
+00:21:10.570 --> 00:21:11.650 align:middle line:90%
+It looks like this.
+
+00:21:11.650 --> 00:21:13.350 align:middle line:90%
+I have a sequence of tokens.
+
+00:21:13.350 --> 00:21:16.830 align:middle line:84%
+Now think of this as
+like a spatial sequence
+
+00:21:16.830 --> 00:21:17.810 align:middle line:90%
+or temporal sequence.
+
+00:21:17.810 --> 00:21:19.770 align:middle line:84%
+And the channels are in
+this token dimension.
+
+00:21:19.770 --> 00:21:23.847 align:middle line:84%
+The vector dimensions
+of the token.
+
+00:21:23.847 --> 00:21:25.430 align:middle line:84%
+And the convolutional
+filter will just
+
+00:21:25.430 --> 00:21:27.990 align:middle line:84%
+be something that operates
+on each token independently
+
+00:21:27.990 --> 00:21:29.010 align:middle line:90%
+and identically.
+
+00:21:29.010 --> 00:21:32.590 align:middle line:84%
+So this is what the token-wise
+nonlinearity looks like.
+
+00:21:32.590 --> 00:21:34.550 align:middle line:84%
+And you can also now
+map that in your brain
+
+00:21:34.550 --> 00:21:37.850 align:middle line:84%
+onto a point-wise
+nonlinearity in an MLP,
+
+00:21:37.850 --> 00:21:40.590 align:middle line:84%
+that would just be like I
+have vectors of length 1.
+
+00:21:40.590 --> 00:21:43.390 align:middle line:84%
+And my operation them
+sliding across that sequence
+
+00:21:43.390 --> 00:21:47.730 align:middle line:84%
+is a ReLU or a tanh or sigmoid,
+some point-wise nonlinearity.
+
+00:21:47.730 --> 00:21:51.350 align:middle line:90%
+
+
+00:21:51.350 --> 00:21:55.030 align:middle line:84%
+So now we've basically built
+what I'll call token nets.
+
+00:21:55.030 --> 00:21:56.930 align:middle line:84%
+Another name for this
+would be graph nets.
+
+00:21:56.930 --> 00:22:00.750 align:middle line:84%
+But I'm going to call it token
+nets for now, which is almost
+
+00:22:00.750 --> 00:22:03.550 align:middle line:90%
+identical looking to a MLP.
+
+00:22:03.550 --> 00:22:06.610 align:middle line:84%
+So MLP is linear combination
+of scalar-valued neurons,
+
+00:22:06.610 --> 00:22:09.030 align:middle line:84%
+point-wise
+nonlinearity, and so on.
+
+00:22:09.030 --> 00:22:12.390 align:middle line:84%
+And token net is linear
+combination of tokens.
+
+00:22:12.390 --> 00:22:15.350 align:middle line:84%
+Take a weighted sum of
+these three items, followed
+
+00:22:15.350 --> 00:22:18.800 align:middle line:84%
+by token-wise nonlinearity, so
+each arrow on the second row
+
+00:22:18.800 --> 00:22:22.560 align:middle line:84%
+is itself parameterized
+by an MLP-- it's
+
+00:22:22.560 --> 00:22:24.100 align:middle line:84%
+a complicated
+nonlinear function--
+
+00:22:24.100 --> 00:22:26.480 align:middle line:90%
+and then repeat that process.
+
+00:22:26.480 --> 00:22:28.500 align:middle line:90%
+So the motif is the same.
+
+00:22:28.500 --> 00:22:31.080 align:middle line:84%
+It's just over these
+more complicated units.
+
+00:22:31.080 --> 00:22:33.105 align:middle line:84%
+As opposed to being
+scalar-valued units, which
+
+00:22:33.105 --> 00:22:34.980 align:middle line:84%
+are called neurons, it's
+vector-valued units,
+
+00:22:34.980 --> 00:22:38.560 align:middle line:90%
+which I'm calling tokens.
+
+00:22:38.560 --> 00:22:41.840 align:middle line:84%
+So I already mentioned,
+but this is also
+
+00:22:41.840 --> 00:22:44.520 align:middle line:84%
+equivalent to that
+unrolled GNN that I talked
+
+00:22:44.520 --> 00:22:46.360 align:middle line:90%
+about a few lectures ago.
+
+00:22:46.360 --> 00:22:51.420 align:middle line:84%
+So an unrolled GNN, we have
+this aggregate function,
+
+00:22:51.420 --> 00:22:53.940 align:middle line:84%
+which is doing some kind
+of weighted combination.
+
+00:22:53.940 --> 00:22:55.560 align:middle line:84%
+And then we have a
+combined function,
+
+00:22:55.560 --> 00:23:00.500 align:middle line:84%
+which now you can understand
+to be a unit-wise,
+
+00:23:00.500 --> 00:23:02.180 align:middle line:90%
+a node-wise nonlinearity.
+
+00:23:02.180 --> 00:23:03.700 align:middle line:90%
+And then we repeat that process.
+
+00:23:03.700 --> 00:23:06.000 align:middle line:84%
+And GNN is also often
+have the property that you
+
+00:23:06.000 --> 00:23:08.100 align:middle line:90%
+share weights across depth.
+
+00:23:08.100 --> 00:23:09.760 align:middle line:90%
+You don't have to, but you can.
+
+00:23:09.760 --> 00:23:11.360 align:middle line:84%
+Whereas transformers
+typically have
+
+00:23:11.360 --> 00:23:13.652 align:middle line:84%
+the property that you don't
+share weights across depth,
+
+00:23:13.652 --> 00:23:14.320 align:middle line:90%
+but you can.
+
+00:23:14.320 --> 00:23:15.303 align:middle line:90%
+So this is a choice.
+
+00:23:15.303 --> 00:23:16.720 align:middle line:84%
+With the standard
+transformer, you
+
+00:23:16.720 --> 00:23:19.820 align:middle line:84%
+have separate set of weights
+here and on the next layer.
+
+00:23:19.820 --> 00:23:21.760 align:middle line:84%
+And I'll tell you how
+those weights actually
+
+00:23:21.760 --> 00:23:24.940 align:middle line:90%
+get specified in a minute.
+
+00:23:24.940 --> 00:23:27.120 align:middle line:84%
+And just to remind you,
+here was that picture
+
+00:23:27.120 --> 00:23:28.500 align:middle line:90%
+of the unrolled GNN.
+
+00:23:28.500 --> 00:23:31.080 align:middle line:84%
+So an unrolled GNN,
+we have our graph.
+
+00:23:31.080 --> 00:23:34.420 align:middle line:84%
+And we take these-- now
+I'm calling them tokens,
+
+00:23:34.420 --> 00:23:36.680 align:middle line:84%
+they used to be called
+the node vectors--
+
+00:23:36.680 --> 00:23:37.780 align:middle line:90%
+and we aggregate.
+
+00:23:37.780 --> 00:23:41.040 align:middle line:84%
+But this is going to be
+in a critical difference.
+
+00:23:41.040 --> 00:23:44.560 align:middle line:84%
+In the GNN, how we
+aggregate is determined
+
+00:23:44.560 --> 00:23:46.513 align:middle line:90%
+by the graph connectivity.
+
+00:23:46.513 --> 00:23:48.680 align:middle line:84%
+It's the adjacency matrix
+of the graph that tells us
+
+00:23:48.680 --> 00:23:50.800 align:middle line:84%
+how we do this aggregate,
+where the arrows are
+
+00:23:50.800 --> 00:23:52.675 align:middle line:90%
+in that linear combination.
+
+00:23:52.675 --> 00:23:55.300 align:middle line:84%
+And additionally in the graph,
+an aggregate might be nonlinear.
+
+00:23:55.300 --> 00:23:57.300 align:middle line:84%
+It doesn't have to just
+be a linear combination.
+
+00:23:57.300 --> 00:24:00.146 align:middle line:90%
+
+
+00:24:00.146 --> 00:24:04.640 align:middle line:84%
+And then we also have a
+particular way of combining that
+
+00:24:04.640 --> 00:24:06.240 align:middle line:90%
+through an update step.
+
+00:24:06.240 --> 00:24:09.360 align:middle line:84%
+But it looks very much like a
+transformer that I'm showing you
+
+00:24:09.360 --> 00:24:11.720 align:middle line:84%
+now, the token net version
+of the transformer,
+
+00:24:11.720 --> 00:24:14.750 align:middle line:84%
+except that these arrows
+are not fully connected.
+
+00:24:14.750 --> 00:24:18.610 align:middle line:84%
+They are determined by
+the graph structure.
+
+00:24:18.610 --> 00:24:22.610 align:middle line:84%
+So a transformer is going
+to be like a graph net,
+
+00:24:22.610 --> 00:24:24.410 align:middle line:84%
+but it's a fully
+connected graph net.
+
+00:24:24.410 --> 00:24:28.530 align:middle line:84%
+So we have all the arrows at
+every single aggregation layer.
+
+00:24:28.530 --> 00:24:31.010 align:middle line:84%
+And I'll tell you how those
+arrows' values get determined,
+
+00:24:31.010 --> 00:24:32.670 align:middle line:84%
+which is going to
+be called attention.
+
+00:24:32.670 --> 00:24:35.730 align:middle line:84%
+But you can think
+of it as a graph
+
+00:24:35.730 --> 00:24:37.490 align:middle line:84%
+net over a fully
+connected graph,
+
+00:24:37.490 --> 00:24:39.670 align:middle line:84%
+typically without
+weight-sharing in depth.
+
+00:24:39.670 --> 00:24:42.850 align:middle line:90%
+
+
+00:24:42.850 --> 00:24:44.610 align:middle line:84%
+Any questions about
+the relationship
+
+00:24:44.610 --> 00:24:47.250 align:middle line:84%
+between these different
+neural networks--
+
+00:24:47.250 --> 00:24:53.460 align:middle line:84%
+MLPs, CNNs, graph nets, and now
+this token net I'm describing?
+
+00:24:53.460 --> 00:24:55.250 align:middle line:84%
+AUDIENCE: Can you
+talk more about
+
+00:24:55.250 --> 00:24:59.415 align:middle line:84%
+the token-wise nonlinearity
+and how it's changing?
+
+00:24:59.415 --> 00:25:01.290 align:middle line:84%
+PHILLIP ISOLA: So the
+token-wise nonlinearity
+
+00:25:01.290 --> 00:25:03.770 align:middle line:84%
+will be typically an
+MLP, and the parameters
+
+00:25:03.770 --> 00:25:06.310 align:middle line:84%
+will be learned with
+backpropagation.
+
+00:25:06.310 --> 00:25:10.690 align:middle line:84%
+So the free parameters are
+learned via optimization.
+
+00:25:10.690 --> 00:25:12.850 align:middle line:84%
+AUDIENCE: And within
+there in that MLP,
+
+00:25:12.850 --> 00:25:17.910 align:middle line:84%
+there's point-wise
+nonlinearities in that as well.
+
+00:25:17.910 --> 00:25:18.710 align:middle line:90%
+PHILLIP ISOLA: Yes.
+
+00:25:18.710 --> 00:25:21.530 align:middle line:84%
+So it's like this
+network of subnetworks.
+
+00:25:21.530 --> 00:25:25.930 align:middle line:84%
+And in the MLP, there are also
+point-wise nonlinearities.
+
+00:25:25.930 --> 00:25:28.630 align:middle line:90%
+And one more?
+
+00:25:28.630 --> 00:25:30.290 align:middle line:84%
+AUDIENCE: The
+aggregate functions
+
+00:25:30.290 --> 00:25:35.250 align:middle line:84%
+are then at least the equivalent
+of the activation functions
+
+00:25:35.250 --> 00:25:36.630 align:middle line:90%
+on the transformers then?
+
+00:25:36.630 --> 00:25:39.250 align:middle line:90%
+
+
+00:25:39.250 --> 00:25:41.490 align:middle line:84%
+PHILLIP ISOLA: The
+question is, in GNNs
+
+00:25:41.490 --> 00:25:44.130 align:middle line:84%
+the aggregate function is
+learned-- or it's parameterized,
+
+00:25:44.130 --> 00:25:45.290 align:middle line:90%
+and it can be learned.
+
+00:25:45.290 --> 00:25:48.050 align:middle line:84%
+And in transformers,
+I didn't tell you
+
+00:25:48.050 --> 00:25:51.528 align:middle line:84%
+how we're going to
+learn these weights.
+
+00:25:51.528 --> 00:25:53.570 align:middle line:84%
+In transformers, that will
+be done via this thing
+
+00:25:53.570 --> 00:25:55.650 align:middle line:84%
+called attention, which
+we'll get to in a minute.
+
+00:25:55.650 --> 00:25:59.830 align:middle line:84%
+And the token-wise nonlinearity
+in an MLP is not learned.
+
+00:25:59.830 --> 00:26:02.233 align:middle line:84%
+The point-wise nonlinearity
+is not learned, typically.
+
+00:26:02.233 --> 00:26:04.150 align:middle line:84%
+But in a transformer,
+it typically is learned.
+
+00:26:04.150 --> 00:26:05.742 align:middle line:90%
+It's a parameterized MLP.
+
+00:26:05.742 --> 00:26:07.950 align:middle line:84%
+And in a graph net, I think
+it would also be learned.
+
+00:26:07.950 --> 00:26:09.700 align:middle line:84%
+It's this update
+function, which typically
+
+00:26:09.700 --> 00:26:11.800 align:middle line:90%
+has learnable parameters.
+
+00:26:11.800 --> 00:26:12.300 align:middle line:90%
+OK.
+
+00:26:12.300 --> 00:26:16.480 align:middle line:90%
+
+
+00:26:16.480 --> 00:26:18.720 align:middle line:84%
+And don't worry too much
+about the semantics here.
+
+00:26:18.720 --> 00:26:20.595 align:middle line:84%
+Like, it doesn't matter
+if you call something
+
+00:26:20.595 --> 00:26:21.880 align:middle line:90%
+a graph net or a transformer.
+
+00:26:21.880 --> 00:26:23.540 align:middle line:84%
+You should understand the
+concepts and how there's
+
+00:26:23.540 --> 00:26:24.900 align:middle line:84%
+these particular
+building blocks that
+
+00:26:24.900 --> 00:26:26.140 align:middle line:84%
+can be combined
+in different ways
+
+00:26:26.140 --> 00:26:27.200 align:middle line:90%
+to achieve different effects.
+
+00:26:27.200 --> 00:26:28.158 align:middle line:90%
+And there's trade-offs.
+
+00:26:28.158 --> 00:26:30.200 align:middle line:84%
+And if you understand
+that deeply,
+
+00:26:30.200 --> 00:26:33.780 align:middle line:84%
+then the names
+are just something
+
+00:26:33.780 --> 00:26:35.580 align:middle line:90%
+that is secondary to that.
+
+00:26:35.580 --> 00:26:39.460 align:middle line:90%
+
+
+00:26:39.460 --> 00:26:42.180 align:middle line:84%
+So that was the
+first new idea was
+
+00:26:42.180 --> 00:26:44.300 align:middle line:84%
+we're going to operate
+over tokens, which
+
+00:26:44.300 --> 00:26:46.360 align:middle line:84%
+are vector-valued units,
+instead of neurons,
+
+00:26:46.360 --> 00:26:48.920 align:middle line:90%
+which are scalar-valued units.
+
+00:26:48.920 --> 00:26:52.580 align:middle line:84%
+The next idea, which is going
+to actually be technically new,
+
+00:26:52.580 --> 00:26:54.020 align:middle line:84%
+is going to be
+attention, which is
+
+00:26:54.020 --> 00:26:57.580 align:middle line:84%
+how do we take the linear
+combination exactly
+
+00:26:57.580 --> 00:26:58.680 align:middle line:90%
+between tokens?
+
+00:26:58.680 --> 00:27:02.020 align:middle line:90%
+
+
+00:27:02.020 --> 00:27:03.880 align:middle line:90%
+Let's say I have a token net.
+
+00:27:03.880 --> 00:27:07.500 align:middle line:84%
+What I could do is I could
+just learn the weights
+
+00:27:07.500 --> 00:27:08.640 align:middle line:90%
+of the linear combination.
+
+00:27:08.640 --> 00:27:10.390 align:middle line:84%
+Just like in an MLP,
+I learned the weights
+
+00:27:10.390 --> 00:27:11.860 align:middle line:90%
+of the linear combination.
+
+00:27:11.860 --> 00:27:15.540 align:middle line:84%
+So free parameters
+I'll draw in blue.
+
+00:27:15.540 --> 00:27:17.520 align:middle line:84%
+And this could just
+be a weight matrix,
+
+00:27:17.520 --> 00:27:19.380 align:middle line:84%
+which is going to be three
+numbers, in this case, because I
+
+00:27:19.380 --> 00:27:20.130 align:middle line:90%
+have three tokens.
+
+00:27:20.130 --> 00:27:23.000 align:middle line:84%
+So it would be a three by one
+weight matrix and one output.
+
+00:27:23.000 --> 00:27:26.380 align:middle line:90%
+Three inputs, one output.
+
+00:27:26.380 --> 00:27:29.650 align:middle line:84%
+And W will be free parameters
+that are learnable via backprop.
+
+00:27:29.650 --> 00:27:30.400 align:middle line:90%
+That's one option.
+
+00:27:30.400 --> 00:27:31.067 align:middle line:90%
+You can do this.
+
+00:27:31.067 --> 00:27:33.620 align:middle line:90%
+That will work
+
+00:27:33.620 --> 00:27:36.140 align:middle line:84%
+But transformers actually are
+coupled with this other idea
+
+00:27:36.140 --> 00:27:37.020 align:middle line:90%
+called attention.
+
+00:27:37.020 --> 00:27:40.260 align:middle line:84%
+And in attention,
+the weights that you
+
+00:27:40.260 --> 00:27:41.840 align:middle line:84%
+use to do this
+linear combination,
+
+00:27:41.840 --> 00:27:43.000 align:middle line:90%
+now they're not free parameters.
+
+00:27:43.000 --> 00:27:43.980 align:middle line:84%
+So I'm not going to
+color them in blue.
+
+00:27:43.980 --> 00:27:45.160 align:middle line:90%
+I'm coloring them in red.
+
+00:27:45.160 --> 00:27:46.993 align:middle line:84%
+And if you remember in
+some of the readings,
+
+00:27:46.993 --> 00:27:49.200 align:middle line:84%
+red was our color
+for activations.
+
+00:27:49.200 --> 00:27:52.878 align:middle line:84%
+It turns out the weights I
+used to combine the tokens
+
+00:27:52.878 --> 00:27:54.420 align:middle line:84%
+with the linear
+combination are going
+
+00:27:54.420 --> 00:27:59.020 align:middle line:84%
+to be coming from activations
+elsewhere in the network.
+
+00:27:59.020 --> 00:28:03.680 align:middle line:84%
+So A is going to not
+be free parameters.
+
+00:28:03.680 --> 00:28:05.870 align:middle line:84%
+It's going to be a
+function of your data
+
+00:28:05.870 --> 00:28:07.210 align:middle line:90%
+that you're processing.
+
+00:28:07.210 --> 00:28:09.210 align:middle line:84%
+So there's a few different
+ways you can do that.
+
+00:28:09.210 --> 00:28:10.510 align:middle line:90%
+We'll go into the full details.
+
+00:28:10.510 --> 00:28:13.350 align:middle line:84%
+But just think that there's
+going to be some function F that
+
+00:28:13.350 --> 00:28:16.950 align:middle line:84%
+takes in your input data you're
+processing and determines
+
+00:28:16.950 --> 00:28:21.210 align:middle line:84%
+this linear
+combination matrix A.
+
+00:28:21.210 --> 00:28:24.190 align:middle line:84%
+So A is going to be set by some
+function, which I'll describe,
+
+00:28:24.190 --> 00:28:25.050 align:middle line:90%
+of the data.
+
+00:28:25.050 --> 00:28:26.750 align:middle line:84%
+It's not going to
+be free parameters.
+
+00:28:26.750 --> 00:28:30.230 align:middle line:84%
+And T out will be just a
+linear combination of T in,
+
+00:28:30.230 --> 00:28:34.550 align:middle line:90%
+according to A.
+
+00:28:34.550 --> 00:28:40.830 align:middle line:84%
+So let's get some intuition for
+what this attention matrix might
+
+00:28:40.830 --> 00:28:44.530 align:middle line:84%
+be doing, this attention
+matrix A. So here's an image.
+
+00:28:44.530 --> 00:28:47.510 align:middle line:84%
+And let's say I want to process
+the query, how many animals are
+
+00:28:47.510 --> 00:28:48.442 align:middle line:90%
+in this photo?
+
+00:28:48.442 --> 00:28:51.150 align:middle line:84%
+So I told you the intuition is I
+should look at the three animals
+
+00:28:51.150 --> 00:28:52.630 align:middle line:90%
+and then count them up.
+
+00:28:52.630 --> 00:28:56.110 align:middle line:84%
+And that's exactly
+what we'll do.
+
+00:28:56.110 --> 00:29:00.188 align:middle line:84%
+So I will attend to-- remember,
+tokens are representing
+
+00:29:00.188 --> 00:29:02.230 align:middle line:84%
+patches of the image, at
+least on the first layer
+
+00:29:02.230 --> 00:29:02.930 align:middle line:90%
+of processing.
+
+00:29:02.930 --> 00:29:04.630 align:middle line:90%
+They're representing patches.
+
+00:29:04.630 --> 00:29:06.950 align:middle line:84%
+So what are the patches I
+will attend to in this image
+
+00:29:06.950 --> 00:29:08.190 align:middle line:90%
+to answer this question?
+
+00:29:08.190 --> 00:29:10.215 align:middle line:84%
+Should be any patch
+that has an animal.
+
+00:29:10.215 --> 00:29:12.590 align:middle line:84%
+And it's a little hard to see,
+but there's a giraffe head
+
+00:29:12.590 --> 00:29:14.310 align:middle line:90%
+in this one here.
+
+00:29:14.310 --> 00:29:20.670 align:middle line:84%
+So this is zebra,
+impala, and two giraffes.
+
+00:29:20.670 --> 00:29:23.950 align:middle line:84%
+Now, every token is
+a vector of numbers
+
+00:29:23.950 --> 00:29:26.710 align:middle line:84%
+that are descriptive
+of what is going on.
+
+00:29:26.710 --> 00:29:31.215 align:middle line:84%
+There's some representation
+of that part of the world.
+
+00:29:31.215 --> 00:29:32.590 align:middle line:84%
+So at the first
+layer, it'll just
+
+00:29:32.590 --> 00:29:36.150 align:middle line:84%
+be the concatenation or the
+flattened list of all the RGB
+
+00:29:36.150 --> 00:29:36.650 align:middle line:90%
+values.
+
+00:29:36.650 --> 00:29:38.605 align:middle line:84%
+But later on, it could
+be more abstract.
+
+00:29:38.605 --> 00:29:40.230 align:middle line:84%
+And here I'm just
+indicating that there
+
+00:29:40.230 --> 00:29:41.950 align:middle line:84%
+might be one element
+of the vector which
+
+00:29:41.950 --> 00:29:44.670 align:middle line:90%
+is an indicator function.
+
+00:29:44.670 --> 00:29:48.150 align:middle line:84%
+Does this patch contain
+an animal or not,
+
+00:29:48.150 --> 00:29:51.150 align:middle line:84%
+or maybe the head
+of an animal or not?
+
+00:29:51.150 --> 00:29:53.270 align:middle line:84%
+Because each animal
+has one head.
+
+00:29:53.270 --> 00:29:55.990 align:middle line:84%
+And then what I can
+do is my attention
+
+00:29:55.990 --> 00:29:59.150 align:middle line:84%
+can be allocating
+one unit of attention
+
+00:29:59.150 --> 00:30:02.620 align:middle line:84%
+to each of these tokens, and
+zero units to any other token.
+
+00:30:02.620 --> 00:30:05.520 align:middle line:84%
+And then if I take a linear
+combination with weights of 1
+
+00:30:05.520 --> 00:30:08.100 align:middle line:84%
+for each of those tokens and
+0 for all the other tokens,
+
+00:30:08.100 --> 00:30:09.760 align:middle line:84%
+that will achieve
+the correct answer
+
+00:30:09.760 --> 00:30:14.000 align:middle line:84%
+of outputting a new
+token vector whose
+
+00:30:14.000 --> 00:30:17.520 align:middle line:84%
+value is 4 in the dimension
+that counts animals.
+
+00:30:17.520 --> 00:30:19.680 align:middle line:84%
+So I've just kind of
+hand constructed here
+
+00:30:19.680 --> 00:30:24.200 align:middle line:84%
+a transformer, one
+layer transformer,
+
+00:30:24.200 --> 00:30:27.720 align:middle line:84%
+that counts the number
+of animals in the image
+
+00:30:27.720 --> 00:30:30.240 align:middle line:84%
+by simply attending
+to animal heads
+
+00:30:30.240 --> 00:30:34.200 align:middle line:84%
+and then taking a sum over
+all the things I attended
+
+00:30:34.200 --> 00:30:37.180 align:middle line:84%
+to where the attribute vector
+of each thing I'm attending to.
+
+00:30:37.180 --> 00:30:40.040 align:middle line:84%
+The token vector is just a 1 if
+there's an animal head, or a 0
+
+00:30:40.040 --> 00:30:41.463 align:middle line:90%
+otherwise.
+
+00:30:41.463 --> 00:30:42.880 align:middle line:84%
+Or in fact, in
+this case, it could
+
+00:30:42.880 --> 00:30:44.728 align:middle line:84%
+be a 1 no matter
+what's in the photo,
+
+00:30:44.728 --> 00:30:46.520 align:middle line:84%
+because the attention
+already only selected
+
+00:30:46.520 --> 00:30:48.222 align:middle line:90%
+to look at the animal heads.
+
+00:30:48.222 --> 00:30:49.180 align:middle line:90%
+Here's another example.
+
+00:30:49.180 --> 00:30:50.500 align:middle line:90%
+What is the color of the impala?
+
+00:30:50.500 --> 00:30:51.833 align:middle line:90%
+So what should I attend to here?
+
+00:30:51.833 --> 00:30:56.420 align:middle line:84%
+I should attend to these
+tokens, these patches.
+
+00:30:56.420 --> 00:30:58.940 align:middle line:84%
+And now I have another
+dimension of my token vector
+
+00:30:58.940 --> 00:31:02.120 align:middle line:84%
+which maybe represents the
+average color within that patch.
+
+00:31:02.120 --> 00:31:05.040 align:middle line:84%
+And if I take the
+average over those,
+
+00:31:05.040 --> 00:31:07.660 align:middle line:84%
+I take a weighted sum over
+the things I'm attending to,
+
+00:31:07.660 --> 00:31:10.720 align:middle line:84%
+I will output the average
+color of the impala.
+
+00:31:10.720 --> 00:31:13.400 align:middle line:84%
+And that will be maybe a
+good ensembled response
+
+00:31:13.400 --> 00:31:15.420 align:middle line:84%
+about the answer
+to this question,
+
+00:31:15.420 --> 00:31:16.615 align:middle line:90%
+what color is the impala?
+
+00:31:16.615 --> 00:31:18.240 align:middle line:84%
+So this is just the
+intuition, but hand
+
+00:31:18.240 --> 00:31:20.800 align:middle line:84%
+constructing how these
+operations could actually
+
+00:31:20.800 --> 00:31:23.760 align:middle line:90%
+answer queries of interest.
+
+00:31:23.760 --> 00:31:24.400 align:middle line:90%
+Question?
+
+00:31:24.400 --> 00:31:27.720 align:middle line:84%
+AUDIENCE: How do you interpret
+the [INAUDIBLE] of the T out?
+
+00:31:27.720 --> 00:31:29.592 align:middle line:90%
+Is there a [INAUDIBLE]?
+
+00:31:29.592 --> 00:31:32.800 align:middle line:84%
+PHILLIP ISOLA: T out
+here is meant to be--
+
+00:31:32.800 --> 00:31:35.780 align:middle line:84%
+oh, yeah, I suppose that maybe
+I should use a capital letter,
+
+00:31:35.780 --> 00:31:37.107 align:middle line:90%
+but just one token output.
+
+00:31:37.107 --> 00:31:39.440 align:middle line:84%
+It's like I'm just outputting
+one single token to answer
+
+00:31:39.440 --> 00:31:41.420 align:middle line:90%
+my question in this example.
+
+00:31:41.420 --> 00:31:43.945 align:middle line:90%
+
+
+00:31:43.945 --> 00:31:45.320 align:middle line:84%
+So yeah, the more
+general form is
+
+00:31:45.320 --> 00:31:46.987 align:middle line:84%
+I'll have an array
+of tokens represented
+
+00:31:46.987 --> 00:31:48.760 align:middle line:84%
+by the matrix T,
+where the tokens are
+
+00:31:48.760 --> 00:31:50.760 align:middle line:90%
+in the rows of that array.
+
+00:31:50.760 --> 00:31:53.238 align:middle line:84%
+So here is going to be the
+mathematical formulation
+
+00:31:53.238 --> 00:31:54.780 align:middle line:84%
+of the most common
+kind of attention.
+
+00:31:54.780 --> 00:31:57.480 align:middle line:84%
+It's called
+query-key-value attention.
+
+00:31:57.480 --> 00:32:00.450 align:middle line:84%
+And remember, the transformer
+is mapping from a set of tokens
+
+00:32:00.450 --> 00:32:02.950 align:middle line:84%
+to a set of tokens,
+so T in to T out.
+
+00:32:02.950 --> 00:32:05.450 align:middle line:84%
+And this will be one layer of
+the transformer, one attention
+
+00:32:05.450 --> 00:32:06.870 align:middle line:84%
+layer, so one
+linear combination.
+
+00:32:06.870 --> 00:32:08.410 align:middle line:90%
+So how is it going to work?
+
+00:32:08.410 --> 00:32:10.710 align:middle line:90%
+So I will have a question.
+
+00:32:10.710 --> 00:32:12.370 align:middle line:84%
+And then I'm going
+to use the question
+
+00:32:12.370 --> 00:32:14.210 align:middle line:90%
+to determine the attention.
+
+00:32:14.210 --> 00:32:16.930 align:middle line:84%
+So the question, the way
+I determine the attention
+
+00:32:16.930 --> 00:32:19.570 align:middle line:84%
+is like that function
+F that produces A.
+
+00:32:19.570 --> 00:32:21.190 align:middle line:90%
+So here's what it looks like.
+
+00:32:21.190 --> 00:32:24.755 align:middle line:84%
+So my input signal
+is a set of tokens.
+
+00:32:24.755 --> 00:32:26.130 align:middle line:84%
+So it's actually
+just going to be
+
+00:32:26.130 --> 00:32:27.710 align:middle line:90%
+thought of as an unordered set.
+
+00:32:27.710 --> 00:32:30.770 align:middle line:84%
+Just here's a bunch of
+different patches in the image.
+
+00:32:30.770 --> 00:32:35.050 align:middle line:84%
+And every token has this
+vector associated with it.
+
+00:32:35.050 --> 00:32:38.610 align:middle line:84%
+And the question will
+also be represented
+
+00:32:38.610 --> 00:32:43.250 align:middle line:84%
+as a token, which has a
+vector associated with it.
+
+00:32:43.250 --> 00:32:45.970 align:middle line:84%
+And I'll have a special
+operation called query,
+
+00:32:45.970 --> 00:32:51.570 align:middle line:84%
+which will be to emit
+some vector based
+
+00:32:51.570 --> 00:32:56.710 align:middle line:84%
+on the contents of my
+question's embedding vector.
+
+00:32:56.710 --> 00:32:59.990 align:middle line:84%
+So the question the question
+is a token, which is a vector.
+
+00:32:59.990 --> 00:33:03.330 align:middle line:84%
+And then I can transform that
+to emit some kind of query.
+
+00:33:03.330 --> 00:33:05.210 align:middle line:84%
+So that will just be a
+linear transformation
+
+00:33:05.210 --> 00:33:07.290 align:middle line:90%
+of that input vector.
+
+00:33:07.290 --> 00:33:10.770 align:middle line:84%
+And each token in my
+signal that I'm processing
+
+00:33:10.770 --> 00:33:14.970 align:middle line:84%
+will have a function called
+key, which emits something
+
+00:33:14.970 --> 00:33:17.590 align:middle line:84%
+that the query is meant
+to try to match against,
+
+00:33:17.590 --> 00:33:22.010 align:middle line:84%
+to see if the query
+matches the key.
+
+00:33:22.010 --> 00:33:25.490 align:middle line:84%
+So tokens represented
+by a vector,
+
+00:33:25.490 --> 00:33:27.690 align:middle line:84%
+and they can emit
+either queries in order
+
+00:33:27.690 --> 00:33:29.530 align:middle line:84%
+to say what should
+I attend to, or keys
+
+00:33:29.530 --> 00:33:35.930 align:middle line:84%
+to say what is my content
+that my query should match to.
+
+00:33:35.930 --> 00:33:38.010 align:middle line:84%
+And we will check
+whether a query matches
+
+00:33:38.010 --> 00:33:42.250 align:middle line:84%
+a key via a dot product
+between the key vector
+
+00:33:42.250 --> 00:33:44.190 align:middle line:90%
+and the query vector.
+
+00:33:44.190 --> 00:33:47.750 align:middle line:84%
+So this that horizontal
+line is the key vector.
+
+00:33:47.750 --> 00:33:51.710 align:middle line:84%
+And that vertical yellow
+line is the query vector.
+
+00:33:51.710 --> 00:33:54.420 align:middle line:84%
+And this is just meant to be
+the dot product, like the matrix
+
+00:33:54.420 --> 00:34:01.800 align:middle line:84%
+product, of the 1 by D vector
+times the D by 1 vector.
+
+00:34:01.800 --> 00:34:03.200 align:middle line:90%
+So what will happen here?
+
+00:34:03.200 --> 00:34:07.880 align:middle line:84%
+Well, my query is
+relevant to animal heads.
+
+00:34:07.880 --> 00:34:09.780 align:middle line:84%
+What is the color of
+the impala's head?
+
+00:34:09.780 --> 00:34:13.699 align:middle line:84%
+So my key will match
+that query if I'm
+
+00:34:13.699 --> 00:34:15.199 align:middle line:90%
+looking at an animal head.
+
+00:34:15.199 --> 00:34:17.620 align:middle line:84%
+So the giraffe will be 0.2,
+but it will match even better
+
+00:34:17.620 --> 00:34:18.860 align:middle line:84%
+if I'm looking at
+the impala head,
+
+00:34:18.860 --> 00:34:20.400 align:middle line:84%
+because I'm
+specifying the impala.
+
+00:34:20.400 --> 00:34:23.139 align:middle line:84%
+So that would be, if
+I train this thing
+
+00:34:23.139 --> 00:34:24.699 align:middle line:84%
+to be a reasonable
+system, then this
+
+00:34:24.699 --> 00:34:28.187 align:middle line:84%
+would be a reasonable
+set of queries and keys.
+
+00:34:28.187 --> 00:34:30.020 align:middle line:84%
+And the similarity
+between the query and key
+
+00:34:30.020 --> 00:34:31.940 align:middle line:90%
+is what I will attend to.
+
+00:34:31.940 --> 00:34:36.699 align:middle line:84%
+So I'll get this kind of score
+vector s over here on the left.
+
+00:34:36.699 --> 00:34:41.100 align:middle line:84%
+And this will just be the dot
+product between the question's
+
+00:34:41.100 --> 00:34:44.460 align:middle line:84%
+query vector and each token
+in the signal and processing's
+
+00:34:44.460 --> 00:34:46.300 align:middle line:90%
+key vector.
+
+00:34:46.300 --> 00:34:50.300 align:middle line:84%
+Then I will also have
+one more operation
+
+00:34:50.300 --> 00:34:52.780 align:middle line:84%
+called value, which will
+be another transformation
+
+00:34:52.780 --> 00:34:55.780 align:middle line:84%
+of my token vector,
+into what I'm
+
+00:34:55.780 --> 00:35:00.040 align:middle line:84%
+going to report to the
+next layer of my network.
+
+00:35:00.040 --> 00:35:02.580 align:middle line:84%
+This is an analogy
+from databases
+
+00:35:02.580 --> 00:35:04.840 align:middle line:90%
+where I can ask a question.
+
+00:35:04.840 --> 00:35:07.660 align:middle line:90%
+Each bin in my big database--
+
+00:35:07.660 --> 00:35:09.600 align:middle line:90%
+it can know what it contains.
+
+00:35:09.600 --> 00:35:11.382 align:middle line:84%
+It can say, here's
+the key, here's
+
+00:35:11.382 --> 00:35:12.840 align:middle line:84%
+the relevant
+information I contain.
+
+00:35:12.840 --> 00:35:14.680 align:middle line:84%
+And then when the
+query matches the key,
+
+00:35:14.680 --> 00:35:18.940 align:middle line:84%
+you open that part of the
+database, that bin in the filing
+
+00:35:18.940 --> 00:35:20.820 align:middle line:84%
+cabinet, and you
+pull out the values
+
+00:35:20.820 --> 00:35:22.980 align:middle line:90%
+and get some information back.
+
+00:35:22.980 --> 00:35:29.260 align:middle line:84%
+So now the operation will be I
+take the similarity vector s.
+
+00:35:29.260 --> 00:35:31.667 align:middle line:90%
+
+
+00:35:31.667 --> 00:35:34.000 align:middle line:84%
+That's going to be the weights
+of my linear combination,
+
+00:35:34.000 --> 00:35:36.780 align:middle line:84%
+but the linear combination
+will be applied over the value
+
+00:35:36.780 --> 00:35:38.700 align:middle line:90%
+vectors for each token.
+
+00:35:38.700 --> 00:35:42.140 align:middle line:84%
+So T out will be a weighted
+combination of the value
+
+00:35:42.140 --> 00:35:44.100 align:middle line:90%
+vectors of each token.
+
+00:35:44.100 --> 00:35:49.460 align:middle line:84%
+So those weights alpha, or
+A1 through An, over here,
+
+00:35:49.460 --> 00:35:52.570 align:middle line:90%
+will be determined by the score.
+
+00:35:52.570 --> 00:35:56.030 align:middle line:84%
+And it'll be determined
+by the similarity vector
+
+00:35:56.030 --> 00:35:57.910 align:middle line:84%
+by taking a softmax,
+just normalizing
+
+00:35:57.910 --> 00:36:00.470 align:middle line:90%
+that vector so it sums to 1.
+
+00:36:00.470 --> 00:36:04.510 align:middle line:84%
+So I'm going to then
+get finally my A's which
+
+00:36:04.510 --> 00:36:08.670 align:middle line:84%
+are the elements of my
+attention matrix, which tells me
+
+00:36:08.670 --> 00:36:12.742 align:middle line:84%
+how much attention to apply
+to each of the tokens' values.
+
+00:36:12.742 --> 00:36:14.450 align:middle line:84%
+And then I'll just
+take the weighted sum,
+
+00:36:14.450 --> 00:36:16.680 align:middle line:90%
+the linear combination.
+
+00:36:16.680 --> 00:36:17.930 align:middle line:90%
+You have a bunch of questions.
+
+00:36:17.930 --> 00:36:19.430 align:middle line:84%
+So let me quickly
+finish this slide,
+
+00:36:19.430 --> 00:36:21.478 align:middle line:90%
+and then we'll go over it.
+
+00:36:21.478 --> 00:36:22.770 align:middle line:90%
+Like, this is just a mechanism.
+
+00:36:22.770 --> 00:36:24.070 align:middle line:84%
+This is a concrete
+mechanism that
+
+00:36:24.070 --> 00:36:25.237 align:middle line:90%
+ends up working really well.
+
+00:36:25.237 --> 00:36:27.370 align:middle line:84%
+So it takes a while to
+get comfortable with it.
+
+00:36:27.370 --> 00:36:30.430 align:middle line:84%
+But I just want to point out
+that the key query and value
+
+00:36:30.430 --> 00:36:35.830 align:middle line:84%
+vectors are just linear
+projections of the token vector.
+
+00:36:35.830 --> 00:36:38.133 align:middle line:84%
+So we have one matrix
+that's learnable,
+
+00:36:38.133 --> 00:36:40.050 align:middle line:84%
+that transforms the token
+vector into a query;
+
+00:36:40.050 --> 00:36:42.570 align:middle line:84%
+another learnable matrix that
+transforms it into a key;
+
+00:36:42.570 --> 00:36:45.110 align:middle line:84%
+and another one that
+transforms it into a value.
+
+00:36:45.110 --> 00:36:47.110 align:middle line:84%
+So these are the
+learnable parameters.
+
+00:36:47.110 --> 00:36:49.990 align:middle line:84%
+These projections are
+the learnable parameters
+
+00:36:49.990 --> 00:36:52.653 align:middle line:90%
+of an attention layer.
+
+00:36:52.653 --> 00:36:53.570 align:middle line:90%
+Yeah, a few questions.
+
+00:36:53.570 --> 00:36:54.750 align:middle line:90%
+Let's go here.
+
+00:36:54.750 --> 00:36:57.270 align:middle line:84%
+AUDIENCE: So is the
+tokenizer the same
+
+00:36:57.270 --> 00:37:01.830 align:middle line:84%
+for-- so is it a multimodal
+function in that both text
+
+00:37:01.830 --> 00:37:05.030 align:middle line:84%
+and image can be
+tokenized the same way?
+
+00:37:05.030 --> 00:37:07.630 align:middle line:84%
+PHILLIP ISOLA: Yeah,
+so can text and images
+
+00:37:07.630 --> 00:37:08.970 align:middle line:90%
+be tokenized the same way?
+
+00:37:08.970 --> 00:37:10.910 align:middle line:84%
+So no, you'd have a
+tokenizer for text
+
+00:37:10.910 --> 00:37:12.810 align:middle line:90%
+and a tokenizer for images.
+
+00:37:12.810 --> 00:37:14.370 align:middle line:84%
+And this is after
+you've done that.
+
+00:37:14.370 --> 00:37:15.953 align:middle line:84%
+Now I'm just kind
+of abstractly saying
+
+00:37:15.953 --> 00:37:18.910 align:middle line:84%
+there is a token that represents
+that question and a token that
+
+00:37:18.910 --> 00:37:19.970 align:middle line:90%
+represents each patch.
+
+00:37:19.970 --> 00:37:23.070 align:middle line:84%
+And here's how you
+will use that question
+
+00:37:23.070 --> 00:37:25.390 align:middle line:84%
+to allocate attention
+to those patches,
+
+00:37:25.390 --> 00:37:28.790 align:middle line:90%
+and then process the image.
+
+00:37:28.790 --> 00:37:29.587 align:middle line:90%
+Question over here?
+
+00:37:29.587 --> 00:37:30.670 align:middle line:90%
+AUDIENCE: I was wondering.
+
+00:37:30.670 --> 00:37:34.290 align:middle line:84%
+So the query image is, for
+example, taken in the day.
+
+00:37:34.290 --> 00:37:36.630 align:middle line:84%
+But the key images
+are taken at night.
+
+00:37:36.630 --> 00:37:39.250 align:middle line:84%
+At what point during the
+layers do we modify that?
+
+00:37:39.250 --> 00:37:41.515 align:middle line:84%
+So we're pairing an image
+taken in the morning
+
+00:37:41.515 --> 00:37:42.890 align:middle line:84%
+compared to image
+taken at night.
+
+00:37:42.890 --> 00:37:46.600 align:middle line:84%
+Same object, but how do we
+change that with respect
+
+00:37:46.600 --> 00:37:48.200 align:middle line:90%
+to the color?
+
+00:37:48.200 --> 00:37:51.180 align:middle line:84%
+PHILLIP ISOLA: So
+the question is,
+
+00:37:51.180 --> 00:37:53.720 align:middle line:84%
+let's say the queries are
+coming from an image taken
+
+00:37:53.720 --> 00:37:55.860 align:middle line:84%
+during the day, and
+we're processing
+
+00:37:55.860 --> 00:37:56.860 align:middle line:90%
+an image taken at night.
+
+00:37:56.860 --> 00:38:00.320 align:middle line:84%
+So the keys are taken from
+an image taken at night.
+
+00:38:00.320 --> 00:38:01.620 align:middle line:90%
+How do I bridge that gap?
+
+00:38:01.620 --> 00:38:04.740 align:middle line:84%
+So learning will have
+to solve that for you.
+
+00:38:04.740 --> 00:38:10.800 align:middle line:84%
+So you'll train on being able
+to query from daytime to ask
+
+00:38:10.800 --> 00:38:12.400 align:middle line:90%
+questions about nighttime.
+
+00:38:12.400 --> 00:38:15.180 align:middle line:84%
+And the parameters will have to
+adjust in order to be invariant,
+
+00:38:15.180 --> 00:38:17.280 align:middle line:84%
+maybe to the time of day
+or appropriately answer
+
+00:38:17.280 --> 00:38:18.220 align:middle line:90%
+that question.
+
+00:38:18.220 --> 00:38:20.622 align:middle line:84%
+AUDIENCE: Do we choose
+the A, the softmax value?
+
+00:38:20.622 --> 00:38:22.080 align:middle line:84%
+PHILLIP ISOLA: So
+all the learnable
+
+00:38:22.080 --> 00:38:24.235 align:middle line:84%
+parameters of a transformer
+can contribute to this.
+
+00:38:24.235 --> 00:38:26.360 align:middle line:84%
+In the attention layer,
+there's only three matrices
+
+00:38:26.360 --> 00:38:28.320 align:middle line:84%
+that are learnable,
+which are the projection
+
+00:38:28.320 --> 00:38:30.500 align:middle line:84%
+from the token vector
+to the query vector,
+
+00:38:30.500 --> 00:38:32.500 align:middle line:84%
+the projection from the
+token vector to the key,
+
+00:38:32.500 --> 00:38:34.080 align:middle line:90%
+and the value.
+
+00:38:34.080 --> 00:38:36.520 align:middle line:90%
+Question in the back?
+
+00:38:36.520 --> 00:38:37.360 align:middle line:90%
+Over here, yeah.
+
+00:38:37.360 --> 00:38:41.800 align:middle line:84%
+AUDIENCE: So for something
+like a segmentation model
+
+00:38:41.800 --> 00:38:46.340 align:middle line:84%
+where the query basically
+does not change,
+
+00:38:46.340 --> 00:38:48.425 align:middle line:90%
+what does the query [INAUDIBLE]?
+
+00:38:48.425 --> 00:38:49.300 align:middle line:90%
+PHILLIP ISOLA: Great.
+
+00:38:49.300 --> 00:38:51.323 align:middle line:84%
+So, what if the
+question doesn't change?
+
+00:38:51.323 --> 00:38:52.740 align:middle line:84%
+I'm just trying
+to solve one task.
+
+00:38:52.740 --> 00:38:55.160 align:middle line:84%
+I'm going to talk about
+self-attention next, which
+
+00:38:55.160 --> 00:38:57.800 align:middle line:90%
+will address that setting.
+
+00:38:57.800 --> 00:38:59.640 align:middle line:90%
+Let's do one more over here.
+
+00:38:59.640 --> 00:39:03.120 align:middle line:84%
+AUDIENCE: What's the
+meaning of the dot
+
+00:39:03.120 --> 00:39:05.920 align:middle line:84%
+product between the key
+vector and the query vector
+
+00:39:05.920 --> 00:39:07.940 align:middle line:84%
+you have here on
+the illustration?
+
+00:39:07.940 --> 00:39:09.552 align:middle line:90%
+Do they have any significance?
+
+00:39:09.552 --> 00:39:11.760 align:middle line:84%
+PHILLIP ISOLA: The dot
+product between the key vector
+
+00:39:11.760 --> 00:39:16.440 align:middle line:84%
+and the query vector is
+meant to say how relevant
+
+00:39:16.440 --> 00:39:19.480 align:middle line:90%
+is this key to this query.
+
+00:39:19.480 --> 00:39:21.200 align:middle line:84%
+And so dot product
+is like measuring
+
+00:39:21.200 --> 00:39:24.400 align:middle line:84%
+the similarity between those
+two vectors in some way.
+
+00:39:24.400 --> 00:39:27.440 align:middle line:84%
+And an appropriate
+learning system
+
+00:39:27.440 --> 00:39:31.800 align:middle line:84%
+would arrive at
+projections W, K, V,
+
+00:39:31.800 --> 00:39:39.120 align:middle line:84%
+and Q that make it so that when
+the text is about an impala's
+
+00:39:39.120 --> 00:39:43.290 align:middle line:84%
+head, then the query vector
+will have values that
+
+00:39:43.290 --> 00:39:46.250 align:middle line:84%
+are similar to the
+key vector values
+
+00:39:46.250 --> 00:39:48.063 align:middle line:90%
+for images of impala heads.
+
+00:39:48.063 --> 00:39:48.730 align:middle line:90%
+AUDIENCE: Right.
+
+00:39:48.730 --> 00:39:52.830 align:middle line:84%
+So particularly interesting
+for the first one is value 1.
+
+00:39:52.830 --> 00:39:54.730 align:middle line:84%
+Does that indicate
+a perfect match?
+
+00:39:54.730 --> 00:39:57.610 align:middle line:90%
+PHILLIP ISOLA: Oh.
+
+00:39:57.610 --> 00:39:58.870 align:middle line:90%
+That looks like a typo.
+
+00:39:58.870 --> 00:39:59.910 align:middle line:90%
+Sorry.
+
+00:39:59.910 --> 00:40:00.912 align:middle line:90%
+So it's 0.1 up here.
+
+00:40:00.912 --> 00:40:02.870 align:middle line:84%
+And I think I forgot to
+make it 0.1 down there.
+
+00:40:02.870 --> 00:40:04.170 align:middle line:90%
+So that's just a typo.
+
+00:40:04.170 --> 00:40:05.810 align:middle line:90%
+Yeah, good question.
+
+00:40:05.810 --> 00:40:08.090 align:middle line:90%
+OK, let's do just one more.
+
+00:40:08.090 --> 00:40:11.250 align:middle line:84%
+AUDIENCE: There seem to be a
+mapping from the question, what
+
+00:40:11.250 --> 00:40:15.990 align:middle line:84%
+color is the impala head,
+to the query vector.
+
+00:40:15.990 --> 00:40:18.290 align:middle line:84%
+So what do you
+mean that mapping?
+
+00:40:18.290 --> 00:40:19.570 align:middle line:90%
+How we can [INAUDIBLE]?
+
+00:40:19.570 --> 00:40:21.570 align:middle line:84%
+PHILLIP ISOLA: That
+mapping, this query function
+
+00:40:21.570 --> 00:40:26.250 align:middle line:84%
+that maps from the
+question vector,
+
+00:40:26.250 --> 00:40:29.650 align:middle line:84%
+so the token vector that
+represents the question,
+
+00:40:29.650 --> 00:40:31.930 align:middle line:84%
+is given by this
+equation up here, which
+
+00:40:31.930 --> 00:40:35.790 align:middle line:84%
+is just a linear projection
+of the token vector.
+
+00:40:35.790 --> 00:40:38.737 align:middle line:84%
+So it's just a
+learnable matrix, WQ.
+
+00:40:38.737 --> 00:40:40.070 align:middle line:90%
+But it could be other functions.
+
+00:40:40.070 --> 00:40:41.770 align:middle line:84%
+I'm just telling you that
+that's the standard one
+
+00:40:41.770 --> 00:40:42.590 align:middle line:90%
+in transformers.
+
+00:40:42.590 --> 00:40:44.310 align:middle line:90%
+But you can always change that.
+
+00:40:44.310 --> 00:40:46.850 align:middle line:90%
+It could be an MLP.
+
+00:40:46.850 --> 00:40:49.198 align:middle line:90%
+So let's move on.
+
+00:40:49.198 --> 00:40:51.490 align:middle line:84%
+Now, I'll also tell you that
+the problem set coming out
+
+00:40:51.490 --> 00:40:53.170 align:middle line:84%
+next week, you're
+going to implement
+
+00:40:53.170 --> 00:40:55.690 align:middle line:84%
+a bunch of transformers
+and all the variations.
+
+00:40:55.690 --> 00:40:56.850 align:middle line:90%
+It'll implement GPT.
+
+00:40:56.850 --> 00:40:59.150 align:middle line:84%
+Like, you'll intimately
+know how transformers work.
+
+00:40:59.150 --> 00:41:01.770 align:middle line:84%
+It's a little bit more of
+a practical problem set.
+
+00:41:01.770 --> 00:41:04.370 align:middle line:84%
+But I want to now talk
+about the next idea, which
+
+00:41:04.370 --> 00:41:06.210 align:middle line:90%
+is self-attention.
+
+00:41:06.210 --> 00:41:09.890 align:middle line:84%
+So self-attention is saying,
+rather than having my queries
+
+00:41:09.890 --> 00:41:12.670 align:middle line:84%
+come from some external
+question, like some text,
+
+00:41:12.670 --> 00:41:14.950 align:middle line:84%
+my queries could come
+from this signal itself.
+
+00:41:14.950 --> 00:41:18.650 align:middle line:84%
+So I could have it
+that every single token
+
+00:41:18.650 --> 00:41:20.610 align:middle line:84%
+in the set of tokens
+I'm processing
+
+00:41:20.610 --> 00:41:23.570 align:middle line:84%
+can emit queries to
+the other tokens.
+
+00:41:23.570 --> 00:41:25.810 align:middle line:84%
+And that's called
+self-attention.
+
+00:41:25.810 --> 00:41:27.190 align:middle line:84%
+Here's just an
+intuitive example.
+
+00:41:27.190 --> 00:41:30.290 align:middle line:84%
+If this patch wants to get
+a better estimate of what
+
+00:41:30.290 --> 00:41:33.730 align:middle line:84%
+it is, maybe it should attend to
+other things that are similar,
+
+00:41:33.730 --> 00:41:36.870 align:middle line:84%
+and then ensemble or average
+the results to now say,
+
+00:41:36.870 --> 00:41:41.740 align:middle line:84%
+I'm not sure if I'm an impala
+or I'm a gazelle or what I am.
+
+00:41:41.740 --> 00:41:45.700 align:middle line:84%
+So I will attend to other things
+that look like me in the image.
+
+00:41:45.700 --> 00:41:48.852 align:middle line:84%
+And then I will update
+my own representation
+
+00:41:48.852 --> 00:41:51.060 align:middle line:84%
+by aggregating information
+from the other things that
+
+00:41:51.060 --> 00:41:51.600 align:middle line:90%
+are similar.
+
+00:41:51.600 --> 00:41:54.820 align:middle line:84%
+That's an intuition for
+one way that this could
+
+00:41:54.820 --> 00:41:57.380 align:middle line:90%
+solve problems of interest.
+
+00:41:57.380 --> 00:41:59.300 align:middle line:84%
+But in general, it
+might be learning
+
+00:41:59.300 --> 00:42:01.620 align:middle line:84%
+very complicated ways of
+processing information
+
+00:42:01.620 --> 00:42:04.300 align:middle line:90%
+in the signal.
+
+00:42:04.300 --> 00:42:09.900 align:middle line:84%
+Let me show you this video
+of the self-attention applied
+
+00:42:09.900 --> 00:42:14.740 align:middle line:84%
+to patches in these videos
+when you are looking
+
+00:42:14.740 --> 00:42:19.100 align:middle line:84%
+at the self-attention of
+a token that corresponds
+
+00:42:19.100 --> 00:42:23.700 align:middle line:84%
+to a place on this horse to
+every other token in the image.
+
+00:42:23.700 --> 00:42:26.100 align:middle line:84%
+And for the dog, it will
+be a token on the dog,
+
+00:42:26.100 --> 00:42:28.980 align:middle line:84%
+and how much
+self-attention it applies
+
+00:42:28.980 --> 00:42:32.460 align:middle line:84%
+to every other token in
+the image or in the video.
+
+00:42:32.460 --> 00:42:36.980 align:middle line:84%
+So what you'll notice
+is that the horse token
+
+00:42:36.980 --> 00:42:39.220 align:middle line:90%
+attends to the horse patches.
+
+00:42:39.220 --> 00:42:41.160 align:middle line:84%
+So it's solving the
+segmentation problem.
+
+00:42:41.160 --> 00:42:42.993 align:middle line:84%
+It's like, if I want
+to understand something
+
+00:42:42.993 --> 00:42:44.820 align:middle line:84%
+about this part of
+the image, I should
+
+00:42:44.820 --> 00:42:46.737 align:middle line:84%
+attend to other things
+that are related to it,
+
+00:42:46.737 --> 00:42:48.960 align:middle line:84%
+and I shouldn't cross
+object boundaries.
+
+00:42:48.960 --> 00:42:51.120 align:middle line:84%
+This is the natural
+segmentation of that scene.
+
+00:42:51.120 --> 00:42:52.820 align:middle line:84%
+And that's what the
+attention function
+
+00:42:52.820 --> 00:42:54.380 align:middle line:84%
+learns for this
+transformer, which
+
+00:42:54.380 --> 00:42:56.140 align:middle line:90%
+is doing visual recognition.
+
+00:42:56.140 --> 00:42:56.960 align:middle line:90%
+Yeah, question.
+
+00:42:56.960 --> 00:43:00.540 align:middle line:84%
+AUDIENCE: So in the examples
+that you're showing,
+
+00:43:00.540 --> 00:43:05.780 align:middle line:84%
+it's like the patch is able
+to intelligently figure out
+
+00:43:05.780 --> 00:43:08.220 align:middle line:84%
+which parts of the
+image to attend to.
+
+00:43:08.220 --> 00:43:11.640 align:middle line:84%
+But given some arbitrary
+question or arbitrary task,
+
+00:43:11.640 --> 00:43:15.740 align:middle line:84%
+how does it choose of all the
+tokens in the image to say,
+
+00:43:15.740 --> 00:43:17.880 align:middle line:84%
+like, these are the
+ones I care about?
+
+00:43:17.880 --> 00:43:22.340 align:middle line:84%
+PHILLIP ISOLA: So how does the
+attention mechanism figure out
+
+00:43:22.340 --> 00:43:25.600 align:middle line:84%
+what to actually attend to,
+what its query vector should be,
+
+00:43:25.600 --> 00:43:28.220 align:middle line:90%
+what its value vector should be?
+
+00:43:28.220 --> 00:43:29.700 align:middle line:90%
+That's just machine learning.
+
+00:43:29.700 --> 00:43:34.420 align:middle line:84%
+That's just backpropagation to
+minimize your objective is going
+
+00:43:34.420 --> 00:43:37.790 align:middle line:84%
+to find the setting of all the
+weights, the mechanism that
+
+00:43:37.790 --> 00:43:39.212 align:middle line:90%
+will achieve good behavior.
+
+00:43:39.212 --> 00:43:40.670 align:middle line:84%
+And it turns out
+the mechanism that
+
+00:43:40.670 --> 00:43:43.310 align:middle line:84%
+achieves good behavior often
+has an intuitive interpretation
+
+00:43:43.310 --> 00:43:45.612 align:middle line:84%
+like I'm giving you,
+but it doesn't have to.
+
+00:43:45.612 --> 00:43:47.070 align:middle line:84%
+To solve recognition,
+maybe I don't
+
+00:43:47.070 --> 00:43:49.588 align:middle line:84%
+have to have the
+patches on the horse
+
+00:43:49.588 --> 00:43:51.130 align:middle line:84%
+attend to other
+patches on the horse.
+
+00:43:51.130 --> 00:43:52.550 align:middle line:84%
+Maybe I could have
+attended to the background
+
+00:43:52.550 --> 00:43:54.300 align:middle line:84%
+and done some inference
+about the context.
+
+00:43:54.300 --> 00:43:57.590 align:middle line:84%
+If it's on the field, and
+therefore it might be a horse.
+
+00:43:57.590 --> 00:43:59.030 align:middle line:84%
+But it turns out
+that it comes up
+
+00:43:59.030 --> 00:44:00.572 align:middle line:84%
+with a more intuitive
+strategy, which
+
+00:44:00.572 --> 00:44:02.350 align:middle line:84%
+is the horse attends
+to other horse parts,
+
+00:44:02.350 --> 00:44:03.910 align:middle line:90%
+and then decides what it is.
+
+00:44:03.910 --> 00:44:04.950 align:middle line:90%
+Yeah.
+
+00:44:04.950 --> 00:44:07.270 align:middle line:84%
+AUDIENCE: It's more
+of a similar question,
+
+00:44:07.270 --> 00:44:09.650 align:middle line:84%
+but this seems like
+an observation,
+
+00:44:09.650 --> 00:44:12.490 align:middle line:84%
+but does it actually
+always happen?
+
+00:44:12.490 --> 00:44:15.750 align:middle line:84%
+Or is there a way to
+interpret or force the model
+
+00:44:15.750 --> 00:44:17.430 align:middle line:90%
+to train this kind of behavior?
+
+00:44:17.430 --> 00:44:18.930 align:middle line:84%
+PHILLIP ISOLA: Yeah,
+great question.
+
+00:44:18.930 --> 00:44:19.850 align:middle line:90%
+This seems like an observation.
+
+00:44:19.850 --> 00:44:20.770 align:middle line:90%
+Does it really happen?
+
+00:44:20.770 --> 00:44:22.790 align:middle line:90%
+Can you enforce this behavior?
+
+00:44:22.790 --> 00:44:24.445 align:middle line:90%
+This is more empirical science.
+
+00:44:24.445 --> 00:44:26.070 align:middle line:84%
+This is saying, we
+have an architecture
+
+00:44:26.070 --> 00:44:27.890 align:middle line:84%
+and we're investigating
+what it discovered.
+
+00:44:27.890 --> 00:44:29.598 align:middle line:84%
+And then I'm trying
+to provide intuitions
+
+00:44:29.598 --> 00:44:33.270 align:middle line:84%
+for why it would work that way,
+why it discovered that solution.
+
+00:44:33.270 --> 00:44:35.110 align:middle line:90%
+But it's not provable.
+
+00:44:35.110 --> 00:44:37.790 align:middle line:84%
+It's a property of the
+data and the statistics
+
+00:44:37.790 --> 00:44:40.083 align:middle line:84%
+of the world in combination
+with the optimization
+
+00:44:40.083 --> 00:44:42.250 align:middle line:84%
+and the transformer
+architecture that ended up here.
+
+00:44:42.250 --> 00:44:44.030 align:middle line:84%
+And there's a lot of
+interesting empirical science
+
+00:44:44.030 --> 00:44:46.750 align:middle line:84%
+on what do transformers learn,
+what internal representations do
+
+00:44:46.750 --> 00:44:49.210 align:middle line:84%
+they have, what are
+the circuits like.
+
+00:44:49.210 --> 00:44:51.830 align:middle line:84%
+There's this idea of
+interpretability research,
+
+00:44:51.830 --> 00:44:54.285 align:middle line:84%
+trying to understand
+what these things learn.
+
+00:44:54.285 --> 00:44:55.910 align:middle line:84%
+But there's another
+lens, which is just
+
+00:44:55.910 --> 00:44:58.160 align:middle line:84%
+who cares what they learn--
+let's understand ML theory
+
+00:44:58.160 --> 00:45:00.550 align:middle line:84%
+and how gradient descent
+on objective functions
+
+00:45:00.550 --> 00:45:04.170 align:middle line:84%
+with high-capacity networks
+will converge on good solutions,
+
+00:45:04.170 --> 00:45:06.190 align:middle line:84%
+but not care about the
+internal structure.
+
+00:45:06.190 --> 00:45:08.830 align:middle line:84%
+So you can look at
+it from either lens.
+
+00:45:08.830 --> 00:45:10.510 align:middle line:84%
+I think I need to
+move on, but we'll
+
+00:45:10.510 --> 00:45:14.270 align:middle line:84%
+come back and have more
+time for questions soon.
+
+00:45:14.270 --> 00:45:19.105 align:middle line:84%
+So here is a fully connected
+layer with learnable parameters
+
+00:45:19.105 --> 00:45:21.230 align:middle line:84%
+for how to take a weighted
+combination of the input
+
+00:45:21.230 --> 00:45:23.910 align:middle line:84%
+token sequence to the
+output token sequence.
+
+00:45:23.910 --> 00:45:26.530 align:middle line:84%
+And here is the idea
+of self-attention,
+
+00:45:26.530 --> 00:45:29.590 align:middle line:84%
+which is that the weights
+of that linear combination
+
+00:45:29.590 --> 00:45:31.840 align:middle line:84%
+are a function of
+the input sequence.
+
+00:45:31.840 --> 00:45:37.600 align:middle line:84%
+So the F that's going to
+determine our queries and keys,
+
+00:45:37.600 --> 00:45:39.840 align:middle line:84%
+or in particular our
+queries, is going
+
+00:45:39.840 --> 00:45:45.600 align:middle line:84%
+to be coming from the
+input token sequence T in.
+
+00:45:45.600 --> 00:45:47.680 align:middle line:84%
+So how is it going
+to come from them?
+
+00:45:47.680 --> 00:45:52.160 align:middle line:84%
+It's going to be exactly
+the same type of math
+
+00:45:52.160 --> 00:45:54.140 align:middle line:84%
+that I showed you
+a few slides back.
+
+00:45:54.140 --> 00:45:56.600 align:middle line:84%
+But here's how it looks
+for self-attention.
+
+00:45:56.600 --> 00:45:58.300 align:middle line:90%
+So I have my T in.
+
+00:45:58.300 --> 00:46:00.520 align:middle line:84%
+And every single token
+in my input sequence
+
+00:46:00.520 --> 00:46:04.200 align:middle line:84%
+is going to emit a key, a
+value, and a query vector.
+
+00:46:04.200 --> 00:46:08.600 align:middle line:84%
+It's going to emit
+those via WQ, which
+
+00:46:08.600 --> 00:46:12.240 align:middle line:84%
+is a projection from its token
+vector into a query vector
+
+00:46:12.240 --> 00:46:15.240 align:middle line:84%
+WK, which is a projection
+from its token vectors
+
+00:46:15.240 --> 00:46:18.120 align:middle line:84%
+to its key vector, and the
+same for the value vector.
+
+00:46:18.120 --> 00:46:23.120 align:middle line:84%
+So now I will get a set
+of queries, a set of keys,
+
+00:46:23.120 --> 00:46:24.260 align:middle line:90%
+and a set of values.
+
+00:46:24.260 --> 00:46:28.040 align:middle line:84%
+I can stack them up into
+the query matrix, which
+
+00:46:28.040 --> 00:46:29.840 align:middle line:84%
+is for every row in
+that matrix it will
+
+00:46:29.840 --> 00:46:32.160 align:middle line:84%
+be the query for one
+of my input tokens,
+
+00:46:32.160 --> 00:46:35.200 align:middle line:84%
+for every key matrix
+and the value matrix.
+
+00:46:35.200 --> 00:46:41.280 align:middle line:84%
+And this is just saying that I
+can represent the query matrix
+
+00:46:41.280 --> 00:46:44.900 align:middle line:84%
+as just the matrix product
+of-- it's just a matmul,
+
+00:46:44.900 --> 00:46:49.760 align:middle line:84%
+it's just a matrix multiply
+of the token matrix
+
+00:46:49.760 --> 00:46:56.360 align:middle line:84%
+times the learnable
+projection to queries.
+
+00:46:56.360 --> 00:47:00.040 align:middle line:84%
+So this is another nice thing
+about the design of transformers
+
+00:47:00.040 --> 00:47:03.800 align:middle line:84%
+is everything just becomes these
+matrix multiplies in a very
+
+00:47:03.800 --> 00:47:05.380 align:middle line:90%
+simple, notational form.
+
+00:47:05.380 --> 00:47:07.040 align:middle line:90%
+So this is my queries.
+
+00:47:07.040 --> 00:47:10.920 align:middle line:90%
+And they're just T in times WQ.
+
+00:47:10.920 --> 00:47:15.040 align:middle line:84%
+So now I take all
+of these matrices.
+
+00:47:15.040 --> 00:47:18.880 align:middle line:84%
+And in order to get the weight
+in the linear combination
+
+00:47:18.880 --> 00:47:22.710 align:middle line:84%
+for this unit of T out from
+this unit of T in-- so remember,
+
+00:47:22.710 --> 00:47:24.460 align:middle line:84%
+the linear combination
+is over the values.
+
+00:47:24.460 --> 00:47:26.220 align:middle line:84%
+The values are in
+this teal color.
+
+00:47:26.220 --> 00:47:28.770 align:middle line:84%
+So I'm going to take a linear
+combination over the values.
+
+00:47:28.770 --> 00:47:31.465 align:middle line:84%
+And the weight that I'll assign
+to that linear combination is
+
+00:47:31.465 --> 00:47:34.090 align:middle line:84%
+going to be the inner product,
+the dot product, between the key
+
+00:47:34.090 --> 00:47:38.910 align:middle line:90%
+and the query for this token
+
+00:47:38.910 --> 00:47:42.770 align:middle line:84%
+So the amount of self-attention
+that I apply to myself
+
+00:47:42.770 --> 00:47:44.930 align:middle line:84%
+is going to be given
+by this gray box, which
+
+00:47:44.930 --> 00:47:46.850 align:middle line:90%
+is just this dot product.
+
+00:47:46.850 --> 00:47:49.870 align:middle line:84%
+And if you work out
+the linear algebra,
+
+00:47:49.870 --> 00:47:51.690 align:middle line:84%
+you can realize
+that this will just
+
+00:47:51.690 --> 00:47:57.570 align:middle line:84%
+be the matrix multiply of the
+query times the key matrix.
+
+00:47:57.570 --> 00:47:59.650 align:middle line:84%
+And then that will just
+be every query vector
+
+00:47:59.650 --> 00:48:03.870 align:middle line:84%
+gets multiplied by
+every key vector.
+
+00:48:03.870 --> 00:48:05.370 align:middle line:90%
+And that results in the value.
+
+00:48:05.370 --> 00:48:09.810 align:middle line:84%
+And the values will then
+be stacked up into an n
+
+00:48:09.810 --> 00:48:10.490 align:middle line:90%
+by n matrix.
+
+00:48:10.490 --> 00:48:12.990 align:middle line:84%
+I'll have n input tokens
+to n output tokens.
+
+00:48:12.990 --> 00:48:15.730 align:middle line:84%
+That's an n by n set of
+weights that determine
+
+00:48:15.730 --> 00:48:16.950 align:middle line:90%
+that linear combination.
+
+00:48:16.950 --> 00:48:19.650 align:middle line:90%
+
+
+00:48:19.650 --> 00:48:23.010 align:middle line:84%
+So mathematically, we
+can condense all of this
+
+00:48:23.010 --> 00:48:24.270 align:middle line:90%
+into this simple equation.
+
+00:48:24.270 --> 00:48:26.410 align:middle line:84%
+This is the famous
+attention equation,
+
+00:48:26.410 --> 00:48:30.370 align:middle line:84%
+which is going to be the query
+matrix times the key matrix
+
+00:48:30.370 --> 00:48:31.490 align:middle line:90%
+transpose.
+
+00:48:31.490 --> 00:48:34.250 align:middle line:84%
+So if I transpose,
+I'm going to be
+
+00:48:34.250 --> 00:48:36.770 align:middle line:84%
+taking the dot product between
+all the pairs of queries
+
+00:48:36.770 --> 00:48:38.170 align:middle line:90%
+and keys.
+
+00:48:38.170 --> 00:48:42.490 align:middle line:84%
+And then I'll divide
+by the square root
+
+00:48:42.490 --> 00:48:48.850 align:middle line:84%
+of the dimensionality
+of the vectors.
+
+00:48:48.850 --> 00:48:51.270 align:middle line:84%
+So the keys' queries and values
+are M dimensional vectors.
+
+00:48:51.270 --> 00:48:52.110 align:middle line:90%
+They don't have to be the same.
+
+00:48:52.110 --> 00:48:53.110 align:middle line:84%
+They don't have to
+be D dimensional.
+
+00:48:53.110 --> 00:48:54.470 align:middle line:84%
+Remember, the tokens
+were D dimensional,
+
+00:48:54.470 --> 00:48:56.262 align:middle line:84%
+but in general the
+queries' keys and values
+
+00:48:56.262 --> 00:48:57.890 align:middle line:84%
+could be of some
+other dimensionality.
+
+00:48:57.890 --> 00:48:59.770 align:middle line:84%
+I'll divide by that
+dimensionality.
+
+00:48:59.770 --> 00:49:03.050 align:middle line:84%
+And then I'll take a softmax
+to ensure that everything
+
+00:49:03.050 --> 00:49:04.190 align:middle line:90%
+sums to 1.
+
+00:49:04.190 --> 00:49:05.810 align:middle line:84%
+So that has some
+nice normalization
+
+00:49:05.810 --> 00:49:07.770 align:middle line:90%
+and numerical advantages.
+
+00:49:07.770 --> 00:49:09.370 align:middle line:84%
+And then finally,
+the output will just
+
+00:49:09.370 --> 00:49:17.010 align:middle line:84%
+be the attention matrix times
+the value matrix of the input
+
+00:49:17.010 --> 00:49:18.610 align:middle line:90%
+set of tokens.
+
+00:49:18.610 --> 00:49:22.090 align:middle line:84%
+So it's a lot of little
+nitty-gritty linear algebra
+
+00:49:22.090 --> 00:49:23.340 align:middle line:90%
+to work out.
+
+00:49:23.340 --> 00:49:28.220 align:middle line:84%
+But it comes to a very
+simple equation in the end.
+
+00:49:28.220 --> 00:49:29.450 align:middle line:90%
+Yeah.
+
+00:49:29.450 --> 00:49:32.220 align:middle line:84%
+AUDIENCE: Like, is there
+a good intuitive reason
+
+00:49:32.220 --> 00:49:35.980 align:middle line:84%
+for why we bother learning
+parameters or matrices
+
+00:49:35.980 --> 00:49:39.660 align:middle line:84%
+for human case separately,
+rather than learning the values
+
+00:49:39.660 --> 00:49:41.220 align:middle line:90%
+of the A matrix directly?
+
+00:49:41.220 --> 00:49:43.220 align:middle line:84%
+At the end of the
+day, T in is going
+
+00:49:43.220 --> 00:49:46.340 align:middle line:84%
+to be a matrix
+multiply, which is
+
+00:49:46.340 --> 00:49:49.100 align:middle line:84%
+a function of two
+learned matrices, which
+
+00:49:49.100 --> 00:49:52.355 align:middle line:84%
+is A. Dot product with
+another learned matrix, which
+
+00:49:52.355 --> 00:49:52.980 align:middle line:90%
+is [INAUDIBLE].
+
+00:49:52.980 --> 00:49:53.855 align:middle line:90%
+PHILLIP ISOLA: Right.
+
+00:49:53.855 --> 00:49:56.100 align:middle line:84%
+AUDIENCE: So is there
+something about decomposing A
+
+00:49:56.100 --> 00:50:02.280 align:middle line:84%
+into the product of Q and
+K that leads to like--
+
+00:50:02.280 --> 00:50:04.220 align:middle line:84%
+I'm not asking for a
+theoretical argument.
+
+00:50:04.220 --> 00:50:06.840 align:middle line:84%
+PHILLIP ISOLA: Yeah, no,
+no, it's a good question.
+
+00:50:06.840 --> 00:50:08.680 align:middle line:90%
+Like, why not learn A directly?
+
+00:50:08.680 --> 00:50:11.780 align:middle line:90%
+
+
+00:50:11.780 --> 00:50:13.300 align:middle line:84%
+The basic statement
+is empirically
+
+00:50:13.300 --> 00:50:14.420 align:middle line:90%
+the transformer recipe--
+
+00:50:14.420 --> 00:50:17.180 align:middle line:84%
+I'll specify it-- just
+seems to work the best at so
+
+00:50:17.180 --> 00:50:19.700 align:middle line:90%
+many different things.
+
+00:50:19.700 --> 00:50:22.140 align:middle line:84%
+I don't know about direct
+comparisons between learning
+
+00:50:22.140 --> 00:50:25.020 align:middle line:84%
+A versus using
+this outer product
+
+00:50:25.020 --> 00:50:28.560 align:middle line:84%
+of the queries and the keys that
+are also learnable projections.
+
+00:50:28.560 --> 00:50:31.980 align:middle line:84%
+But you can start to count how
+many learnable parameters there
+
+00:50:31.980 --> 00:50:33.060 align:middle line:90%
+are and what is.
+
+00:50:33.060 --> 00:50:36.300 align:middle line:84%
+So at the end of the day, we
+have some parameterized mapping
+
+00:50:36.300 --> 00:50:37.320 align:middle line:90%
+from T in to T out.
+
+00:50:37.320 --> 00:50:40.380 align:middle line:84%
+And you can think, if
+I learned A directly, I
+
+00:50:40.380 --> 00:50:43.100 align:middle line:84%
+would have to learn
+n squared parameters,
+
+00:50:43.100 --> 00:50:46.220 align:middle line:84%
+where n is the number of
+tokens in my sequence.
+
+00:50:46.220 --> 00:50:50.910 align:middle line:84%
+If I learn WQ, WK,
+and WV, I'm also
+
+00:50:50.910 --> 00:50:52.660 align:middle line:84%
+learning a lot of
+parameters, but it's not
+
+00:50:52.660 --> 00:50:54.035 align:middle line:84%
+dependent on the
+sequence length.
+
+00:50:54.035 --> 00:50:55.900 align:middle line:84%
+Now it's dependent
+on the dimensionality
+
+00:50:55.900 --> 00:50:57.640 align:middle line:90%
+of my token vectors.
+
+00:50:57.640 --> 00:50:59.980 align:middle line:84%
+So it's dependent on
+D, as opposed to n.
+
+00:50:59.980 --> 00:51:03.260 align:middle line:84%
+Now transformers are
+typically applied in modern AI
+
+00:51:03.260 --> 00:51:05.760 align:middle line:84%
+to extremely long
+sequences of tokens,
+
+00:51:05.760 --> 00:51:09.780 align:middle line:84%
+maybe like length million
+sequences of tokens, even.
+
+00:51:09.780 --> 00:51:13.780 align:middle line:84%
+Like, modern LLMs, you can
+have paragraphs and paragraphs
+
+00:51:13.780 --> 00:51:16.060 align:middle line:84%
+and whole books that
+you're processing.
+
+00:51:16.060 --> 00:51:18.572 align:middle line:84%
+So n is usually very large,
+and D is much smaller.
+
+00:51:18.572 --> 00:51:20.530 align:middle line:84%
+So there's actually fewer
+learnable parameters.
+
+00:51:20.530 --> 00:51:23.270 align:middle line:90%
+That's just one perspective.
+
+00:51:23.270 --> 00:51:24.170 align:middle line:90%
+OK, one more.
+
+00:51:24.170 --> 00:51:27.310 align:middle line:84%
+AUDIENCE: Yeah, I just
+wonder if the size
+
+00:51:27.310 --> 00:51:31.230 align:middle line:84%
+of the I or n or
+a different tree
+
+00:51:31.230 --> 00:51:34.550 align:middle line:84%
+or different update for your
+neural network could be variable
+
+00:51:34.550 --> 00:51:36.590 align:middle line:90%
+or has to be fixed?
+
+00:51:36.590 --> 00:51:41.030 align:middle line:84%
+Because I feel like language
+is so different from images.
+
+00:51:41.030 --> 00:51:44.870 align:middle line:84%
+And the sequence, the
+length of your words,
+
+00:51:44.870 --> 00:51:47.310 align:middle line:84%
+can change different
+[? things. ?]
+
+00:51:47.310 --> 00:51:49.662 align:middle line:84%
+PHILLIP ISOLA: Yeah,
+OK, I'm not sure I've
+
+00:51:49.662 --> 00:51:51.370 align:middle line:84%
+got the first part of
+the question quite.
+
+00:51:51.370 --> 00:51:54.270 align:middle line:84%
+But I think you're
+asking, shouldn't we
+
+00:51:54.270 --> 00:51:59.450 align:middle line:84%
+have a different way of
+processing language and vision?
+
+00:51:59.450 --> 00:52:01.290 align:middle line:84%
+Can you adapt your
+architecture to that?
+
+00:52:01.290 --> 00:52:04.410 align:middle line:84%
+And the answer is, yeah,
+that is of interest.
+
+00:52:04.410 --> 00:52:07.550 align:middle line:84%
+But again, the power of the
+transformer and the transformer
+
+00:52:07.550 --> 00:52:11.510 align:middle line:84%
+paradigm is only put
+in domain knowledge
+
+00:52:11.510 --> 00:52:13.910 align:middle line:84%
+into the first step,
+plus a few other places,
+
+00:52:13.910 --> 00:52:15.910 align:middle line:84%
+like in positional encoding,
+which we'll get to,
+
+00:52:15.910 --> 00:52:17.310 align:middle line:90%
+you can put in domain knowledge.
+
+00:52:17.310 --> 00:52:20.110 align:middle line:84%
+And otherwise use a very
+generic computational framework,
+
+00:52:20.110 --> 00:52:26.402 align:middle line:84%
+which has the advantage of
+just if you homogenize, then
+
+00:52:26.402 --> 00:52:28.110 align:middle line:84%
+you can get advantages
+of everything runs
+
+00:52:28.110 --> 00:52:29.610 align:middle line:90%
+on the same commodity hardware.
+
+00:52:29.610 --> 00:52:31.010 align:middle line:90%
+The code bases are all the same.
+
+00:52:31.010 --> 00:52:33.905 align:middle line:84%
+The lessons are transferable
+between different modalities.
+
+00:52:33.905 --> 00:52:35.530 align:middle line:84%
+So there's a lot of
+advantages to that.
+
+00:52:35.530 --> 00:52:39.810 align:middle line:84%
+But specialization to modality
+is of interest as well.
+
+00:52:39.810 --> 00:52:41.570 align:middle line:84%
+It's just a trade-off,
+a back and forth.
+
+00:52:41.570 --> 00:52:42.945 align:middle line:84%
+How much do you
+specialize versus
+
+00:52:42.945 --> 00:52:45.870 align:middle line:84%
+how much do you make
+homogeneous approaches?
+
+00:52:45.870 --> 00:52:47.690 align:middle line:84%
+I'm not sure I quite
+answered the question,
+
+00:52:47.690 --> 00:52:50.030 align:middle line:84%
+but I think I need to move
+on to get through everything.
+
+00:52:50.030 --> 00:52:51.910 align:middle line:90%
+We can talk after.
+
+00:52:51.910 --> 00:52:56.690 align:middle line:84%
+So as I said, the attention
+layer is, at the end of the day,
+
+00:52:56.690 --> 00:52:58.170 align:middle line:90%
+just a linear combination.
+
+00:52:58.170 --> 00:53:01.270 align:middle line:84%
+So we can now think of a family
+of different linear combinations
+
+00:53:01.270 --> 00:53:03.030 align:middle line:90%
+of neurons that we've seen.
+
+00:53:03.030 --> 00:53:05.970 align:middle line:84%
+So the first one was in the
+MLP, the fully connected layer,
+
+00:53:05.970 --> 00:53:08.310 align:middle line:84%
+where every single
+edge in the mapping
+
+00:53:08.310 --> 00:53:11.340 align:middle line:84%
+from input vector to output
+vector is a learnable parameter.
+
+00:53:11.340 --> 00:53:13.090 align:middle line:84%
+So we have n squared
+learnable parameters.
+
+00:53:13.090 --> 00:53:16.140 align:middle line:84%
+If the input is in Rn
+and the output is in Rn.
+
+00:53:16.140 --> 00:53:21.040 align:middle line:84%
+And we also have some bias terms
+that we can add, n bias terms.
+
+00:53:21.040 --> 00:53:24.410 align:middle line:84%
+In convolution, we have
+a much lower rank matrix.
+
+00:53:24.410 --> 00:53:26.160 align:middle line:84%
+But remember, we said
+that the convolution
+
+00:53:26.160 --> 00:53:28.680 align:middle line:90%
+can be represented as a matrix.
+
+00:53:28.680 --> 00:53:31.640 align:middle line:84%
+For a fixed dimensional input,
+we can represent the convolution
+
+00:53:31.640 --> 00:53:34.600 align:middle line:90%
+as a fixed dimensional matrix.
+
+00:53:34.600 --> 00:53:38.120 align:middle line:84%
+But the interesting thing
+is it has this Toeplitz
+
+00:53:38.120 --> 00:53:41.020 align:middle line:84%
+structure, where the diagonals
+all share the same value.
+
+00:53:41.020 --> 00:53:44.000 align:middle line:84%
+So the colors indicate the
+unique values in this matrix.
+
+00:53:44.000 --> 00:53:45.860 align:middle line:84%
+So there's far fewer
+learnable parameters.
+
+00:53:45.860 --> 00:53:47.260 align:middle line:84%
+There's only four
+learnable parameters
+
+00:53:47.260 --> 00:53:48.920 align:middle line:84%
+if we include the
+bias, as opposed to n
+
+00:53:48.920 --> 00:53:51.880 align:middle line:84%
+squared learnable parameters,
+for this toy problem where
+
+00:53:51.880 --> 00:53:54.400 align:middle line:84%
+the convolutional
+kernel size is 3.
+
+00:53:54.400 --> 00:53:58.600 align:middle line:84%
+So every three
+neurons in the input
+
+00:53:58.600 --> 00:54:00.840 align:middle line:90%
+map to one neuron in the output.
+
+00:54:00.840 --> 00:54:02.680 align:middle line:84%
+And convolution has
+this nice property
+
+00:54:02.680 --> 00:54:04.800 align:middle line:84%
+of translation
+equivariance, conv
+
+00:54:04.800 --> 00:54:09.760 align:middle line:90%
+of trans x is trans of conv x.
+
+00:54:09.760 --> 00:54:11.677 align:middle line:84%
+And that comes because
+of this weight sharing.
+
+00:54:11.677 --> 00:54:12.468 align:middle line:90%
+You kind of see it.
+
+00:54:12.468 --> 00:54:13.960 align:middle line:84%
+Like, if I translate
+the input, I'm
+
+00:54:13.960 --> 00:54:16.600 align:middle line:84%
+just the same values
+at a different location
+
+00:54:16.600 --> 00:54:18.440 align:middle line:90%
+in that matrix.
+
+00:54:18.440 --> 00:54:21.520 align:middle line:84%
+So what is the transformer
+attention matrix
+
+00:54:21.520 --> 00:54:23.920 align:middle line:90%
+look like with this notation?
+
+00:54:23.920 --> 00:54:25.838 align:middle line:90%
+So what do you think?
+
+00:54:25.838 --> 00:54:28.380 align:middle line:84%
+This is probably pretty tricky
+to work out just in your head.
+
+00:54:28.380 --> 00:54:30.297 align:middle line:84%
+But what do you think
+it's going to look like?
+
+00:54:30.297 --> 00:54:32.100 align:middle line:84%
+I'm going to draw it
+on the next animation.
+
+00:54:32.100 --> 00:54:33.100 align:middle line:90%
+So anyone want to guess?
+
+00:54:33.100 --> 00:54:36.440 align:middle line:84%
+Like, what is the transformer's
+matrix of unique values
+
+00:54:36.440 --> 00:54:37.840 align:middle line:90%
+going to look like?
+
+00:54:37.840 --> 00:54:38.900 align:middle line:90%
+OK, yeah, let's go here.
+
+00:54:38.900 --> 00:54:41.192 align:middle line:84%
+AUDIENCE: So it's not going
+to necessarily look sparse,
+
+00:54:41.192 --> 00:54:42.640 align:middle line:90%
+but it should be low rank.
+
+00:54:42.640 --> 00:54:44.955 align:middle line:84%
+PHILLIP ISOLA: So
+it will be low rank.
+
+00:54:44.955 --> 00:54:46.580 align:middle line:84%
+You said it's not
+going to look sparse.
+
+00:54:46.580 --> 00:54:48.830 align:middle line:84%
+I think it does look sparse,
+but we'll see, we'll see.
+
+00:54:48.830 --> 00:54:50.640 align:middle line:90%
+Yeah, OK, any others?
+
+00:54:50.640 --> 00:54:54.640 align:middle line:84%
+It's going to be some
+low-rank sparse matrix.
+
+00:54:54.640 --> 00:54:56.140 align:middle line:84%
+It's a little hard
+to work it out.
+
+00:54:56.140 --> 00:54:59.460 align:middle line:84%
+So I also have to tell you
+how I'm notating things.
+
+00:54:59.460 --> 00:55:02.560 align:middle line:84%
+So I mean, it's not
+like you were wrong.
+
+00:55:02.560 --> 00:55:04.320 align:middle line:84%
+So I'm going to
+notate things where
+
+00:55:04.320 --> 00:55:06.760 align:middle line:84%
+I'm going to take the
+first three neurons
+
+00:55:06.760 --> 00:55:08.583 align:middle line:84%
+and call that one token,
+and the next three
+
+00:55:08.583 --> 00:55:09.500 align:middle line:90%
+neurons another token.
+
+00:55:09.500 --> 00:55:12.550 align:middle line:84%
+So I'm factorizing the input
+signal into these two tokens
+
+00:55:12.550 --> 00:55:13.050 align:middle line:90%
+now.
+
+00:55:13.050 --> 00:55:17.050 align:middle line:84%
+And then those two tokens
+get to attend and interact
+
+00:55:17.050 --> 00:55:18.610 align:middle line:90%
+with each other.
+
+00:55:18.610 --> 00:55:22.410 align:middle line:84%
+But that just corresponds to
+using the same set of weights
+
+00:55:22.410 --> 00:55:24.630 align:middle line:84%
+for each element of
+the token vector,
+
+00:55:24.630 --> 00:55:27.890 align:middle line:84%
+because a linear combination
+of rows of a matrix
+
+00:55:27.890 --> 00:55:30.170 align:middle line:84%
+is using the same weights
+for every element of the row
+
+00:55:30.170 --> 00:55:31.950 align:middle line:84%
+when I'm taking
+that combination.
+
+00:55:31.950 --> 00:55:33.310 align:middle line:90%
+So you can work it out.
+
+00:55:33.310 --> 00:55:35.685 align:middle line:84%
+Think of it for yourself, but
+this is what it looks like.
+
+00:55:35.685 --> 00:55:38.730 align:middle line:84%
+So transformers have these
+layers or linear layers.
+
+00:55:38.730 --> 00:55:42.630 align:middle line:84%
+Of course, the weights are
+coming from queries and values.
+
+00:55:42.630 --> 00:55:44.338 align:middle line:84%
+So there's another
+mechanism on the side.
+
+00:55:44.338 --> 00:55:46.922 align:middle line:84%
+But at the end of the day, it's
+just like this low-rank sparse
+
+00:55:46.922 --> 00:55:47.550 align:middle line:90%
+transformation.
+
+00:55:47.550 --> 00:55:49.810 align:middle line:84%
+It has fewer linear
+learnable parameters, which
+
+00:55:49.810 --> 00:55:53.443 align:middle line:90%
+is advantageous in some ways.
+
+00:55:53.443 --> 00:55:55.110 align:middle line:84%
+And then the other
+interesting property,
+
+00:55:55.110 --> 00:55:56.568 align:middle line:84%
+which I'll describe
+in a minute, is
+
+00:55:56.568 --> 00:56:00.770 align:middle line:84%
+that transformers are
+equivariant with permutations
+
+00:56:00.770 --> 00:56:01.510 align:middle line:90%
+of the input.
+
+00:56:01.510 --> 00:56:05.450 align:middle line:84%
+But we'll come back to
+that, just like graph nets.
+
+00:56:05.450 --> 00:56:06.250 align:middle line:90%
+OK.
+
+00:56:06.250 --> 00:56:07.310 align:middle line:90%
+So here's the MLP.
+
+00:56:07.310 --> 00:56:10.850 align:middle line:84%
+Here's the vanilla transformer
+with self-attention.
+
+00:56:10.850 --> 00:56:13.730 align:middle line:84%
+And this is roughly the
+standard architecture
+
+00:56:13.730 --> 00:56:15.570 align:middle line:90%
+we use in computer vision.
+
+00:56:15.570 --> 00:56:17.850 align:middle line:84%
+The architecture we use
+in language processing
+
+00:56:17.850 --> 00:56:21.210 align:middle line:84%
+has one small difference,
+which I'll come to in a minute.
+
+00:56:21.210 --> 00:56:24.650 align:middle line:84%
+A few little details
+to add on top of this--
+
+00:56:24.650 --> 00:56:27.850 align:middle line:84%
+I think I won't talk about
+multi-headed self-attention.
+
+00:56:27.850 --> 00:56:29.090 align:middle line:90%
+It's in the reading.
+
+00:56:29.090 --> 00:56:30.110 align:middle line:90%
+There's a section on it.
+
+00:56:30.110 --> 00:56:33.370 align:middle line:84%
+But the idea is that, rather
+than just having one attention
+
+00:56:33.370 --> 00:56:35.910 align:middle line:84%
+layer, I can have k
+attention layers in parallel,
+
+00:56:35.910 --> 00:56:37.167 align:middle line:90%
+and then I can aggregate them.
+
+00:56:37.167 --> 00:56:39.750 align:middle line:84%
+And each attention layer can be
+attending to different things.
+
+00:56:39.750 --> 00:56:42.050 align:middle line:84%
+One can learn to
+attend to shapes
+
+00:56:42.050 --> 00:56:46.250 align:middle line:84%
+and one can learn to attend
+to textures, for example.
+
+00:56:46.250 --> 00:56:50.510 align:middle line:84%
+OK, so here is the complete
+vision transformer architecture.
+
+00:56:50.510 --> 00:56:55.510 align:middle line:84%
+This is the standard way of
+processing spatial signals.
+
+00:56:55.510 --> 00:56:58.490 align:middle line:84%
+So images in particular, but
+also audio and other things
+
+00:56:58.490 --> 00:57:00.810 align:middle line:84%
+can be used with the
+same architecture.
+
+00:57:00.810 --> 00:57:03.270 align:middle line:84%
+And there's only a few
+things that you haven't seen.
+
+00:57:03.270 --> 00:57:06.490 align:middle line:84%
+So it's going to
+be a set of tokens,
+
+00:57:06.490 --> 00:57:08.760 align:middle line:84%
+multi-headed self-attention,
+which is MSA.
+
+00:57:08.760 --> 00:57:12.140 align:middle line:84%
+So that's just multiple runs of
+attention, then combining them
+
+00:57:12.140 --> 00:57:15.780 align:middle line:84%
+all together, and then
+point-wise nonlinearity,
+
+00:57:15.780 --> 00:57:17.380 align:middle line:90%
+which is going to be an MLP.
+
+00:57:17.380 --> 00:57:19.120 align:middle line:84%
+The blue are the
+learnable parameters.
+
+00:57:19.120 --> 00:57:20.560 align:middle line:84%
+Everything else
+is not learnable.
+
+00:57:20.560 --> 00:57:23.460 align:middle line:84%
+So the queries and the
+keys and the values,
+
+00:57:23.460 --> 00:57:27.125 align:middle line:84%
+which are indicated by this F,
+well, that's really the queries,
+
+00:57:27.125 --> 00:57:28.500 align:middle line:84%
+but there's also
+keys and values.
+
+00:57:28.500 --> 00:57:29.520 align:middle line:90%
+That's learnable.
+
+00:57:29.520 --> 00:57:32.320 align:middle line:84%
+And the parameters of the
+token-wise MLP are learnable.
+
+00:57:32.320 --> 00:57:33.780 align:middle line:90%
+Everything else is not.
+
+00:57:33.780 --> 00:57:36.420 align:middle line:84%
+These pluses here are
+residual connections.
+
+00:57:36.420 --> 00:57:39.460 align:middle line:84%
+So I think in the CNN lecture,
+we talked about ResNets.
+
+00:57:39.460 --> 00:57:43.360 align:middle line:84%
+So we'll just take an identity
+pass around all this processing.
+
+00:57:43.360 --> 00:57:45.780 align:middle line:90%
+And that has some advantages.
+
+00:57:45.780 --> 00:57:47.780 align:middle line:84%
+And then there's one
+other little layer,
+
+00:57:47.780 --> 00:57:49.580 align:middle line:90%
+which I'm labeling token norm.
+
+00:57:49.580 --> 00:57:53.820 align:middle line:84%
+It's often more commonly called
+in the literature LayerNorm.
+
+00:57:53.820 --> 00:57:58.380 align:middle line:84%
+There's not really an obvious
+kind of layer structure here.
+
+00:57:58.380 --> 00:58:02.220 align:middle line:84%
+Really, this operation
+is just taking the vector
+
+00:58:02.220 --> 00:58:06.452 align:middle line:84%
+and normalizing it to have
+zero mean and unit variance.
+
+00:58:06.452 --> 00:58:08.160 align:middle line:84%
+So I'm taking the
+elements of this vector
+
+00:58:08.160 --> 00:58:09.702 align:middle line:84%
+and I'm just dividing
+by the variance
+
+00:58:09.702 --> 00:58:11.700 align:middle line:90%
+and subtracting out the mean.
+
+00:58:11.700 --> 00:58:16.872 align:middle line:84%
+So that connects a little bit
+to what Jeremy was talking about
+
+00:58:16.872 --> 00:58:18.580 align:middle line:84%
+and what you've done
+on your problem sets
+
+00:58:18.580 --> 00:58:20.413 align:middle line:84%
+or what you're working
+on your problem sets,
+
+00:58:20.413 --> 00:58:24.860 align:middle line:84%
+where it's good to normalize
+activations and weight
+
+00:58:24.860 --> 00:58:27.960 align:middle line:84%
+updates in your network
+for a lot of reasons.
+
+00:58:27.960 --> 00:58:29.980 align:middle line:84%
+One reason that
+Jeremy alluded to
+
+00:58:29.980 --> 00:58:33.140 align:middle line:84%
+is, for stability
+of optimization
+
+00:58:33.140 --> 00:58:36.060 align:middle line:84%
+and taking the steepest
+descent direction,
+
+00:58:36.060 --> 00:58:37.628 align:middle line:84%
+you need to think
+about the norms.
+
+00:58:37.628 --> 00:58:39.420 align:middle line:84%
+And you might want to
+normalize your weight
+
+00:58:39.420 --> 00:58:41.120 align:middle line:90%
+updates in a particular norm.
+
+00:58:41.120 --> 00:58:42.643 align:middle line:84%
+And your problem
+set goes into that.
+
+00:58:42.643 --> 00:58:44.560 align:middle line:84%
+Here we're not normalizing
+the weight updates.
+
+00:58:44.560 --> 00:58:46.040 align:middle line:84%
+We're normalizing
+the activations.
+
+00:58:46.040 --> 00:58:49.300 align:middle line:84%
+But you can understand that
+normalizing activations will
+
+00:58:49.300 --> 00:58:52.500 align:middle line:84%
+have a consequence on changing
+the size of the weight updates.
+
+00:58:52.500 --> 00:58:56.260 align:middle line:84%
+Because if I backprop through
+normalizing the activations,
+
+00:58:56.260 --> 00:58:58.380 align:middle line:84%
+you can see that
+the weight update
+
+00:58:58.380 --> 00:59:03.580 align:middle line:84%
+will be a function of the
+scale of the activations.
+
+00:59:03.580 --> 00:59:06.490 align:middle line:84%
+So LayerNorm has desirable
+optimization properties.
+
+00:59:06.490 --> 00:59:09.430 align:middle line:84%
+Exactly what those are is
+basically open science.
+
+00:59:09.430 --> 00:59:12.770 align:middle line:84%
+And it's not quite clear why
+LayerNorm is right thing to do,
+
+00:59:12.770 --> 00:59:14.290 align:middle line:90%
+but it's what people do.
+
+00:59:14.290 --> 00:59:17.230 align:middle line:90%
+
+
+00:59:17.230 --> 00:59:19.450 align:middle line:84%
+So you'll implement transformers
+on your problem set,
+
+00:59:19.450 --> 00:59:23.750 align:middle line:84%
+but I want to quickly walk
+through a kind of pseudocode
+
+00:59:23.750 --> 00:59:26.270 align:middle line:84%
+of it just to show you how
+simple these things are.
+
+00:59:26.270 --> 00:59:27.530 align:middle line:90%
+They're so easy to implement.
+
+00:59:27.530 --> 00:59:29.830 align:middle line:84%
+That's one of the reasons
+why people like them.
+
+00:59:29.830 --> 00:59:34.190 align:middle line:84%
+So here is a transformer in
+the vision transformer style
+
+00:59:34.190 --> 00:59:40.590 align:middle line:84%
+that is processing
+a set of tokens T.
+
+00:59:40.590 --> 00:59:41.930 align:middle line:90%
+So we first tokenize the input.
+
+00:59:41.930 --> 00:59:43.597 align:middle line:84%
+That might be
+domain-specific knowledge,
+
+00:59:43.597 --> 00:59:46.052 align:middle line:84%
+like break up your
+image into patches.
+
+00:59:46.052 --> 00:59:47.510 align:middle line:84%
+And then for each
+layer, we're just
+
+00:59:47.510 --> 00:59:50.620 align:middle line:90%
+going to run the same operation.
+
+00:59:50.620 --> 00:59:52.370 align:middle line:84%
+We might have different
+weights per layer,
+
+00:59:52.370 --> 00:59:54.070 align:middle line:84%
+but otherwise the
+same operation.
+
+00:59:54.070 --> 01:00:01.750 align:middle line:84%
+We will take the matrix multiply
+of the LayerNorm of the tokens,
+
+01:00:01.750 --> 01:00:06.710 align:middle line:84%
+times like this outer
+product of the key query
+
+01:00:06.710 --> 01:00:09.390 align:middle line:84%
+and value matrices
+with the token matrix.
+
+01:00:09.390 --> 01:00:10.870 align:middle line:90%
+And we're LayerNorming it.
+
+01:00:10.870 --> 01:00:14.250 align:middle line:84%
+Then we get key query
+and value matrices.
+
+01:00:14.250 --> 01:00:19.390 align:middle line:84%
+And then we'll just take the
+matrix multiply of Q times K
+
+01:00:19.390 --> 01:00:22.310 align:middle line:84%
+transpose, divided by the
+dimensionality, which here I'm
+
+01:00:22.310 --> 01:00:25.950 align:middle line:84%
+noting as D, the dimensionality
+of the key query and value
+
+01:00:25.950 --> 01:00:26.830 align:middle line:90%
+vectors.
+
+01:00:26.830 --> 01:00:29.050 align:middle line:84%
+And then I'll add
+residual connections,
+
+01:00:29.050 --> 01:00:30.970 align:middle line:84%
+and take the linear
+combination, other matmul.
+
+01:00:30.970 --> 01:00:32.510 align:middle line:84%
+So everything is
+just matmuls and
+
+01:00:32.510 --> 01:00:34.090 align:middle line:90%
+a few other simple operators.
+
+01:00:34.090 --> 01:00:37.190 align:middle line:84%
+And this maps wonderfully
+onto modern compute
+
+01:00:37.190 --> 01:00:39.710 align:middle line:90%
+that loves matrix multiplies.
+
+01:00:39.710 --> 01:00:41.570 align:middle line:90%
+OK, so really simple.
+
+01:00:41.570 --> 01:00:43.250 align:middle line:90%
+And that should work.
+
+01:00:43.250 --> 01:00:45.692 align:middle line:90%
+
+
+01:00:45.692 --> 01:00:47.150 align:middle line:84%
+So there's one more
+new idea I have
+
+01:00:47.150 --> 01:00:50.400 align:middle line:84%
+to get to before the
+end of the lecture.
+
+01:00:50.400 --> 01:00:52.150 align:middle line:84%
+Well, there's a few
+more things to get to,
+
+01:00:52.150 --> 01:00:55.090 align:middle line:84%
+but one more big new idea,
+which is positional encodings.
+
+01:00:55.090 --> 01:00:56.040 align:middle line:90%
+It's not a new idea.
+
+01:00:56.040 --> 01:00:58.290 align:middle line:84%
+Again, it's been seen in a
+lot of older architectures,
+
+01:00:58.290 --> 01:01:01.000 align:middle line:84%
+but it was one of
+the key things that
+
+01:01:01.000 --> 01:01:03.680 align:middle line:90%
+made transformers stand out.
+
+01:01:03.680 --> 01:01:10.240 align:middle line:84%
+So the first thing to
+know is that transformers
+
+01:01:10.240 --> 01:01:16.160 align:middle line:84%
+are permutation equivariant,
+just like graph nets.
+
+01:01:16.160 --> 01:01:19.520 align:middle line:84%
+So if I permute the
+input sequence of tokens,
+
+01:01:19.520 --> 01:01:21.320 align:middle line:84%
+then you can work
+out for yourself
+
+01:01:21.320 --> 01:01:24.040 align:middle line:84%
+that if I permute it,
+well, it's like taking T2
+
+01:01:24.040 --> 01:01:26.480 align:middle line:84%
+into the place of
+T1, then the output
+
+01:01:26.480 --> 01:01:29.020 align:middle line:90%
+will also change the order.
+
+01:01:29.020 --> 01:01:33.800 align:middle line:84%
+So the output representation of
+T2 will now be in this vector,
+
+01:01:33.800 --> 01:01:35.620 align:middle line:84%
+as opposed to in
+the second vector.
+
+01:01:35.620 --> 01:01:38.460 align:middle line:84%
+So permuting the input
+permutes the output
+
+01:01:38.460 --> 01:01:41.400 align:middle line:84%
+So transformers are essentially
+a set-to-set mapping.
+
+01:01:41.400 --> 01:01:45.340 align:middle line:84%
+An unordered set maps
+to an unordered set.
+
+01:01:45.340 --> 01:01:49.140 align:middle line:84%
+The ordering of the
+tokens doesn't matter.
+
+01:01:49.140 --> 01:01:52.360 align:middle line:84%
+So you can see this, because
+point-wise, token-wise
+
+01:01:52.360 --> 01:01:55.080 align:middle line:84%
+nonlinearity F, it just applies
+to every token independently
+
+01:01:55.080 --> 01:01:55.820 align:middle line:90%
+and identically.
+
+01:01:55.820 --> 01:01:57.440 align:middle line:84%
+So of course, if I change
+the order of the tokens,
+
+01:01:57.440 --> 01:01:58.940 align:middle line:90%
+it doesn't change anything.
+
+01:01:58.940 --> 01:02:00.865 align:middle line:84%
+I'm just treating them
+all independently.
+
+01:02:00.865 --> 01:02:02.240 align:middle line:84%
+And you can work
+out for yourself
+
+01:02:02.240 --> 01:02:04.920 align:middle line:84%
+that attention is
+permutation invariant.
+
+01:02:04.920 --> 01:02:07.340 align:middle line:84%
+Because again, attention is,
+like, every pair of tokens,
+
+01:02:07.340 --> 01:02:08.757 align:middle line:84%
+how much they
+attend to each other
+
+01:02:08.757 --> 01:02:11.820 align:middle line:84%
+will just be determined based on
+the values in the token vectors,
+
+01:02:11.820 --> 01:02:13.720 align:middle line:90%
+not the order.
+
+01:02:13.720 --> 01:02:16.720 align:middle line:84%
+So because transformers
+are just point-wise,
+
+01:02:16.720 --> 01:02:18.540 align:middle line:84%
+token-wise nonlinearity
+and attention,
+
+01:02:18.540 --> 01:02:20.640 align:middle line:84%
+the whole thing is
+permutation equivariant.
+
+01:02:20.640 --> 01:02:22.640 align:middle line:84%
+So transformer
+permute the input is
+
+01:02:22.640 --> 01:02:24.900 align:middle line:84%
+equal to permute the
+transformer of the input.
+
+01:02:24.900 --> 01:02:27.840 align:middle line:90%
+
+
+01:02:27.840 --> 01:02:31.960 align:middle line:84%
+So now, positional
+codes-- well, remember,
+
+01:02:31.960 --> 01:02:34.320 align:middle line:84%
+if we want convolutional
+networks to not
+
+01:02:34.320 --> 01:02:39.480 align:middle line:84%
+be translation equivariant,
+we tell the filter
+
+01:02:39.480 --> 01:02:40.780 align:middle line:90%
+where I am in the image.
+
+01:02:40.780 --> 01:02:42.620 align:middle line:84%
+And then it can make a different
+decision based on where I am.
+
+01:02:42.620 --> 01:02:44.420 align:middle line:84%
+It's no longer
+translation equivariant.
+
+01:02:44.420 --> 01:02:45.800 align:middle line:90%
+We saw that a few times.
+
+01:02:45.800 --> 01:02:48.480 align:middle line:84%
+So now you can do exactly the
+same thing with transformers.
+
+01:02:48.480 --> 01:02:50.560 align:middle line:84%
+If I don't want it to be
+permutation equivariant,
+
+01:02:50.560 --> 01:02:52.060 align:middle line:84%
+which oftentimes
+you actually don't.
+
+01:02:52.060 --> 01:02:53.720 align:middle line:90%
+Oftentimes, the order matters.
+
+01:02:53.720 --> 01:02:56.320 align:middle line:84%
+If I'm processing a sentence,
+the earlier sentences
+
+01:02:56.320 --> 01:02:57.355 align:middle line:90%
+have causal impact.
+
+01:02:57.355 --> 01:02:58.730 align:middle line:84%
+The earlier words
+in the sentence
+
+01:02:58.730 --> 01:03:02.270 align:middle line:84%
+are causally determining
+the next words,
+
+01:03:02.270 --> 01:03:05.010 align:middle line:84%
+but there's not quite the
+anti-causal direction.
+
+01:03:05.010 --> 01:03:06.230 align:middle line:90%
+The statistics are different.
+
+01:03:06.230 --> 01:03:07.970 align:middle line:84%
+It's not like a
+reversible sequence
+
+01:03:07.970 --> 01:03:10.690 align:middle line:84%
+where permutation invariant
+statistical process.
+
+01:03:10.690 --> 01:03:13.770 align:middle line:84%
+So anyway, I can
+concatenate each token
+
+01:03:13.770 --> 01:03:16.370 align:middle line:84%
+with a value that
+tells me where it
+
+01:03:16.370 --> 01:03:18.730 align:middle line:90%
+came from in the input signal.
+
+01:03:18.730 --> 01:03:21.430 align:middle line:84%
+What position was it
+in the input sentence?
+
+01:03:21.430 --> 01:03:24.490 align:middle line:84%
+What location was it
+in the input image?
+
+01:03:24.490 --> 01:03:27.750 align:middle line:84%
+And here's how you
+do that typically.
+
+01:03:27.750 --> 01:03:30.970 align:middle line:84%
+Not typically-- but this is
+the vanilla way of doing that.
+
+01:03:30.970 --> 01:03:33.630 align:middle line:84%
+There's a lot of more
+advanced ways of doing it.
+
+01:03:33.630 --> 01:03:36.370 align:middle line:84%
+But if I want to
+tell this patch here
+
+01:03:36.370 --> 01:03:39.570 align:middle line:84%
+on the giraffe's head
+what position it's at,
+
+01:03:39.570 --> 01:03:43.050 align:middle line:84%
+I could encode the xy location
+in Cartesian coordinates
+
+01:03:43.050 --> 01:03:46.170 align:middle line:84%
+of that patch,
+but I'll typically
+
+01:03:46.170 --> 01:03:50.530 align:middle line:84%
+represent this on a Fourier
+basis where I will say,
+
+01:03:50.530 --> 01:03:55.150 align:middle line:84%
+what is the value of a sine
+function at that location?
+
+01:03:55.150 --> 01:03:57.930 align:middle line:84%
+And I'll do that for
+different sines and cosines,
+
+01:03:57.930 --> 01:04:01.650 align:middle line:84%
+or in the vertical and
+the horizontal direction.
+
+01:04:01.650 --> 01:04:04.790 align:middle line:84%
+And this is just like an
+encoding of the position,
+
+01:04:04.790 --> 01:04:08.450 align:middle line:84%
+but in terms of
+a different basis
+
+01:04:08.450 --> 01:04:11.490 align:middle line:84%
+as opposed to being just
+like the Cartesian grid.
+
+01:04:11.490 --> 01:04:15.650 align:middle line:84%
+So these values tell me
+where I am in the image.
+
+01:04:15.650 --> 01:04:18.810 align:middle line:84%
+The book chapter goes
+into some intuition
+
+01:04:18.810 --> 01:04:21.330 align:middle line:84%
+about why Fourier
+positional encoding is
+
+01:04:21.330 --> 01:04:23.110 align:middle line:90%
+advantageous over other types.
+
+01:04:23.110 --> 01:04:26.770 align:middle line:84%
+But this is also an
+open science question.
+
+01:04:26.770 --> 01:04:27.990 align:middle line:90%
+This one works pretty well.
+
+01:04:27.990 --> 01:04:30.730 align:middle line:90%
+
+
+01:04:30.730 --> 01:04:34.130 align:middle line:84%
+And for whatever
+signal you have,
+
+01:04:34.130 --> 01:04:35.650 align:middle line:84%
+there's a lot of
+domain expertise
+
+01:04:35.650 --> 01:04:37.590 align:middle line:84%
+that can come into this
+part of the problem.
+
+01:04:37.590 --> 01:04:39.257 align:middle line:84%
+How you define the
+positional encodings.
+
+01:04:39.257 --> 01:04:43.410 align:middle line:84%
+Because that's the part where
+you tell the system what
+
+01:04:43.410 --> 01:04:46.637 align:middle line:84%
+it means to be local
+for your domain.
+
+01:04:46.637 --> 01:04:48.970 align:middle line:84%
+You give it the inductive
+bias of what locality actually
+
+01:04:48.970 --> 01:04:49.870 align:middle line:90%
+represents.
+
+01:04:49.870 --> 01:04:53.122 align:middle line:84%
+So for processing
+data on a globe,
+
+01:04:53.122 --> 01:04:54.580 align:middle line:84%
+I can do positional
+encoding that's
+
+01:04:54.580 --> 01:04:56.380 align:middle line:84%
+like latitude and
+longitude, but maybe
+
+01:04:56.380 --> 01:04:59.760 align:middle line:84%
+on some kind of Fourier basis
+over spherical harmonics,
+
+01:04:59.760 --> 01:05:02.820 align:middle line:90%
+over sinusoids on the sphere.
+
+01:05:02.820 --> 01:05:05.420 align:middle line:84%
+For graphs, one of the
+typical positional encodings
+
+01:05:05.420 --> 01:05:10.640 align:middle line:84%
+is onto the eigenbasis
+of the graph Laplacian.
+
+01:05:10.640 --> 01:05:13.160 align:middle line:84%
+So we mentioned this a little
+bit in the GNN lecture.
+
+01:05:13.160 --> 01:05:15.220 align:middle line:84%
+But basically, I
+can take a graph
+
+01:05:15.220 --> 01:05:18.400 align:middle line:84%
+and I can compute something
+called the graph Laplacian.
+
+01:05:18.400 --> 01:05:20.580 align:middle line:84%
+And I can look at
+the eigenvectors
+
+01:05:20.580 --> 01:05:25.260 align:middle line:84%
+of that, this thing that tells
+me location in the graph,
+
+01:05:25.260 --> 01:05:27.220 align:middle line:90%
+canonical location in the graph.
+
+01:05:27.220 --> 01:05:35.420 align:middle line:84%
+And the coordinates, some of
+these eigenvectors of this graph
+
+01:05:35.420 --> 01:05:39.080 align:middle line:84%
+Laplacian are described by
+these colors on the nodes.
+
+01:05:39.080 --> 01:05:43.368 align:middle line:84%
+And so the first
+eigenvector is this one.
+
+01:05:43.368 --> 01:05:44.160 align:middle line:90%
+It's really smooth.
+
+01:05:44.160 --> 01:05:46.520 align:middle line:90%
+It's like, where am I globally?
+
+01:05:46.520 --> 01:05:49.380 align:middle line:84%
+And then other eigenvectors are,
+like, high frequency, almost
+
+01:05:49.380 --> 01:05:51.992 align:middle line:90%
+like a Fourier basis.
+
+01:05:51.992 --> 01:05:53.200 align:middle line:90%
+This is all domain knowledge.
+
+01:05:53.200 --> 01:05:56.780 align:middle line:84%
+It's not stuff that you need to
+know intimately, unless you're
+
+01:05:56.780 --> 01:05:58.392 align:middle line:90%
+working on that domain.
+
+01:05:58.392 --> 01:06:00.100 align:middle line:84%
+But this is just to
+say you can introduce
+
+01:06:00.100 --> 01:06:04.500 align:middle line:84%
+a lot of domain knowledge
+into positional encodings.
+
+01:06:04.500 --> 01:06:08.245 align:middle line:84%
+So those are the three
+pieces for the transformer.
+
+01:06:08.245 --> 01:06:09.620 align:middle line:84%
+But there's one
+last thing, which
+
+01:06:09.620 --> 01:06:13.180 align:middle line:84%
+is a lot of you will have
+seen large language models
+
+01:06:13.180 --> 01:06:15.700 align:middle line:84%
+and already heard
+about transformers
+
+01:06:15.700 --> 01:06:17.200 align:middle line:84%
+in the context of
+language modeling.
+
+01:06:17.200 --> 01:06:19.100 align:middle line:84%
+So I want to tell
+you how transformers
+
+01:06:19.100 --> 01:06:21.060 align:middle line:84%
+map onto language models,
+because there's one
+
+01:06:21.060 --> 01:06:23.700 align:middle line:90%
+extra piece that is important.
+
+01:06:23.700 --> 01:06:26.420 align:middle line:84%
+And it's called
+causal attention.
+
+01:06:26.420 --> 01:06:29.420 align:middle line:84%
+So first, we're
+going to come back
+
+01:06:29.420 --> 01:06:31.660 align:middle line:84%
+to autoregressive
+models and generative
+
+01:06:31.660 --> 01:06:34.392 align:middle line:84%
+models of language and other
+signals a little later.
+
+01:06:34.392 --> 01:06:36.600 align:middle line:84%
+And one of the kinds will
+be an autoregressive model.
+
+01:06:36.600 --> 01:06:38.308 align:middle line:84%
+But I'll tell you
+briefly what it is now,
+
+01:06:38.308 --> 01:06:39.558 align:middle line:90%
+because it's extremely simple.
+
+01:06:39.558 --> 01:06:41.558 align:middle line:84%
+And a lot of you already
+know this, because it's
+
+01:06:41.558 --> 01:06:42.360 align:middle line:90%
+all over the media.
+
+01:06:42.360 --> 01:06:45.620 align:middle line:84%
+This is how ChatGPT
+works, and so forth.
+
+01:06:45.620 --> 01:06:48.300 align:middle line:84%
+You take a sequence of
+words and you simply
+
+01:06:48.300 --> 01:06:52.690 align:middle line:84%
+try to predict what is the
+next word in that sequence.
+
+01:06:52.690 --> 01:06:56.350 align:middle line:84%
+So "once upon a time," and
+then you do the same thing
+
+01:06:56.350 --> 01:06:59.830 align:middle line:84%
+autoregressively, which means
+you just take your prediction
+
+01:06:59.830 --> 01:07:02.923 align:middle line:84%
+and concatenate it or post-pend
+the input sequence with
+
+01:07:02.923 --> 01:07:04.590 align:middle line:84%
+your prediction, and
+then keep on going.
+
+01:07:04.590 --> 01:07:08.270 align:middle line:84%
+Now predict the next
+word and the next word.
+
+01:07:08.270 --> 01:07:10.590 align:middle line:84%
+And you can train such
+a model, because you
+
+01:07:10.590 --> 01:07:12.750 align:middle line:84%
+will train the
+predictions to match
+
+01:07:12.750 --> 01:07:16.270 align:middle line:84%
+the data set of actual text that
+you observe from the training
+
+01:07:16.270 --> 01:07:18.270 align:middle line:90%
+set.
+
+01:07:18.270 --> 01:07:20.070 align:middle line:84%
+So we'll say,
+"once upon a time,"
+
+01:07:20.070 --> 01:07:23.135 align:middle line:84%
+and you can watch
+Claude or Llama,
+
+01:07:23.135 --> 01:07:25.510 align:middle line:84%
+or whatever your favorite LLM,
+you can watch it write out
+
+01:07:25.510 --> 01:07:26.010 align:middle line:90%
+things.
+
+01:07:26.010 --> 01:07:28.510 align:middle line:90%
+It's doing exactly this.
+
+01:07:28.510 --> 01:07:31.430 align:middle line:84%
+We'll talk more
+about those later.
+
+01:07:31.430 --> 01:07:34.030 align:middle line:84%
+And you don't have
+to do autoregression
+
+01:07:34.030 --> 01:07:37.090 align:middle line:90%
+in time's arrow order.
+
+01:07:37.090 --> 01:07:38.910 align:middle line:84%
+You can do it in
+any order you want.
+
+01:07:38.910 --> 01:07:40.190 align:middle line:90%
+But that's just a detail.
+
+01:07:40.190 --> 01:07:42.690 align:middle line:84%
+So as I said, you
+have a training set,
+
+01:07:42.690 --> 01:07:45.930 align:middle line:84%
+which is sequences and
+completions to the sequence.
+
+01:07:45.930 --> 01:07:49.110 align:middle line:84%
+This is just text online
+for language models.
+
+01:07:49.110 --> 01:07:51.790 align:middle line:84%
+And you are then going
+to use supervised
+
+01:07:51.790 --> 01:07:54.950 align:middle line:84%
+learning to try to
+classify what is
+
+01:07:54.950 --> 01:07:57.710 align:middle line:84%
+the next word in a
+vocabulary of possible words.
+
+01:07:57.710 --> 01:08:00.430 align:middle line:84%
+And then at test time when
+you're going to sample new
+
+01:08:00.430 --> 01:08:03.570 align:middle line:84%
+sentences, you'll just say,
+"colorless green ideas sleep,"
+
+01:08:03.570 --> 01:08:05.647 align:middle line:84%
+it will predict, based
+on my training data,
+
+01:08:05.647 --> 01:08:06.730 align:middle line:90%
+what might have come next.
+
+01:08:06.730 --> 01:08:10.470 align:middle line:90%
+And maybe "furiously" came next.
+
+01:08:10.470 --> 01:08:13.170 align:middle line:90%
+It's a quote from Noem Chomsky.
+
+01:08:13.170 --> 01:08:17.350 align:middle line:90%
+
+
+01:08:17.350 --> 01:08:18.649 align:middle line:90%
+So that's how GPT works.
+
+01:08:18.649 --> 01:08:21.630 align:middle line:84%
+GPT is Generative
+Pre-trained Transformer.
+
+01:08:21.630 --> 01:08:24.990 align:middle line:90%
+So it's a transformer.
+
+01:08:24.990 --> 01:08:27.630 align:middle line:84%
+And it's an autoregressive
+transformer.
+
+01:08:27.630 --> 01:08:30.470 align:middle line:84%
+So here's my normal
+transformer that I'm drawing,
+
+01:08:30.470 --> 01:08:31.649 align:middle line:90%
+where it's self-attention.
+
+01:08:31.649 --> 01:08:35.229 align:middle line:84%
+So the input sequence of tokens
+that represent the words,
+
+01:08:35.229 --> 01:08:37.390 align:middle line:84%
+or maybe subparts
+of the words, get
+
+01:08:37.390 --> 01:08:39.590 align:middle line:84%
+to choose which of
+them to attend to,
+
+01:08:39.590 --> 01:08:41.970 align:middle line:84%
+update their
+representations, finally
+
+01:08:41.970 --> 01:08:44.630 align:middle line:84%
+at the very end come up with
+a prediction for the next item
+
+01:08:44.630 --> 01:08:46.240 align:middle line:90%
+in the sequence.
+
+01:08:46.240 --> 01:08:49.040 align:middle line:84%
+And every time I
+run this, I will
+
+01:08:49.040 --> 01:08:51.500 align:middle line:84%
+get a prediction of the
+next item in the sequence,
+
+01:08:51.500 --> 01:08:56.760 align:middle line:84%
+and I'll shift the input over
+by one and repeat the process.
+
+01:08:56.760 --> 01:09:03.760 align:middle line:84%
+So there's a little issue here,
+which is that if I want to train
+
+01:09:03.760 --> 01:09:07.120 align:middle line:84%
+such a system, I want it to
+be the case that my prediction
+
+01:09:07.120 --> 01:09:10.000 align:middle line:84%
+for the word "furiously" only
+depends on the previous items
+
+01:09:10.000 --> 01:09:11.160 align:middle line:90%
+in the sequence.
+
+01:09:11.160 --> 01:09:13.279 align:middle line:84%
+Now with this architecture
+I'm showing here,
+
+01:09:13.279 --> 01:09:14.979 align:middle line:84%
+the input has the
+word "furiously."
+
+01:09:14.979 --> 01:09:17.399 align:middle line:84%
+And it could just learn an
+identity connection to say, oh,
+
+01:09:17.399 --> 01:09:18.580 align:middle line:90%
+I'm predicting "furiously."
+
+01:09:18.580 --> 01:09:20.830 align:middle line:84%
+And then my input already
+told me what the answer was.
+
+01:09:20.830 --> 01:09:21.600 align:middle line:90%
+That'd be wrong.
+
+01:09:21.600 --> 01:09:23.380 align:middle line:84%
+If I'm predicting
+the word "ideas,"
+
+01:09:23.380 --> 01:09:25.553 align:middle line:84%
+I need to only be able to
+look at the previous items
+
+01:09:25.553 --> 01:09:26.220 align:middle line:90%
+in the sequence.
+
+01:09:26.220 --> 01:09:27.595 align:middle line:84%
+I can't look into
+the future if I
+
+01:09:27.595 --> 01:09:31.080 align:middle line:84%
+want to be able to write a
+sentence in time's order.
+
+01:09:31.080 --> 01:09:35.840 align:middle line:84%
+So what we do is we do what's
+called masking, causal masking
+
+01:09:35.840 --> 01:09:37.560 align:middle line:90%
+of our attention matrix.
+
+01:09:37.560 --> 01:09:43.640 align:middle line:84%
+And that just means that
+every output token can only
+
+01:09:43.640 --> 01:09:45.979 align:middle line:84%
+attend to earlier
+tokens in the sequence.
+
+01:09:45.979 --> 01:09:47.340 align:middle line:90%
+So the order does matter.
+
+01:09:47.340 --> 01:09:49.300 align:middle line:84%
+This is no longer
+permutation equivariant.
+
+01:09:49.300 --> 01:09:51.040 align:middle line:84%
+Now the order
+actually is mattering
+
+01:09:51.040 --> 01:09:53.240 align:middle line:90%
+via the masking operation.
+
+01:09:53.240 --> 01:09:57.848 align:middle line:84%
+And so now the attention matrix
+looks like a masked matrix.
+
+01:09:57.848 --> 01:10:00.140 align:middle line:84%
+And that just means some of
+the arrows are not allowed.
+
+01:10:00.140 --> 01:10:01.800 align:middle line:90%
+They're just set to zero.
+
+01:10:01.800 --> 01:10:06.200 align:middle line:84%
+So the arrows at the top here
+exactly match the masking
+
+01:10:06.200 --> 01:10:07.220 align:middle line:90%
+at the bottom here.
+
+01:10:07.220 --> 01:10:09.240 align:middle line:84%
+And I only allowed
+to learn, or I'm only
+
+01:10:09.240 --> 01:10:11.085 align:middle line:90%
+allowed to use these values.
+
+01:10:11.085 --> 01:10:12.960 align:middle line:84%
+Meaning, I'm only allowed
+to attend to things
+
+01:10:12.960 --> 01:10:14.497 align:middle line:90%
+previous in the sequence.
+
+01:10:14.497 --> 01:10:16.080 align:middle line:84%
+And this allows me
+to make predictions
+
+01:10:16.080 --> 01:10:18.038 align:middle line:84%
+that are causal that only
+depend on information
+
+01:10:18.038 --> 01:10:19.220 align:middle line:90%
+previous in the sequence.
+
+01:10:19.220 --> 01:10:22.080 align:middle line:90%
+
+
+01:10:22.080 --> 01:10:25.520 align:middle line:84%
+So this is what a
+multi-layer transformer
+
+01:10:25.520 --> 01:10:28.120 align:middle line:90%
+looks like with causal masking.
+
+01:10:28.120 --> 01:10:31.992 align:middle line:84%
+On the first layer, I am trying
+to predict the fourth item
+
+01:10:31.992 --> 01:10:33.700 align:middle line:84%
+in the sequence given
+the previous three.
+
+01:10:33.700 --> 01:10:38.670 align:middle line:84%
+So I will not observe the
+fourth item, because otherwise I
+
+01:10:38.670 --> 01:10:39.420 align:middle line:90%
+would be cheating.
+
+01:10:39.420 --> 01:10:40.800 align:middle line:90%
+And it would be too easy.
+
+01:10:40.800 --> 01:10:42.650 align:middle line:84%
+But then after the
+first layer, then I
+
+01:10:42.650 --> 01:10:45.270 align:middle line:84%
+can just use a mask
+that looks like this.
+
+01:10:45.270 --> 01:10:48.708 align:middle line:84%
+Every token attends to itself
+and all the previous tokens.
+
+01:10:48.708 --> 01:10:51.250 align:middle line:84%
+And this will achieve that the
+receptive field of this output
+
+01:10:51.250 --> 01:10:52.970 align:middle line:84%
+token that will
+predict the next word
+
+01:10:52.970 --> 01:10:54.535 align:middle line:84%
+can only see every
+previous word.
+
+01:10:54.535 --> 01:10:56.410 align:middle line:84%
+And the receptive field
+for this output token
+
+01:10:56.410 --> 01:10:58.570 align:middle line:84%
+that I could use to predict
+the second-to-last word
+
+01:10:58.570 --> 01:11:01.015 align:middle line:84%
+will only see everything
+previous to itself.
+
+01:11:01.015 --> 01:11:02.890 align:middle line:84%
+And therefore I can just
+supervise this thing
+
+01:11:02.890 --> 01:11:06.290 align:middle line:90%
+to output a sequence of words.
+
+01:11:06.290 --> 01:11:08.050 align:middle line:84%
+And every word in
+that output sequence
+
+01:11:08.050 --> 01:11:09.830 align:middle line:84%
+will only depend on
+the previous words.
+
+01:11:09.830 --> 01:11:14.310 align:middle line:84%
+And this is an efficient way
+of training such a system.
+
+01:11:14.310 --> 01:11:16.550 align:middle line:84%
+I'm going a little quickly
+for the sake of time,
+
+01:11:16.550 --> 01:11:19.170 align:middle line:84%
+but there's more details on
+this in the book chapter.
+
+01:11:19.170 --> 01:11:21.170 align:middle line:84%
+This lecture follows the
+chapter almost exactly,
+
+01:11:21.170 --> 01:11:24.990 align:middle line:84%
+because finally I had all the
+material ready for this year.
+
+01:11:24.990 --> 01:11:27.795 align:middle line:90%
+
+
+01:11:27.795 --> 01:11:30.170 align:middle line:84%
+I'm sorry to say, this is just
+probably the worst diagram
+
+01:11:30.170 --> 01:11:32.690 align:middle line:84%
+in all of science, but
+it's also the best paper
+
+01:11:32.690 --> 01:11:33.550 align:middle line:90%
+in all of science.
+
+01:11:33.550 --> 01:11:35.670 align:middle line:84%
+So it's like they
+balance each other out.
+
+01:11:35.670 --> 01:11:38.090 align:middle line:84%
+"Attention Is All You Need,"
+it's a super important paper,
+
+01:11:38.090 --> 01:11:41.250 align:middle line:84%
+because it's the one that
+defined the transformer
+
+01:11:41.250 --> 01:11:42.190 align:middle line:90%
+architecture.
+
+01:11:42.190 --> 01:11:45.850 align:middle line:84%
+Again, it's not new ideas-- it's
+just a particular recipe that
+
+01:11:45.850 --> 01:11:49.730 align:middle line:84%
+is novel in its details,
+but works incredibly well,
+
+01:11:49.730 --> 01:11:52.162 align:middle line:84%
+and a few new ideas
+here and there.
+
+01:11:52.162 --> 01:11:53.870 align:middle line:84%
+And so this paper,
+just super important--
+
+01:11:53.870 --> 01:11:54.790 align:middle line:90%
+"Attention Is All You Need."
+
+01:11:54.790 --> 01:11:56.330 align:middle line:84%
+And a lot of you
+will come across
+
+01:11:56.330 --> 01:11:57.710 align:middle line:90%
+or will have seen this diagram.
+
+01:11:57.710 --> 01:12:01.970 align:middle line:84%
+This is their diagram for
+what a transformer is.
+
+01:12:01.970 --> 01:12:03.030 align:middle line:90%
+Super confusing to me.
+
+01:12:03.030 --> 01:12:05.990 align:middle line:84%
+I don't know why they call
+this like a feedforward layer.
+
+01:12:05.990 --> 01:12:06.950 align:middle line:90%
+But what is it?
+
+01:12:06.950 --> 01:12:09.890 align:middle line:84%
+So this is the
+token-wise nonlinearity.
+
+01:12:09.890 --> 01:12:11.670 align:middle line:84%
+That box in blue they
+call feedforward.
+
+01:12:11.670 --> 01:12:15.890 align:middle line:84%
+So it's like just applying
+independently and identically
+
+01:12:15.890 --> 01:12:19.130 align:middle line:84%
+an MLP to every
+single token vector.
+
+01:12:19.130 --> 01:12:20.310 align:middle line:90%
+What is this thing here?
+
+01:12:20.310 --> 01:12:22.350 align:middle line:84%
+This is that autoregressive
+part that I was describing.
+
+01:12:22.350 --> 01:12:24.110 align:middle line:84%
+So that has nothing to do
+with really transformers.
+
+01:12:24.110 --> 01:12:26.050 align:middle line:84%
+That's more about
+autoregressive modeling.
+
+01:12:26.050 --> 01:12:29.790 align:middle line:84%
+So they factor those
+two ideas separately,
+
+01:12:29.790 --> 01:12:31.770 align:middle line:84%
+but they put them together
+in the first paper.
+
+01:12:31.770 --> 01:12:37.860 align:middle line:84%
+So that's just
+saying, shifted right.
+
+01:12:37.860 --> 01:12:40.380 align:middle line:84%
+Shifted right is this
+thing where I just
+
+01:12:40.380 --> 01:12:42.960 align:middle line:84%
+shifted the input sequence
+to the left, I guess,
+
+01:12:42.960 --> 01:12:44.300 align:middle line:90%
+in my diagram.
+
+01:12:44.300 --> 01:12:47.220 align:middle line:84%
+And positional
+encoding, that's meant
+
+01:12:47.220 --> 01:12:49.900 align:middle line:84%
+to be like a sinusoid
+positional encoding.
+
+01:12:49.900 --> 01:12:52.080 align:middle line:84%
+Then all of these
+things, add and norm,
+
+01:12:52.080 --> 01:12:53.680 align:middle line:84%
+that's just the
+residual connection.
+
+01:12:53.680 --> 01:12:58.420 align:middle line:84%
+So just think of it like this
+and I think it will be simpler.
+
+01:12:58.420 --> 01:13:02.680 align:middle line:84%
+And I definitely prefer
+this diagram instead.
+
+01:13:02.680 --> 01:13:05.380 align:middle line:84%
+But for language, I would just
+shift the input to the left
+
+01:13:05.380 --> 01:13:08.300 align:middle line:90%
+and do causal attention.
+
+01:13:08.300 --> 01:13:11.380 align:middle line:84%
+Last slide is going to
+be just showing now how
+
+01:13:11.380 --> 01:13:14.020 align:middle line:84%
+I can put together some language
+modeling and image modeling
+
+01:13:14.020 --> 01:13:16.440 align:middle line:90%
+to do more complicated things.
+
+01:13:16.440 --> 01:13:18.820 align:middle line:84%
+So here is a case
+where I will take
+
+01:13:18.820 --> 01:13:20.900 align:middle line:90%
+my input, which is an image.
+
+01:13:20.900 --> 01:13:23.540 align:middle line:84%
+I'll tokenize it by mapping
+each of these patches
+
+01:13:23.540 --> 01:13:25.600 align:middle line:90%
+into token vectors.
+
+01:13:25.600 --> 01:13:28.200 align:middle line:84%
+I'll do self-attention and some
+computer vision stuff here,
+
+01:13:28.200 --> 01:13:31.035 align:middle line:84%
+but it's all generic
+processing of tokens now.
+
+01:13:31.035 --> 01:13:33.160 align:middle line:84%
+And then I'll do this thing
+called cross-attention.
+
+01:13:33.160 --> 01:13:36.920 align:middle line:84%
+So now I'm going to try to be
+describing this image in text.
+
+01:13:36.920 --> 01:13:39.160 align:middle line:84%
+The task is to take an
+image and turn it into text.
+
+01:13:39.160 --> 01:13:40.820 align:middle line:90%
+Write a caption for the image.
+
+01:13:40.820 --> 01:13:43.740 align:middle line:90%
+So I'll take this as input.
+
+01:13:43.740 --> 01:13:45.860 align:middle line:84%
+And then I will
+autoregressively start
+
+01:13:45.860 --> 01:13:49.260 align:middle line:84%
+writing a sentence where every
+next step in my prediction
+
+01:13:49.260 --> 01:13:52.140 align:middle line:84%
+problem will be
+capable of attending
+
+01:13:52.140 --> 01:13:54.460 align:middle line:84%
+to the previous
+words in my sentence,
+
+01:13:54.460 --> 01:13:58.260 align:middle line:84%
+and additionally all of the
+representations of the image
+
+01:13:58.260 --> 01:13:59.118 align:middle line:90%
+tokens.
+
+01:13:59.118 --> 01:14:00.660 align:middle line:84%
+And cross-attention
+is just referring
+
+01:14:00.660 --> 01:14:06.060 align:middle line:84%
+to when you are having
+these tokens attend
+
+01:14:06.060 --> 01:14:08.275 align:middle line:84%
+to these tokens, which
+are not themselves.
+
+01:14:08.275 --> 01:14:09.900 align:middle line:84%
+They're like a
+different set of tokens.
+
+01:14:09.900 --> 01:14:11.540 align:middle line:84%
+So you can have
+all different types
+
+01:14:11.540 --> 01:14:13.780 align:middle line:90%
+of attention-masking strategies.
+
+01:14:13.780 --> 01:14:17.580 align:middle line:84%
+And this one is popular for
+image-to-text captioning.
+
+01:14:17.580 --> 01:14:22.060 align:middle line:84%
+We'll come back to generative
+models and autoregressive models
+
+01:14:22.060 --> 01:14:23.420 align:middle line:90%
+a little bit later.
+
+01:14:23.420 --> 01:14:25.890 align:middle line:90%
+And I'll end there for today.
+
+01:14:25.890 --> 01:14:35.000 align:middle line:90%

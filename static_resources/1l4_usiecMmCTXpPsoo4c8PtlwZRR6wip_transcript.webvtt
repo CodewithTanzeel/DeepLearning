@@ -1,0 +1,5916 @@
+WEBVTT
+
+00:00:00.000 --> 00:00:00.500 align:middle line:90%
+
+
+00:00:00.500 --> 00:00:02.464 align:middle line:90%
+[SQUEAKING]
+
+00:00:02.464 --> 00:00:03.937 align:middle line:90%
+[RUSTLING]
+
+00:00:03.937 --> 00:00:07.374 align:middle line:90%
+[CLICKING]
+
+00:00:07.374 --> 00:00:13.580 align:middle line:90%
+
+
+00:00:13.580 --> 00:00:15.000 align:middle line:84%
+SARA BEERY: So
+today, we're going
+
+00:00:15.000 --> 00:00:18.760 align:middle line:84%
+to be doing our last
+of this mini series
+
+00:00:18.760 --> 00:00:21.000 align:middle line:84%
+on machine learning
+architectures or deep learning
+
+00:00:21.000 --> 00:00:22.560 align:middle line:90%
+architectures.
+
+00:00:22.560 --> 00:00:26.320 align:middle line:84%
+So previously, we talked
+about CNNs, GNNs, things
+
+00:00:26.320 --> 00:00:27.420 align:middle line:90%
+like transformers.
+
+00:00:27.420 --> 00:00:29.800 align:middle line:84%
+And today, we're going
+to be introducing
+
+00:00:29.800 --> 00:00:33.300 align:middle line:84%
+the concepts of memory
+and sequence modeling.
+
+00:00:33.300 --> 00:00:36.440 align:middle line:84%
+And we have seen different
+types of ways to model sequences
+
+00:00:36.440 --> 00:00:36.980 align:middle line:90%
+in the past.
+
+00:00:36.980 --> 00:00:41.320 align:middle line:84%
+We talked about 3D CNNs that
+have time or transformers that
+
+00:00:41.320 --> 00:00:42.960 align:middle line:90%
+have a sense of time.
+
+00:00:42.960 --> 00:00:46.560 align:middle line:84%
+But today, we're going to be
+introducing a new class of types
+
+00:00:46.560 --> 00:00:50.760 align:middle line:84%
+of models that handle memory and
+sequences in a different way.
+
+00:00:50.760 --> 00:00:53.400 align:middle line:84%
+And this will be the first
+class of architectures
+
+00:00:53.400 --> 00:00:55.720 align:middle line:84%
+that we talk about
+that's actually,
+
+00:00:55.720 --> 00:00:57.800 align:middle line:90%
+quote, unquote, Turing complete.
+
+00:00:57.800 --> 00:01:00.580 align:middle line:84%
+So this is actually the
+most general framework
+
+00:01:00.580 --> 00:01:04.099 align:middle line:84%
+of the architectures that
+we're going to be introducing.
+
+00:01:04.099 --> 00:01:07.620 align:middle line:84%
+So we'll first
+motivate again why
+
+00:01:07.620 --> 00:01:10.780 align:middle line:84%
+we think we might want
+to model sequences, model
+
+00:01:10.780 --> 00:01:13.780 align:middle line:90%
+something like time or order.
+
+00:01:13.780 --> 00:01:17.900 align:middle line:84%
+And then we'll talk about how
+we might use CNNs for sequences.
+
+00:01:17.900 --> 00:01:20.260 align:middle line:84%
+We'll introduce the
+concept of an RNN,
+
+00:01:20.260 --> 00:01:22.460 align:middle line:90%
+or Recurrent Neural Network.
+
+00:01:22.460 --> 00:01:26.460 align:middle line:84%
+And then we'll go through an
+extension or a specific subset
+
+00:01:26.460 --> 00:01:28.600 align:middle line:90%
+of RNNs called LSTMs.
+
+00:01:28.600 --> 00:01:31.460 align:middle line:84%
+That stands for Long
+Short-Term Memory.
+
+00:01:31.460 --> 00:01:33.620 align:middle line:84%
+And these actually seek
+to specifically avoid
+
+00:01:33.620 --> 00:01:38.340 align:middle line:84%
+one of the common issues with
+RNNs, which is forgetting.
+
+00:01:38.340 --> 00:01:41.180 align:middle line:84%
+And then we'll introduce the
+idea of sequence modeling
+
+00:01:41.180 --> 00:01:43.780 align:middle line:84%
+and long memory and start
+talking about some things
+
+00:01:43.780 --> 00:01:45.580 align:middle line:90%
+like autoregression.
+
+00:01:45.580 --> 00:01:53.100 align:middle line:84%
+So if I look at this-- this is
+a single frame from a video--
+
+00:01:53.100 --> 00:01:55.660 align:middle line:84%
+there's a lot of things that
+computer vision can understand
+
+00:01:55.660 --> 00:01:58.360 align:middle line:90%
+from this frame alone.
+
+00:01:58.360 --> 00:02:02.200 align:middle line:84%
+So where for example--
+and our human brains kind
+
+00:02:02.200 --> 00:02:03.500 align:middle line:90%
+do the same thing.
+
+00:02:03.500 --> 00:02:05.960 align:middle line:84%
+So if you look at
+just this frame,
+
+00:02:05.960 --> 00:02:08.860 align:middle line:84%
+can anyone tell me what
+this is a picture of?
+
+00:02:08.860 --> 00:02:12.640 align:middle line:90%
+
+
+00:02:12.640 --> 00:02:14.245 align:middle line:90%
+Anything?
+
+00:02:14.245 --> 00:02:15.338 align:middle line:90%
+AUDIENCE: Kids playing.
+
+00:02:15.338 --> 00:02:16.380 align:middle line:90%
+SARA BEERY: Kids playing.
+
+00:02:16.380 --> 00:02:18.000 align:middle line:90%
+Yeah.
+
+00:02:18.000 --> 00:02:20.020 align:middle line:84%
+And maybe they're
+playing in a classroom.
+
+00:02:20.020 --> 00:02:22.020 align:middle line:84%
+So you can understand
+something about the scene.
+
+00:02:22.020 --> 00:02:24.907 align:middle line:84%
+This looks like maybe a
+kindergarten classroom.
+
+00:02:24.907 --> 00:02:27.240 align:middle line:84%
+We have computer vision models
+that can understand stuff
+
+00:02:27.240 --> 00:02:29.880 align:middle line:84%
+like objects that are seen
+in that single frame--
+
+00:02:29.880 --> 00:02:32.720 align:middle line:90%
+television, person, chair.
+
+00:02:32.720 --> 00:02:35.380 align:middle line:84%
+And we can start doing things
+like question answering,
+
+00:02:35.380 --> 00:02:38.100 align:middle line:84%
+talking about specific
+attributes of those objects.
+
+00:02:38.100 --> 00:02:39.800 align:middle line:90%
+What color is the chair?
+
+00:02:39.800 --> 00:02:41.990 align:middle line:90%
+That chair is red.
+
+00:02:41.990 --> 00:02:44.240 align:middle line:84%
+But so far, none of the
+things that we've talked about
+
+00:02:44.240 --> 00:02:47.620 align:middle line:84%
+have really explicitly tried
+to understand, for example,
+
+00:02:47.620 --> 00:02:49.880 align:middle line:84%
+relationships between
+things and how we
+
+00:02:49.880 --> 00:02:51.760 align:middle line:90%
+might predict into the future.
+
+00:02:51.760 --> 00:02:55.400 align:middle line:84%
+So for example, what
+will the girl do next?
+
+00:02:55.400 --> 00:02:58.390 align:middle line:84%
+That's something that
+from this given frame--
+
+00:02:58.390 --> 00:03:01.270 align:middle line:84%
+I don't know-- probably
+we have some ideas
+
+00:03:01.270 --> 00:03:04.830 align:middle line:84%
+about different possibilities,
+but we might not even know,
+
+00:03:04.830 --> 00:03:06.970 align:middle line:84%
+because we also rely
+on temporal signal.
+
+00:03:06.970 --> 00:03:10.230 align:middle line:84%
+We rely on context
+and information.
+
+00:03:10.230 --> 00:03:12.590 align:middle line:84%
+But if we watch
+this video, and we
+
+00:03:12.590 --> 00:03:15.230 align:middle line:84%
+get to the point
+of that frame, we
+
+00:03:15.230 --> 00:03:18.570 align:middle line:84%
+can guess what's
+going to happen.
+
+00:03:18.570 --> 00:03:21.550 align:middle line:90%
+[CHUCKLING]
+
+00:03:21.550 --> 00:03:24.910 align:middle line:84%
+So I don't know if
+any of you have ever
+
+00:03:24.910 --> 00:03:27.390 align:middle line:84%
+had this experience of
+a chair being pulled out
+
+00:03:27.390 --> 00:03:30.750 align:middle line:84%
+from underneath you, and it's
+incredibly disorienting when
+
+00:03:30.750 --> 00:03:34.150 align:middle line:84%
+something is not how
+you expect it might go.
+
+00:03:34.150 --> 00:03:36.750 align:middle line:84%
+But watching this video,
+there hits a point
+
+00:03:36.750 --> 00:03:38.910 align:middle line:84%
+in the video where we're
+pretty sure that the kind
+
+00:03:38.910 --> 00:03:41.410 align:middle line:84%
+of likely thing, which is that
+the girl sits in the chair,
+
+00:03:41.410 --> 00:03:43.850 align:middle line:84%
+is not going to happen because
+the guys moved the chair.
+
+00:03:43.850 --> 00:03:45.550 align:middle line:84%
+There's these
+complex relationships
+
+00:03:45.550 --> 00:03:48.110 align:middle line:90%
+between the actions.
+
+00:03:48.110 --> 00:03:50.150 align:middle line:84%
+And then things like
+predicting she's
+
+00:03:50.150 --> 00:03:54.070 align:middle line:84%
+going to fall, that she believes
+that the chair is there,
+
+00:03:54.070 --> 00:03:57.410 align:middle line:84%
+why she believes that the chair
+is there, whether you guys are
+
+00:03:57.410 --> 00:03:59.730 align:middle line:90%
+going to laugh at it.
+
+00:03:59.730 --> 00:04:04.850 align:middle line:84%
+And so all of this is really
+very complex and nuanced
+
+00:04:04.850 --> 00:04:07.970 align:middle line:84%
+understanding about the
+scenes, the objects, and things
+
+00:04:07.970 --> 00:04:10.850 align:middle line:84%
+like intent, which
+we could argue
+
+00:04:10.850 --> 00:04:13.010 align:middle line:84%
+about whether these
+machine learning models
+
+00:04:13.010 --> 00:04:15.730 align:middle line:84%
+that model sequences are
+really getting at understanding
+
+00:04:15.730 --> 00:04:17.290 align:middle line:90%
+things like human intent.
+
+00:04:17.290 --> 00:04:21.410 align:middle line:84%
+But they do start to try to
+get at this sense of what
+
+00:04:21.410 --> 00:04:23.890 align:middle line:90%
+is going to happen next.
+
+00:04:23.890 --> 00:04:26.590 align:middle line:84%
+So sequences can
+be a lot of things.
+
+00:04:26.590 --> 00:04:28.890 align:middle line:84%
+We talked previously
+when we introduced
+
+00:04:28.890 --> 00:04:34.450 align:middle line:84%
+CNNs about the idea of adding
+a temporal dimension to things
+
+00:04:34.450 --> 00:04:35.108 align:middle line:90%
+like images.
+
+00:04:35.108 --> 00:04:36.150 align:middle line:90%
+So now, you have a video.
+
+00:04:36.150 --> 00:04:41.830 align:middle line:84%
+This might be pictures from an
+Italian city square over time.
+
+00:04:41.830 --> 00:04:44.530 align:middle line:84%
+You can also think about
+sequences of language.
+
+00:04:44.530 --> 00:04:46.850 align:middle line:84%
+"An evening stroll
+through a city square"
+
+00:04:46.850 --> 00:04:49.170 align:middle line:90%
+is a sequence of words.
+
+00:04:49.170 --> 00:04:51.870 align:middle line:84%
+Or you could think about
+sequences of audio signal.
+
+00:04:51.870 --> 00:04:55.230 align:middle line:84%
+Me saying "an evening stroll
+through a city square"
+
+00:04:55.230 --> 00:04:57.950 align:middle line:90%
+is a sequence.
+
+00:04:57.950 --> 00:05:00.368 align:middle line:84%
+And looking back again
+at the architecture
+
+00:05:00.368 --> 00:05:01.910 align:middle line:84%
+that we've gotten
+very familiar with,
+
+00:05:01.910 --> 00:05:04.390 align:middle line:84%
+convolutional
+neural networks, we
+
+00:05:04.390 --> 00:05:07.750 align:middle line:84%
+can extend those into
+the space-time dimension
+
+00:05:07.750 --> 00:05:10.170 align:middle line:90%
+and make like a space-time cube.
+
+00:05:10.170 --> 00:05:12.990 align:middle line:84%
+And again, here, we're showing
+this in three dimensions
+
+00:05:12.990 --> 00:05:14.930 align:middle line:90%
+to be for simplicity.
+
+00:05:14.930 --> 00:05:17.312 align:middle line:84%
+But actually, it's
+really four dimensions.
+
+00:05:17.312 --> 00:05:19.270 align:middle line:84%
+We're extending this
+fourth temporal dimension,
+
+00:05:19.270 --> 00:05:22.670 align:middle line:84%
+because we have multiple inputs
+of red, green, and blue for each
+
+00:05:22.670 --> 00:05:24.623 align:middle line:90%
+of those dimensions.
+
+00:05:24.623 --> 00:05:26.790 align:middle line:84%
+And then time just becomes
+another spatial dimension
+
+00:05:26.790 --> 00:05:27.990 align:middle line:90%
+in that tensor.
+
+00:05:27.990 --> 00:05:31.150 align:middle line:84%
+So now, you have a 4D tensor
+instead of a 2D tensor.
+
+00:05:31.150 --> 00:05:34.630 align:middle line:84%
+And so now, when we're thinking
+about how we might actually
+
+00:05:34.630 --> 00:05:37.310 align:middle line:84%
+try to represent time,
+there's different ways
+
+00:05:37.310 --> 00:05:40.890 align:middle line:84%
+that we can think about
+capturing time within this cube.
+
+00:05:40.890 --> 00:05:44.750 align:middle line:84%
+And one interesting way that
+you can model temporal structure
+
+00:05:44.750 --> 00:05:47.030 align:middle line:84%
+can be something
+like taking a slice
+
+00:05:47.030 --> 00:05:48.870 align:middle line:90%
+through that space-time cube.
+
+00:05:48.870 --> 00:05:53.370 align:middle line:84%
+So this is what it looks like
+if you build this new image that
+
+00:05:53.370 --> 00:05:56.770 align:middle line:84%
+takes a single
+horizontal pixel slice
+
+00:05:56.770 --> 00:05:59.290 align:middle line:90%
+and then runs that through time.
+
+00:05:59.290 --> 00:06:00.990 align:middle line:90%
+So what are we looking at here?
+
+00:06:00.990 --> 00:06:03.810 align:middle line:84%
+What are these
+stripes likely to be?
+
+00:06:03.810 --> 00:06:05.370 align:middle line:90%
+AUDIENCE: People walking.
+
+00:06:05.370 --> 00:06:08.170 align:middle line:84%
+SARA BEERY: Yeah, people
+walking, and walking
+
+00:06:08.170 --> 00:06:09.930 align:middle line:84%
+at different angles
+to the camera
+
+00:06:09.930 --> 00:06:13.450 align:middle line:84%
+or with different trajectories
+or different speeds.
+
+00:06:13.450 --> 00:06:16.368 align:middle line:84%
+Or you could also think
+about taking a vertical slice
+
+00:06:16.368 --> 00:06:16.910 align:middle line:90%
+through time.
+
+00:06:16.910 --> 00:06:22.450 align:middle line:84%
+So now, this is showing, for
+a given position horizontally
+
+00:06:22.450 --> 00:06:25.370 align:middle line:84%
+or vertically in the frame, who
+is going through that position
+
+00:06:25.370 --> 00:06:26.070 align:middle line:90%
+first.
+
+00:06:26.070 --> 00:06:28.650 align:middle line:84%
+Interestingly, even from
+a very long time ago,
+
+00:06:28.650 --> 00:06:32.330 align:middle line:84%
+they started modeling images
+like this for the Olympics
+
+00:06:32.330 --> 00:06:35.530 align:middle line:84%
+when they were trying to figure
+out who was the first person
+
+00:06:35.530 --> 00:06:36.750 align:middle line:90%
+to go across the finish line.
+
+00:06:36.750 --> 00:06:38.250 align:middle line:84%
+If you take the
+finish line, and you
+
+00:06:38.250 --> 00:06:40.870 align:middle line:84%
+make that a single
+pixel element,
+
+00:06:40.870 --> 00:06:43.530 align:middle line:84%
+you can see exactly what
+pixel crosses first,
+
+00:06:43.530 --> 00:06:47.388 align:middle line:84%
+and that represents the
+person who won the race.
+
+00:06:47.388 --> 00:06:48.930 align:middle line:84%
+And so there's lots
+of different ways
+
+00:06:48.930 --> 00:06:51.538 align:middle line:84%
+you can think about
+representing or modeling time.
+
+00:06:51.538 --> 00:06:53.830 align:middle line:84%
+And then if you actually want
+to think about how you do
+
+00:06:53.830 --> 00:06:59.230 align:middle line:84%
+convolutions in time, if we take
+a very simple 1D perspective
+
+00:06:59.230 --> 00:07:02.030 align:middle line:84%
+of this-- so now, imagine we're
+just talking about this scalar
+
+00:07:02.030 --> 00:07:03.368 align:middle line:90%
+perspective.
+
+00:07:03.368 --> 00:07:04.910 align:middle line:84%
+Then, what you would
+do is you would,
+
+00:07:04.910 --> 00:07:07.430 align:middle line:84%
+similar to before,
+learn some weight
+
+00:07:07.430 --> 00:07:10.250 align:middle line:84%
+matrix over some given
+fixed time window.
+
+00:07:10.250 --> 00:07:14.550 align:middle line:84%
+So in this case, three
+elements in that sequence.
+
+00:07:14.550 --> 00:07:18.390 align:middle line:84%
+And then you can think of this
+as a sequence-to-sequence model.
+
+00:07:18.390 --> 00:07:20.950 align:middle line:84%
+So instead of before, where
+we took an image or something,
+
+00:07:20.950 --> 00:07:23.150 align:middle line:84%
+and we would run
+this across the image
+
+00:07:23.150 --> 00:07:25.470 align:middle line:84%
+in these different
+patches, and then
+
+00:07:25.470 --> 00:07:28.190 align:middle line:84%
+you were constrained by
+the structure of the image,
+
+00:07:28.190 --> 00:07:31.450 align:middle line:84%
+here actually, now, you
+can run this in time.
+
+00:07:31.450 --> 00:07:35.350 align:middle line:84%
+So now, you're taking input from
+these three different positions
+
+00:07:35.350 --> 00:07:38.330 align:middle line:84%
+in the sequence, and you're
+generating an output position.
+
+00:07:38.330 --> 00:07:42.430 align:middle line:84%
+Now, you could slide that, and
+you could slide it arbitrarily
+
+00:07:42.430 --> 00:07:43.430 align:middle line:90%
+long.
+
+00:07:43.430 --> 00:07:46.310 align:middle line:84%
+You can take any
+arbitrary length sequence
+
+00:07:46.310 --> 00:07:49.230 align:middle line:84%
+and you can generate an
+arbitrary length sequence.
+
+00:07:49.230 --> 00:07:52.160 align:middle line:84%
+So these convolutions in
+time, they're not constrained.
+
+00:07:52.160 --> 00:07:54.660 align:middle line:84%
+I mean, they're only constrained
+by the length of your input
+
+00:07:54.660 --> 00:07:55.200 align:middle line:90%
+sequence.
+
+00:07:55.200 --> 00:07:57.380 align:middle line:84%
+And you can imagine that
+if you had something
+
+00:07:57.380 --> 00:08:00.380 align:middle line:84%
+like a static camera that was
+taking video of this classroom
+
+00:08:00.380 --> 00:08:02.380 align:middle line:84%
+continuously, that
+you could just
+
+00:08:02.380 --> 00:08:04.520 align:middle line:84%
+keep running these
+convolutions in time,
+
+00:08:04.520 --> 00:08:06.140 align:middle line:84%
+and there wouldn't
+necessarily be
+
+00:08:06.140 --> 00:08:08.460 align:middle line:84%
+a point where you needed
+to stop or were constrained
+
+00:08:08.460 --> 00:08:11.700 align:middle line:90%
+by the architecture itself.
+
+00:08:11.700 --> 00:08:15.860 align:middle line:84%
+Now, if you consider something
+like more dimensions,
+
+00:08:15.860 --> 00:08:20.860 align:middle line:84%
+things like these RGB videos or
+add even additional dimensions
+
+00:08:20.860 --> 00:08:24.020 align:middle line:84%
+in that RGB channel, something
+like MRI that captures 3D
+
+00:08:24.020 --> 00:08:27.260 align:middle line:84%
+volumes over time, or
+hyperspectral satellite images
+
+00:08:27.260 --> 00:08:33.140 align:middle line:84%
+that can have something
+like 384 different bands,
+
+00:08:33.140 --> 00:08:35.679 align:middle line:84%
+you can continue to think
+about these convolutions,
+
+00:08:35.679 --> 00:08:38.820 align:middle line:84%
+but now where time is
+potentially this infinitely long
+
+00:08:38.820 --> 00:08:41.419 align:middle line:90%
+dimension.
+
+00:08:41.419 --> 00:08:47.380 align:middle line:84%
+And if you're doing this,
+then what we discover both
+
+00:08:47.380 --> 00:08:50.400 align:middle line:84%
+empirically-- and also it kind
+of makes sense intuitively--
+
+00:08:50.400 --> 00:08:55.560 align:middle line:84%
+is that as that time sequence
+becomes arbitrarily long,
+
+00:08:55.560 --> 00:08:57.360 align:middle line:84%
+it's hard for our
+memories of what
+
+00:08:57.360 --> 00:09:00.600 align:middle line:84%
+happened at the beginning
+of the sequence to persist.
+
+00:09:00.600 --> 00:09:05.040 align:middle line:84%
+And one of the reasons for this
+with a convolutional approach
+
+00:09:05.040 --> 00:09:07.300 align:middle line:90%
+is the following.
+
+00:09:07.300 --> 00:09:12.640 align:middle line:84%
+So here, say we have our
+temporal convolution,
+
+00:09:12.640 --> 00:09:14.420 align:middle line:90%
+and it's taking in some input.
+
+00:09:14.420 --> 00:09:16.540 align:middle line:84%
+We're showing the
+scalar version,
+
+00:09:16.540 --> 00:09:20.200 align:middle line:84%
+but for the sake
+of intuition, this
+
+00:09:20.200 --> 00:09:23.600 align:middle line:84%
+is a picture of
+my cat Frank, who
+
+00:09:23.600 --> 00:09:26.120 align:middle line:90%
+is the cutest cat in the world.
+
+00:09:26.120 --> 00:09:30.560 align:middle line:84%
+And so say I'm walking around
+my house taking a video.
+
+00:09:30.560 --> 00:09:32.740 align:middle line:84%
+And I start at
+this point in time.
+
+00:09:32.740 --> 00:09:34.400 align:middle line:90%
+And then I go forward.
+
+00:09:34.400 --> 00:09:37.592 align:middle line:84%
+And now, in the
+future, I have again--
+
+00:09:37.592 --> 00:09:39.800 align:middle line:84%
+remember, because it's
+convolution-- that same weight
+
+00:09:39.800 --> 00:09:40.800 align:middle line:90%
+matrix.
+
+00:09:40.800 --> 00:09:43.920 align:middle line:84%
+And now, I want to
+understand what's in here.
+
+00:09:43.920 --> 00:09:46.120 align:middle line:84%
+But the thing is I
+don't really have,
+
+00:09:46.120 --> 00:09:49.420 align:middle line:84%
+from this fixed time
+window, any inputs
+
+00:09:49.420 --> 00:09:50.760 align:middle line:90%
+coming from the beginning.
+
+00:09:50.760 --> 00:09:53.520 align:middle line:84%
+I've only got the window
+that I can look at.
+
+00:09:53.520 --> 00:09:55.980 align:middle line:84%
+And so, based on the
+information I have--
+
+00:09:55.980 --> 00:09:59.180 align:middle line:84%
+well, maybe I look
+at this and I predict
+
+00:09:59.180 --> 00:10:02.380 align:middle line:84%
+tiger, because it's
+orange and it's outside,
+
+00:10:02.380 --> 00:10:05.980 align:middle line:90%
+and cats are usually indoors.
+
+00:10:05.980 --> 00:10:10.180 align:middle line:84%
+So the idea of
+something like memory
+
+00:10:10.180 --> 00:10:14.900 align:middle line:84%
+or trying to extend what we
+forget, move beyond these fixed
+
+00:10:14.900 --> 00:10:15.980 align:middle line:90%
+time windows--
+
+00:10:15.980 --> 00:10:18.880 align:middle line:84%
+is to try to capture
+that context,
+
+00:10:18.880 --> 00:10:20.800 align:middle line:84%
+be able to remember what
+you saw in the past.
+
+00:10:20.800 --> 00:10:23.300 align:middle line:84%
+So here then, maybe you'd
+have some memory unit,
+
+00:10:23.300 --> 00:10:25.240 align:middle line:84%
+and that would actually
+give you some context,
+
+00:10:25.240 --> 00:10:26.860 align:middle line:90%
+give you some information.
+
+00:10:26.860 --> 00:10:28.655 align:middle line:84%
+Since I'm walking
+around my house,
+
+00:10:28.655 --> 00:10:30.280 align:middle line:84%
+it's unlikely I'm
+going to see a tiger.
+
+00:10:30.280 --> 00:10:34.940 align:middle line:84%
+But I did see Frank before,
+so it's maybe still Frank.
+
+00:10:34.940 --> 00:10:38.460 align:middle line:84%
+And so this type
+of identification
+
+00:10:38.460 --> 00:10:39.980 align:middle line:84%
+with the context
+of what you've seen
+
+00:10:39.980 --> 00:10:43.900 align:middle line:84%
+in the past from the same,
+for example, sequence
+
+00:10:43.900 --> 00:10:46.580 align:middle line:84%
+is really the intuition
+or the motivation
+
+00:10:46.580 --> 00:10:48.280 align:middle line:84%
+behind the
+development of what we
+
+00:10:48.280 --> 00:10:51.520 align:middle line:84%
+call recurrent neural
+networks, so these RNNs.
+
+00:10:51.520 --> 00:10:55.280 align:middle line:84%
+So transformers, CNNs,
+everything so far
+
+00:10:55.280 --> 00:10:58.180 align:middle line:84%
+mostly had of fixed
+window in time.
+
+00:10:58.180 --> 00:11:01.320 align:middle line:84%
+There was transformers
+these days--
+
+00:11:01.320 --> 00:11:04.320 align:middle line:84%
+we can talk about that context
+window is getting very, very
+
+00:11:04.320 --> 00:11:07.320 align:middle line:90%
+large, but it's still fixed.
+
+00:11:07.320 --> 00:11:11.383 align:middle line:84%
+But a recurrent neural
+network makes that infinite.
+
+00:11:11.383 --> 00:11:12.800 align:middle line:84%
+And the way that
+it does it is you
+
+00:11:12.800 --> 00:11:16.800 align:middle line:84%
+introduce the idea
+of a hidden unit.
+
+00:11:16.800 --> 00:11:20.560 align:middle line:84%
+So now, you have-- for
+example, from this convolution
+
+00:11:20.560 --> 00:11:23.060 align:middle line:84%
+you send-- you run your model
+through the convolution.
+
+00:11:23.060 --> 00:11:25.000 align:middle line:90%
+You get some value.
+
+00:11:25.000 --> 00:11:30.360 align:middle line:84%
+And then you learn a way to take
+that value, that hidden unit,
+
+00:11:30.360 --> 00:11:32.280 align:middle line:90%
+and predict the output.
+
+00:11:32.280 --> 00:11:34.240 align:middle line:84%
+But you also take
+that hidden unit,
+
+00:11:34.240 --> 00:11:37.440 align:middle line:84%
+and you send it forward in
+time to the next time step.
+
+00:11:37.440 --> 00:11:41.040 align:middle line:84%
+So here, now, as you're
+convolving through time,
+
+00:11:41.040 --> 00:11:44.360 align:middle line:84%
+you're actually taking in
+both that new temporal input
+
+00:11:44.360 --> 00:11:46.730 align:middle line:90%
+and your memory from the past.
+
+00:11:46.730 --> 00:11:49.590 align:middle line:90%
+
+
+00:11:49.590 --> 00:11:52.070 align:middle line:84%
+So here, if we want to look
+at this in a little bit
+
+00:11:52.070 --> 00:11:54.870 align:middle line:84%
+more detail, again, just
+thinking of everything as
+
+00:11:54.870 --> 00:11:58.990 align:middle line:84%
+scalars just because it's really
+easy to visualize this way.
+
+00:11:58.990 --> 00:12:02.137 align:middle line:84%
+So a version of a scalar
+temporal prediction problem
+
+00:12:02.137 --> 00:12:04.470 align:middle line:84%
+might be something like
+predicting temperature in Boston
+
+00:12:04.470 --> 00:12:06.350 align:middle line:90%
+tomorrow.
+
+00:12:06.350 --> 00:12:09.950 align:middle line:84%
+So here, now, what
+you're doing is
+
+00:12:09.950 --> 00:12:13.250 align:middle line:84%
+you're representing time as
+some of discrete sequence,
+
+00:12:13.250 --> 00:12:16.870 align:middle line:84%
+though you can apply these
+to continual sequences.
+
+00:12:16.870 --> 00:12:19.110 align:middle line:84%
+And the next hidden
+state-- so now,
+
+00:12:19.110 --> 00:12:21.670 align:middle line:84%
+we have our inputs
+running through some model
+
+00:12:21.670 --> 00:12:23.150 align:middle line:90%
+to get some hidden state.
+
+00:12:23.150 --> 00:12:25.070 align:middle line:84%
+And then we send this
+output, and we also
+
+00:12:25.070 --> 00:12:27.910 align:middle line:84%
+send that hidden state
+one time step forward.
+
+00:12:27.910 --> 00:12:31.390 align:middle line:84%
+So here, it's as you're kind
+of running this through,
+
+00:12:31.390 --> 00:12:36.470 align:middle line:84%
+what we do is we say your next
+hidden state is represented
+
+00:12:36.470 --> 00:12:38.910 align:middle line:84%
+by some function
+f that will depend
+
+00:12:38.910 --> 00:12:42.550 align:middle line:84%
+on the previous hidden
+state and the current input.
+
+00:12:42.550 --> 00:12:46.090 align:middle line:84%
+And then that f, that function,
+that's shared over time.
+
+00:12:46.090 --> 00:12:50.430 align:middle line:84%
+So that function is,
+again, fixed over time.
+
+00:12:50.430 --> 00:12:54.030 align:middle line:84%
+The way that we push information
+forward is fixed over time,
+
+00:12:54.030 --> 00:12:56.530 align:middle line:84%
+and that's something
+that gets learned.
+
+00:12:56.530 --> 00:12:59.610 align:middle line:84%
+And it's independent of
+time what that function is.
+
+00:12:59.610 --> 00:13:04.250 align:middle line:84%
+And then similarly, we'll have
+learned some function g that
+
+00:13:04.250 --> 00:13:07.450 align:middle line:84%
+will map from our hidden
+state to our output prediction
+
+00:13:07.450 --> 00:13:09.210 align:middle line:90%
+for any given time step.
+
+00:13:09.210 --> 00:13:12.010 align:middle line:84%
+And that's also going
+to be shared over time.
+
+00:13:12.010 --> 00:13:18.290 align:middle line:84%
+And so here, you'll note that
+this is the first time we're not
+
+00:13:18.290 --> 00:13:19.670 align:middle line:90%
+seeing a DAG.
+
+00:13:19.670 --> 00:13:22.310 align:middle line:84%
+This is not a Directed
+Acyclic Graph.
+
+00:13:22.310 --> 00:13:22.990 align:middle line:90%
+We have a loop.
+
+00:13:22.990 --> 00:13:24.090 align:middle line:90%
+We have a cycle.
+
+00:13:24.090 --> 00:13:27.090 align:middle line:84%
+Because you're going from that
+hidden state to the hidden state
+
+00:13:27.090 --> 00:13:29.010 align:middle line:90%
+again.
+
+00:13:29.010 --> 00:13:30.030 align:middle line:90%
+And that's recurrent.
+
+00:13:30.030 --> 00:13:33.730 align:middle line:84%
+And so you can write
+this recurrent function
+
+00:13:33.730 --> 00:13:35.610 align:middle line:84%
+for what your hidden
+state will be,
+
+00:13:35.610 --> 00:13:37.770 align:middle line:84%
+that some function of
+your previous hidden state
+
+00:13:37.770 --> 00:13:40.370 align:middle line:90%
+and your current input beta.
+
+00:13:40.370 --> 00:13:42.570 align:middle line:84%
+And then again your
+output function
+
+00:13:42.570 --> 00:13:47.750 align:middle line:84%
+is going to be g mapped
+from your hidden state.
+
+00:13:47.750 --> 00:13:50.430 align:middle line:84%
+I think it's a little
+easier to interpret
+
+00:13:50.430 --> 00:13:52.670 align:middle line:84%
+when you think about the
+computation being unrolled,
+
+00:13:52.670 --> 00:13:56.190 align:middle line:84%
+because then, actually,
+for any given time point,
+
+00:13:56.190 --> 00:13:58.330 align:middle line:90%
+it's still a directed graph.
+
+00:13:58.330 --> 00:14:01.590 align:middle line:84%
+It's just that you have
+this recurrence loop.
+
+00:14:01.590 --> 00:14:05.962 align:middle line:84%
+So again, this is the
+simplest version of this.
+
+00:14:05.962 --> 00:14:07.670 align:middle line:84%
+So now, you assume
+all of those functions
+
+00:14:07.670 --> 00:14:09.310 align:middle line:84%
+are linear layers,
+which we're very
+
+00:14:09.310 --> 00:14:10.950 align:middle line:90%
+familiar with at this point.
+
+00:14:10.950 --> 00:14:12.670 align:middle line:84%
+So now, what you're
+learning is you're
+
+00:14:12.670 --> 00:14:19.008 align:middle line:84%
+learning u, which is mapping
+your input to the next point.
+
+00:14:19.008 --> 00:14:20.550 align:middle line:84%
+You're learning some
+v that's mapping
+
+00:14:20.550 --> 00:14:24.700 align:middle line:84%
+your previous hidden state in
+as well, and you combine them.
+
+00:14:24.700 --> 00:14:26.950 align:middle line:84%
+And then you're learning v
+that maps your hidden state
+
+00:14:26.950 --> 00:14:29.710 align:middle line:90%
+to the output.
+
+00:14:29.710 --> 00:14:33.210 align:middle line:84%
+And so now, here, you have
+something like this right.
+
+00:14:33.210 --> 00:14:37.070 align:middle line:84%
+You'll have some non-linearities
+in there in the simplest form.
+
+00:14:37.070 --> 00:14:40.670 align:middle line:84%
+So your new hidden state is
+just non-linearity applied
+
+00:14:40.670 --> 00:14:44.130 align:middle line:84%
+on top of w times the
+previous hidden state,
+
+00:14:44.130 --> 00:14:46.770 align:middle line:84%
+plus u times your input
+data at the current time
+
+00:14:46.770 --> 00:14:49.290 align:middle line:90%
+point, plus some bias term.
+
+00:14:49.290 --> 00:14:51.410 align:middle line:84%
+And then similarly,
+the output again
+
+00:14:51.410 --> 00:14:56.570 align:middle line:84%
+is some other
+nonlinearity times V
+
+00:14:56.570 --> 00:14:59.850 align:middle line:84%
+plus the current hidden state
+plus a different bias term.
+
+00:14:59.850 --> 00:15:07.170 align:middle line:84%
+So if I got rid of W here,
+what would this be called--
+
+00:15:07.170 --> 00:15:09.670 align:middle line:84%
+if I got rid of the kind
+of recurrence dimension,
+
+00:15:09.670 --> 00:15:13.090 align:middle line:84%
+if we were just looking at
+that mapping between the input
+
+00:15:13.090 --> 00:15:13.950 align:middle line:90%
+and the output?
+
+00:15:13.950 --> 00:15:19.370 align:middle line:90%
+
+
+00:15:19.370 --> 00:15:22.350 align:middle line:84%
+I mean, since it's scalars,
+it's a little silly.
+
+00:15:22.350 --> 00:15:24.510 align:middle line:84%
+I mean, it's like a
+one-dimensional convolution.
+
+00:15:24.510 --> 00:15:26.470 align:middle line:84%
+But imagine if you extend
+these beyond scalars.
+
+00:15:26.470 --> 00:15:28.890 align:middle line:84%
+It starts looking a little bit
+like that multi-layer perceptron
+
+00:15:28.890 --> 00:15:30.230 align:middle line:90%
+that we're very familiar with.
+
+00:15:30.230 --> 00:15:33.890 align:middle line:84%
+So the only difference
+here is that recurrence
+
+00:15:33.890 --> 00:15:37.530 align:middle line:84%
+that's actually sending this
+information forward over time.
+
+00:15:37.530 --> 00:15:39.190 align:middle line:84%
+And really, I think,
+the point here
+
+00:15:39.190 --> 00:15:40.690 align:middle line:84%
+is that the hidden
+state is intended
+
+00:15:40.690 --> 00:15:45.950 align:middle line:84%
+to capture the most relevant
+historical information.
+
+00:15:45.950 --> 00:15:50.550 align:middle line:84%
+And what we're
+learning in W is how
+
+00:15:50.550 --> 00:15:53.350 align:middle line:84%
+do we actually understand
+what is relevant?
+
+00:15:53.350 --> 00:15:56.070 align:middle line:90%
+What do we need to keep?
+
+00:15:56.070 --> 00:15:58.670 align:middle line:84%
+And of course, this can
+be extended to be deep.
+
+00:15:58.670 --> 00:16:01.090 align:middle line:84%
+You don't need to only
+have a single hidden state.
+
+00:16:01.090 --> 00:16:03.930 align:middle line:84%
+You can actually stack a bunch
+of these on top of each other--
+
+00:16:03.930 --> 00:16:08.550 align:middle line:84%
+have many, many different
+hidden states, hidden layers.
+
+00:16:08.550 --> 00:16:12.210 align:middle line:84%
+And then, now, these could
+be any dimensional tensor.
+
+00:16:12.210 --> 00:16:14.653 align:middle line:84%
+And there are many,
+many, many works
+
+00:16:14.653 --> 00:16:16.070 align:middle line:84%
+that have looked
+at different ways
+
+00:16:16.070 --> 00:16:19.910 align:middle line:84%
+to structure these deep
+recurrent neural networks.
+
+00:16:19.910 --> 00:16:22.310 align:middle line:84%
+But how do we do backprop
+if we don't have a DAG?
+
+00:16:22.310 --> 00:16:24.616 align:middle line:90%
+Oh, yeah?
+
+00:16:24.616 --> 00:16:28.950 align:middle line:84%
+AUDIENCE: So the recurrence
+step-- how many time
+
+00:16:28.950 --> 00:16:29.830 align:middle line:90%
+steps do you have?
+
+00:16:29.830 --> 00:16:32.670 align:middle line:84%
+So you're unrolling it, but
+how do you know when to stop?
+
+00:16:32.670 --> 00:16:34.350 align:middle line:84%
+SARA BEERY: To
+infinity and beyond.
+
+00:16:34.350 --> 00:16:35.510 align:middle line:90%
+AUDIENCE: Yeah.
+
+00:16:35.510 --> 00:16:37.130 align:middle line:90%
+Is it a hyperparameter?
+
+00:16:37.130 --> 00:16:39.580 align:middle line:84%
+Is it something that gets
+learned in the network
+
+00:16:39.580 --> 00:16:43.010 align:middle line:84%
+to see what's the
+optimal number of these--
+
+00:16:43.010 --> 00:16:44.760 align:middle line:84%
+SARA BEERY: So the way
+this is structured,
+
+00:16:44.760 --> 00:16:46.900 align:middle line:90%
+it doesn't have a sense of stop.
+
+00:16:46.900 --> 00:16:49.680 align:middle line:84%
+I mean, it'll just stop
+when you stop doing it.
+
+00:16:49.680 --> 00:16:51.432 align:middle line:84%
+Like, when you stop
+putting in input data,
+
+00:16:51.432 --> 00:16:52.640 align:middle line:90%
+I guess that's when it stops.
+
+00:16:52.640 --> 00:16:54.420 align:middle line:84%
+But there isn't a
+sense in this model
+
+00:16:54.420 --> 00:16:57.580 align:middle line:84%
+necessarily, as it's
+structured, that has an end.
+
+00:16:57.580 --> 00:16:59.940 align:middle line:84%
+Because you have
+that weight that's
+
+00:16:59.940 --> 00:17:03.360 align:middle line:84%
+passing the previous hidden
+unit into the next one.
+
+00:17:03.360 --> 00:17:06.319 align:middle line:84%
+So if you don't give it a next
+step, I guess that's the end.
+
+00:17:06.319 --> 00:17:09.140 align:middle line:84%
+But it doesn't know
+what's stopping it.
+
+00:17:09.140 --> 00:17:12.619 align:middle line:84%
+AUDIENCE: In practice, are you--
+is your input like a sequence,
+
+00:17:12.619 --> 00:17:16.460 align:middle line:84%
+or are you feeding
+it in one-by-one?
+
+00:17:16.460 --> 00:17:19.300 align:middle line:84%
+SARA BEERY: I mean, it
+depends on the problem.
+
+00:17:19.300 --> 00:17:22.980 align:middle line:84%
+I mean, if you're using
+these types of RNNs
+
+00:17:22.980 --> 00:17:27.200 align:middle line:84%
+to do something like model
+video or model audio clips,
+
+00:17:27.200 --> 00:17:28.540 align:middle line:90%
+they probably have an end.
+
+00:17:28.540 --> 00:17:31.260 align:middle line:84%
+So you just stop running
+them when you get to the end.
+
+00:17:31.260 --> 00:17:34.640 align:middle line:84%
+But you could also think
+of it in a continual way,
+
+00:17:34.640 --> 00:17:37.582 align:middle line:84%
+like maybe you're continuing to
+get temperature data every day,
+
+00:17:37.582 --> 00:17:39.540 align:middle line:84%
+and every day you predict
+the next temperature,
+
+00:17:39.540 --> 00:17:42.180 align:middle line:84%
+and that's going to go
+until the world ends.
+
+00:17:42.180 --> 00:17:45.145 align:middle line:90%
+
+
+00:17:45.145 --> 00:17:46.020 align:middle line:90%
+Does that make sense?
+
+00:17:46.020 --> 00:17:46.540 align:middle line:90%
+Yeah?
+
+00:17:46.540 --> 00:17:48.040 align:middle line:84%
+AUDIENCE: How does
+this architecture
+
+00:17:48.040 --> 00:17:50.240 align:middle line:84%
+capture the infinite
+life of the memory?
+
+00:17:50.240 --> 00:17:53.520 align:middle line:84%
+Because in a way, it
+seems like a Markov chain.
+
+00:17:53.520 --> 00:17:56.240 align:middle line:84%
+It only depends on
+the previous state.
+
+00:17:56.240 --> 00:17:59.040 align:middle line:84%
+SARA BEERY: So the question
+was, how does this architecture
+
+00:17:59.040 --> 00:18:02.420 align:middle line:84%
+capture memory throughout that
+very long infinite length,
+
+00:18:02.420 --> 00:18:05.240 align:middle line:84%
+because that hidden state only
+depends on the previous state?
+
+00:18:05.240 --> 00:18:06.680 align:middle line:90%
+So it's recurrent.
+
+00:18:06.680 --> 00:18:09.085 align:middle line:84%
+So this state only depends
+on the previous state.
+
+00:18:09.085 --> 00:18:11.460 align:middle line:84%
+But the previous state depended
+on the state before that.
+
+00:18:11.460 --> 00:18:13.835 align:middle line:84%
+And the previous state depended
+on the state before that.
+
+00:18:13.835 --> 00:18:17.320 align:middle line:84%
+So you are capturing in
+every single hidden unit
+
+00:18:17.320 --> 00:18:19.240 align:middle line:90%
+as far back as you have.
+
+00:18:19.240 --> 00:18:22.360 align:middle line:84%
+But we'll talk about how even
+though that's theoretically
+
+00:18:22.360 --> 00:18:24.640 align:middle line:84%
+true, that this
+construction actually
+
+00:18:24.640 --> 00:18:28.360 align:middle line:84%
+makes it really difficult to
+learn things across very, very
+
+00:18:28.360 --> 00:18:33.840 align:middle line:84%
+long time horizons, mostly
+because you have some limited
+
+00:18:33.840 --> 00:18:34.647 align:middle line:90%
+capacity there.
+
+00:18:34.647 --> 00:18:36.480 align:middle line:84%
+And then we'll also
+talk about actually some
+
+00:18:36.480 --> 00:18:39.320 align:middle line:84%
+of the mathematical limitations
+of this formulation.
+
+00:18:39.320 --> 00:18:42.000 align:middle line:90%
+But yes, great question.
+
+00:18:42.000 --> 00:18:42.500 align:middle line:90%
+Cool.
+
+00:18:42.500 --> 00:18:44.460 align:middle line:84%
+So how do you do
+backprop if we have
+
+00:18:44.460 --> 00:18:47.340 align:middle line:90%
+a DAG-- if we don't have a DAG?
+
+00:18:47.340 --> 00:18:49.860 align:middle line:84%
+So the simple, practical
+thing-- historically,
+
+00:18:49.860 --> 00:18:52.260 align:middle line:84%
+this was something that
+really tripped people up.
+
+00:18:52.260 --> 00:18:54.620 align:middle line:84%
+Backprop is intended for
+feedforward networks,
+
+00:18:54.620 --> 00:18:57.020 align:middle line:90%
+and now we have loops.
+
+00:18:57.020 --> 00:19:00.260 align:middle line:84%
+But the hack is you
+just decide when
+
+00:19:00.260 --> 00:19:03.860 align:middle line:84%
+you're training what your fixed
+time window that you're going
+
+00:19:03.860 --> 00:19:06.580 align:middle line:90%
+to propagate back through is.
+
+00:19:06.580 --> 00:19:11.220 align:middle line:84%
+And now, you unroll it
+through that time window.
+
+00:19:11.220 --> 00:19:13.775 align:middle line:90%
+So you'd say, guess what?
+
+00:19:13.775 --> 00:19:15.400 align:middle line:84%
+My time window is
+going to be this far.
+
+00:19:15.400 --> 00:19:18.700 align:middle line:84%
+I'm going to go
+from V back to x0.
+
+00:19:18.700 --> 00:19:20.823 align:middle line:84%
+And then, now,
+you've unrolled it.
+
+00:19:20.823 --> 00:19:22.740 align:middle line:84%
+And of course, you have
+some shared parameters
+
+00:19:22.740 --> 00:19:24.260 align:middle line:84%
+in that network,
+but it's actually
+
+00:19:24.260 --> 00:19:28.220 align:middle line:84%
+now, again, a directed
+acyclic graph, because we're
+
+00:19:28.220 --> 00:19:29.780 align:middle line:84%
+stopping the point
+where you're going
+
+00:19:29.780 --> 00:19:31.980 align:middle line:90%
+to keep going back forever.
+
+00:19:31.980 --> 00:19:34.620 align:middle line:84%
+And so here, you can
+actually just-- again,
+
+00:19:34.620 --> 00:19:36.480 align:middle line:84%
+if you're going to
+try to calculate
+
+00:19:36.480 --> 00:19:44.760 align:middle line:84%
+the influence on that output, d
+of xout with respect to d of xin
+
+00:19:44.760 --> 00:19:48.600 align:middle line:84%
+over from 0 to time
+t, you can do that
+
+00:19:48.600 --> 00:19:54.080 align:middle line:84%
+by just sending now through
+this directed acyclic graph back
+
+00:19:54.080 --> 00:19:57.880 align:middle line:84%
+to that zeroth element
+just by unrolling
+
+00:19:57.880 --> 00:20:00.480 align:middle line:90%
+as far as you want to unroll.
+
+00:20:00.480 --> 00:20:03.660 align:middle line:84%
+And that's a parameter that
+you would select or tune.
+
+00:20:03.660 --> 00:20:08.520 align:middle line:84%
+How far are you going to
+send your backpropagation?
+
+00:20:08.520 --> 00:20:10.440 align:middle line:84%
+And then once
+you've unrolled it,
+
+00:20:10.440 --> 00:20:12.320 align:middle line:84%
+and you've kind of
+decided on this fixed time
+
+00:20:12.320 --> 00:20:14.280 align:middle line:84%
+window during training,
+then you can just
+
+00:20:14.280 --> 00:20:16.240 align:middle line:90%
+use the same chain rule.
+
+00:20:16.240 --> 00:20:19.760 align:middle line:84%
+And you can calculate what
+that gradient is going to be.
+
+00:20:19.760 --> 00:20:21.200 align:middle line:84%
+And the interesting
+thing here is
+
+00:20:21.200 --> 00:20:24.800 align:middle line:84%
+it does limit maybe how
+well we might learn things
+
+00:20:24.800 --> 00:20:27.960 align:middle line:84%
+further back in time
+because, of course,
+
+00:20:27.960 --> 00:20:30.618 align:middle line:84%
+the information is
+still available.
+
+00:20:30.618 --> 00:20:32.160 align:middle line:84%
+At inference time,
+you're still going
+
+00:20:32.160 --> 00:20:34.160 align:middle line:84%
+to have that previous
+information getting passed
+
+00:20:34.160 --> 00:20:35.600 align:middle line:90%
+through or getting encoded.
+
+00:20:35.600 --> 00:20:38.340 align:middle line:84%
+But if you only trained the
+model to send signal back
+
+00:20:38.340 --> 00:20:41.100 align:middle line:84%
+to a given fixed
+time window, you
+
+00:20:41.100 --> 00:20:43.060 align:middle line:84%
+could see how
+intuitively it might
+
+00:20:43.060 --> 00:20:48.340 align:middle line:84%
+teach you to only
+capture some of limited
+
+00:20:48.340 --> 00:20:50.580 align:middle line:90%
+temporal window of information.
+
+00:20:50.580 --> 00:20:56.300 align:middle line:84%
+Now, in practice, there's
+also other complexities
+
+00:20:56.300 --> 00:20:59.760 align:middle line:84%
+as we increase that time window
+in terms of what that means.
+
+00:20:59.760 --> 00:21:00.260 align:middle line:90%
+Yeah?
+
+00:21:00.260 --> 00:21:03.340 align:middle line:84%
+AUDIENCE: [INAUDIBLE] increase
+the time window, is it then
+
+00:21:03.340 --> 00:21:07.220 align:middle line:84%
+harder to predict if you
+only use a couple of inputs
+
+00:21:07.220 --> 00:21:09.580 align:middle line:90%
+at inference time?
+
+00:21:09.580 --> 00:21:10.772 align:middle line:90%
+SARA BEERY: Oh, interesting.
+
+00:21:10.772 --> 00:21:12.980 align:middle line:84%
+So the question, which I
+think is an interesting one,
+
+00:21:12.980 --> 00:21:18.740 align:middle line:84%
+is if you've trained this model
+using backprop over maybe a time
+
+00:21:18.740 --> 00:21:25.180 align:middle line:84%
+window of 20, now if you only
+have a sequence of three inputs,
+
+00:21:25.180 --> 00:21:28.240 align:middle line:84%
+is that actually limiting
+your ability to do it shorter?
+
+00:21:28.240 --> 00:21:32.820 align:middle line:84%
+So potentially no,
+because this is just
+
+00:21:32.820 --> 00:21:38.610 align:middle line:84%
+looking at one component
+of that gradient.
+
+00:21:38.610 --> 00:21:43.770 align:middle line:84%
+But actually, if we
+think about this, you--
+
+00:21:43.770 --> 00:21:47.130 align:middle line:84%
+so this gradient is
+also going to be--
+
+00:21:47.130 --> 00:21:50.990 align:middle line:84%
+this is just the
+input of that on that,
+
+00:21:50.990 --> 00:21:53.170 align:middle line:84%
+and that's like the
+end of that time limit.
+
+00:21:53.170 --> 00:21:56.730 align:middle line:84%
+But in practice, you would
+also do everything up
+
+00:21:56.730 --> 00:21:58.030 align:middle line:90%
+to this time point.
+
+00:21:58.030 --> 00:22:00.210 align:middle line:84%
+And we'll go through that
+in the next couple slides.
+
+00:22:00.210 --> 00:22:02.953 align:middle line:84%
+So you would still be getting
+that signal from everything
+
+00:22:02.953 --> 00:22:04.870 align:middle line:84%
+within the time window
+that you're looking at,
+
+00:22:04.870 --> 00:22:07.510 align:middle line:84%
+not just going back
+to the farthest point.
+
+00:22:07.510 --> 00:22:11.410 align:middle line:84%
+Which makes sense, because
+it might be much more
+
+00:22:11.410 --> 00:22:14.490 align:middle line:84%
+helpful to have some of
+those more frequent, more
+
+00:22:14.490 --> 00:22:17.190 align:middle line:84%
+recent gradients than
+maybe the further ones.
+
+00:22:17.190 --> 00:22:18.290 align:middle line:90%
+Yeah?
+
+00:22:18.290 --> 00:22:20.790 align:middle line:84%
+AUDIENCE: To go along that
+point, for this example,
+
+00:22:20.790 --> 00:22:24.250 align:middle line:84%
+would it be like if xin
+is today's temperature,
+
+00:22:24.250 --> 00:22:27.550 align:middle line:84%
+xout is six days in
+advance temperature.
+
+00:22:27.550 --> 00:22:30.570 align:middle line:84%
+But we are actually
+inherently predicting
+
+00:22:30.570 --> 00:22:34.597 align:middle line:84%
+one day, two day, three day,
+four day, five day to get there.
+
+00:22:34.597 --> 00:22:36.430 align:middle line:84%
+SARA BEERY: Yeah, so
+what we're showing here
+
+00:22:36.430 --> 00:22:38.890 align:middle line:84%
+is just the fact that
+if you do unroll this,
+
+00:22:38.890 --> 00:22:40.973 align:middle line:84%
+that now you do have this
+directed graph again.
+
+00:22:40.973 --> 00:22:43.390 align:middle line:84%
+But then like in practice,
+essentially, what you're saying
+
+00:22:43.390 --> 00:22:45.430 align:middle line:84%
+is you would only
+take the gradients up
+
+00:22:45.430 --> 00:22:48.050 align:middle line:90%
+to t minus whatever x0 was.
+
+00:22:48.050 --> 00:22:50.485 align:middle line:84%
+So this is like
+1, 2, 3, 4, 5, 6.
+
+00:22:50.485 --> 00:22:52.110 align:middle line:84%
+So you'd only be
+taking those gradients
+
+00:22:52.110 --> 00:22:54.230 align:middle line:90%
+over a sequence of six.
+
+00:22:54.230 --> 00:22:57.810 align:middle line:84%
+And then, now, for the next
+point you'd shift it right.
+
+00:22:57.810 --> 00:22:59.330 align:middle line:90%
+So now, you'd only go to x1.
+
+00:22:59.330 --> 00:23:00.747 align:middle line:84%
+And then for the
+next point, you'd
+
+00:23:00.747 --> 00:23:02.350 align:middle line:90%
+only send gradients from x2.
+
+00:23:02.350 --> 00:23:03.830 align:middle line:84%
+So you have some
+fixed time window
+
+00:23:03.830 --> 00:23:06.410 align:middle line:84%
+that you're unrolling that
+you actually accept gradient--
+
+00:23:06.410 --> 00:23:09.170 align:middle line:90%
+you calculate gradients over.
+
+00:23:09.170 --> 00:23:09.670 align:middle line:90%
+Yeah?
+
+00:23:09.670 --> 00:23:11.630 align:middle line:84%
+AUDIENCE: The idea
+that the truncated time
+
+00:23:11.630 --> 00:23:14.645 align:middle line:84%
+window is some approximation
+of an infinite time window?
+
+00:23:14.645 --> 00:23:16.770 align:middle line:84%
+SARA BEERY: I think that's
+a reasonable assumption.
+
+00:23:16.770 --> 00:23:18.630 align:middle line:84%
+So the question was
+is that fixed time
+
+00:23:18.630 --> 00:23:20.070 align:middle line:84%
+window a reasonable
+approximation
+
+00:23:20.070 --> 00:23:21.710 align:middle line:90%
+of an infinite time window?
+
+00:23:21.710 --> 00:23:23.830 align:middle line:84%
+I would say it's
+maybe a bit of both.
+
+00:23:23.830 --> 00:23:26.330 align:middle line:84%
+So again, I'll walk
+through it in a sec,
+
+00:23:26.330 --> 00:23:29.590 align:middle line:84%
+but basically, with this
+formulation, the longer time
+
+00:23:29.590 --> 00:23:32.250 align:middle line:84%
+window you have, the harder
+it is for information
+
+00:23:32.250 --> 00:23:35.930 align:middle line:84%
+to actually make it that
+far with these weights.
+
+00:23:35.930 --> 00:23:38.730 align:middle line:84%
+So at some point, actually,
+extending the time window
+
+00:23:38.730 --> 00:23:42.550 align:middle line:84%
+is probably, by construction
+here, not super beneficial.
+
+00:23:42.550 --> 00:23:46.130 align:middle line:90%
+
+
+00:23:46.130 --> 00:23:46.630 align:middle line:90%
+Yes?
+
+00:23:46.630 --> 00:23:48.047 align:middle line:84%
+AUDIENCE: I wonder,
+is there a way
+
+00:23:48.047 --> 00:23:49.810 align:middle line:84%
+to optimize what's
+the time window you
+
+00:23:49.810 --> 00:23:51.070 align:middle line:90%
+need for a specific task?
+
+00:23:51.070 --> 00:23:52.903 align:middle line:90%
+Or is it just--
+
+00:23:52.903 --> 00:23:54.570 align:middle line:84%
+SARA BEERY: Well,
+it's a hyperparameter.
+
+00:23:54.570 --> 00:23:57.090 align:middle line:84%
+So when you look at the
+literature for this,
+
+00:23:57.090 --> 00:24:00.930 align:middle line:84%
+people would ablate that
+hyperparameter, for example.
+
+00:24:00.930 --> 00:24:04.228 align:middle line:84%
+And I think sometimes,
+it might be something
+
+00:24:04.228 --> 00:24:06.770 align:middle line:84%
+that you could actually bring
+some domain knowledge to decide
+
+00:24:06.770 --> 00:24:09.030 align:middle line:90%
+what actually makes sense here.
+
+00:24:09.030 --> 00:24:11.890 align:middle line:90%
+
+
+00:24:11.890 --> 00:24:14.270 align:middle line:90%
+So a few conceptual things.
+
+00:24:14.270 --> 00:24:20.170 align:middle line:84%
+If you are going to unroll
+this, remember that function
+
+00:24:20.170 --> 00:24:22.570 align:middle line:84%
+that maps the hidden
+states forward through time
+
+00:24:22.570 --> 00:24:25.250 align:middle line:90%
+is fixed over time.
+
+00:24:25.250 --> 00:24:28.690 align:middle line:90%
+So those W's are shared.
+
+00:24:28.690 --> 00:24:31.690 align:middle line:84%
+So now, what does that
+mean for backprop?
+
+00:24:31.690 --> 00:24:35.070 align:middle line:84%
+So we have this
+sequence of videos.
+
+00:24:35.070 --> 00:24:39.510 align:middle line:84%
+Now, the loss is
+going to end up being
+
+00:24:39.510 --> 00:24:42.710 align:middle line:84%
+the sum of the losses from
+each of those predicted
+
+00:24:42.710 --> 00:24:45.990 align:middle line:90%
+frames over some sequence.
+
+00:24:45.990 --> 00:24:48.070 align:middle line:84%
+And to optimize,
+you want to learn
+
+00:24:48.070 --> 00:24:52.230 align:middle line:84%
+how you would change
+W, U, and V so
+
+00:24:52.230 --> 00:25:00.310 align:middle line:84%
+that the sum of the kind of loss
+over that sequence is minimized.
+
+00:25:00.310 --> 00:25:01.930 align:middle line:84%
+This is how we do
+gradient descent.
+
+00:25:01.930 --> 00:25:04.530 align:middle line:84%
+But you want it for the entire
+sequence within, I guess,
+
+00:25:04.530 --> 00:25:07.110 align:middle line:84%
+the time window that
+you're considering.
+
+00:25:07.110 --> 00:25:09.890 align:middle line:84%
+So we want to figure out how
+we want to change all of these.
+
+00:25:09.890 --> 00:25:14.270 align:middle line:84%
+But of course, W is,
+again, shared over time.
+
+00:25:14.270 --> 00:25:18.070 align:middle line:84%
+So we have to do backprop
+over shared parameters.
+
+00:25:18.070 --> 00:25:21.670 align:middle line:84%
+So we're going to sum up all
+of these individual losses.
+
+00:25:21.670 --> 00:25:24.510 align:middle line:84%
+And now, we're going to be
+passing this gradient back.
+
+00:25:24.510 --> 00:25:27.870 align:middle line:84%
+And now, does
+anyone remember what
+
+00:25:27.870 --> 00:25:31.260 align:middle line:84%
+it looks like when we have these
+backprop over shared parameters?
+
+00:25:31.260 --> 00:25:34.340 align:middle line:84%
+Because here, we
+have the loss is all
+
+00:25:34.340 --> 00:25:36.780 align:middle line:84%
+getting summed up, the
+gradients all coming down.
+
+00:25:36.780 --> 00:25:39.580 align:middle line:84%
+And then there's this kind of
+waterfall backwards where those
+
+00:25:39.580 --> 00:25:42.100 align:middle line:84%
+gradients are passing
+through all the W's.
+
+00:25:42.100 --> 00:25:44.940 align:middle line:84%
+So does anyone remember what we
+do when we're taking gradients
+
+00:25:44.940 --> 00:25:46.400 align:middle line:90%
+over shared parameters?
+
+00:25:46.400 --> 00:25:50.020 align:middle line:90%
+
+
+00:25:50.020 --> 00:25:51.540 align:middle line:90%
+It's been a couple of weeks.
+
+00:25:51.540 --> 00:25:53.820 align:middle line:84%
+Does this look
+familiar to anybody?
+
+00:25:53.820 --> 00:25:57.340 align:middle line:84%
+Yeah, so here, there's
+this idea that if you
+
+00:25:57.340 --> 00:25:59.020 align:middle line:84%
+had shared parameters,
+and they're
+
+00:25:59.020 --> 00:26:01.340 align:middle line:84%
+being shared
+throughout a network,
+
+00:26:01.340 --> 00:26:04.500 align:middle line:84%
+that it's actually the
+same as branching structure
+
+00:26:04.500 --> 00:26:06.660 align:middle line:90%
+in a directed acyclic graph.
+
+00:26:06.660 --> 00:26:09.620 align:middle line:84%
+And so when you're doing
+a gradient-- when you're
+
+00:26:09.620 --> 00:26:12.040 align:middle line:84%
+taking the gradient over
+this branching structure,
+
+00:26:12.040 --> 00:26:15.500 align:middle line:84%
+you're actually just summing
+the gradients for the parameter
+
+00:26:15.500 --> 00:26:17.700 align:middle line:90%
+each time that parameter occurs.
+
+00:26:17.700 --> 00:26:19.340 align:middle line:84%
+So for that W,
+we're going to just
+
+00:26:19.340 --> 00:26:22.420 align:middle line:84%
+be summing those gradients
+over every single element
+
+00:26:22.420 --> 00:26:25.300 align:middle line:90%
+that we have that W in.
+
+00:26:25.300 --> 00:26:25.940 align:middle line:90%
+Cool.
+
+00:26:25.940 --> 00:26:29.260 align:middle line:84%
+So here, we have W in
+all of these places,
+
+00:26:29.260 --> 00:26:31.280 align:middle line:84%
+and now we have this
+branching structure.
+
+00:26:31.280 --> 00:26:33.520 align:middle line:84%
+And then when we're
+calculating the change
+
+00:26:33.520 --> 00:26:36.120 align:middle line:84%
+in that loss with
+respect to W, it's
+
+00:26:36.120 --> 00:26:39.920 align:middle line:84%
+the sum over the change in the
+loss, the gradients from each
+
+00:26:39.920 --> 00:26:41.540 align:middle line:90%
+of those.
+
+00:26:41.540 --> 00:26:42.040 align:middle line:90%
+Cool.
+
+00:26:42.040 --> 00:26:45.360 align:middle line:84%
+And the nice thing is, if you're
+using something like PyTorch,
+
+00:26:45.360 --> 00:26:47.320 align:middle line:84%
+this will happen
+automatically in autograd
+
+00:26:47.320 --> 00:26:50.200 align:middle line:84%
+as long as you don't do deep
+copies, as long as you're
+
+00:26:50.200 --> 00:26:52.860 align:middle line:84%
+pointing to the
+actual by reference
+
+00:26:52.860 --> 00:26:54.800 align:middle line:84%
+that actual variable,
+then autograd
+
+00:26:54.800 --> 00:26:58.040 align:middle line:84%
+handles this kind
+of summing over
+
+00:26:58.040 --> 00:27:00.640 align:middle line:84%
+the gradients within the
+thing reasonably well.
+
+00:27:00.640 --> 00:27:02.720 align:middle line:84%
+So make sure you're
+not doing deep copies,
+
+00:27:02.720 --> 00:27:06.200 align:middle line:84%
+and it all works
+out pretty nicely.
+
+00:27:06.200 --> 00:27:09.200 align:middle line:84%
+And then I think
+another point is you're
+
+00:27:09.200 --> 00:27:10.940 align:middle line:90%
+summing over the past inputs.
+
+00:27:10.940 --> 00:27:13.645 align:middle line:84%
+So if you're calculating the
+loss with respect to this one,
+
+00:27:13.645 --> 00:27:15.020 align:middle line:84%
+you're summing
+over all of those.
+
+00:27:15.020 --> 00:27:16.978 align:middle line:84%
+If you're calculating
+with respect to this one,
+
+00:27:16.978 --> 00:27:19.840 align:middle line:84%
+it's only over the ones previous
+to it, et cetera, et cetera,
+
+00:27:19.840 --> 00:27:23.120 align:middle line:84%
+because that's only
+going in one direction.
+
+00:27:23.120 --> 00:27:29.380 align:middle line:84%
+Any other questions about
+backpropagation through an RNN?
+
+00:27:29.380 --> 00:27:31.780 align:middle line:90%
+Cool, let's move on.
+
+00:27:31.780 --> 00:27:37.240 align:middle line:84%
+So problem of
+long-range dependencies.
+
+00:27:37.240 --> 00:27:40.220 align:middle line:84%
+We talked about, well, as
+this time window starts
+
+00:27:40.220 --> 00:27:42.100 align:middle line:84%
+to stretch towards
+infinity, it seems
+
+00:27:42.100 --> 00:27:45.060 align:middle line:84%
+like it would be hard for
+this thing to remember.
+
+00:27:45.060 --> 00:27:48.300 align:middle line:84%
+Why not set your time
+window to infinity?
+
+00:27:48.300 --> 00:27:50.340 align:middle line:90%
+Why not remember everything?
+
+00:27:50.340 --> 00:27:55.720 align:middle line:84%
+So it turns out, first, memory
+size will grow with that t.
+
+00:27:55.720 --> 00:27:58.140 align:middle line:84%
+So if you need to use some
+of infinitely long sequence
+
+00:27:58.140 --> 00:28:01.500 align:middle line:84%
+as an input, that means it
+takes up a lot more memory.
+
+00:28:01.500 --> 00:28:05.020 align:middle line:84%
+And that time and memory
+is non-parametric.
+
+00:28:05.020 --> 00:28:06.900 align:middle line:84%
+There's not like a
+finite set of parameters
+
+00:28:06.900 --> 00:28:10.660 align:middle line:84%
+we can use to model
+infinite time.
+
+00:28:10.660 --> 00:28:13.940 align:middle line:84%
+RNNs make like a
+Markov assumption,
+
+00:28:13.940 --> 00:28:17.340 align:middle line:84%
+which is to say that the
+future hidden state only
+
+00:28:17.340 --> 00:28:20.580 align:middle line:84%
+depends on the immediate
+preceding hidden state.
+
+00:28:20.580 --> 00:28:23.700 align:middle line:84%
+So we say, it's
+recurrent, but we only
+
+00:28:23.700 --> 00:28:26.960 align:middle line:84%
+depend on just the immediate
+hidden state before that.
+
+00:28:26.960 --> 00:28:29.277 align:middle line:84%
+And then by putting
+the right information
+
+00:28:29.277 --> 00:28:31.360 align:middle line:84%
+into that hidden state,
+you can model dependencies
+
+00:28:31.360 --> 00:28:33.560 align:middle line:84%
+that are arbitrarily
+far apart in theory,
+
+00:28:33.560 --> 00:28:37.120 align:middle line:84%
+because the model
+learns with W how
+
+00:28:37.120 --> 00:28:39.000 align:middle line:84%
+to keep the relevant
+information,
+
+00:28:39.000 --> 00:28:42.080 align:middle line:90%
+or at least that's the hope.
+
+00:28:42.080 --> 00:28:46.600 align:middle line:84%
+So here, what you're saying
+is, actually, in order
+
+00:28:46.600 --> 00:28:48.920 align:middle line:84%
+to capture those long
+range dependencies,
+
+00:28:48.920 --> 00:28:51.400 align:middle line:84%
+we have to propagate
+that information
+
+00:28:51.400 --> 00:28:55.800 align:middle line:84%
+through a very long
+chain of dependencies.
+
+00:28:55.800 --> 00:29:00.680 align:middle line:84%
+And this ends up
+being a bit difficult.
+
+00:29:00.680 --> 00:29:08.480 align:middle line:84%
+So let's walk through
+this-- this very big chalk.
+
+00:29:08.480 --> 00:29:11.680 align:middle line:84%
+So for simplicity, just to walk
+through what the math looks
+
+00:29:11.680 --> 00:29:14.300 align:middle line:84%
+like, we're going to assume we
+don't have any non-linearities,
+
+00:29:14.300 --> 00:29:17.200 align:middle line:84%
+and all the bias
+terms are set to 0.
+
+00:29:17.200 --> 00:29:21.760 align:middle line:90%
+So say we have h sub 1.
+
+00:29:21.760 --> 00:29:25.060 align:middle line:84%
+And that's going to be equal
+to, like we said before, W
+
+00:29:25.060 --> 00:29:32.340 align:middle line:90%
+of H sub 0 plus U of X sub 1.
+
+00:29:32.340 --> 00:29:33.520 align:middle line:90%
+So H sub 1.
+
+00:29:33.520 --> 00:29:35.333 align:middle line:84%
+The hidden state
+at that first step
+
+00:29:35.333 --> 00:29:37.500 align:middle line:84%
+is going to be equal to the
+weights times the hidden
+
+00:29:37.500 --> 00:29:40.580 align:middle line:84%
+state of the previous
+step plus these weights
+
+00:29:40.580 --> 00:29:42.540 align:middle line:90%
+times the new input.
+
+00:29:42.540 --> 00:29:45.020 align:middle line:84%
+Now, if we write out what this
+recurrence looks like-- now,
+
+00:29:45.020 --> 00:29:47.020 align:middle line:84%
+if we say H sub 2,
+now that's going
+
+00:29:47.020 --> 00:30:00.860 align:middle line:84%
+to be equal to W of W of H sub
+0 plus U of X sub 1 plus U of X
+
+00:30:00.860 --> 00:30:01.640 align:middle line:90%
+sub 2.
+
+00:30:01.640 --> 00:30:05.020 align:middle line:90%
+So what do you notice here?
+
+00:30:05.020 --> 00:30:08.980 align:middle line:84%
+Now, we have a W squared
+term essentially.
+
+00:30:08.980 --> 00:30:12.460 align:middle line:84%
+And so now, if you do it
+for another time step,
+
+00:30:12.460 --> 00:30:16.660 align:middle line:84%
+you're going to have W cubed,
+et cetera, all the way up to W
+
+00:30:16.660 --> 00:30:19.540 align:middle line:90%
+to the N.
+
+00:30:19.540 --> 00:30:23.290 align:middle line:84%
+So if you have this quadratic
+relationship with your weights
+
+00:30:23.290 --> 00:30:28.250 align:middle line:84%
+matrix, what happens for
+values in that weight
+
+00:30:28.250 --> 00:30:29.550 align:middle line:90%
+matrix that are small?
+
+00:30:29.550 --> 00:30:32.450 align:middle line:90%
+
+
+00:30:32.450 --> 00:30:34.030 align:middle line:90%
+They'll go to 0.
+
+00:30:34.030 --> 00:30:37.890 align:middle line:84%
+And anything in that
+weight matrix that's big
+
+00:30:37.890 --> 00:30:39.450 align:middle line:90%
+will be infinite.
+
+00:30:39.450 --> 00:30:41.730 align:middle line:84%
+So what happens is
+in order for this
+
+00:30:41.730 --> 00:30:45.330 align:middle line:84%
+to be stable at all
+during training,
+
+00:30:45.330 --> 00:30:46.970 align:middle line:84%
+all the values
+kind of need to be
+
+00:30:46.970 --> 00:30:51.090 align:middle line:84%
+close to 1, which means it's
+kind of hard to capture really
+
+00:30:51.090 --> 00:30:52.770 align:middle line:90%
+variable information in there.
+
+00:30:52.770 --> 00:30:55.150 align:middle line:84%
+And then additionally,
+no matter what,
+
+00:30:55.150 --> 00:30:57.330 align:middle line:84%
+even if you're just
+a little bit below 1,
+
+00:30:57.330 --> 00:30:58.930 align:middle line:84%
+when you go to
+infinity, it will go
+
+00:30:58.930 --> 00:31:04.250 align:middle line:84%
+to 0 because you have this sort
+of exponential relationship.
+
+00:31:04.250 --> 00:31:06.090 align:middle line:84%
+And so what this
+means is, often,
+
+00:31:06.090 --> 00:31:08.330 align:middle line:84%
+that old observations in
+a recurrent neural network
+
+00:31:08.330 --> 00:31:13.130 align:middle line:84%
+are forgotten, and that
+the stochastic gradients
+
+00:31:13.130 --> 00:31:14.888 align:middle line:90%
+become really high variance.
+
+00:31:14.888 --> 00:31:16.930 align:middle line:84%
+And you can either have
+these vanishing gradients
+
+00:31:16.930 --> 00:31:18.730 align:middle line:90%
+or exploding gradients.
+
+00:31:18.730 --> 00:31:24.610 align:middle line:84%
+And so this is why we started
+to look towards LSTMs.
+
+00:31:24.610 --> 00:31:25.110 align:middle line:90%
+Yeah?
+
+00:31:25.110 --> 00:31:26.670 align:middle line:84%
+AUDIENCE: So a
+couple lectures ago,
+
+00:31:26.670 --> 00:31:28.430 align:middle line:84%
+we talked about
+the spectral norm
+
+00:31:28.430 --> 00:31:32.210 align:middle line:84%
+and using that to normalize
+weights and activations.
+
+00:31:32.210 --> 00:31:35.390 align:middle line:84%
+So I'm wondering, would
+that fix this problem?
+
+00:31:35.390 --> 00:31:38.030 align:middle line:90%
+And if not, why not?
+
+00:31:38.030 --> 00:31:40.230 align:middle line:84%
+SARA BEERY: So the
+question was, we previously
+
+00:31:40.230 --> 00:31:42.950 align:middle line:84%
+talked about the
+spectral norm And using
+
+00:31:42.950 --> 00:31:46.270 align:middle line:84%
+that as a way to try to mitigate
+things like these vanishing
+
+00:31:46.270 --> 00:31:48.870 align:middle line:90%
+and exploding gradients.
+
+00:31:48.870 --> 00:31:53.030 align:middle line:84%
+So you could try to build
+something in here that
+
+00:31:53.030 --> 00:31:57.710 align:middle line:84%
+would try to normalize
+these weights so
+
+00:31:57.710 --> 00:32:06.270 align:middle line:84%
+that they would be, again,
+close to 1, essentially, or not
+
+00:32:06.270 --> 00:32:07.810 align:middle line:90%
+go to infinity or not.
+
+00:32:07.810 --> 00:32:11.230 align:middle line:90%
+But this function is--
+
+00:32:11.230 --> 00:32:15.270 align:middle line:84%
+like, this part here, the fact
+that because of the recurrence
+
+00:32:15.270 --> 00:32:17.510 align:middle line:84%
+relationship, you're
+taking an exponential
+
+00:32:17.510 --> 00:32:20.810 align:middle line:90%
+in the weights matrix.
+
+00:32:20.810 --> 00:32:23.822 align:middle line:84%
+You could take a spectral
+norm over that exponential,
+
+00:32:23.822 --> 00:32:26.030 align:middle line:84%
+but you're still going to
+take the exponential first.
+
+00:32:26.030 --> 00:32:28.785 align:middle line:84%
+So that might help you with the
+exploding gradients problem,
+
+00:32:28.785 --> 00:32:31.410 align:middle line:84%
+but it's not going to change the
+fact that the small things are
+
+00:32:31.410 --> 00:32:33.050 align:middle line:90%
+going to go to 0.
+
+00:32:33.050 --> 00:32:34.250 align:middle line:90%
+Does that make sense?
+
+00:32:34.250 --> 00:32:34.990 align:middle line:90%
+Yeah, cool.
+
+00:32:34.990 --> 00:32:37.930 align:middle line:90%
+
+
+00:32:37.930 --> 00:32:39.130 align:middle line:90%
+And actually, if you--
+
+00:32:39.130 --> 00:32:42.210 align:middle line:84%
+I thought this was
+kind of a fun blog post
+
+00:32:42.210 --> 00:32:43.810 align:middle line:90%
+that specifically takes--
+
+00:32:43.810 --> 00:32:45.830 align:middle line:84%
+it's from a control
+theory professor,
+
+00:32:45.830 --> 00:32:50.930 align:middle line:84%
+but they're looking at
+stability analysis in recursion.
+
+00:32:50.930 --> 00:32:53.890 align:middle line:84%
+And so if anyone's interested
+in the different ways
+
+00:32:53.890 --> 00:32:56.850 align:middle line:84%
+that people think about what
+makes things stable or not
+
+00:32:56.850 --> 00:33:00.390 align:middle line:84%
+stable in a system if
+you have recursion,
+
+00:33:00.390 --> 00:33:04.770 align:middle line:84%
+I thought this was kind
+of a nice blog post.
+
+00:33:04.770 --> 00:33:05.390 align:middle line:90%
+Yes?
+
+00:33:05.390 --> 00:33:08.090 align:middle line:84%
+AUDIENCE: So you said gradients
+can explode or vanish.
+
+00:33:08.090 --> 00:33:11.930 align:middle line:84%
+Do they both correspond to
+old memories being forgotten?
+
+00:33:11.930 --> 00:33:14.810 align:middle line:84%
+And also as a follow-up,
+isn't it not a terrible thing
+
+00:33:14.810 --> 00:33:19.390 align:middle line:84%
+that old memories are forgotten,
+because that's what humans do?
+
+00:33:19.390 --> 00:33:22.110 align:middle line:84%
+SARA BEERY: So the question
+is, if you have exploding
+
+00:33:22.110 --> 00:33:23.790 align:middle line:84%
+and vanishing, do
+they both correspond
+
+00:33:23.790 --> 00:33:25.350 align:middle line:90%
+to memories of being forgotten?
+
+00:33:25.350 --> 00:33:27.590 align:middle line:84%
+And no, the exploding
+ones correspond
+
+00:33:27.590 --> 00:33:30.990 align:middle line:84%
+to unstable training, which
+we also don't really want.
+
+00:33:30.990 --> 00:33:34.150 align:middle line:84%
+And the vanishing ones would be
+old memories being forgotten.
+
+00:33:34.150 --> 00:33:38.190 align:middle line:84%
+And then do we actually
+want to remember things
+
+00:33:38.190 --> 00:33:39.490 align:middle line:90%
+over long time horizons?
+
+00:33:39.490 --> 00:33:42.550 align:middle line:84%
+And that's kind of the universal
+question-- do we need this?
+
+00:33:42.550 --> 00:33:49.230 align:middle line:84%
+And I would say that there are
+definitely cases where we don't.
+
+00:33:49.230 --> 00:33:51.930 align:middle line:84%
+And then there maybe are
+some cases where we do.
+
+00:33:51.930 --> 00:33:56.150 align:middle line:90%
+So an example might be--
+
+00:33:56.150 --> 00:33:57.830 align:middle line:90%
+think about temperature.
+
+00:33:57.830 --> 00:34:00.850 align:middle line:84%
+So we have these daily
+cycles of temperature.
+
+00:34:00.850 --> 00:34:03.408 align:middle line:84%
+So we'd like to remember that
+the temperature got warmer
+
+00:34:03.408 --> 00:34:05.450 align:middle line:84%
+in the middle of the day
+than at night yesterday.
+
+00:34:05.450 --> 00:34:06.710 align:middle line:84%
+So if we're looking at
+predicting temperature
+
+00:34:06.710 --> 00:34:08.670 align:middle line:84%
+on some of fine-grained
+horizon, you'd
+
+00:34:08.670 --> 00:34:11.333 align:middle line:84%
+want to be able to remember at
+least periodically a day back.
+
+00:34:11.333 --> 00:34:13.750 align:middle line:84%
+But then also you have these
+yearly cycles of temperature,
+
+00:34:13.750 --> 00:34:16.672 align:middle line:84%
+where it's hotter in the summer
+and cooler in the winter.
+
+00:34:16.672 --> 00:34:18.630 align:middle line:84%
+So maybe if you're trying
+to model temperature,
+
+00:34:18.630 --> 00:34:21.350 align:middle line:84%
+you also want to have
+this yearly dependency.
+
+00:34:21.350 --> 00:34:23.570 align:middle line:84%
+And then you have things
+like these weather cycles,
+
+00:34:23.570 --> 00:34:25.510 align:middle line:84%
+like El Niño, that
+happen every seven years.
+
+00:34:25.510 --> 00:34:27.949 align:middle line:84%
+And so depending on what
+you're trying to model,
+
+00:34:27.949 --> 00:34:29.730 align:middle line:84%
+there may actually
+be a lot of value
+
+00:34:29.730 --> 00:34:31.889 align:middle line:84%
+in the longer and
+longer term memory
+
+00:34:31.889 --> 00:34:34.810 align:middle line:84%
+if there's signal in
+more and more time scale.
+
+00:34:34.810 --> 00:34:35.710 align:middle line:90%
+Does that make sense?
+
+00:34:35.710 --> 00:34:38.409 align:middle line:90%
+
+
+00:34:38.409 --> 00:34:38.909 align:middle line:90%
+Cool.
+
+00:34:38.909 --> 00:34:41.929 align:middle line:84%
+So this is why we
+introduced LSTMs,
+
+00:34:41.929 --> 00:34:44.210 align:middle line:84%
+which is to try to
+deal with forgetting,
+
+00:34:44.210 --> 00:34:46.534 align:middle line:84%
+to try to deal with this
+vanishing gradient problem.
+
+00:34:46.534 --> 00:34:48.409 align:middle line:84%
+And the reason the
+vanishing gradient problem
+
+00:34:48.409 --> 00:34:51.650 align:middle line:84%
+is more of a problem than the
+unstable exploding gradients
+
+00:34:51.650 --> 00:34:54.989 align:middle line:84%
+is exactly like what this
+guy over here mentioned.
+
+00:34:54.989 --> 00:34:57.610 align:middle line:84%
+There are things we can
+do to try to force--
+
+00:34:57.610 --> 00:34:59.450 align:middle line:84%
+to take normalization
+over the gradients
+
+00:34:59.450 --> 00:35:01.610 align:middle line:84%
+to keep them from
+exploding-- different ways
+
+00:35:01.610 --> 00:35:04.310 align:middle line:84%
+that we can constrain it, or
+regularize it, or clip it.
+
+00:35:04.310 --> 00:35:09.530 align:middle line:84%
+But we can't do that
+when things go to 0.
+
+00:35:09.530 --> 00:35:17.280 align:middle line:84%
+So LSTMs are essentially
+designed so that the default
+
+00:35:17.280 --> 00:35:20.040 align:middle line:90%
+behavior is to not forget.
+
+00:35:20.040 --> 00:35:23.400 align:middle line:84%
+And then you have
+to learn to forget.
+
+00:35:23.400 --> 00:35:25.100 align:middle line:84%
+And so the default
+is the identity.
+
+00:35:25.100 --> 00:35:27.360 align:middle line:84%
+You're biased to
+not forget anything.
+
+00:35:27.360 --> 00:35:29.860 align:middle line:84%
+And then you learn
+what to forget,
+
+00:35:29.860 --> 00:35:32.360 align:middle line:84%
+kind of like garbage
+collection-- what to throw away.
+
+00:35:32.360 --> 00:35:35.640 align:middle line:90%
+So that you can add new stuff.
+
+00:35:35.640 --> 00:35:38.480 align:middle line:84%
+And so if you look
+at this-- so this
+
+00:35:38.480 --> 00:35:42.580 align:middle line:84%
+is kind of like the standard
+recurrent neural network.
+
+00:35:42.580 --> 00:35:44.280 align:middle line:90%
+We have some non-linearity.
+
+00:35:44.280 --> 00:35:46.160 align:middle line:84%
+This is kind of a
+simplified version
+
+00:35:46.160 --> 00:35:48.220 align:middle line:84%
+where it looks like we're
+sending in the inputs.
+
+00:35:48.220 --> 00:35:50.100 align:middle line:84%
+There's a function here
+that's mapping this in.
+
+00:35:50.100 --> 00:35:51.660 align:middle line:84%
+And then we're sending
+out some hidden state,
+
+00:35:51.660 --> 00:35:53.200 align:middle line:84%
+but then there'd be some
+function mapping that
+
+00:35:53.200 --> 00:35:54.100 align:middle line:90%
+to the output.
+
+00:35:54.100 --> 00:35:56.560 align:middle line:84%
+We're just only looking
+at the hidden layer
+
+00:35:56.560 --> 00:35:58.960 align:middle line:90%
+component of this model.
+
+00:35:58.960 --> 00:36:03.200 align:middle line:84%
+And so what an LSTM does is
+it builds a little memory
+
+00:36:03.200 --> 00:36:07.760 align:middle line:84%
+controller that decides what
+to save and what to delete.
+
+00:36:07.760 --> 00:36:10.420 align:middle line:84%
+And it turns out this is
+still Turing complete.
+
+00:36:10.420 --> 00:36:12.780 align:middle line:84%
+And it's actually very
+close to a Turing machine.
+
+00:36:12.780 --> 00:36:14.820 align:middle line:84%
+It's kind of like that
+idea of a hidden tape
+
+00:36:14.820 --> 00:36:16.940 align:middle line:84%
+that you can read
+to or write from.
+
+00:36:16.940 --> 00:36:20.180 align:middle line:84%
+And so now, every single
+one of these functions
+
+00:36:20.180 --> 00:36:22.700 align:middle line:84%
+that maps us from
+our inputs to what
+
+00:36:22.700 --> 00:36:25.660 align:middle line:84%
+the next hidden state should
+be has this little controller
+
+00:36:25.660 --> 00:36:27.340 align:middle line:90%
+built in.
+
+00:36:27.340 --> 00:36:29.860 align:middle line:84%
+And so let's go through
+the different components
+
+00:36:29.860 --> 00:36:31.300 align:middle line:90%
+of this thing.
+
+00:36:31.300 --> 00:36:34.540 align:middle line:84%
+So first, we have this cell
+state C. This is a new thing
+
+00:36:34.540 --> 00:36:36.500 align:middle line:84%
+that we're introducing
+for an LSTM.
+
+00:36:36.500 --> 00:36:39.380 align:middle line:84%
+And this is kind of the
+tape in the Turing machine.
+
+00:36:39.380 --> 00:36:42.900 align:middle line:84%
+And this cell state is what
+gets modulated by the part that
+
+00:36:42.900 --> 00:36:46.420 align:middle line:84%
+decides what to forget
+and what to add.
+
+00:36:46.420 --> 00:36:51.620 align:middle line:84%
+So then we'll have
+some function, f of t.
+
+00:36:51.620 --> 00:36:56.460 align:middle line:84%
+And this function
+you'll operate over,
+
+00:36:56.460 --> 00:36:59.900 align:middle line:84%
+applying your previous weights
+to the previous hidden state,
+
+00:36:59.900 --> 00:37:03.220 align:middle line:84%
+and your current state,
+and then your biases.
+
+00:37:03.220 --> 00:37:07.100 align:middle line:84%
+And that is going
+to be non-linearized
+
+00:37:07.100 --> 00:37:08.400 align:middle line:90%
+by something like a sigmoid.
+
+00:37:08.400 --> 00:37:10.580 align:middle line:90%
+So if it's large, it goes to 1.
+
+00:37:10.580 --> 00:37:12.820 align:middle line:90%
+And if it's small, it goes to 0.
+
+00:37:12.820 --> 00:37:15.880 align:middle line:84%
+And so now, if you're
+taking this thing--
+
+00:37:15.880 --> 00:37:20.200 align:middle line:84%
+now, if you multiply by 0--
+so if this value ends up
+
+00:37:20.200 --> 00:37:23.240 align:middle line:84%
+being small coming
+out of the function,
+
+00:37:23.240 --> 00:37:25.460 align:middle line:84%
+then it's telling you
+forget this thing.
+
+00:37:25.460 --> 00:37:28.280 align:middle line:90%
+
+
+00:37:28.280 --> 00:37:30.480 align:middle line:84%
+So what you want to
+do is give high values
+
+00:37:30.480 --> 00:37:33.600 align:middle line:84%
+to things you want to
+remember and low values
+
+00:37:33.600 --> 00:37:35.840 align:middle line:90%
+to things you want to forget.
+
+00:37:35.840 --> 00:37:38.480 align:middle line:84%
+So that's like what this
+component of the LCM
+
+00:37:38.480 --> 00:37:42.760 align:middle line:84%
+is in charge of, deciding what
+to remember and what to forget.
+
+00:37:42.760 --> 00:37:47.400 align:middle line:84%
+And then each element of
+that cell state, essentially
+
+00:37:47.400 --> 00:37:49.553 align:middle line:84%
+because of the way
+that we're using
+
+00:37:49.553 --> 00:37:51.220 align:middle line:84%
+a sigmoid and not
+something like a ReLU,
+
+00:37:51.220 --> 00:37:53.960 align:middle line:84%
+which would be unbounded,
+is-- it's essentially
+
+00:37:53.960 --> 00:37:56.120 align:middle line:84%
+the identity function
+with some masking of what
+
+00:37:56.120 --> 00:37:59.120 align:middle line:90%
+we want to forget.
+
+00:37:59.120 --> 00:38:02.560 align:middle line:84%
+So then there's
+this next component.
+
+00:38:02.560 --> 00:38:04.400 align:middle line:84%
+And this one is
+determining which
+
+00:38:04.400 --> 00:38:08.160 align:middle line:84%
+indices we want to write
+to and what to write.
+
+00:38:08.160 --> 00:38:13.420 align:middle line:84%
+So now, we have
+essentially this i
+
+00:38:13.420 --> 00:38:16.380 align:middle line:84%
+that is used to determine
+basically which indices
+
+00:38:16.380 --> 00:38:17.460 align:middle line:90%
+we're going to write to.
+
+00:38:17.460 --> 00:38:21.780 align:middle line:84%
+And then the C of
+t is going to be
+
+00:38:21.780 --> 00:38:25.240 align:middle line:84%
+how that information kind of
+gets added to the cell state.
+
+00:38:25.240 --> 00:38:29.220 align:middle line:90%
+
+
+00:38:29.220 --> 00:38:34.580 align:middle line:84%
+And then, finally, we need
+to do the actual forgetting.
+
+00:38:34.580 --> 00:38:38.100 align:middle line:84%
+And so this is
+where this comes in.
+
+00:38:38.100 --> 00:38:40.300 align:middle line:84%
+What's quite different is,
+for the first time now,
+
+00:38:40.300 --> 00:38:43.020 align:middle line:84%
+we have these multiplicative
+relationships right.
+
+00:38:43.020 --> 00:38:44.280 align:middle line:90%
+So you're multiplying.
+
+00:38:44.280 --> 00:38:45.863 align:middle line:84%
+You're taking the
+previous cell state,
+
+00:38:45.863 --> 00:38:47.500 align:middle line:84%
+and you're multiplying
+it by this f sub
+
+00:38:47.500 --> 00:38:50.060 align:middle line:84%
+t, which is going to be kind
+of either ones or 0's, or very
+
+00:38:50.060 --> 00:38:51.300 align:middle line:90%
+close to.
+
+00:38:51.300 --> 00:38:54.780 align:middle line:84%
+And then so now that's
+kind of updating the cell
+
+00:38:54.780 --> 00:38:55.920 align:middle line:90%
+state in the first place.
+
+00:38:55.920 --> 00:38:59.440 align:middle line:84%
+And then you're going to
+add this new information.
+
+00:38:59.440 --> 00:39:04.020 align:middle line:84%
+So you now have this i sub t
+multiplied by the new cell state
+
+00:39:04.020 --> 00:39:04.820 align:middle line:90%
+C sub t.
+
+00:39:04.820 --> 00:39:07.500 align:middle line:84%
+So in this case, it's
+removing information
+
+00:39:07.500 --> 00:39:10.570 align:middle line:90%
+and adding information.
+
+00:39:10.570 --> 00:39:14.130 align:middle line:84%
+So now, after you've actually
+updated that information
+
+00:39:14.130 --> 00:39:16.250 align:middle line:84%
+in the cell state,
+now we're going
+
+00:39:16.250 --> 00:39:19.530 align:middle line:84%
+to decide what gets output
+to the next hidden state.
+
+00:39:19.530 --> 00:39:21.970 align:middle line:84%
+It's not mathematically
+similar, but we just
+
+00:39:21.970 --> 00:39:26.410 align:middle line:84%
+learned about transformers
+right where we have the keys,
+
+00:39:26.410 --> 00:39:27.930 align:middle line:90%
+queries, and values.
+
+00:39:27.930 --> 00:39:31.350 align:middle line:84%
+So in that case, when we talk
+about this value projection,
+
+00:39:31.350 --> 00:39:34.370 align:middle line:84%
+these value matrix,
+that's kind of telling you
+
+00:39:34.370 --> 00:39:36.970 align:middle line:84%
+how you should output
+that next state
+
+00:39:36.970 --> 00:39:40.830 align:middle line:84%
+or how you should output
+the output of that thing.
+
+00:39:40.830 --> 00:39:47.457 align:middle line:84%
+And this feels to me, on
+vibes, kind of like values.
+
+00:39:47.457 --> 00:39:49.290 align:middle line:84%
+You've updated the cell
+states' information,
+
+00:39:49.290 --> 00:39:53.250 align:middle line:84%
+and now you want to say, how
+do we take that and update it
+
+00:39:53.250 --> 00:39:55.970 align:middle line:90%
+to the next hidden state?
+
+00:39:55.970 --> 00:39:59.130 align:middle line:90%
+And then note-- so we have now--
+
+00:39:59.130 --> 00:40:01.010 align:middle line:84%
+we have both these
+hidden states, which
+
+00:40:01.010 --> 00:40:02.410 align:middle line:90%
+are getting passed through.
+
+00:40:02.410 --> 00:40:05.143 align:middle line:84%
+But we also have that ticker
+tape, that cell state, that's
+
+00:40:05.143 --> 00:40:06.310 align:middle line:90%
+also getting passed through.
+
+00:40:06.310 --> 00:40:09.470 align:middle line:84%
+So there's kind of
+two things going on.
+
+00:40:09.470 --> 00:40:10.710 align:middle line:90%
+Cool.
+
+00:40:10.710 --> 00:40:12.390 align:middle line:84%
+So really, this
+important point--
+
+00:40:12.390 --> 00:40:16.670 align:middle line:84%
+the important thing that this
+has beyond that vanilla RNN
+
+00:40:16.670 --> 00:40:19.550 align:middle line:84%
+is the fact that you have almost
+this gating functionality that's
+
+00:40:19.550 --> 00:40:22.710 align:middle line:84%
+provided by multiplicative
+updates to the cell state,
+
+00:40:22.710 --> 00:40:24.830 align:middle line:84%
+where now we explicitly
+learn what to remember
+
+00:40:24.830 --> 00:40:26.310 align:middle line:90%
+and what to forget.
+
+00:40:26.310 --> 00:40:28.350 align:middle line:84%
+And then you
+multiply by 1, so you
+
+00:40:28.350 --> 00:40:30.270 align:middle line:84%
+have this identity
+instead of multiplying
+
+00:40:30.270 --> 00:40:33.230 align:middle line:84%
+by yourself, which removes
+the vanishing and exploding
+
+00:40:33.230 --> 00:40:33.770 align:middle line:90%
+gradients.
+
+00:40:33.770 --> 00:40:36.230 align:middle line:84%
+We no longer have
+that exponential.
+
+00:40:36.230 --> 00:40:38.230 align:middle line:84%
+Instead, you're only ever
+going to do something
+
+00:40:38.230 --> 00:40:41.330 align:middle line:84%
+like the identity or remove
+it and add something new.
+
+00:40:41.330 --> 00:40:45.090 align:middle line:90%
+
+
+00:40:45.090 --> 00:40:46.647 align:middle line:84%
+Because the default
+is the identity,
+
+00:40:46.647 --> 00:40:48.230 align:middle line:84%
+it's kind of like a
+skipped connection
+
+00:40:48.230 --> 00:40:50.570 align:middle line:84%
+or a residual
+connection in a ResNet.
+
+00:40:50.570 --> 00:40:52.870 align:middle line:84%
+You have this component
+where you could just
+
+00:40:52.870 --> 00:40:54.910 align:middle line:84%
+learn, throughout
+this entire thing,
+
+00:40:54.910 --> 00:40:57.610 align:middle line:90%
+to only ever send the identity--
+
+00:40:57.610 --> 00:41:01.790 align:middle line:84%
+just send the same information
+forward all the time.
+
+00:41:01.790 --> 00:41:02.910 align:middle line:90%
+Awesome.
+
+00:41:02.910 --> 00:41:05.070 align:middle line:90%
+Any other questions about LSTMs?
+
+00:41:05.070 --> 00:41:07.910 align:middle line:84%
+This part is a little
+fiddly, so definitely
+
+00:41:07.910 --> 00:41:13.090 align:middle line:84%
+feel free to go back through or
+visit this really nice blog post
+
+00:41:13.090 --> 00:41:14.970 align:middle line:84%
+that we pulled some of
+these visualizations
+
+00:41:14.970 --> 00:41:16.970 align:middle line:90%
+from, from Chris Olah.
+
+00:41:16.970 --> 00:41:17.650 align:middle line:90%
+Yeah?
+
+00:41:17.650 --> 00:41:19.570 align:middle line:84%
+AUDIENCE: It's,
+element-wise, multiplication
+
+00:41:19.570 --> 00:41:22.090 align:middle line:90%
+for the hidden state.
+
+00:41:22.090 --> 00:41:23.155 align:middle line:90%
+Is that correct?
+
+00:41:23.155 --> 00:41:24.530 align:middle line:84%
+SARA BEERY: So
+the multiplication
+
+00:41:24.530 --> 00:41:27.630 align:middle line:84%
+is basically like you're
+learning this gating function f
+
+00:41:27.630 --> 00:41:29.570 align:middle line:84%
+that's telling you
+what to forget.
+
+00:41:29.570 --> 00:41:31.450 align:middle line:84%
+And then you're
+learning this i that's
+
+00:41:31.450 --> 00:41:35.510 align:middle line:84%
+telling you like what new
+information to add back in.
+
+00:41:35.510 --> 00:41:37.873 align:middle line:84%
+And so those two things are
+going to be multiplied in.
+
+00:41:37.873 --> 00:41:39.290 align:middle line:84%
+And they're going
+to be multiplied
+
+00:41:39.290 --> 00:41:44.610 align:middle line:84%
+in element-wise in your C
+depending on what the size of C
+
+00:41:44.610 --> 00:41:45.110 align:middle line:90%
+is.
+
+00:41:45.110 --> 00:41:48.490 align:middle line:90%
+
+
+00:41:48.490 --> 00:41:49.228 align:middle line:90%
+Yeah?
+
+00:41:49.228 --> 00:41:49.895 align:middle line:90%
+AUDIENCE: Sorry.
+
+00:41:49.895 --> 00:41:51.312 align:middle line:84%
+Sorry if you've
+already said this.
+
+00:41:51.312 --> 00:41:53.390 align:middle line:84%
+So it's going to be like
+an MLP or something?
+
+00:41:53.390 --> 00:41:54.330 align:middle line:90%
+SARA BEERY: Huh?
+
+00:41:54.330 --> 00:41:56.050 align:middle line:90%
+AUDIENCE: [INAUDIBLE] MLP or--
+
+00:41:56.050 --> 00:42:02.290 align:middle line:84%
+SARA BEERY: Oh, the sigmas
+are sigmoid functions--
+
+00:42:02.290 --> 00:42:04.890 align:middle line:90%
+literally sigmoid functions.
+
+00:42:04.890 --> 00:42:06.730 align:middle line:84%
+Yeah, and the reason
+that people often
+
+00:42:06.730 --> 00:42:08.713 align:middle line:84%
+use-- you could use
+another non-linearity,
+
+00:42:08.713 --> 00:42:10.630 align:middle line:84%
+but the reason you use
+a sigmoid function here
+
+00:42:10.630 --> 00:42:13.030 align:middle line:84%
+is because it's bounded
+between 0 and 1.
+
+00:42:13.030 --> 00:42:15.990 align:middle line:84%
+So you want large values to map
+to 1 and small values to map
+
+00:42:15.990 --> 00:42:16.690 align:middle line:90%
+to 0.
+
+00:42:16.690 --> 00:42:20.063 align:middle line:84%
+AUDIENCE: Oh, but the weight
+going to [INAUDIBLE] not
+
+00:42:20.063 --> 00:42:20.730 align:middle line:90%
+on the diagonal.
+
+00:42:20.730 --> 00:42:22.030 align:middle line:90%
+SARA BEERY: Yes.
+
+00:42:22.030 --> 00:42:23.602 align:middle line:90%
+AUDIENCE: Makes sense.
+
+00:42:23.602 --> 00:42:26.310 align:middle line:84%
+SARA BEERY: The question was, if
+the weights are on the diagonal,
+
+00:42:26.310 --> 00:42:28.470 align:middle line:90%
+and the answer is no.
+
+00:42:28.470 --> 00:42:30.870 align:middle line:90%
+Cool.
+
+00:42:30.870 --> 00:42:32.510 align:middle line:84%
+Let's talk about
+sequence models.
+
+00:42:32.510 --> 00:42:36.310 align:middle line:84%
+So we just talked about
+a bunch of different ways
+
+00:42:36.310 --> 00:42:41.630 align:middle line:84%
+that you can think about
+trying to model sequences.
+
+00:42:41.630 --> 00:42:48.030 align:middle line:84%
+But there's this new
+kid in town of what we
+
+00:42:48.030 --> 00:42:50.710 align:middle line:90%
+call an autoregressive model.
+
+00:42:50.710 --> 00:42:53.350 align:middle line:84%
+So previously, we
+said, we're going
+
+00:42:53.350 --> 00:42:54.690 align:middle line:90%
+to have some fixed time window.
+
+00:42:54.690 --> 00:42:56.607 align:middle line:84%
+We're going to be sending
+this memory forward.
+
+00:42:56.607 --> 00:42:58.030 align:middle line:90%
+Things could be infinitely long.
+
+00:42:58.030 --> 00:42:59.910 align:middle line:84%
+But the idea of an
+autoregressive model
+
+00:42:59.910 --> 00:43:02.870 align:middle line:84%
+is quite simple, and we've
+introduced them before.
+
+00:43:02.870 --> 00:43:06.850 align:middle line:84%
+So the idea is you have some
+beginning of a sequence,
+
+00:43:06.850 --> 00:43:09.730 align:middle line:84%
+and then you ask it to
+predict what comes next.
+
+00:43:09.730 --> 00:43:12.410 align:middle line:84%
+And then this is the
+autoregressive part.
+
+00:43:12.410 --> 00:43:13.970 align:middle line:90%
+You add that in.
+
+00:43:13.970 --> 00:43:16.950 align:middle line:84%
+And now, again, you ask to
+predict what comes next.
+
+00:43:16.950 --> 00:43:22.670 align:middle line:84%
+And this idea of continually
+predicting what's next,
+
+00:43:22.670 --> 00:43:25.410 align:middle line:84%
+predicting what's
+next, this is how
+
+00:43:25.410 --> 00:43:29.530 align:middle line:84%
+we think about doing
+modern generative AI.
+
+00:43:29.530 --> 00:43:31.930 align:middle line:84%
+A lot of these
+things like ChatGPT,
+
+00:43:31.930 --> 00:43:33.850 align:middle line:84%
+these language models
+will explicitly
+
+00:43:33.850 --> 00:43:36.192 align:middle line:90%
+be trained to be autoregressive.
+
+00:43:36.192 --> 00:43:37.650 align:middle line:84%
+So of course,
+there's no reason why
+
+00:43:37.650 --> 00:43:39.850 align:middle line:84%
+you can't take
+the same framework
+
+00:43:39.850 --> 00:43:45.130 align:middle line:84%
+and instead tell it to fill
+in the blanks or something.
+
+00:43:45.130 --> 00:43:48.330 align:middle line:84%
+So when you're
+actually training one
+
+00:43:48.330 --> 00:43:51.850 align:middle line:84%
+of these autoregressive
+models, you
+
+00:43:51.850 --> 00:43:55.050 align:middle line:84%
+might have a bunch of different
+examples of sentences,
+
+00:43:55.050 --> 00:43:58.330 align:middle line:84%
+and then the
+beginnings of sentences
+
+00:43:58.330 --> 00:43:59.430 align:middle line:90%
+and then the next word.
+
+00:43:59.430 --> 00:44:01.570 align:middle line:84%
+And so then the
+learner has to learn
+
+00:44:01.570 --> 00:44:05.320 align:middle line:84%
+from the beginning of a
+sentence what is the next word.
+
+00:44:05.320 --> 00:44:08.480 align:middle line:84%
+And then when you're
+actually sampling,
+
+00:44:08.480 --> 00:44:10.960 align:middle line:84%
+you would do something like
+send in some new beginning
+
+00:44:10.960 --> 00:44:15.640 align:middle line:84%
+of a sentence, and then use your
+predictor until you want to stop
+
+00:44:15.640 --> 00:44:17.400 align:middle line:84%
+or until the predictor
+decides to stop
+
+00:44:17.400 --> 00:44:18.780 align:middle line:90%
+to predict the next thing.
+
+00:44:18.780 --> 00:44:19.480 align:middle line:90%
+Yeah?
+
+00:44:19.480 --> 00:44:23.780 align:middle line:84%
+AUDIENCE: You mean you try--
+predict something at time t?
+
+00:44:23.780 --> 00:44:28.920 align:middle line:84%
+I take that prediction and
+pass that through [INAUDIBLE]?
+
+00:44:28.920 --> 00:44:31.560 align:middle line:84%
+SARA BEERY: So now, you
+predict something at time t
+
+00:44:31.560 --> 00:44:33.660 align:middle line:84%
+And then you take
+that prediction,
+
+00:44:33.660 --> 00:44:35.780 align:middle line:84%
+and you add it to now
+what's your input.
+
+00:44:35.780 --> 00:44:39.160 align:middle line:84%
+So now, your input is
+everything up to t minus 1
+
+00:44:39.160 --> 00:44:41.160 align:middle line:90%
+and your prediction for t.
+
+00:44:41.160 --> 00:44:44.240 align:middle line:84%
+And then you ask it to predict t
+plus 1, and then you add it in.
+
+00:44:44.240 --> 00:44:46.840 align:middle line:84%
+AUDIENCE: And this is
+what you mean by sampling?
+
+00:44:46.840 --> 00:44:48.340 align:middle line:84%
+Is that why you
+used the word there?
+
+00:44:48.340 --> 00:44:50.640 align:middle line:84%
+SARA BEERY: Yeah, so then
+actually, the sampling part--
+
+00:44:50.640 --> 00:44:52.348 align:middle line:84%
+this is that's exactly
+what would happen.
+
+00:44:52.348 --> 00:44:56.640 align:middle line:84%
+You would send in as your input
+colorless, green, ideas, sleep.
+
+00:44:56.640 --> 00:45:00.320 align:middle line:84%
+Ask your predictor what
+comes next-- says furiously.
+
+00:45:00.320 --> 00:45:02.080 align:middle line:84%
+And then you would
+take that furiously,
+
+00:45:02.080 --> 00:45:02.960 align:middle line:90%
+and you could add it into.
+
+00:45:02.960 --> 00:45:05.043 align:middle line:84%
+And you could say, well,
+what if I said colorless,
+
+00:45:05.043 --> 00:45:07.620 align:middle line:84%
+green, ideas, sleep, furiously--
+then what comes next?
+
+00:45:07.620 --> 00:45:10.620 align:middle line:84%
+So this is this idea
+of autoregression,
+
+00:45:10.620 --> 00:45:12.893 align:middle line:84%
+that you're using
+your predictions,
+
+00:45:12.893 --> 00:45:15.060 align:middle line:84%
+adding them to the input,
+and then predicting again,
+
+00:45:15.060 --> 00:45:16.160 align:middle line:90%
+and again, and again.
+
+00:45:16.160 --> 00:45:19.700 align:middle line:84%
+AUDIENCE: Is that
+[INAUDIBLE] Is that one
+
+00:45:19.700 --> 00:45:24.180 align:middle line:84%
+way you could evaluate an RNN--
+just print out these samples
+
+00:45:24.180 --> 00:45:25.757 align:middle line:90%
+and see what it produces?
+
+00:45:25.757 --> 00:45:27.340 align:middle line:84%
+SARA BEERY: Yeah,
+so I mean, you could
+
+00:45:27.340 --> 00:45:31.360 align:middle line:84%
+think of using an RNN to
+predict the next word.
+
+00:45:31.360 --> 00:45:34.980 align:middle line:84%
+So your output would be what we
+think the next word might be.
+
+00:45:34.980 --> 00:45:40.700 align:middle line:84%
+But what an RNN doesn't have
+is this explicit loop back
+
+00:45:40.700 --> 00:45:44.100 align:middle line:84%
+where now that output
+from up to t plus 1
+
+00:45:44.100 --> 00:45:48.045 align:middle line:84%
+becomes the part of the
+input at the next time step.
+
+00:45:48.045 --> 00:45:48.920 align:middle line:90%
+Does that make sense?
+
+00:45:48.920 --> 00:45:51.378 align:middle line:84%
+So it's not innately something
+that you would do in an RNN,
+
+00:45:51.378 --> 00:45:54.120 align:middle line:84%
+but you could totally
+loop it around that way.
+
+00:45:54.120 --> 00:45:56.400 align:middle line:90%
+And kind of construct it.
+
+00:45:56.400 --> 00:45:56.900 align:middle line:90%
+Yeah?
+
+00:45:56.900 --> 00:45:58.820 align:middle line:84%
+AUDIENCE: So with this
+model, the predictor
+
+00:45:58.820 --> 00:46:01.880 align:middle line:84%
+outputs sort of a
+distribution, and then you
+
+00:46:01.880 --> 00:46:05.640 align:middle line:84%
+sample one element from
+this distribution, I guess.
+
+00:46:05.640 --> 00:46:06.760 align:middle line:90%
+But what if you--
+
+00:46:06.760 --> 00:46:09.440 align:middle line:90%
+[CHUCKLES]
+
+00:46:09.440 --> 00:46:10.800 align:middle line:90%
+SARA BEERY: Anyway, continue.
+
+00:46:10.800 --> 00:46:13.720 align:middle line:84%
+AUDIENCE: What if,
+instead of sampling one
+
+00:46:13.720 --> 00:46:16.880 align:middle line:84%
+and adding it to the input,
+what if you put the distribution
+
+00:46:16.880 --> 00:46:18.775 align:middle line:90%
+in the input?
+
+00:46:18.775 --> 00:46:20.900 align:middle line:84%
+SARA BEERY: Yeah, you're
+just begging the question.
+
+00:46:20.900 --> 00:46:23.600 align:middle line:84%
+We're about to get into
+the probability models.
+
+00:46:23.600 --> 00:46:26.200 align:middle line:84%
+But the question
+was basically what
+
+00:46:26.200 --> 00:46:29.480 align:middle line:84%
+we said-- what I just said
+was, you take the prediction,
+
+00:46:29.480 --> 00:46:31.120 align:middle line:84%
+and maybe that would
+be a distribution,
+
+00:46:31.120 --> 00:46:33.120 align:middle line:84%
+and you're picking
+the maximum, and then
+
+00:46:33.120 --> 00:46:34.493 align:middle line:90%
+you put that maximum in.
+
+00:46:34.493 --> 00:46:36.160 align:middle line:84%
+What if instead you
+put the distribution
+
+00:46:36.160 --> 00:46:38.620 align:middle line:90%
+of possible next options in?
+
+00:46:38.620 --> 00:46:40.120 align:middle line:84%
+And we'll talk
+about different ways
+
+00:46:40.120 --> 00:46:41.700 align:middle line:84%
+that people think
+about doing that.
+
+00:46:41.700 --> 00:46:44.760 align:middle line:90%
+
+
+00:46:44.760 --> 00:46:48.572 align:middle line:84%
+So essentially, what
+we're talking about is--
+
+00:46:48.572 --> 00:46:50.280 align:middle line:84%
+or one way that you
+can think about doing
+
+00:46:50.280 --> 00:46:55.220 align:middle line:84%
+this is trying to learn some
+probability of the next word.
+
+00:46:55.220 --> 00:47:00.480 align:middle line:84%
+And you can take that and
+factorize the probability
+
+00:47:00.480 --> 00:47:03.020 align:middle line:90%
+of that joint distribution.
+
+00:47:03.020 --> 00:47:04.660 align:middle line:84%
+Basically, you're
+just reformulating
+
+00:47:04.660 --> 00:47:07.140 align:middle line:84%
+the conditional
+distribution-- the probability
+
+00:47:07.140 --> 00:47:10.963 align:middle line:84%
+of the next word given
+everything we've seen before.
+
+00:47:10.963 --> 00:47:12.880 align:middle line:84%
+This is true for any
+probability distribution.
+
+00:47:12.880 --> 00:47:14.420 align:middle line:84%
+You factorize them
+out, and you get
+
+00:47:14.420 --> 00:47:22.900 align:middle line:84%
+something that's multiplicative
+and is somewhat still
+
+00:47:22.900 --> 00:47:24.940 align:middle line:84%
+autoregressive,
+because you're taking
+
+00:47:24.940 --> 00:47:26.820 align:middle line:84%
+the probability of
+every previous thing
+
+00:47:26.820 --> 00:47:28.740 align:middle line:90%
+up until that point.
+
+00:47:28.740 --> 00:47:36.540 align:middle line:84%
+So you can think of this-- the
+sequence models in transformers
+
+00:47:36.540 --> 00:47:39.180 align:middle line:84%
+when we talked about it in the
+transformer lecture last week--
+
+00:47:39.180 --> 00:47:42.440 align:middle line:84%
+as modeling for example, the
+probability of a sentence.
+
+00:47:42.440 --> 00:47:43.960 align:middle line:84%
+And then that could
+be generative.
+
+00:47:43.960 --> 00:47:46.998 align:middle line:84%
+So here what this
+looks like in practice.
+
+00:47:46.998 --> 00:47:49.540 align:middle line:84%
+So say you're trying to look at
+the probability of "once upon
+
+00:47:49.540 --> 00:47:50.900 align:middle line:90%
+a time."
+
+00:47:50.900 --> 00:47:52.940 align:middle line:84%
+That's the same as the
+probability of "once--"
+
+00:47:52.940 --> 00:47:56.060 align:middle line:84%
+the probability of starting
+with the first word "once--"
+
+00:47:56.060 --> 00:47:59.160 align:middle line:84%
+times the probability
+of getting "upon,"
+
+00:47:59.160 --> 00:48:01.240 align:middle line:84%
+given that your first
+word was "once,"
+
+00:48:01.240 --> 00:48:04.440 align:middle line:84%
+times the probability that you'd
+get "a" given that you already
+
+00:48:04.440 --> 00:48:08.560 align:middle line:84%
+had "once upon," and then,
+et cetera, et cetera.
+
+00:48:08.560 --> 00:48:12.880 align:middle line:84%
+So this is how you would
+model the probability of given
+
+00:48:12.880 --> 00:48:16.853 align:middle line:84%
+sentence-- the
+likelihood of a sentence.
+
+00:48:16.853 --> 00:48:20.800 align:middle line:84%
+So what's a function
+that we could
+
+00:48:20.800 --> 00:48:24.920 align:middle line:84%
+use that would map the
+probability of the next word
+
+00:48:24.920 --> 00:48:27.100 align:middle line:90%
+given the previous word?
+
+00:48:27.100 --> 00:48:29.680 align:middle line:90%
+
+
+00:48:29.680 --> 00:48:33.880 align:middle line:84%
+Maybe some of the things that
+we've talked about in class--
+
+00:48:33.880 --> 00:48:35.420 align:middle line:90%
+specifically the probability.
+
+00:48:35.420 --> 00:48:43.760 align:middle line:90%
+
+
+00:48:43.760 --> 00:48:44.955 align:middle line:90%
+Yeah, go ahead?
+
+00:48:44.955 --> 00:48:47.080 align:middle line:84%
+AUDIENCE: [INAUDIBLE]
+regression or some deep thing
+
+00:48:47.080 --> 00:48:49.407 align:middle line:90%
+going into logistic regression?
+
+00:48:49.407 --> 00:48:51.240 align:middle line:84%
+SARA BEERY: So you said
+logistic regression.
+
+00:48:51.240 --> 00:48:51.990 align:middle line:90%
+AUDIENCE: Softmax.
+
+00:48:51.990 --> 00:48:53.500 align:middle line:84%
+SARA BEERY: A
+softmax-- oh, yeah.
+
+00:48:53.500 --> 00:48:55.200 align:middle line:84%
+So softmax takes
+an input and then
+
+00:48:55.200 --> 00:48:57.080 align:middle line:84%
+gives us something
+that might not
+
+00:48:57.080 --> 00:48:59.530 align:middle line:84%
+be a probability distribution,
+but at least sums to 1.
+
+00:48:59.530 --> 00:49:04.790 align:middle line:84%
+So what is one of the ways we
+frequently use the softmax?
+
+00:49:04.790 --> 00:49:05.668 align:middle line:90%
+When we're doing--
+
+00:49:05.668 --> 00:49:06.710 align:middle line:90%
+AUDIENCE: Classification.
+
+00:49:06.710 --> 00:49:07.835 align:middle line:90%
+SARA BEERY: Classification.
+
+00:49:07.835 --> 00:49:08.990 align:middle line:90%
+Yes, exactly.
+
+00:49:08.990 --> 00:49:12.130 align:middle line:84%
+So we could just treat this
+as a next-word classifier.
+
+00:49:12.130 --> 00:49:14.190 align:middle line:84%
+And we I think we talked
+in the hacker lecture
+
+00:49:14.190 --> 00:49:17.223 align:middle line:84%
+about how a reasonable starting
+point for a lot of things
+
+00:49:17.223 --> 00:49:19.390 align:middle line:84%
+is just being like, let's
+see if we can formulate it
+
+00:49:19.390 --> 00:49:21.430 align:middle line:90%
+as a multi-class classifier.
+
+00:49:21.430 --> 00:49:24.410 align:middle line:84%
+So here, then the
+input is "once upon a."
+
+00:49:24.410 --> 00:49:27.710 align:middle line:84%
+And then you learn a
+next word classifier
+
+00:49:27.710 --> 00:49:29.910 align:middle line:84%
+that would probably,
+by taking a softmax,
+
+00:49:29.910 --> 00:49:32.430 align:middle line:84%
+give us some
+distribution over the
+
+00:49:32.430 --> 00:49:34.050 align:middle line:90%
+likelihood of the next words.
+
+00:49:34.050 --> 00:49:39.470 align:middle line:84%
+And so now, here, a standard
+multi-class classifier
+
+00:49:39.470 --> 00:49:41.030 align:middle line:90%
+will use some neural net.
+
+00:49:41.030 --> 00:49:43.830 align:middle line:84%
+That softmax will squish the
+outputs into a probability mass
+
+00:49:43.830 --> 00:49:45.990 align:middle line:90%
+function.
+
+00:49:45.990 --> 00:49:48.150 align:middle line:90%
+Non-negative vector sums to 1.
+
+00:49:48.150 --> 00:49:53.270 align:middle line:84%
+And then you learn that by
+penalizing it via cross-entropy.
+
+00:49:53.270 --> 00:49:55.370 align:middle line:84%
+So how would you map
+words to classes?
+
+00:49:55.370 --> 00:49:57.390 align:middle line:90%
+How many classes would there be?
+
+00:49:57.390 --> 00:50:00.010 align:middle line:90%
+
+
+00:50:00.010 --> 00:50:01.610 align:middle line:90%
+Lots.
+
+00:50:01.610 --> 00:50:04.970 align:middle line:84%
+So if you use words and
+u-- every possible word
+
+00:50:04.970 --> 00:50:07.650 align:middle line:84%
+in the English language, which
+there are many more words
+
+00:50:07.650 --> 00:50:09.113 align:middle line:84%
+in some other
+languages on Earth,
+
+00:50:09.113 --> 00:50:11.530 align:middle line:84%
+and you represent all those
+words as 1-hot-vectors of size
+
+00:50:11.530 --> 00:50:15.010 align:middle line:90%
+k, k would be about 100,000.
+
+00:50:15.010 --> 00:50:17.010 align:middle line:84%
+And we know that
+multi-class classification
+
+00:50:17.010 --> 00:50:22.010 align:middle line:84%
+starts to be a lot less easy to
+learn when the number of classes
+
+00:50:22.010 --> 00:50:23.350 align:middle line:90%
+starts to scale quite large.
+
+00:50:23.350 --> 00:50:27.490 align:middle line:84%
+So it is possible, for example,
+like we run some 100,000
+
+00:50:27.490 --> 00:50:30.270 align:middle line:84%
+classifiers for
+species in iNaturalist.
+
+00:50:30.270 --> 00:50:33.690 align:middle line:84%
+There's about 450,000 species
+currently in iNaturalist.
+
+00:50:33.690 --> 00:50:35.610 align:middle line:84%
+We train classifiers
+for all of them,
+
+00:50:35.610 --> 00:50:39.450 align:middle line:90%
+but you need a lot of data.
+
+00:50:39.450 --> 00:50:43.010 align:middle line:90%
+And it can be quite unstable.
+
+00:50:43.010 --> 00:50:48.370 align:middle line:84%
+So instead, another
+thing that you could do
+
+00:50:48.370 --> 00:50:53.890 align:middle line:84%
+is you could represent
+every character as a class.
+
+00:50:53.890 --> 00:50:56.870 align:middle line:84%
+So now, in the English
+language, the alphabet is 26.
+
+00:50:56.870 --> 00:50:58.950 align:middle line:84%
+So now, we only
+have k equals 26.
+
+00:50:58.950 --> 00:51:01.910 align:middle line:84%
+And that's a really
+reasonable set of classes.
+
+00:51:01.910 --> 00:51:05.190 align:middle line:84%
+But the thing is, now your
+classification is fewer way,
+
+00:51:05.190 --> 00:51:07.665 align:middle line:84%
+but the sequence
+prediction is a lot harder.
+
+00:51:07.665 --> 00:51:09.290 align:middle line:84%
+You have to take a
+lot more time steps.
+
+00:51:09.290 --> 00:51:11.510 align:middle line:84%
+There's a lot more predictions
+that you have to take.
+
+00:51:11.510 --> 00:51:16.810 align:middle line:84%
+And it's pretty easy for these
+things to devolve over time.
+
+00:51:16.810 --> 00:51:21.990 align:middle line:84%
+Imagine it starts spelling
+something weird, and then
+
+00:51:21.990 --> 00:51:24.470 align:middle line:90%
+where are you going to go?
+
+00:51:24.470 --> 00:51:27.750 align:middle line:84%
+So ideally, you'd want
+something somewhat in between.
+
+00:51:27.750 --> 00:51:31.630 align:middle line:84%
+And it turns out, in practice,
+that what's kind of a sweet spot
+
+00:51:31.630 --> 00:51:39.470 align:middle line:84%
+is this idea of byte pairs,
+which is 2 character pairs.
+
+00:51:39.470 --> 00:51:42.770 align:middle line:90%
+And so now, you represent words.
+
+00:51:42.770 --> 00:51:46.310 align:middle line:84%
+It's about 1,000-- 26 times
+26, maybe plus a few more--
+
+00:51:46.310 --> 00:51:48.190 align:middle line:90%
+of these byte pairs.
+
+00:51:48.190 --> 00:51:50.390 align:middle line:84%
+These tokens of these
+two character pairs
+
+00:51:50.390 --> 00:51:53.870 align:middle line:84%
+is quite frequent, even in
+the largest scale language
+
+00:51:53.870 --> 00:51:56.570 align:middle line:90%
+models we have.
+
+00:51:56.570 --> 00:51:57.850 align:middle line:90%
+Cool.
+
+00:51:57.850 --> 00:52:03.810 align:middle line:84%
+So let's talk about then
+what this might look like.
+
+00:52:03.810 --> 00:52:07.770 align:middle line:84%
+So you have this kind of
+probability, this classifier
+
+00:52:07.770 --> 00:52:10.050 align:middle line:90%
+for the next step, basically.
+
+00:52:10.050 --> 00:52:13.730 align:middle line:84%
+And then you send your
+output prediction forward.
+
+00:52:13.730 --> 00:52:15.670 align:middle line:90%
+So one example of this--
+
+00:52:15.670 --> 00:52:19.610 align:middle line:84%
+this is an example that's taking
+in some caffeine molecule.
+
+00:52:19.610 --> 00:52:21.890 align:middle line:84%
+And then you have a model
+that's trying to output
+
+00:52:21.890 --> 00:52:24.690 align:middle line:90%
+a description of that molecule.
+
+00:52:24.690 --> 00:52:27.630 align:middle line:84%
+So maybe that would look
+something like stimulant--
+
+00:52:27.630 --> 00:52:33.090 align:middle line:84%
+"a mild stimulant that
+enhances cognitive ability."
+
+00:52:33.090 --> 00:52:35.868 align:middle line:84%
+So you use this
+caffeine molecule.
+
+00:52:35.868 --> 00:52:37.410 align:middle line:84%
+You have some
+representation that you
+
+00:52:37.410 --> 00:52:41.830 align:middle line:84%
+use to start your word
+generator somewhere,
+
+00:52:41.830 --> 00:52:43.550 align:middle line:84%
+and then you would
+describe this.
+
+00:52:43.550 --> 00:52:46.530 align:middle line:84%
+Maybe this we would
+call a molecule to text.
+
+00:52:46.530 --> 00:52:51.050 align:middle line:84%
+So one way you could do this
+would be something like an LSTM.
+
+00:52:51.050 --> 00:52:53.850 align:middle line:90%
+So now, you have your molecule.
+
+00:52:53.850 --> 00:52:55.600 align:middle line:84%
+You run it through
+some GNN that gives you
+
+00:52:55.600 --> 00:52:57.475 align:middle line:84%
+some representation of
+that molecule that you
+
+00:52:57.475 --> 00:53:00.035 align:middle line:84%
+can use to condition
+on your starting point.
+
+00:53:00.035 --> 00:53:01.660 align:middle line:84%
+Then, once you have
+the starting point,
+
+00:53:01.660 --> 00:53:05.980 align:middle line:84%
+the LSTM is just predicting that
+next word at any given point.
+
+00:53:05.980 --> 00:53:11.240 align:middle line:84%
+And you're taking the
+previous things into account.
+
+00:53:11.240 --> 00:53:15.960 align:middle line:84%
+So if you're actually
+looking to train this, now,
+
+00:53:15.960 --> 00:53:19.280 align:middle line:84%
+the training data is something
+like "a mild stimulant that
+
+00:53:19.280 --> 00:53:22.425 align:middle line:84%
+enhances cognitive ability,"
+end character-- stop predicting.
+
+00:53:22.425 --> 00:53:23.800 align:middle line:84%
+So now, for the
+first time, we've
+
+00:53:23.800 --> 00:53:27.720 align:middle line:84%
+introduced the idea of
+stopping when you're done.
+
+00:53:27.720 --> 00:53:29.840 align:middle line:84%
+And then your
+outputs would maybe
+
+00:53:29.840 --> 00:53:33.560 align:middle line:84%
+be some probability
+distribution or likelihood
+
+00:53:33.560 --> 00:53:35.968 align:middle line:84%
+over those next words
+given the previous words.
+
+00:53:35.968 --> 00:53:37.760 align:middle line:84%
+And then you could
+train it using something
+
+00:53:37.760 --> 00:53:39.343 align:middle line:84%
+like a max likelihood
+objective, where
+
+00:53:39.343 --> 00:53:42.040 align:middle line:84%
+you want to maximize the
+probability the model assigns
+
+00:53:42.040 --> 00:53:43.340 align:middle line:90%
+to each target word.
+
+00:53:43.340 --> 00:53:47.560 align:middle line:84%
+You want it to maximize the
+probability of the word that
+
+00:53:47.560 --> 00:53:49.260 align:middle line:90%
+was actually in the sentence.
+
+00:53:49.260 --> 00:53:55.740 align:middle line:90%
+
+
+00:53:55.740 --> 00:53:57.440 align:middle line:90%
+So now, you have your targets.
+
+00:53:57.440 --> 00:54:00.135 align:middle line:84%
+You 1-hot encode them, and
+then you can do something like
+
+00:54:00.135 --> 00:54:02.260 align:middle line:84%
+maximizing cross-entropy,
+because now you have this
+
+00:54:02.260 --> 00:54:03.480 align:middle line:90%
+multi-class classification.
+
+00:54:03.480 --> 00:54:06.580 align:middle line:84%
+You can train it the same way
+we've trained things before.
+
+00:54:06.580 --> 00:54:09.380 align:middle line:84%
+Now, one thing
+you might actually
+
+00:54:09.380 --> 00:54:11.700 align:middle line:84%
+want to do in
+training-- currently,
+
+00:54:11.700 --> 00:54:14.180 align:middle line:84%
+we're saying you would
+take your prediction,
+
+00:54:14.180 --> 00:54:17.500 align:middle line:84%
+and then you would use
+that and send it forward
+
+00:54:17.500 --> 00:54:20.940 align:middle line:84%
+to the next thing as
+the previous word.
+
+00:54:20.940 --> 00:54:22.480 align:middle line:90%
+And you're learning from that.
+
+00:54:22.480 --> 00:54:24.340 align:middle line:84%
+But actually, in
+training, often, we
+
+00:54:24.340 --> 00:54:27.700 align:middle line:84%
+use something called teacher
+forcing, which is basically,
+
+00:54:27.700 --> 00:54:30.320 align:middle line:84%
+even if you predict the wrong
+thing at a given time step,
+
+00:54:30.320 --> 00:54:34.100 align:middle line:84%
+you enforce the correct
+word goes in as the input.
+
+00:54:34.100 --> 00:54:39.180 align:middle line:84%
+So you actually send this in
+now and condition each next word
+
+00:54:39.180 --> 00:54:42.220 align:middle line:84%
+prediction on the ground-truth
+preceding words instead
+
+00:54:42.220 --> 00:54:45.140 align:middle line:84%
+of letting it devolve
+and then penalizing it
+
+00:54:45.140 --> 00:54:49.220 align:middle line:84%
+for every mistake it made after
+it made its first mistake.
+
+00:54:49.220 --> 00:54:52.040 align:middle line:84%
+And then at test time,
+what you would do
+
+00:54:52.040 --> 00:54:53.820 align:middle line:84%
+is now you have
+your starting point,
+
+00:54:53.820 --> 00:54:56.445 align:middle line:84%
+and then you're going to sample
+from the predicted distribution
+
+00:54:56.445 --> 00:54:57.480 align:middle line:90%
+over those words.
+
+00:54:57.480 --> 00:54:59.418 align:middle line:90%
+So for example, "a."
+
+00:54:59.418 --> 00:55:00.960 align:middle line:84%
+Now, we do that
+autoregressive thing,
+
+00:55:00.960 --> 00:55:04.800 align:middle line:84%
+where we send that in, and
+then we predict the next thing.
+
+00:55:04.800 --> 00:55:10.360 align:middle line:84%
+"A strong stimulant that
+enhances cognitive ability."
+
+00:55:10.360 --> 00:55:16.320 align:middle line:84%
+But here, you'll note that after
+"a," we weren't super sure what
+
+00:55:16.320 --> 00:55:17.340 align:middle line:90%
+was likely next.
+
+00:55:17.340 --> 00:55:19.840 align:middle line:84%
+And so the model
+predicted "strong."
+
+00:55:19.840 --> 00:55:25.620 align:middle line:84%
+And it turns out that
+"strong" was exactly wrong.
+
+00:55:25.620 --> 00:55:28.540 align:middle line:90%
+We said "mild" originally.
+
+00:55:28.540 --> 00:55:31.080 align:middle line:84%
+And that actually is
+pretty different in terms
+
+00:55:31.080 --> 00:55:33.040 align:middle line:90%
+of the meaning of that sentence.
+
+00:55:33.040 --> 00:55:34.562 align:middle line:84%
+And so this is
+something where you
+
+00:55:34.562 --> 00:55:36.520 align:middle line:84%
+have this autoregressive
+modeling-- if you make
+
+00:55:36.520 --> 00:55:39.240 align:middle line:84%
+one mistake, then
+often, it can take you
+
+00:55:39.240 --> 00:55:41.000 align:middle line:84%
+down a path in almost
+this tree where
+
+00:55:41.000 --> 00:55:43.000 align:middle line:90%
+you make a lot of mistakes.
+
+00:55:43.000 --> 00:55:44.680 align:middle line:84%
+And so one way
+that people handle
+
+00:55:44.680 --> 00:55:47.280 align:middle line:84%
+that is they do something
+called beam search, where you
+
+00:55:47.280 --> 00:55:51.140 align:middle line:84%
+essentially let the model
+choose top k like what it thinks
+
+00:55:51.140 --> 00:55:53.000 align:middle line:90%
+are the k most likely things.
+
+00:55:53.000 --> 00:55:55.220 align:middle line:84%
+And then from each of
+those you choose the k
+
+00:55:55.220 --> 00:55:56.680 align:middle line:90%
+most likely things next.
+
+00:55:56.680 --> 00:55:58.820 align:middle line:84%
+You fill out this
+entire tree, and then
+
+00:55:58.820 --> 00:56:02.757 align:middle line:84%
+you calculate the probability of
+the entire path along the tree
+
+00:56:02.757 --> 00:56:04.340 align:middle line:84%
+for each of them,
+and you pick the one
+
+00:56:04.340 --> 00:56:07.460 align:middle line:90%
+that scores best overall.
+
+00:56:07.460 --> 00:56:10.300 align:middle line:84%
+And so then the score is
+the model's confidence
+
+00:56:10.300 --> 00:56:13.940 align:middle line:84%
+of the entire sentence
+along that tree.
+
+00:56:13.940 --> 00:56:18.220 align:middle line:84%
+And there what we might learn is
+that actually maybe conditioned
+
+00:56:18.220 --> 00:56:22.260 align:middle line:84%
+on the input that this
+correct path on the tree
+
+00:56:22.260 --> 00:56:24.900 align:middle line:90%
+would score higher.
+
+00:56:24.900 --> 00:56:28.320 align:middle line:84%
+And this type of approach
+for language modeling--
+
+00:56:28.320 --> 00:56:32.940 align:middle line:84%
+lots of different deep things
+plus LSTM-flavored things put
+
+00:56:32.940 --> 00:56:37.860 align:middle line:84%
+together to try to generate text
+or describe images or do VQA--
+
+00:56:37.860 --> 00:56:40.540 align:middle line:84%
+this was really popular
+a few years ago.
+
+00:56:40.540 --> 00:56:45.340 align:middle line:84%
+This was definitely kind the
+approach that people took
+
+00:56:45.340 --> 00:56:49.760 align:middle line:90%
+2015-ish timeframe.
+
+00:56:49.760 --> 00:56:51.920 align:middle line:84%
+Of course, I think
+today, what we see
+
+00:56:51.920 --> 00:56:55.360 align:middle line:84%
+is often people will use
+transformers instead.
+
+00:56:55.360 --> 00:57:00.640 align:middle line:84%
+And we can talk a bit
+about what that means.
+
+00:57:00.640 --> 00:57:01.600 align:middle line:90%
+Yes?
+
+00:57:01.600 --> 00:57:04.600 align:middle line:84%
+AUDIENCE: So suppose I'm
+only interested in predicting
+
+00:57:04.600 --> 00:57:07.080 align:middle line:90%
+the third next word.
+
+00:57:07.080 --> 00:57:10.480 align:middle line:84%
+For example, should I do it
+in an autoregressive way using
+
+00:57:10.480 --> 00:57:11.780 align:middle line:90%
+the beam search and so on?
+
+00:57:11.780 --> 00:57:15.140 align:middle line:84%
+Or should I use a model that
+only outputs the third word?
+
+00:57:15.140 --> 00:57:17.000 align:middle line:84%
+Because it seems
+to me that there
+
+00:57:17.000 --> 00:57:20.208 align:middle line:84%
+is some information in the two
+previous words that help you.
+
+00:57:20.208 --> 00:57:22.000 align:middle line:84%
+SARA BEERY: I mean, I
+think that's probably
+
+00:57:22.000 --> 00:57:23.660 align:middle line:90%
+a question that would depend.
+
+00:57:23.660 --> 00:57:25.280 align:middle line:84%
+So the question
+was, what if I only
+
+00:57:25.280 --> 00:57:29.760 align:middle line:84%
+care about predicting the word
+three ahead of where I am now.
+
+00:57:29.760 --> 00:57:32.320 align:middle line:84%
+I don't care about
+the things in between.
+
+00:57:32.320 --> 00:57:34.290 align:middle line:84%
+Should I still
+model all the things
+
+00:57:34.290 --> 00:57:36.040 align:middle line:84%
+in between one step
+at a time, or should I
+
+00:57:36.040 --> 00:57:39.640 align:middle line:84%
+try to learn a model that
+predicts three words in advance?
+
+00:57:39.640 --> 00:57:41.400 align:middle line:84%
+I think my intuition
+aligns with yours
+
+00:57:41.400 --> 00:57:44.640 align:middle line:84%
+that there's signal in
+those intermediate words
+
+00:57:44.640 --> 00:57:47.790 align:middle line:84%
+that you would really
+want to propagate forward.
+
+00:57:47.790 --> 00:57:50.870 align:middle line:84%
+And so probably I would
+not try to just guess from
+
+00:57:50.870 --> 00:57:54.230 align:middle line:84%
+"a" what's the word three in
+advance without some context
+
+00:57:54.230 --> 00:57:55.730 align:middle line:84%
+of what the
+intermediate words were.
+
+00:57:55.730 --> 00:57:58.550 align:middle line:84%
+So I'd probably do this maybe
+with the beam search type thing.
+
+00:57:58.550 --> 00:58:00.630 align:middle line:84%
+AUDIENCE: So then
+if I want to predict
+
+00:58:00.630 --> 00:58:03.110 align:middle line:84%
+the temperature
+in the week, do I
+
+00:58:03.110 --> 00:58:07.922 align:middle line:84%
+need for every day
+to say [INAUDIBLE]?
+
+00:58:07.922 --> 00:58:08.630 align:middle line:90%
+SARA BEERY: Yeah.
+
+00:58:08.630 --> 00:58:11.390 align:middle line:84%
+Well, these days a lot
+of temperature models
+
+00:58:11.390 --> 00:58:14.687 align:middle line:84%
+are transformers with really
+large context windows.
+
+00:58:14.687 --> 00:58:16.270 align:middle line:84%
+So you're actually
+sharing information
+
+00:58:16.270 --> 00:58:19.450 align:middle line:84%
+across all the temperatures
+indeterminately.
+
+00:58:19.450 --> 00:58:22.988 align:middle line:84%
+And we'll talk in a
+second about, when you're
+
+00:58:22.988 --> 00:58:25.030 align:middle line:84%
+talking about these long
+range dependencies, what
+
+00:58:25.030 --> 00:58:27.590 align:middle line:84%
+the trade-offs are when you're
+talking about using something
+
+00:58:27.590 --> 00:58:31.430 align:middle line:84%
+like recursion, or even
+recursion with these memory
+
+00:58:31.430 --> 00:58:35.230 align:middle line:84%
+controllers, versus using
+something like attention that
+
+00:58:35.230 --> 00:58:41.590 align:middle line:84%
+potentially has easier
+ways of sharing information
+
+00:58:41.590 --> 00:58:44.130 align:middle line:84%
+over long time horizons--
+in more flexible ways,
+
+00:58:44.130 --> 00:58:48.250 align:middle line:84%
+I guess is probably a
+better way to put it.
+
+00:58:48.250 --> 00:58:49.350 align:middle line:90%
+Cool.
+
+00:58:49.350 --> 00:58:53.290 align:middle line:84%
+So we talked previously
+about the fact
+
+00:58:53.290 --> 00:58:56.170 align:middle line:84%
+that we want to
+recognize that this is
+
+00:58:56.170 --> 00:58:58.370 align:middle line:90%
+Frank even when he's outside.
+
+00:58:58.370 --> 00:59:01.890 align:middle line:84%
+And just to be clear, he only
+gets supervised outside time,
+
+00:59:01.890 --> 00:59:04.210 align:middle line:84%
+because I'm a good
+naturalist, and I
+
+00:59:04.210 --> 00:59:07.890 align:middle line:90%
+don't let my cat kill birds.
+
+00:59:07.890 --> 00:59:10.470 align:middle line:84%
+But he gets supervised outside
+time on our balcony sometimes,
+
+00:59:10.470 --> 00:59:11.550 align:middle line:90%
+and he loves it.
+
+00:59:11.550 --> 00:59:14.330 align:middle line:84%
+And I want to recognize
+him out there.
+
+00:59:14.330 --> 00:59:20.450 align:middle line:84%
+So here, say we had this
+concept of using a memory unit.
+
+00:59:20.450 --> 00:59:24.610 align:middle line:84%
+So one thing you could do
+instead of passing memory
+
+00:59:24.610 --> 00:59:27.130 align:middle line:84%
+forward as you went
+through the sequence
+
+00:59:27.130 --> 00:59:29.530 align:middle line:84%
+is you could just
+let every single time
+
+00:59:29.530 --> 00:59:31.750 align:middle line:90%
+step get a memory unit.
+
+00:59:31.750 --> 00:59:36.970 align:middle line:84%
+You could just keep memories
+from every single point in time.
+
+00:59:36.970 --> 00:59:38.850 align:middle line:84%
+And so then you would,
+instead of needing
+
+00:59:38.850 --> 00:59:41.370 align:middle line:84%
+to figure out how to send
+the information forward
+
+00:59:41.370 --> 00:59:44.910 align:middle line:84%
+in time in this constrained way,
+you could just directly link
+
+00:59:44.910 --> 00:59:47.190 align:middle line:90%
+your old memories.
+
+00:59:47.190 --> 00:59:50.790 align:middle line:84%
+And so there are methods that
+directly link old memories
+
+00:59:50.790 --> 00:59:52.790 align:middle line:90%
+to future predictions.
+
+00:59:52.790 --> 00:59:56.270 align:middle line:84%
+Things like temporal
+convolutions do this.
+
+00:59:56.270 --> 00:59:58.370 align:middle line:84%
+Things like attention
+and transformers do this.
+
+00:59:58.370 --> 01:00:00.990 align:middle line:84%
+And we talked a lot
+about those last lecture.
+
+01:00:00.990 --> 01:00:03.090 align:middle line:84%
+And then there are also
+these memory networks
+
+01:00:03.090 --> 01:00:05.590 align:middle line:84%
+that you guys could take a look
+at if you're interested that
+
+01:00:05.590 --> 01:00:10.030 align:middle line:84%
+explicitly try to have these
+memory representations or units
+
+01:00:10.030 --> 01:00:12.550 align:middle line:84%
+that you can access
+over time, maybe
+
+01:00:12.550 --> 01:00:15.830 align:middle line:84%
+through a separate
+bank of memories.
+
+01:00:15.830 --> 01:00:17.990 align:middle line:84%
+So if we're actually
+trying to model arbitrarily
+
+01:00:17.990 --> 01:00:20.532 align:middle line:84%
+long sequences, we've talked
+about a couple of ways to do it.
+
+01:00:20.532 --> 01:00:23.070 align:middle line:84%
+So we talked about
+recurrence where now you
+
+01:00:23.070 --> 01:00:25.530 align:middle line:84%
+have these recurrent weights
+that are shared over time.
+
+01:00:25.530 --> 01:00:28.630 align:middle line:84%
+And you have this cycle of
+where you're passing forward
+
+01:00:28.630 --> 01:00:30.510 align:middle line:84%
+information over
+some time window.
+
+01:00:30.510 --> 01:00:32.510 align:middle line:84%
+And the way that you pass
+that information could
+
+01:00:32.510 --> 01:00:34.050 align:middle line:90%
+be just vanilla recursion.
+
+01:00:34.050 --> 01:00:35.330 align:middle line:90%
+It be something like an LSTM.
+
+01:00:35.330 --> 01:00:37.630 align:middle line:84%
+There's a lot more
+complicated ways to do it.
+
+01:00:37.630 --> 01:00:39.370 align:middle line:90%
+We talked about convolution.
+
+01:00:39.370 --> 01:00:41.810 align:middle line:84%
+You can model an arbitrarily
+long sequence of convolution.
+
+01:00:41.810 --> 01:00:44.432 align:middle line:84%
+But now you have this fixed
+set of convolution weights.
+
+01:00:44.432 --> 01:00:45.890 align:middle line:84%
+Those are shared
+over time, but you
+
+01:00:45.890 --> 01:00:48.290 align:middle line:84%
+don't get to see anything
+outside of the time
+
+01:00:48.290 --> 01:00:50.730 align:middle line:90%
+window of that convolution.
+
+01:00:50.730 --> 01:00:53.370 align:middle line:84%
+And then the last thing we talk
+about is attention where, here,
+
+01:00:53.370 --> 01:00:54.970 align:middle line:84%
+weights are
+dynamically determined
+
+01:00:54.970 --> 01:00:56.750 align:middle line:90%
+as a function of the data.
+
+01:00:56.750 --> 01:01:01.170 align:middle line:84%
+So you have this convolutional
+kernel with attention weights.
+
+01:01:01.170 --> 01:01:04.470 align:middle line:84%
+So if you look at recurrence,
+that looks like this.
+
+01:01:04.470 --> 01:01:06.330 align:middle line:84%
+You're passing that
+forward in time.
+
+01:01:06.330 --> 01:01:07.772 align:middle line:90%
+Convolution looks like this.
+
+01:01:07.772 --> 01:01:09.230 align:middle line:84%
+So you're getting
+that time window,
+
+01:01:09.230 --> 01:01:11.090 align:middle line:84%
+but you're not passing
+it forward in time.
+
+01:01:11.090 --> 01:01:13.010 align:middle line:84%
+And then attention
+will look something
+
+01:01:13.010 --> 01:01:18.330 align:middle line:84%
+like this, where now the
+attention weights are
+
+01:01:18.330 --> 01:01:19.470 align:middle line:90%
+a function of the data.
+
+01:01:19.470 --> 01:01:22.210 align:middle line:84%
+So the way that you
+keep the information
+
+01:01:22.210 --> 01:01:26.690 align:middle line:84%
+is dependent on the inputs,
+which is quite flexible.
+
+01:01:26.690 --> 01:01:29.390 align:middle line:84%
+And then, of course,
+in all of these cases,
+
+01:01:29.390 --> 01:01:31.650 align:middle line:84%
+you can have some sense of,
+at least the bottom two,
+
+01:01:31.650 --> 01:01:33.532 align:middle line:90%
+of what this time window is.
+
+01:01:33.532 --> 01:01:35.490 align:middle line:84%
+And the top one, we do
+talk about a time window
+
+01:01:35.490 --> 01:01:37.570 align:middle line:90%
+for backprop.
+
+01:01:37.570 --> 01:01:40.383 align:middle line:84%
+So this is interesting,
+because now,
+
+01:01:40.383 --> 01:01:42.050 align:middle line:84%
+if you take these
+different approaches--
+
+01:01:42.050 --> 01:01:44.750 align:middle line:84%
+if you use something like
+self-attention, or recurrence,
+
+01:01:44.750 --> 01:01:46.550 align:middle line:90%
+or convolution--
+
+01:01:46.550 --> 01:01:52.990 align:middle line:84%
+they're going to be different
+computational complexities based
+
+01:01:52.990 --> 01:01:56.830 align:middle line:84%
+on the sequence length-- so
+how big your sequence is--
+
+01:01:56.830 --> 01:01:59.347 align:middle line:84%
+the dimension of
+the representation,
+
+01:01:59.347 --> 01:02:01.430 align:middle line:84%
+and then like the kernel
+size of your convolution,
+
+01:02:01.430 --> 01:02:02.930 align:middle line:84%
+and the size of
+the neighborhood,
+
+01:02:02.930 --> 01:02:04.550 align:middle line:84%
+I guess, if you're going
+to have some of restricted
+
+01:02:04.550 --> 01:02:06.383 align:middle line:84%
+self-attention, like a
+window that's sliding
+
+01:02:06.383 --> 01:02:08.990 align:middle line:84%
+instead of just self-attention
+over the entire string.
+
+01:02:08.990 --> 01:02:11.470 align:middle line:84%
+And this is actually from that
+"Attention is All you Need"
+
+01:02:11.470 --> 01:02:11.850 align:middle line:90%
+paper.
+
+01:02:11.850 --> 01:02:13.517 align:middle line:84%
+And the name "Attention
+is All you Need"
+
+01:02:13.517 --> 01:02:17.530 align:middle line:84%
+is actually really trying to
+say that we don't need memory.
+
+01:02:17.530 --> 01:02:19.750 align:middle line:90%
+All we need is attention.
+
+01:02:19.750 --> 01:02:21.870 align:middle line:84%
+And here, you can
+see that when you
+
+01:02:21.870 --> 01:02:23.370 align:middle line:84%
+talk about the
+number of operations,
+
+01:02:23.370 --> 01:02:25.210 align:middle line:84%
+the maximal length,
+the complexity,
+
+01:02:25.210 --> 01:02:28.510 align:middle line:84%
+there's a lot of trade-offs here
+in terms of what's possible.
+
+01:02:28.510 --> 01:02:30.630 align:middle line:84%
+But of course, with something
+like self-attention,
+
+01:02:30.630 --> 01:02:32.030 align:middle line:90%
+you have this n squared.
+
+01:02:32.030 --> 01:02:34.350 align:middle line:84%
+In terms of the length
+of the sequence,
+
+01:02:34.350 --> 01:02:36.250 align:middle line:84%
+in terms of the
+complexity per layer,
+
+01:02:36.250 --> 01:02:38.190 align:middle line:84%
+because you have to
+calculate the similarity
+
+01:02:38.190 --> 01:02:39.840 align:middle line:84%
+of the entire
+sequence to itself.
+
+01:02:39.840 --> 01:02:41.340 align:middle line:84%
+So if your sequence
+is length n, you
+
+01:02:41.340 --> 01:02:44.220 align:middle line:84%
+need to calculate this
+n squared computation.
+
+01:02:44.220 --> 01:02:47.580 align:middle line:84%
+And you can imagine that that
+can get really computationally
+
+01:02:47.580 --> 01:02:48.200 align:middle line:90%
+exhaustive.
+
+01:02:48.200 --> 01:02:51.923 align:middle line:84%
+It takes a lot of memory to
+store something like that large.
+
+01:02:51.923 --> 01:02:53.340 align:middle line:84%
+So there's a bunch
+of methods that
+
+01:02:53.340 --> 01:02:55.980 align:middle line:84%
+have been developed in recent
+years that try to figure out
+
+01:02:55.980 --> 01:03:01.700 align:middle line:84%
+how to make even larger context
+window transformers given
+
+01:03:01.700 --> 01:03:02.980 align:middle line:90%
+limited memory.
+
+01:03:02.980 --> 01:03:07.720 align:middle line:84%
+And so these are things like
+efficiency from sparsification,
+
+01:03:07.720 --> 01:03:12.140 align:middle line:84%
+so things like the Reformer,
+or Performers, or Linformers
+
+01:03:12.140 --> 01:03:14.880 align:middle line:84%
+that are all different ways to
+try to decompose attention--
+
+01:03:14.880 --> 01:03:17.880 align:middle line:84%
+do something like a low
+matrix approximation--
+
+01:03:17.880 --> 01:03:21.500 align:middle line:84%
+a low rank matrix approximation
+to get that context window
+
+01:03:21.500 --> 01:03:25.180 align:middle line:84%
+computation from big O of
+n squared to big O of n.
+
+01:03:25.180 --> 01:03:29.100 align:middle line:84%
+Or things like the Reformer
+uses this quadratic dot product
+
+01:03:29.100 --> 01:03:33.780 align:middle line:84%
+attention that uses local
+hashing to get it to n log n.
+
+01:03:33.780 --> 01:03:38.240 align:middle line:84%
+And this is definitely something
+that people are quite interested
+
+01:03:38.240 --> 01:03:38.740 align:middle line:90%
+in.
+
+01:03:38.740 --> 01:03:42.440 align:middle line:84%
+But also frequently,
+this comes at the expense
+
+01:03:42.440 --> 01:03:43.920 align:middle line:90%
+of a little bit of performance.
+
+01:03:43.920 --> 01:03:46.560 align:middle line:84%
+And so if the trade
+off is performance
+
+01:03:46.560 --> 01:03:49.680 align:middle line:84%
+versus computational
+efficiency, we just
+
+01:03:49.680 --> 01:03:53.560 align:middle line:90%
+build GPUs with more memory.
+
+01:03:53.560 --> 01:03:55.760 align:middle line:84%
+And then there's other ways
+that people try and look
+
+01:03:55.760 --> 01:03:58.000 align:middle line:84%
+at even larger
+context transformers.
+
+01:03:58.000 --> 01:03:59.300 align:middle line:90%
+So instead of-- yes?
+
+01:03:59.300 --> 01:04:02.100 align:middle line:84%
+AUDIENCE: [INAUDIBLE] less
+performant but more efficient,
+
+01:04:02.100 --> 01:04:04.480 align:middle line:84%
+can't you just
+use the extra time
+
+01:04:04.480 --> 01:04:06.520 align:middle line:84%
+that you gain to
+train it [INAUDIBLE]
+
+01:04:06.520 --> 01:04:08.840 align:middle line:90%
+and get a better prediction?
+
+01:04:08.840 --> 01:04:12.160 align:middle line:84%
+SARA BEERY: So the question is,
+if it's less performant but more
+
+01:04:12.160 --> 01:04:14.680 align:middle line:84%
+efficient, could you
+use the time on the GPU
+
+01:04:14.680 --> 01:04:16.158 align:middle line:90%
+to train on more data?
+
+01:04:16.158 --> 01:04:18.700 align:middle line:84%
+I don't think that's actually
+the choice that they're making.
+
+01:04:18.700 --> 01:04:20.825 align:middle line:84%
+I think they're going to
+train on all the data they
+
+01:04:20.825 --> 01:04:25.560 align:middle line:84%
+have with the biggest
+thing they have.
+
+01:04:25.560 --> 01:04:27.000 align:middle line:90%
+[COUGHS]
+
+01:04:27.000 --> 01:04:29.578 align:middle line:90%
+Sorry, guys.
+
+01:04:29.578 --> 01:04:31.120 align:middle line:84%
+So another mechanism
+that people have
+
+01:04:31.120 --> 01:04:34.800 align:middle line:84%
+used to try to increase the
+context window of transformers
+
+01:04:34.800 --> 01:04:39.060 align:middle line:84%
+is this idea of local
+and global attention.
+
+01:04:39.060 --> 01:04:42.743 align:middle line:84%
+So things like Transformer XL
+uses segment-level recurrence
+
+01:04:42.743 --> 01:04:44.660 align:middle line:84%
+and then these very fancy
+positional encodings
+
+01:04:44.660 --> 01:04:46.740 align:middle line:90%
+to increase the context window.
+
+01:04:46.740 --> 01:04:49.900 align:middle line:84%
+Longformers scales
+with sequence length
+
+01:04:49.900 --> 01:04:53.140 align:middle line:84%
+by deconstructing local
+and global attention.
+
+01:04:53.140 --> 01:04:54.780 align:middle line:90%
+[COUGHS]
+
+01:04:54.780 --> 01:04:56.540 align:middle line:90%
+Sorry.
+
+01:04:56.540 --> 01:05:00.177 align:middle line:84%
+This is from Longformer,
+I believe, this figure
+
+01:05:00.177 --> 01:05:00.760 align:middle line:90%
+at the bottom.
+
+01:05:00.760 --> 01:05:03.740 align:middle line:84%
+So what you can see is that
+they're basically sparsifying
+
+01:05:03.740 --> 01:05:05.640 align:middle line:90%
+that n by n computation.
+
+01:05:05.640 --> 01:05:09.240 align:middle line:84%
+So the previous one was
+sparsifying via decomposition.
+
+01:05:09.240 --> 01:05:12.070 align:middle line:84%
+This one is sparsifying
+via some of masking.
+
+01:05:12.070 --> 01:05:13.820 align:middle line:84%
+But essentially, ways
+to try to figure out
+
+01:05:13.820 --> 01:05:17.120 align:middle line:84%
+how you don't need to do
+n times n computations.
+
+01:05:17.120 --> 01:05:20.830 align:middle line:90%
+
+
+01:05:20.830 --> 01:05:22.580 align:middle line:84%
+And then another thing
+that was introduced
+
+01:05:22.580 --> 01:05:24.740 align:middle line:84%
+to try to increase the
+context of transformers
+
+01:05:24.740 --> 01:05:29.460 align:middle line:84%
+without needing to scale
+memory with n squared--
+
+01:05:29.460 --> 01:05:33.820 align:middle line:84%
+was this idea that maybe
+something like a large GPT that
+
+01:05:33.820 --> 01:05:37.640 align:middle line:84%
+will jointly model all the
+world's language and all
+
+01:05:37.640 --> 01:05:41.360 align:middle line:84%
+the world's information could
+be broken down or decomposed
+
+01:05:41.360 --> 01:05:45.200 align:middle line:84%
+into something that models
+just language, that's much more
+
+01:05:45.200 --> 01:05:48.560 align:middle line:84%
+lightweight, with some
+of lookup table or memory
+
+01:05:48.560 --> 01:05:54.720 align:middle line:84%
+bank that is able to let us
+do fact lookup in a database.
+
+01:05:54.720 --> 01:05:57.200 align:middle line:84%
+And the other benefit
+of something like this
+
+01:05:57.200 --> 01:06:04.020 align:middle line:84%
+is there's ways to, again,
+ensure factual validity.
+
+01:06:04.020 --> 01:06:07.280 align:middle line:84%
+Because here, we're
+predicting what's likely,
+
+01:06:07.280 --> 01:06:09.373 align:middle line:84%
+and it's learned based on
+the world's information.
+
+01:06:09.373 --> 01:06:11.040 align:middle line:84%
+But you can't guarantee
+that it actually
+
+01:06:11.040 --> 01:06:12.980 align:middle line:84%
+matches the truth of
+the world's information.
+
+01:06:12.980 --> 01:06:15.040 align:middle line:84%
+Whereas if you keep
+the knowledge base,
+
+01:06:15.040 --> 01:06:18.180 align:middle line:84%
+this kind of lookup
+of facts separate,
+
+01:06:18.180 --> 01:06:21.640 align:middle line:84%
+then you can try to enforce
+that those facts are actually
+
+01:06:21.640 --> 01:06:24.460 align:middle line:84%
+going to be true, that you won't
+have things like hallucinations.
+
+01:06:24.460 --> 01:06:28.520 align:middle line:84%
+Of course, there's still
+some complexity there.
+
+01:06:28.520 --> 01:06:31.440 align:middle line:84%
+And so this is like retrieval
+enhanced transformers,
+
+01:06:31.440 --> 01:06:32.440 align:middle line:90%
+essentially--
+
+01:06:32.440 --> 01:06:34.480 align:middle line:84%
+so things like this
+paper called retro.
+
+01:06:34.480 --> 01:06:36.430 align:middle line:84%
+And this gives you
+this trillion token
+
+01:06:36.430 --> 01:06:38.110 align:middle line:84%
+database that just
+gets stored in memory
+
+01:06:38.110 --> 01:06:41.870 align:middle line:84%
+and gets accessed by
+your language model.
+
+01:06:41.870 --> 01:06:42.950 align:middle line:90%
+Cool.
+
+01:06:42.950 --> 01:06:44.690 align:middle line:84%
+So how far back
+can we go though?
+
+01:06:44.690 --> 01:06:46.050 align:middle line:90%
+Is this actually a limitation?
+
+01:06:46.050 --> 01:06:48.190 align:middle line:84%
+Do we need to decrease
+our context window
+
+01:06:48.190 --> 01:06:49.610 align:middle line:90%
+for something like attention?
+
+01:06:49.610 --> 01:06:51.010 align:middle line:90%
+How much memory do we need.
+
+01:06:51.010 --> 01:06:52.552 align:middle line:84%
+And it kind of gets
+to this question,
+
+01:06:52.552 --> 01:06:55.910 align:middle line:84%
+do we really care
+about modeling things
+
+01:06:55.910 --> 01:06:58.470 align:middle line:84%
+at the beginning of Pride
+and Prejudice by the time
+
+01:06:58.470 --> 01:07:00.490 align:middle line:90%
+you get to the last chapter?
+
+01:07:00.490 --> 01:07:02.825 align:middle line:90%
+Do we care?
+
+01:07:02.825 --> 01:07:05.450 align:middle line:84%
+And if you look at the attention
+window of some of these models
+
+01:07:05.450 --> 01:07:10.950 align:middle line:84%
+as they've kind of scaled,
+BERT had 512 token attention--
+
+01:07:10.950 --> 01:07:12.830 align:middle line:90%
+or context window.
+
+01:07:12.830 --> 01:07:14.950 align:middle line:90%
+GPT-2 had 1,024.
+
+01:07:14.950 --> 01:07:17.470 align:middle line:90%
+GPT-3 was 2,048.
+
+01:07:17.470 --> 01:07:20.990 align:middle line:84%
+GPT-4 was, by default, 8,000,
+but they had a souped up version
+
+01:07:20.990 --> 01:07:23.990 align:middle line:90%
+that could do 32,000.
+
+01:07:23.990 --> 01:07:27.290 align:middle line:84%
+Anthropic has a model
+that has about 100K,
+
+01:07:27.290 --> 01:07:28.850 align:middle line:90%
+so it's like 75,000 words.
+
+01:07:28.850 --> 01:07:32.150 align:middle line:84%
+That's like two or three
+books worth of context.
+
+01:07:32.150 --> 01:07:36.370 align:middle line:84%
+So if we can fit this in memory,
+do we need anything else?
+
+01:07:36.370 --> 01:07:43.370 align:middle line:84%
+Well, one way that we might is
+how many people can afford H100s
+
+01:07:43.370 --> 01:07:47.450 align:middle line:84%
+or whatever the best and
+brightest version of a GPU is?
+
+01:07:47.450 --> 01:07:50.090 align:middle line:84%
+So from my perspective,
+I think figuring out
+
+01:07:50.090 --> 01:07:52.250 align:middle line:84%
+when we actually need
+this much context,
+
+01:07:52.250 --> 01:07:55.170 align:middle line:84%
+and how we should use
+it, and in what ways
+
+01:07:55.170 --> 01:07:59.410 align:middle line:84%
+is valuable from the sense of
+efficiency and accessibility
+
+01:07:59.410 --> 01:08:00.970 align:middle line:90%
+of these models.
+
+01:08:00.970 --> 01:08:05.530 align:middle line:84%
+And this takes a lot of power,
+and it takes a lot of energy,
+
+01:08:05.530 --> 01:08:07.210 align:middle line:90%
+and it's really slow to train.
+
+01:08:07.210 --> 01:08:10.450 align:middle line:84%
+And so I think efficiency
+gains on in terms
+
+01:08:10.450 --> 01:08:12.850 align:middle line:84%
+of how well we
+model time and how
+
+01:08:12.850 --> 01:08:15.250 align:middle line:84%
+we think about what's needed
+to model in time, I think,
+
+01:08:15.250 --> 01:08:16.609 align:middle line:90%
+are really valuable.
+
+01:08:16.609 --> 01:08:19.130 align:middle line:84%
+And there's a nice paper--
+it's maybe two years old now
+
+01:08:19.130 --> 01:08:20.850 align:middle line:84%
+from Jitendra
+Malik's group-- that
+
+01:08:20.850 --> 01:08:23.990 align:middle line:84%
+talks about when do we actually
+need long-term context?
+
+01:08:23.990 --> 01:08:25.970 align:middle line:84%
+And they do this within
+the frame of reference
+
+01:08:25.970 --> 01:08:28.470 align:middle line:90%
+of video action recognition.
+
+01:08:28.470 --> 01:08:31.490 align:middle line:84%
+So if you have a video, how
+much temporal information
+
+01:08:31.490 --> 01:08:34.470 align:middle line:84%
+do you actually need to
+recognize the action?
+
+01:08:34.470 --> 01:08:36.310 align:middle line:84%
+And what they were
+pointing out--
+
+01:08:36.310 --> 01:08:39.510 align:middle line:84%
+so they introduced this idea of
+a minimum certificate set, which
+
+01:08:39.510 --> 01:08:43.069 align:middle line:84%
+is essentially the
+total amount of frames
+
+01:08:43.069 --> 01:08:46.590 align:middle line:84%
+or little clips of a video
+that you need in terms of time
+
+01:08:46.590 --> 01:08:49.229 align:middle line:84%
+to recognize an
+action accurately.
+
+01:08:49.229 --> 01:08:51.870 align:middle line:84%
+And so here, if you
+have this entire video,
+
+01:08:51.870 --> 01:08:54.790 align:middle line:84%
+and you want to recognize
+what's going on in the video,
+
+01:08:54.790 --> 01:08:58.390 align:middle line:84%
+basically, how many of those
+frames of the video are needed?
+
+01:08:58.390 --> 01:09:02.229 align:middle line:84%
+And that's the amount of
+context you really need.
+
+01:09:02.229 --> 01:09:07.029 align:middle line:84%
+And what they showed was
+that most of the video action
+
+01:09:07.029 --> 01:09:08.630 align:middle line:84%
+recognition
+benchmarks we actually
+
+01:09:08.630 --> 01:09:13.270 align:middle line:84%
+study needed somewhere
+up to maybe like
+
+01:09:13.270 --> 01:09:15.310 align:middle line:90%
+two seconds of context.
+
+01:09:15.310 --> 01:09:19.850 align:middle line:84%
+We didn't need models that could
+handle three-hour long movies,
+
+01:09:19.850 --> 01:09:23.029 align:middle line:84%
+because actually, the actions
+we cared about in our benchmarks
+
+01:09:23.029 --> 01:09:25.390 align:middle line:90%
+were like two or three seconds.
+
+01:09:25.390 --> 01:09:27.550 align:middle line:84%
+And so their point
+was that what we need
+
+01:09:27.550 --> 01:09:30.710 align:middle line:84%
+is we need to develop benchmarks
+for things that actually need
+
+01:09:30.710 --> 01:09:34.090 align:middle line:84%
+long term context in order to
+encourage the community to do
+
+01:09:34.090 --> 01:09:36.330 align:middle line:90%
+work that shows benefit there.
+
+01:09:36.330 --> 01:09:38.090 align:middle line:84%
+Because it's really
+hard for us to measure
+
+01:09:38.090 --> 01:09:41.290 align:middle line:84%
+progress on something that
+we're just not measuring.
+
+01:09:41.290 --> 01:09:44.970 align:middle line:84%
+And so they introduced some
+new EgoSchema benchmark
+
+01:09:44.970 --> 01:09:47.887 align:middle line:84%
+that had certificate
+lengths of more like 100.
+
+01:09:47.887 --> 01:09:49.970 align:middle line:84%
+But I think that this is
+an interesting point just
+
+01:09:49.970 --> 01:09:51.029 align:middle line:90%
+from a meta perspective.
+
+01:09:51.029 --> 01:09:55.230 align:middle line:84%
+It kind of tells us about how
+the benchmarks that we build,
+
+01:09:55.230 --> 01:09:58.810 align:middle line:84%
+the ways that we model value, we
+model improvement in the machine
+
+01:09:58.810 --> 01:10:02.490 align:middle line:84%
+learning space directly
+influence what we make progress
+
+01:10:02.490 --> 01:10:04.648 align:middle line:84%
+on, because we want to
+optimize these benchmarks.
+
+01:10:04.648 --> 01:10:07.190 align:middle line:84%
+And so if there's something that
+our benchmarks are missing--
+
+01:10:07.190 --> 01:10:08.490 align:middle line:90%
+if there are gaps--
+
+01:10:08.490 --> 01:10:10.910 align:middle line:84%
+that means that we don't
+know what we don't know.
+
+01:10:10.910 --> 01:10:12.477 align:middle line:84%
+And so we might
+say, oh, well, we
+
+01:10:12.477 --> 01:10:14.810 align:middle line:84%
+want to build these models
+that have really long context
+
+01:10:14.810 --> 01:10:15.310 align:middle line:90%
+windows.
+
+01:10:15.310 --> 01:10:18.130 align:middle line:84%
+But then they're just-- the
+more context windows we have,
+
+01:10:18.130 --> 01:10:19.790 align:middle line:84%
+or the more temporal
+context we have,
+
+01:10:19.790 --> 01:10:21.590 align:middle line:84%
+it's not really
+improving performance.
+
+01:10:21.590 --> 01:10:24.090 align:middle line:84%
+Maybe it's because the benchmark
+we're measuring performance
+
+01:10:24.090 --> 01:10:29.290 align:middle line:84%
+on just doesn't actually
+include anything that needs it.
+
+01:10:29.290 --> 01:10:32.070 align:middle line:84%
+And then finally, I want
+to talk a little bit
+
+01:10:32.070 --> 01:10:34.510 align:middle line:84%
+about just this
+different perspective
+
+01:10:34.510 --> 01:10:37.510 align:middle line:90%
+on fast and slow memory.
+
+01:10:37.510 --> 01:10:40.258 align:middle line:90%
+So here's one interesting thing.
+
+01:10:40.258 --> 01:10:42.550 align:middle line:84%
+If you think about a neural
+network as something that's
+
+01:10:42.550 --> 01:10:48.270 align:middle line:84%
+frozen, and you send data
+into it, then the activations
+
+01:10:48.270 --> 01:10:50.890 align:middle line:84%
+that you get through
+that neural network,
+
+01:10:50.890 --> 01:10:53.050 align:middle line:84%
+there's some statistic
+of that data point.
+
+01:10:53.050 --> 01:10:55.810 align:middle line:84%
+You can think of them
+as like fast memory.
+
+01:10:55.810 --> 01:10:58.950 align:middle line:90%
+
+
+01:10:58.950 --> 01:11:01.990 align:middle line:84%
+So they're actually building
+you some representation
+
+01:11:01.990 --> 01:11:05.750 align:middle line:84%
+that's very fast, that's kind
+of capturing memories of how
+
+01:11:05.750 --> 01:11:08.030 align:middle line:84%
+that data is running
+through the network.
+
+01:11:08.030 --> 01:11:11.190 align:middle line:84%
+Similarly, if you're
+learning the parameters
+
+01:11:11.190 --> 01:11:14.110 align:middle line:84%
+of a network via training
+from a large data set,
+
+01:11:14.110 --> 01:11:18.350 align:middle line:84%
+you can think of the
+theta, the actual parameter
+
+01:11:18.350 --> 01:11:21.910 align:middle line:84%
+values in that network as
+representing some statistics
+
+01:11:21.910 --> 01:11:23.130 align:middle line:90%
+of that training data.
+
+01:11:23.130 --> 01:11:26.350 align:middle line:84%
+So in a way, those
+parameters in a deep net
+
+01:11:26.350 --> 01:11:30.580 align:middle line:84%
+are slow memory of
+the training data.
+
+01:11:30.580 --> 01:11:31.760 align:middle line:90%
+And this is interesting.
+
+01:11:31.760 --> 01:11:35.640 align:middle line:84%
+So we can think of parameters
+are maybe slow memory.
+
+01:11:35.640 --> 01:11:38.740 align:middle line:84%
+You're slowly building this
+memory of the entire training
+
+01:11:38.740 --> 01:11:39.740 align:middle line:90%
+data set.
+
+01:11:39.740 --> 01:11:41.480 align:middle line:90%
+And activations are fast memory.
+
+01:11:41.480 --> 01:11:45.900 align:middle line:84%
+It's some statistics or some
+memory of some existing data
+
+01:11:45.900 --> 01:11:47.140 align:middle line:90%
+point.
+
+01:11:47.140 --> 01:11:51.100 align:middle line:84%
+But do we ever think about
+fast memory weights of a model,
+
+01:11:51.100 --> 01:11:54.340 align:middle line:84%
+or slow memory
+activations of a model?
+
+01:11:54.340 --> 01:11:58.660 align:middle line:84%
+And just as something to
+give you food for thought,
+
+01:11:58.660 --> 01:12:01.960 align:middle line:84%
+there is this idea of
+hypernets that were released,
+
+01:12:01.960 --> 01:12:04.200 align:middle line:84%
+which are nets that output
+weights of other nets.
+
+01:12:04.200 --> 01:12:08.300 align:middle line:84%
+They're used as a version of
+neural architecture search.
+
+01:12:08.300 --> 01:12:12.100 align:middle line:84%
+And so those weights are almost
+like a fast memory of the input
+
+01:12:12.100 --> 01:12:13.280 align:middle line:90%
+data to that net.
+
+01:12:13.280 --> 01:12:16.660 align:middle line:84%
+You're getting as the
+output of your network
+
+01:12:16.660 --> 01:12:18.900 align:middle line:84%
+another network that's
+a set of weights.
+
+01:12:18.900 --> 01:12:21.420 align:middle line:84%
+Or there are these
+ideas of codebooks.
+
+01:12:21.420 --> 01:12:25.580 align:middle line:84%
+These actually use tensors of
+activations that are learned.
+
+01:12:25.580 --> 01:12:28.610 align:middle line:84%
+So you're doing backprop to
+the activations themselves.
+
+01:12:28.610 --> 01:12:30.360 align:middle line:84%
+And you could argue
+that these activations
+
+01:12:30.360 --> 01:12:35.800 align:middle line:84%
+are kind of slow memory of
+the data set you're learning.
+
+01:12:35.800 --> 01:12:39.880 align:middle line:84%
+So I think there's ways to flip
+the perspective a little bit
+
+01:12:39.880 --> 01:12:44.240 align:middle line:84%
+and try to think
+about how we have
+
+01:12:44.240 --> 01:12:50.080 align:middle line:84%
+memory that's stored in the
+weights, in the activations.
+
+01:12:50.080 --> 01:12:52.683 align:middle line:84%
+What are the ways that
+we're representing
+
+01:12:52.683 --> 01:12:54.600 align:middle line:84%
+what the data we're
+learning or the data we're
+
+01:12:54.600 --> 01:12:59.040 align:middle line:84%
+actually using at any
+given point in time.
+
+01:12:59.040 --> 01:13:00.020 align:middle line:90%
+Cool.
+
+01:13:00.020 --> 01:13:02.160 align:middle line:90%
+Any other questions?
+
+01:13:02.160 --> 01:13:07.200 align:middle line:84%
+Otherwise, I'll just leave you
+with another picture of Frank,
+
+01:13:07.200 --> 01:13:08.460 align:middle line:90%
+who's the best cat ever.
+
+01:13:08.460 --> 01:13:11.816 align:middle line:90%
+[APPLAUSE]
+
+01:13:11.816 --> 01:13:13.580 align:middle line:90%
+
+
+01:13:13.580 --> 01:13:14.080 align:middle line:90%
+Awesome.
+
+01:13:14.080 --> 01:13:15.580 align:middle line:84%
+I'm happy to take
+questions up here.
+
+01:13:15.580 --> 01:13:18.270 align:middle line:84%
+Otherwise, see you
+guys on Thursday.
+
+01:13:18.270 --> 01:13:28.000 align:middle line:90%

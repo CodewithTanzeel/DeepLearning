@@ -1,0 +1,7172 @@
+WEBVTT
+
+00:00:00.000 --> 00:00:01.952 align:middle line:90%
+[SQUEAKING]
+
+00:00:01.952 --> 00:00:03.888 align:middle line:90%
+[RUSTLING]
+
+00:00:03.888 --> 00:00:06.308 align:middle line:90%
+[CLICKING]
+
+00:00:06.308 --> 00:00:12.600 align:middle line:90%
+
+
+00:00:12.600 --> 00:00:14.960 align:middle line:84%
+PHILLIP ISOLA: Today we're
+going to have a lecture which
+
+00:00:14.960 --> 00:00:17.500 align:middle line:84%
+is a little bit different
+than some of the other ones
+
+00:00:17.500 --> 00:00:21.520 align:middle line:84%
+because it's a bit more on just
+practical advice and heuristics
+
+00:00:21.520 --> 00:00:26.840 align:middle line:84%
+and hacks, a little less on
+formal knowledge and theory.
+
+00:00:26.840 --> 00:00:29.440 align:middle line:84%
+So the big disclaimer
+is that this
+
+00:00:29.440 --> 00:00:31.940 align:middle line:84%
+is going to be a somewhat
+opinionated lecture.
+
+00:00:31.940 --> 00:00:34.220 align:middle line:84%
+I'll share things that
+I think are good ideas,
+
+00:00:34.220 --> 00:00:36.137 align:middle line:84%
+but they're not what
+everybody would agree on.
+
+00:00:36.137 --> 00:00:38.680 align:middle line:84%
+It's just anecdotes
+from my own experience.
+
+00:00:38.680 --> 00:00:41.800 align:middle line:84%
+And we'll talk about a
+bunch of different aspects
+
+00:00:41.800 --> 00:00:47.120 align:middle line:84%
+of the deep learning pipeline
+and how to actually make
+
+00:00:47.120 --> 00:00:51.420 align:middle line:84%
+working systems with data and
+models and good optimizers,
+
+00:00:51.420 --> 00:00:55.630 align:middle line:84%
+and also then some comments on
+the other parts of the problem,
+
+00:00:55.630 --> 00:00:58.280 align:middle line:84%
+like how do you create a
+good evaluation framework
+
+00:00:58.280 --> 00:01:01.790 align:middle line:84%
+and how do you use compute
+effectively and so forth.
+
+00:01:01.790 --> 00:01:06.090 align:middle line:84%
+And these slides are put
+together from a lot of sources.
+
+00:01:06.090 --> 00:01:08.710 align:middle line:84%
+So in particular, Evan
+Shelhamer had a talk
+
+00:01:08.710 --> 00:01:11.270 align:middle line:84%
+which formed the
+skeleton of this talk
+
+00:01:11.270 --> 00:01:13.350 align:middle line:84%
+that he was giving
+for some years.
+
+00:01:13.350 --> 00:01:15.270 align:middle line:84%
+Evan was the developer
+of Caffe, which
+
+00:01:15.270 --> 00:01:17.190 align:middle line:84%
+was the most popular
+deep learning
+
+00:01:17.190 --> 00:01:19.830 align:middle line:90%
+framework 5 or 10 years ago.
+
+00:01:19.830 --> 00:01:24.310 align:middle line:84%
+And then I got a lot of
+tips from Andrej Karpathy's
+
+00:01:24.310 --> 00:01:27.030 align:middle line:84%
+blog posts on this
+topic and from my lab
+
+00:01:27.030 --> 00:01:28.990 align:middle line:90%
+members and other folks.
+
+00:01:28.990 --> 00:01:30.430 align:middle line:90%
+OK.
+
+00:01:30.430 --> 00:01:34.310 align:middle line:84%
+So the starting
+point of this lecture
+
+00:01:34.310 --> 00:01:37.550 align:middle line:84%
+is that a big part of the
+story of deep learning
+
+00:01:37.550 --> 00:01:42.410 align:middle line:84%
+is not just the theory
+or the algorithms,
+
+00:01:42.410 --> 00:01:46.910 align:middle line:84%
+it's actually the hacks,
+the practical tips.
+
+00:01:46.910 --> 00:01:50.590 align:middle line:84%
+It's a little bit of a
+triumph of the practitioners
+
+00:01:50.590 --> 00:01:54.870 align:middle line:84%
+over the academics
+and the theorists.
+
+00:01:54.870 --> 00:01:56.590 align:middle line:84%
+It doesn't mean that
+we won't eventually
+
+00:01:56.590 --> 00:01:59.600 align:middle line:84%
+have a very clean mathematical
+theory of deep learning.
+
+00:01:59.600 --> 00:02:02.380 align:middle line:84%
+But historically, a lot of
+the people that have really
+
+00:02:02.380 --> 00:02:04.720 align:middle line:84%
+made progress here have
+just done these things
+
+00:02:04.720 --> 00:02:06.620 align:middle line:90%
+which we might call hacking.
+
+00:02:06.620 --> 00:02:09.460 align:middle line:84%
+And it's worth valuing that
+and understanding that.
+
+00:02:09.460 --> 00:02:11.720 align:middle line:84%
+And in the
+generalization lecture,
+
+00:02:11.720 --> 00:02:13.440 align:middle line:84%
+I talked about
+this paper briefly,
+
+00:02:13.440 --> 00:02:17.820 align:middle line:84%
+which is that you can overfit
+to a set of random labels
+
+00:02:17.820 --> 00:02:18.800 align:middle line:90%
+with a deep net.
+
+00:02:18.800 --> 00:02:23.300 align:middle line:84%
+And this means that
+the generalization
+
+00:02:23.300 --> 00:02:25.240 align:middle line:84%
+bounds you get from
+some classical theories,
+
+00:02:25.240 --> 00:02:27.257 align:middle line:84%
+like the VC dimension,
+are vacuous.
+
+00:02:27.257 --> 00:02:29.340 align:middle line:84%
+They don't really tell you
+anything about how well
+
+00:02:29.340 --> 00:02:30.507 align:middle line:90%
+that system will generalize.
+
+00:02:30.507 --> 00:02:31.760 align:middle line:90%
+And yet, deep nets generalize.
+
+00:02:31.760 --> 00:02:34.780 align:middle line:84%
+So clearly, the classical
+theory doesn't quite work.
+
+00:02:34.780 --> 00:02:37.737 align:middle line:84%
+And a lot of the places you
+may have been introduced
+
+00:02:37.737 --> 00:02:39.820 align:middle line:84%
+to deep learning, if you've
+studied it in the past
+
+00:02:39.820 --> 00:02:42.480 align:middle line:84%
+or you've programmed with
+neural nets in the past,
+
+00:02:42.480 --> 00:02:44.880 align:middle line:84%
+would be courses that are
+very practical in nature,
+
+00:02:44.880 --> 00:02:47.060 align:middle line:84%
+like fast.ai, which
+are really focused on,
+
+00:02:47.060 --> 00:02:49.820 align:middle line:84%
+let's just code these
+systems and make them run,
+
+00:02:49.820 --> 00:02:52.940 align:middle line:84%
+and maybe the math and
+the theory is secondary.
+
+00:02:52.940 --> 00:02:54.440 align:middle line:90%
+OK.
+
+00:02:54.440 --> 00:02:57.150 align:middle line:84%
+So this practical stuff is
+a big part of the story,
+
+00:02:57.150 --> 00:02:58.970 align:middle line:90%
+and it's worth understanding.
+
+00:02:58.970 --> 00:03:01.610 align:middle line:84%
+So I'm going to start
+with one story, which
+
+00:03:01.610 --> 00:03:04.990 align:middle line:84%
+comes from my postdoc
+advisor, Alyosha Efros,
+
+00:03:04.990 --> 00:03:08.090 align:middle line:84%
+here on the right, back
+when I was at Berkeley.
+
+00:03:08.090 --> 00:03:13.010 align:middle line:84%
+And his advisor, Jitendra
+Malik, on the left,
+
+00:03:13.010 --> 00:03:17.190 align:middle line:84%
+was mentoring Alyosha when
+Alyosha was a grad student.
+
+00:03:17.190 --> 00:03:20.450 align:middle line:84%
+So this has been passed down to
+me through multiple generations.
+
+00:03:20.450 --> 00:03:25.090 align:middle line:84%
+And essentially, Alyosha
+was training models
+
+00:03:25.090 --> 00:03:29.130 align:middle line:84%
+back in those days,
+10, 20 years ago
+
+00:03:29.130 --> 00:03:32.750 align:middle line:84%
+and would come to Jitendra,
+his advisor, and say,
+
+00:03:32.750 --> 00:03:36.073 align:middle line:84%
+OK, here is my result.
+And it wasn't a deep net.
+
+00:03:36.073 --> 00:03:36.990 align:middle line:90%
+It was something else.
+
+00:03:36.990 --> 00:03:39.693 align:middle line:84%
+But this is just meant
+to convey the idea
+
+00:03:39.693 --> 00:03:42.110 align:middle line:84%
+that he would show the results
+of some numbers, some plot,
+
+00:03:42.110 --> 00:03:43.950 align:middle line:90%
+like, oh, I got 30% accuracy.
+
+00:03:43.950 --> 00:03:46.970 align:middle line:84%
+Or maybe here's my loss
+or my optimization graph.
+
+00:03:46.970 --> 00:03:49.030 align:middle line:84%
+And Jitendra would say,
+OK, what's going on here?
+
+00:03:49.030 --> 00:03:49.990 align:middle line:90%
+Why are these spikes?
+
+00:03:49.990 --> 00:03:52.210 align:middle line:84%
+And Alyosha would say,
+well, I don't know.
+
+00:03:52.210 --> 00:03:55.530 align:middle line:84%
+And so Jitendra said,
+OK, this is not enough.
+
+00:03:55.530 --> 00:03:57.780 align:middle line:84%
+This doesn't tell you that
+much about what's going on.
+
+00:03:57.780 --> 00:03:59.300 align:middle line:84%
+You really have to
+look at the data.
+
+00:03:59.300 --> 00:04:01.467 align:middle line:84%
+You have to look at the
+results that you're getting.
+
+00:04:01.467 --> 00:04:02.860 align:middle line:90%
+This was a computer vision lab.
+
+00:04:02.860 --> 00:04:04.300 align:middle line:90%
+And so the data was images.
+
+00:04:04.300 --> 00:04:05.340 align:middle line:90%
+Look at the images.
+
+00:04:05.340 --> 00:04:07.100 align:middle line:84%
+Look at what images
+you're analyzing,
+
+00:04:07.100 --> 00:04:08.472 align:middle line:90%
+what labels you're predicting.
+
+00:04:08.472 --> 00:04:09.180 align:middle line:90%
+Look at the data.
+
+00:04:09.180 --> 00:04:11.782 align:middle line:84%
+Don't just give me
+some summary statistic.
+
+00:04:11.782 --> 00:04:12.740 align:middle line:90%
+And he put it this way.
+
+00:04:12.740 --> 00:04:16.115 align:middle line:84%
+He said, "Become friends
+with every pixel."
+
+00:04:16.115 --> 00:04:17.740 align:middle line:84%
+So I think that's
+just a lovely phrase.
+
+00:04:17.740 --> 00:04:19.240 align:middle line:84%
+And whatever domain
+you're in, try
+
+00:04:19.240 --> 00:04:22.720 align:middle line:84%
+to become friends with the
+data points in that domain.
+
+00:04:22.720 --> 00:04:25.980 align:middle line:84%
+If you're studying music,
+become friends with every note.
+
+00:04:25.980 --> 00:04:28.000 align:middle line:84%
+If you're studying
+chemistry, become friends
+
+00:04:28.000 --> 00:04:29.440 align:middle line:90%
+with every molecule.
+
+00:04:29.440 --> 00:04:31.280 align:middle line:90%
+Become friends with every pixel.
+
+00:04:31.280 --> 00:04:32.760 align:middle line:90%
+Look at the data.
+
+00:04:32.760 --> 00:04:33.260 align:middle line:90%
+OK.
+
+00:04:33.260 --> 00:04:35.800 align:middle line:84%
+So then Alyosha is well
+known in computer vision
+
+00:04:35.800 --> 00:04:39.120 align:middle line:84%
+now as being a very intuitive
+and insightful person, in terms
+
+00:04:39.120 --> 00:04:44.580 align:middle line:84%
+of the holistic nature
+of computer vision.
+
+00:04:44.580 --> 00:04:48.800 align:middle line:84%
+He went to France and
+took photos and understood
+
+00:04:48.800 --> 00:04:52.330 align:middle line:90%
+the beauty of that data type.
+
+00:04:52.330 --> 00:04:52.830 align:middle line:90%
+OK.
+
+00:04:52.830 --> 00:04:57.230 align:middle line:90%
+So look at the data.
+
+00:04:57.230 --> 00:05:00.270 align:middle line:84%
+And you can think about this
+also for your final projects.
+
+00:05:00.270 --> 00:05:02.150 align:middle line:90%
+Don't just show us a plot.
+
+00:05:02.150 --> 00:05:05.030 align:middle line:84%
+Show us the data, something a
+little bit more high dimensional
+
+00:05:05.030 --> 00:05:07.110 align:middle line:90%
+than just a single plot.
+
+00:05:07.110 --> 00:05:11.270 align:middle line:84%
+Here's an example
+from a system that
+
+00:05:11.270 --> 00:05:18.490 align:middle line:84%
+tried to diagnose whether or not
+a scan of a patient's chest--
+
+00:05:18.490 --> 00:05:20.350 align:middle line:84%
+this patient has
+breast cancer or not.
+
+00:05:20.350 --> 00:05:22.950 align:middle line:84%
+And so you're trying to
+classify benign or malignant
+
+00:05:22.950 --> 00:05:26.510 align:middle line:84%
+for the possibility of
+there being a tumor.
+
+00:05:26.510 --> 00:05:30.270 align:middle line:84%
+And this paper is actually
+an analysis and critique
+
+00:05:30.270 --> 00:05:30.970 align:middle line:90%
+of prior work.
+
+00:05:30.970 --> 00:05:32.870 align:middle line:84%
+So it's not their
+fault. These authors
+
+00:05:32.870 --> 00:05:34.620 align:middle line:84%
+were the ones that
+pointed out this issue.
+
+00:05:34.620 --> 00:05:37.270 align:middle line:84%
+But what happened is, a deep
+net was used in prior work
+
+00:05:37.270 --> 00:05:40.910 align:middle line:84%
+to try to identify, is
+this cancerous or not?
+
+00:05:40.910 --> 00:05:43.210 align:middle line:84%
+And it got really
+high accuracy--
+
+00:05:43.210 --> 00:05:45.390 align:middle line:90%
+I don't know-- 99% accuracy.
+
+00:05:45.390 --> 00:05:47.890 align:middle line:84%
+So what do you
+think it was doing.
+
+00:05:47.890 --> 00:05:50.540 align:middle line:84%
+Anyone maybe have
+seen cases like this?
+
+00:05:50.540 --> 00:05:55.020 align:middle line:84%
+Was this deep net accurately
+classifying the scan?
+
+00:05:55.020 --> 00:05:56.020 align:middle line:90%
+Actually, I'll tell you.
+
+00:05:56.020 --> 00:05:57.180 align:middle line:90%
+I'll tell you, it wasn't.
+
+00:05:57.180 --> 00:05:59.920 align:middle line:84%
+So they then tested this
+system, and it failed.
+
+00:05:59.920 --> 00:06:01.700 align:middle line:90%
+So why did it fail?
+
+00:06:01.700 --> 00:06:03.200 align:middle line:84%
+What was it doing
+that made it fail?
+
+00:06:03.200 --> 00:06:04.560 align:middle line:90%
+I saw an answer back here.
+
+00:06:04.560 --> 00:06:05.435 align:middle line:90%
+
+
+00:06:05.435 --> 00:06:08.060 align:middle line:84%
+AUDIENCE: So [INAUDIBLE]
+nothing is cancerous.
+
+00:06:08.060 --> 00:06:08.727 align:middle line:90%
+[INAUDIBLE]
+
+00:06:08.727 --> 00:06:09.560 align:middle line:90%
+PHILLIP ISOLA: Yeah.
+
+00:06:09.560 --> 00:06:11.680 align:middle line:84%
+So one answer-- it just
+said nothing is cancerous.
+
+00:06:11.680 --> 00:06:15.540 align:middle line:84%
+And maybe the data set is
+imbalanced, so 99% of the cases
+
+00:06:15.540 --> 00:06:16.400 align:middle line:90%
+were not cancerous.
+
+00:06:16.400 --> 00:06:17.400 align:middle line:90%
+That could have been it.
+
+00:06:17.400 --> 00:06:20.480 align:middle line:84%
+That's not the case in this one,
+but that is a common failure.
+
+00:06:20.480 --> 00:06:21.440 align:middle line:90%
+Let's go back here.
+
+00:06:21.440 --> 00:06:23.732 align:middle line:84%
+AUDIENCE: It was looking at
+stuff outside of the lungs.
+
+00:06:23.732 --> 00:06:25.740 align:middle line:84%
+Like, maybe the R in
+the top right corner
+
+00:06:25.740 --> 00:06:27.582 align:middle line:90%
+is more often seen in cancers.
+
+00:06:27.582 --> 00:06:30.040 align:middle line:84%
+PHILLIP ISOLA: That was the
+point they were trying to make.
+
+00:06:30.040 --> 00:06:34.260 align:middle line:84%
+So in this case, as
+you said, the deep net
+
+00:06:34.260 --> 00:06:36.480 align:middle line:90%
+was not looking at the tissue.
+
+00:06:36.480 --> 00:06:39.340 align:middle line:84%
+It was looking at
+the R in the corner.
+
+00:06:39.340 --> 00:06:41.760 align:middle line:84%
+So there was this kind
+of spurious correlation,
+
+00:06:41.760 --> 00:06:42.780 align:middle line:90%
+this shortcut.
+
+00:06:42.780 --> 00:06:46.500 align:middle line:84%
+And it turned out that that R
+was some indicator about what
+
+00:06:46.500 --> 00:06:48.260 align:middle line:90%
+hospital this came from or--
+
+00:06:48.260 --> 00:06:49.430 align:middle line:90%
+I don't remember entirely.
+
+00:06:49.430 --> 00:06:51.770 align:middle line:84%
+But let's just
+imagine that it was R
+
+00:06:51.770 --> 00:06:54.810 align:middle line:84%
+if it came from Roosevelt
+Hospital or something like that.
+
+00:06:54.810 --> 00:06:58.730 align:middle line:84%
+And at Roosevelt
+Hospital, all the patients
+
+00:06:58.730 --> 00:07:01.330 align:middle line:84%
+that were put into the
+system had malignant tumors
+
+00:07:01.330 --> 00:07:04.850 align:middle line:84%
+because it was a hospital
+you go to for that situation.
+
+00:07:04.850 --> 00:07:08.090 align:middle line:84%
+So there was a bias in
+the data, and the data
+
+00:07:08.090 --> 00:07:09.230 align:middle line:90%
+gave away the answer.
+
+00:07:09.230 --> 00:07:11.900 align:middle line:84%
+And so you really need to look
+at these things to identify,
+
+00:07:11.900 --> 00:07:13.650 align:middle line:84%
+is your model working
+for the right reason
+
+00:07:13.650 --> 00:07:14.590 align:middle line:90%
+or the wrong reason?
+
+00:07:14.590 --> 00:07:16.298 align:middle line:84%
+This is the wrong
+reason because it won't
+
+00:07:16.298 --> 00:07:18.690 align:middle line:90%
+generalize to other hospitals.
+
+00:07:18.690 --> 00:07:21.555 align:middle line:90%
+OK.
+
+00:07:21.555 --> 00:07:25.025 align:middle line:84%
+Or you can imagine a worst case,
+where R just meant malignant,
+
+00:07:25.025 --> 00:07:27.150 align:middle line:84%
+and it would have a different
+symbol if it weren't.
+
+00:07:27.150 --> 00:07:28.550 align:middle line:84%
+It would just completely
+give away the answer,
+
+00:07:28.550 --> 00:07:30.342 align:middle line:84%
+and it wouldn't generalize
+to a system that
+
+00:07:30.342 --> 00:07:31.610 align:middle line:90%
+doesn't give you the answer.
+
+00:07:31.610 --> 00:07:33.710 align:middle line:84%
+And that's what you
+really care about.
+
+00:07:33.710 --> 00:07:34.210 align:middle line:90%
+OK.
+
+00:07:34.210 --> 00:07:36.390 align:middle line:90%
+Look at the output too.
+
+00:07:36.390 --> 00:07:38.150 align:middle line:84%
+So don't just look
+at your loss curve.
+
+00:07:38.150 --> 00:07:39.567 align:middle line:84%
+That's the most
+superficial thing.
+
+00:07:39.567 --> 00:07:44.710 align:middle line:84%
+You should definitely do
+that, but don't only do that.
+
+00:07:44.710 --> 00:07:48.000 align:middle line:84%
+So here is something that
+would be better to look at
+
+00:07:48.000 --> 00:07:50.680 align:middle line:84%
+if you're in the business
+of training generative
+
+00:07:50.680 --> 00:07:52.192 align:middle line:90%
+models of cats.
+
+00:07:52.192 --> 00:07:53.900 align:middle line:84%
+We'll talk about
+generative models later.
+
+00:07:53.900 --> 00:07:58.240 align:middle line:84%
+But these are models that
+make photos of-- you've
+
+00:07:58.240 --> 00:08:00.880 align:middle line:84%
+all seen this, DALL-E and
+Midjourney and these types
+
+00:08:00.880 --> 00:08:03.000 align:middle line:90%
+of things.
+
+00:08:03.000 --> 00:08:06.000 align:middle line:84%
+So this is learning to
+make photos of cats.
+
+00:08:06.000 --> 00:08:08.200 align:middle line:84%
+And if I were to
+only look at my loss,
+
+00:08:08.200 --> 00:08:11.120 align:middle line:84%
+like, what does my
+objective function
+
+00:08:11.120 --> 00:08:13.340 align:middle line:84%
+say about the quality
+of these images?
+
+00:08:13.340 --> 00:08:14.860 align:middle line:90%
+It might be spiky and crazy.
+
+00:08:14.860 --> 00:08:16.280 align:middle line:90%
+I don't know what's going on.
+
+00:08:16.280 --> 00:08:18.560 align:middle line:84%
+But if I look at samples
+from the model-- actually,
+
+00:08:18.560 --> 00:08:21.400 align:middle line:84%
+these are outputs from the
+model as it's being trained--
+
+00:08:21.400 --> 00:08:22.820 align:middle line:90%
+you get a lot more information.
+
+00:08:22.820 --> 00:08:23.880 align:middle line:84%
+You can kind of see
+something, which
+
+00:08:23.880 --> 00:08:25.172 align:middle line:90%
+is like, it seems to oscillate.
+
+00:08:25.172 --> 00:08:26.440 align:middle line:90%
+It's, like, periodic.
+
+00:08:26.440 --> 00:08:28.720 align:middle line:84%
+So now this happens
+to be what's called
+
+00:08:28.720 --> 00:08:30.429 align:middle line:84%
+a generative
+adversarial network.
+
+00:08:30.429 --> 00:08:32.179 align:middle line:84%
+We'll talk a little
+bit about these later.
+
+00:08:32.179 --> 00:08:34.299 align:middle line:84%
+But they do have this
+oscillatory behavior.
+
+00:08:34.299 --> 00:08:37.820 align:middle line:84%
+And it's something that's
+very obvious in this output.
+
+00:08:37.820 --> 00:08:40.397 align:middle line:84%
+It would also maybe be obvious
+in certain loss curves.
+
+00:08:40.397 --> 00:08:41.980 align:middle line:84%
+But you get a much
+higher-dimensional,
+
+00:08:41.980 --> 00:08:43.840 align:middle line:84%
+high-throughput
+understanding of what's
+
+00:08:43.840 --> 00:08:46.590 align:middle line:84%
+going on when you actually
+look at the data like this.
+
+00:08:46.590 --> 00:08:47.880 align:middle line:90%
+OK.
+
+00:08:47.880 --> 00:08:49.290 align:middle line:90%
+Oh, here's another example.
+
+00:08:49.290 --> 00:08:53.150 align:middle line:84%
+These are some little
+ants that I trained
+
+00:08:53.150 --> 00:08:57.430 align:middle line:84%
+years ago to try to play
+some predator-prey game.
+
+00:08:57.430 --> 00:09:01.637 align:middle line:84%
+And what was happening
+is they would--
+
+00:09:01.637 --> 00:09:02.970 align:middle line:90%
+I looked at the reward function.
+
+00:09:02.970 --> 00:09:04.250 align:middle line:84%
+This is like a
+reinforcement learning.
+
+00:09:04.250 --> 00:09:05.770 align:middle line:84%
+They're trying to
+chase each other.
+
+00:09:05.770 --> 00:09:08.190 align:middle line:84%
+I think that the
+blue ones are trying
+
+00:09:08.190 --> 00:09:10.750 align:middle line:84%
+to run away from the red
+ones, which are the predators.
+
+00:09:10.750 --> 00:09:13.550 align:middle line:84%
+And at first, the
+reward of the predators
+
+00:09:13.550 --> 00:09:16.530 align:middle line:84%
+would go up a little bit, but
+then it would just plateau.
+
+00:09:16.530 --> 00:09:18.110 align:middle line:84%
+And I didn't know
+what was going on.
+
+00:09:18.110 --> 00:09:19.210 align:middle line:90%
+And why was it plateauing?
+
+00:09:19.210 --> 00:09:21.127 align:middle line:84%
+Because they were falling
+over and then making
+
+00:09:21.127 --> 00:09:22.035 align:middle line:90%
+no more progress.
+
+00:09:22.035 --> 00:09:23.910 align:middle line:84%
+So if I only looked at
+the loss, it was like,
+
+00:09:23.910 --> 00:09:24.827 align:middle line:90%
+oh, it just plateaued.
+
+00:09:24.827 --> 00:09:26.048 align:middle line:90%
+Learning is hard.
+
+00:09:26.048 --> 00:09:26.590 align:middle line:90%
+I don't know.
+
+00:09:26.590 --> 00:09:28.030 align:middle line:90%
+SGD was failing.
+
+00:09:28.030 --> 00:09:30.050 align:middle line:84%
+No, it was failing for a
+very particular reason,
+
+00:09:30.050 --> 00:09:33.350 align:middle line:84%
+which is that the ants fell
+over and I had to fix that.
+
+00:09:33.350 --> 00:09:34.850 align:middle line:90%
+OK.
+
+00:09:34.850 --> 00:09:36.930 align:middle line:90%
+So look at your outputs.
+
+00:09:36.930 --> 00:09:38.590 align:middle line:90%
+Look at your inputs.
+
+00:09:38.590 --> 00:09:42.290 align:middle line:90%
+Visualize what you're doing.
+
+00:09:42.290 --> 00:09:42.790 align:middle line:90%
+OK.
+
+00:09:42.790 --> 00:09:47.690 align:middle line:84%
+So just to summarize some of
+those points-- look at the data.
+
+00:09:47.690 --> 00:09:50.150 align:middle line:84%
+Inspect the distribution of
+inputs in your training set.
+
+00:09:50.150 --> 00:09:53.010 align:middle line:84%
+Inspect the distribution of
+outputs in your training set.
+
+00:09:53.010 --> 00:09:56.250 align:middle line:84%
+As the student
+said over here, you
+
+00:09:56.250 --> 00:09:59.850 align:middle line:84%
+could have an imbalanced set of
+target outputs in your training
+
+00:09:59.850 --> 00:10:02.090 align:middle line:84%
+data, and that would be
+another common failure.
+
+00:10:02.090 --> 00:10:07.070 align:middle line:84%
+If your data is 99% benign
+tumors and 1% malignant,
+
+00:10:07.070 --> 00:10:12.530 align:middle line:84%
+then chance, where the system
+is completely doing naive
+
+00:10:12.530 --> 00:10:15.190 align:middle line:84%
+guessing based on those priors,
+not looking at the data,
+
+00:10:15.190 --> 00:10:17.730 align:middle line:84%
+not looking at the input
+at all would be 99%.
+
+00:10:17.730 --> 00:10:20.970 align:middle line:84%
+You could just say, well, I know
+I'll be 99% right if I always
+
+00:10:20.970 --> 00:10:22.830 align:middle line:90%
+say benign.
+
+00:10:22.830 --> 00:10:24.830 align:middle line:84%
+Then you have to calibrate
+with respect to that.
+
+00:10:24.830 --> 00:10:26.750 align:middle line:84%
+You have to realize
+that 99% is trivial.
+
+00:10:26.750 --> 00:10:28.670 align:middle line:84%
+And therefore, you're looking
+for a higher number than this.
+
+00:10:28.670 --> 00:10:30.503 align:middle line:84%
+Or maybe you want to
+measure something else,
+
+00:10:30.503 --> 00:10:35.090 align:middle line:84%
+like the conditional
+probability of being correct,
+
+00:10:35.090 --> 00:10:37.970 align:middle line:90%
+given that it's malignant.
+
+00:10:37.970 --> 00:10:39.170 align:middle line:90%
+OK.
+
+00:10:39.170 --> 00:10:41.110 align:middle line:84%
+So you can select
+random mini batches.
+
+00:10:41.110 --> 00:10:44.420 align:middle line:84%
+You can visualize
+them, plot histograms,
+
+00:10:44.420 --> 00:10:46.600 align:middle line:90%
+plot marginal statistics.
+
+00:10:46.600 --> 00:10:50.080 align:middle line:84%
+What is the variability of the
+units of measure in your data?
+
+00:10:50.080 --> 00:10:52.220 align:middle line:84%
+Are your numbers in
+the range 0 to 1,
+
+00:10:52.220 --> 00:10:56.120 align:middle line:84%
+or in the range 0 to 256,
+or in some other range?
+
+00:10:56.120 --> 00:10:57.680 align:middle line:84%
+Can negative numbers
+be your data,
+
+00:10:57.680 --> 00:10:59.020 align:middle line:90%
+or is it only positive numbers?
+
+00:10:59.020 --> 00:11:01.880 align:middle line:84%
+These are the types of
+things you want to know.
+
+00:11:01.880 --> 00:11:03.640 align:middle line:90%
+OK.
+
+00:11:03.640 --> 00:11:12.280 align:middle line:84%
+So one of the most common bugs
+that I come across, especially
+
+00:11:12.280 --> 00:11:18.080 align:middle line:84%
+in final projects, is
+that the data is not
+
+00:11:18.080 --> 00:11:21.320 align:middle line:84%
+being preprocessed and
+loaded into the format
+
+00:11:21.320 --> 00:11:23.160 align:middle line:90%
+that you think it is.
+
+00:11:23.160 --> 00:11:27.680 align:middle line:84%
+So, for example, let's say
+you're working with images,
+
+00:11:27.680 --> 00:11:34.200 align:middle line:84%
+and you have assumed that your
+data lies in the range 0 to 1.
+
+00:11:34.200 --> 00:11:35.980 align:middle line:84%
+But actually, when
+you loaded it,
+
+00:11:35.980 --> 00:11:40.600 align:middle line:84%
+it is loaded as a
+unsigned integer 8,
+
+00:11:40.600 --> 00:11:43.030 align:middle line:84%
+uint8's in the range
+0 to 255, which
+
+00:11:43.030 --> 00:11:45.470 align:middle line:90%
+is a common format for imagery.
+
+00:11:45.470 --> 00:11:49.970 align:middle line:84%
+So you might have a bug
+because you have code that--
+
+00:11:49.970 --> 00:11:52.990 align:middle line:84%
+let's say you actually
+clamp your inputs
+
+00:11:52.990 --> 00:11:55.390 align:middle line:84%
+to be between 0 and 1, but
+the data you're loading
+
+00:11:55.390 --> 00:11:56.810 align:middle line:90%
+is between 0 and 255.
+
+00:11:56.810 --> 00:11:59.412 align:middle line:84%
+So now you're losing
+all of the information
+
+00:11:59.412 --> 00:12:00.870 align:middle line:84%
+because you're
+making all your data
+
+00:12:00.870 --> 00:12:02.950 align:middle line:90%
+points equal to either 0 or 1.
+
+00:12:02.950 --> 00:12:04.750 align:middle line:84%
+So you have to be very
+careful about this.
+
+00:12:04.750 --> 00:12:07.430 align:middle line:84%
+And what I would
+recommend-- and I
+
+00:12:07.430 --> 00:12:11.190 align:middle line:84%
+think it's just a very
+simple recipe-- is, somewhere
+
+00:12:11.190 --> 00:12:14.210 align:middle line:84%
+in your code, you're going
+to have model.forward, right?
+
+00:12:14.210 --> 00:12:16.750 align:middle line:84%
+You're going to run your
+neural net in a forward pass
+
+00:12:16.750 --> 00:12:18.430 align:middle line:90%
+on your data point.
+
+00:12:18.430 --> 00:12:21.755 align:middle line:84%
+Right before that line is where
+you should inspect the data.
+
+00:12:21.755 --> 00:12:23.630 align:middle line:84%
+So you don't want to
+inspect the data as it's
+
+00:12:23.630 --> 00:12:24.570 align:middle line:90%
+sorting your hard drive.
+
+00:12:24.570 --> 00:12:26.737 align:middle line:84%
+You don't want to inspect
+the data as it's initially
+
+00:12:26.737 --> 00:12:28.510 align:middle line:90%
+loaded by your data loader.
+
+00:12:28.510 --> 00:12:30.670 align:middle line:84%
+You can do that too, but
+the place where you really
+
+00:12:30.670 --> 00:12:32.510 align:middle line:84%
+need to understand what
+the format of the data is
+
+00:12:32.510 --> 00:12:34.885 align:middle line:84%
+and what the distribution of
+the data is right before you
+
+00:12:34.885 --> 00:12:37.310 align:middle line:90%
+run your model on it.
+
+00:12:37.310 --> 00:12:39.572 align:middle line:84%
+And make sure that
+what format you
+
+00:12:39.572 --> 00:12:41.280 align:middle line:84%
+think it is, what
+shape you think it has,
+
+00:12:41.280 --> 00:12:42.822 align:middle line:84%
+what dimensionality
+you think it has,
+
+00:12:42.822 --> 00:12:46.540 align:middle line:84%
+exactly matches what it
+actually is in practice.
+
+00:12:46.540 --> 00:12:47.040 align:middle line:90%
+OK.
+
+00:12:47.040 --> 00:12:51.180 align:middle line:84%
+So here's just another example
+of where this can go wrong.
+
+00:12:51.180 --> 00:12:59.060 align:middle line:84%
+So it turns out that in some of
+these old neural net libraries--
+
+00:12:59.060 --> 00:13:00.040 align:middle line:90%
+one is called DeCAF.
+
+00:13:00.040 --> 00:13:01.040 align:middle line:90%
+Another is called Caffe.
+
+00:13:01.040 --> 00:13:04.260 align:middle line:84%
+So these are like the precursors
+of PyTorch and TensorFlow
+
+00:13:04.260 --> 00:13:08.020 align:middle line:84%
+and other models like that,
+other systems like that.
+
+00:13:08.020 --> 00:13:13.560 align:middle line:84%
+If you load an image off
+of your desk, in DeCAF,
+
+00:13:13.560 --> 00:13:15.480 align:middle line:84%
+it will be represented
+upside down.
+
+00:13:15.480 --> 00:13:16.660 align:middle line:90%
+It'll be flipped.
+
+00:13:16.660 --> 00:13:20.860 align:middle line:84%
+And in Caffe, the
+channels will be permuted.
+
+00:13:20.860 --> 00:13:26.860 align:middle line:84%
+So the standard color space for
+Caffe is BGR instead of RGB.
+
+00:13:26.860 --> 00:13:29.220 align:middle line:90%
+The color channels are permuted.
+
+00:13:29.220 --> 00:13:33.120 align:middle line:84%
+And so if I have an image on
+disk and it's in RGB order
+
+00:13:33.120 --> 00:13:36.020 align:middle line:84%
+and then I load it into Caffe,
+the order of the channels
+
+00:13:36.020 --> 00:13:38.650 align:middle line:84%
+will be-- the blue channel
+is in the first channel
+
+00:13:38.650 --> 00:13:41.170 align:middle line:90%
+dimension, the first index.
+
+00:13:41.170 --> 00:13:43.610 align:middle line:84%
+So that was because
+of some old convention
+
+00:13:43.610 --> 00:13:45.348 align:middle line:90%
+in a library called OpenCV.
+
+00:13:45.348 --> 00:13:46.890 align:middle line:84%
+It doesn't really
+matter, but it used
+
+00:13:46.890 --> 00:13:48.557 align:middle line:84%
+to be BGR was the
+convention, and now we
+
+00:13:48.557 --> 00:13:50.170 align:middle line:90%
+use RGB as a convention.
+
+00:13:50.170 --> 00:13:55.170 align:middle line:84%
+But let's say that I'm training
+my Caffe model on images.
+
+00:13:55.170 --> 00:14:01.570 align:middle line:84%
+And maybe it says-- oh,
+this is a blueberry, right?
+
+00:14:01.570 --> 00:14:07.850 align:middle line:84%
+Well, that could be
+because it's actually
+
+00:14:07.850 --> 00:14:10.797 align:middle line:84%
+seen an object which has
+a strong red channel,
+
+00:14:10.797 --> 00:14:13.130 align:middle line:84%
+but it's interpreting that
+red channel as the color blue
+
+00:14:13.130 --> 00:14:15.410 align:middle line:84%
+because maybe the
+system was pre-trained
+
+00:14:15.410 --> 00:14:16.750 align:middle line:90%
+on data in the format RGB.
+
+00:14:16.750 --> 00:14:19.430 align:middle line:84%
+But now you load it into Caffe,
+and it's in the framework BGR.
+
+00:14:19.430 --> 00:14:21.410 align:middle line:84%
+So anyway, you can
+get errors like this.
+
+00:14:21.410 --> 00:14:22.890 align:middle line:84%
+So you really need
+to have a match
+
+00:14:22.890 --> 00:14:25.730 align:middle line:84%
+between what your
+model is expecting
+
+00:14:25.730 --> 00:14:27.210 align:middle line:90%
+and what you're giving it.
+
+00:14:27.210 --> 00:14:30.110 align:middle line:84%
+And if there's any mismatch
+between training and inference,
+
+00:14:30.110 --> 00:14:32.450 align:middle line:84%
+or between the
+model architecture
+
+00:14:32.450 --> 00:14:34.010 align:middle line:84%
+and the numerical
+transformations
+
+00:14:34.010 --> 00:14:39.040 align:middle line:84%
+you apply and the data format,
+then this will cause problems.
+
+00:14:39.040 --> 00:14:39.540 align:middle line:90%
+OK.
+
+00:14:39.540 --> 00:14:42.480 align:middle line:84%
+So here's, I think, the
+most important function
+
+00:14:42.480 --> 00:14:43.460 align:middle line:90%
+in deep learning.
+
+00:14:43.460 --> 00:14:44.940 align:middle line:90%
+This is one that I wrote.
+
+00:14:44.940 --> 00:14:49.370 align:middle line:84%
+So it's a very clever
+advanced contribution.
+
+00:14:49.370 --> 00:14:49.900 align:middle line:90%
+OK.
+
+00:14:49.900 --> 00:14:51.760 align:middle line:90%
+So here it is.
+
+00:14:51.760 --> 00:14:53.400 align:middle line:90%
+Inspect data.
+
+00:14:53.400 --> 00:14:53.940 align:middle line:90%
+OK.
+
+00:14:53.940 --> 00:14:56.680 align:middle line:84%
+So I just put this all
+over in code that I write.
+
+00:14:56.680 --> 00:14:59.320 align:middle line:84%
+Right before you
+called model.forward,
+
+00:14:59.320 --> 00:15:01.420 align:middle line:84%
+that's the most important
+place to put this.
+
+00:15:01.420 --> 00:15:03.840 align:middle line:84%
+But you can just sprinkle
+it all throughout your code.
+
+00:15:03.840 --> 00:15:04.340 align:middle line:90%
+OK.
+
+00:15:04.340 --> 00:15:06.020 align:middle line:84%
+It's going to just
+tell you a few things.
+
+00:15:06.020 --> 00:15:07.760 align:middle line:84%
+And to me, these are the
+most important things
+
+00:15:07.760 --> 00:15:09.280 align:middle line:84%
+to know about your data,
+but there's a lot more
+
+00:15:09.280 --> 00:15:10.420 align:middle line:90%
+you could think of as well.
+
+00:15:10.420 --> 00:15:12.640 align:middle line:84%
+Again, you could try to
+visualize it somehow or plot
+
+00:15:12.640 --> 00:15:15.960 align:middle line:84%
+two-dimensional distributions
+over the different axes.
+
+00:15:15.960 --> 00:15:17.800 align:middle line:90%
+But, OK, what's the data type?
+
+00:15:17.800 --> 00:15:18.620 align:middle line:90%
+Is it a tensor?
+
+00:15:18.620 --> 00:15:20.180 align:middle line:90%
+Is it a 32-bit tensor?
+
+00:15:20.180 --> 00:15:21.220 align:middle line:90%
+Is it a uint8?
+
+00:15:21.220 --> 00:15:21.940 align:middle line:90%
+What is it?
+
+00:15:21.940 --> 00:15:22.960 align:middle line:90%
+What's the shape?
+
+00:15:22.960 --> 00:15:27.560 align:middle line:84%
+The shape of the tensors in deep
+learning are super critical.
+
+00:15:27.560 --> 00:15:29.260 align:middle line:90%
+Does it require gradients?
+
+00:15:29.260 --> 00:15:31.840 align:middle line:84%
+So in your problem
+sets, you're constantly
+
+00:15:31.840 --> 00:15:33.360 align:middle line:90%
+training these networks.
+
+00:15:33.360 --> 00:15:36.030 align:middle line:84%
+And any parameter
+that you want to train
+
+00:15:36.030 --> 00:15:38.230 align:middle line:84%
+needs to have requires
+gradient equals true so
+
+00:15:38.230 --> 00:15:41.350 align:middle line:84%
+that you're actually getting
+gradients for that parameter.
+
+00:15:41.350 --> 00:15:42.090 align:middle line:90%
+What is the min?
+
+00:15:42.090 --> 00:15:42.757 align:middle line:90%
+What is the max?
+
+00:15:42.757 --> 00:15:43.465 align:middle line:90%
+What is the mean?
+
+00:15:43.465 --> 00:15:44.370 align:middle line:90%
+What is the variance?
+
+00:15:44.370 --> 00:15:46.630 align:middle line:84%
+You could go on from here,
+but these are the ones I like.
+
+00:15:46.630 --> 00:15:48.963 align:middle line:84%
+There are some libraries that
+just kind of give you this
+
+00:15:48.963 --> 00:15:51.990 align:middle line:84%
+by default. But I
+find those sometimes
+
+00:15:51.990 --> 00:15:55.150 align:middle line:84%
+change or have to
+require an install,
+
+00:15:55.150 --> 00:15:56.330 align:middle line:90%
+or it's just a little bit--
+
+00:15:56.330 --> 00:15:57.663 align:middle line:90%
+I just like the snippet of code.
+
+00:15:57.663 --> 00:15:59.690 align:middle line:84%
+That snippet of code
+will work, I think,
+
+00:15:59.690 --> 00:16:01.030 align:middle line:90%
+for at least a few years.
+
+00:16:01.030 --> 00:16:03.830 align:middle line:84%
+OK, so really simple,
+but I actually
+
+00:16:03.830 --> 00:16:07.070 align:middle line:84%
+think this kind of
+stuff is important.
+
+00:16:07.070 --> 00:16:10.192 align:middle line:90%
+OK, so data.
+
+00:16:10.192 --> 00:16:12.650 align:middle line:84%
+Another thing is, again, the
+numerical range matters a lot.
+
+00:16:12.650 --> 00:16:16.350 align:middle line:84%
+So one of the standard
+and most useful ways
+
+00:16:16.350 --> 00:16:20.110 align:middle line:84%
+of removing dependence on
+exactly the units in which
+
+00:16:20.110 --> 00:16:24.510 align:middle line:84%
+you're measuring your inputs
+and your data in general
+
+00:16:24.510 --> 00:16:26.980 align:middle line:90%
+is to normalize it somehow.
+
+00:16:26.980 --> 00:16:29.230 align:middle line:84%
+This is like the standardization
+transformation, where
+
+00:16:29.230 --> 00:16:34.380 align:middle line:84%
+I take my data and I
+subtract the mean and divide
+
+00:16:34.380 --> 00:16:36.860 align:middle line:84%
+by the square root
+of the variance.
+
+00:16:36.860 --> 00:16:38.620 align:middle line:84%
+This is a really
+common first step
+
+00:16:38.620 --> 00:16:40.400 align:middle line:84%
+to any kind of data loading
+that you're going to do.
+
+00:16:40.400 --> 00:16:41.192 align:middle line:90%
+You load your data.
+
+00:16:41.192 --> 00:16:43.540 align:middle line:84%
+You subtract the mean,
+divide by the variance.
+
+00:16:43.540 --> 00:16:46.580 align:middle line:84%
+And the point that
+this achieves is
+
+00:16:46.580 --> 00:16:50.900 align:middle line:84%
+that it makes it so that you're
+kind of invariant to exactly
+
+00:16:50.900 --> 00:16:55.080 align:middle line:84%
+the unit of measure in
+which the data is stored.
+
+00:16:55.080 --> 00:16:58.083 align:middle line:84%
+So if I'm modeling some
+geospatial information,
+
+00:16:58.083 --> 00:16:59.500 align:middle line:84%
+it doesn't matter
+if I've measured
+
+00:16:59.500 --> 00:17:06.020 align:middle line:84%
+my data with meters or
+centimeters or inches or feet.
+
+00:17:06.020 --> 00:17:08.780 align:middle line:84%
+If you standardize,
+then it will remove
+
+00:17:08.780 --> 00:17:10.940 align:middle line:84%
+the dependence on the
+scale of those measurements
+
+00:17:10.940 --> 00:17:12.260 align:middle line:90%
+to some degree.
+
+00:17:12.260 --> 00:17:17.060 align:middle line:84%
+At least, it, makes it unit
+variance and zero mean.
+
+00:17:17.060 --> 00:17:20.099 align:middle line:84%
+You could also squash
+and squish in other ways
+
+00:17:20.099 --> 00:17:23.839 align:middle line:84%
+to massage your data into a
+more canonical distribution.
+
+00:17:23.839 --> 00:17:24.980 align:middle line:90%
+Yeah, question?
+
+00:17:24.980 --> 00:17:27.780 align:middle line:84%
+AUDIENCE: I was going to ask,
+is this necessarily better
+
+00:17:27.780 --> 00:17:31.490 align:middle line:90%
+than just a min, maximum--
+
+00:17:31.490 --> 00:17:32.710 align:middle line:90%
+PHILLIP ISOLA: Yeah, exactly.
+
+00:17:32.710 --> 00:17:35.255 align:middle line:84%
+So is this better
+than just divide
+
+00:17:35.255 --> 00:17:37.130 align:middle line:84%
+by the difference between
+the min and the max
+
+00:17:37.130 --> 00:17:39.005 align:middle line:84%
+or subtract the min
+divided by the difference
+
+00:17:39.005 --> 00:17:40.090 align:middle line:90%
+between min and max?
+
+00:17:40.090 --> 00:17:41.530 align:middle line:90%
+Not necessarily.
+
+00:17:41.530 --> 00:17:44.890 align:middle line:84%
+Basically, you want
+to remove information
+
+00:17:44.890 --> 00:17:47.250 align:middle line:84%
+about maybe the unit of
+measure, like the scale of it,
+
+00:17:47.250 --> 00:17:50.790 align:middle line:84%
+or the mean of it, or possibly
+other statistics of it.
+
+00:17:50.790 --> 00:17:54.450 align:middle line:84%
+And there's a lot of
+ways of doing that.
+
+00:17:54.450 --> 00:17:56.330 align:middle line:84%
+So I'd say this is one
+of the most common, is
+
+00:17:56.330 --> 00:17:57.430 align:middle line:90%
+just standardization.
+
+00:17:57.430 --> 00:18:00.890 align:middle line:84%
+And the other most
+common is probably
+
+00:18:00.890 --> 00:18:05.170 align:middle line:84%
+subtract the min so that the
+numbers are all positive now
+
+00:18:05.170 --> 00:18:08.150 align:middle line:84%
+and then divide by the max
+after subtracting the min
+
+00:18:08.150 --> 00:18:11.250 align:middle line:84%
+so now the highest value is
+1, and the lowest value is 0.
+
+00:18:11.250 --> 00:18:12.910 align:middle line:90%
+That's another very nice trick.
+
+00:18:12.910 --> 00:18:16.010 align:middle line:84%
+Now your data lies
+in the range 0 to 1.
+
+00:18:16.010 --> 00:18:17.250 align:middle line:90%
+OK.
+
+00:18:17.250 --> 00:18:19.167 align:middle line:84%
+And this kind of
+removes inductive bias
+
+00:18:19.167 --> 00:18:21.250 align:middle line:84%
+about the unit of measurement,
+which might be good
+
+00:18:21.250 --> 00:18:22.930 align:middle line:90%
+or might be bad.
+
+00:18:22.930 --> 00:18:26.210 align:middle line:84%
+So it says that no one dimension
+is treated as more important
+
+00:18:26.210 --> 00:18:27.630 align:middle line:90%
+a priori than another dimension.
+
+00:18:27.630 --> 00:18:29.620 align:middle line:84%
+They're all in on
+the same scale.
+
+00:18:29.620 --> 00:18:31.120 align:middle line:90%
+They all range from 0 to 1.
+
+00:18:31.120 --> 00:18:33.420 align:middle line:84%
+Can anybody think of a case
+where this would be bad,
+
+00:18:33.420 --> 00:18:35.712 align:middle line:84%
+where, actually, you would
+want to use that information
+
+00:18:35.712 --> 00:18:36.400 align:middle line:90%
+about the scale?
+
+00:18:36.400 --> 00:18:37.440 align:middle line:90%
+OK, yeah?
+
+00:18:37.440 --> 00:18:40.960 align:middle line:84%
+AUDIENCE: So if you have, say,
+like a horizontal and vertical
+
+00:18:40.960 --> 00:18:44.240 align:middle line:84%
+distance, if they are actually
+two-dimensional phenomenons,
+
+00:18:44.240 --> 00:18:46.327 align:middle line:84%
+you wouldn't want to
+scale them differently.
+
+00:18:46.327 --> 00:18:47.160 align:middle line:90%
+PHILLIP ISOLA: Yeah.
+
+00:18:47.160 --> 00:18:49.725 align:middle line:84%
+If you have horizontal
+and vertical distance,
+
+00:18:49.725 --> 00:18:51.600 align:middle line:84%
+you might not want to
+scale these differently
+
+00:18:51.600 --> 00:18:55.200 align:middle line:84%
+because maybe distance
+in the vertical dimension
+
+00:18:55.200 --> 00:18:57.573 align:middle line:84%
+is physically different
+in meaning than distance
+
+00:18:57.573 --> 00:18:58.740 align:middle line:90%
+in the horizontal dimension.
+
+00:18:58.740 --> 00:18:59.570 align:middle line:90%
+Is that what you're getting at?
+
+00:18:59.570 --> 00:19:00.900 align:middle line:84%
+AUDIENCE: If they're
+physically the same,
+
+00:19:00.900 --> 00:19:02.400 align:middle line:84%
+you'd want to scale
+them together as
+
+00:19:02.400 --> 00:19:03.600 align:middle line:90%
+opposed to independently.
+
+00:19:03.600 --> 00:19:04.420 align:middle line:90%
+PHILLIP ISOLA: Oh.
+
+00:19:04.420 --> 00:19:04.920 align:middle line:90%
+Yeah.
+
+00:19:04.920 --> 00:19:06.660 align:middle line:84%
+So if they're
+physically the same,
+
+00:19:06.660 --> 00:19:10.040 align:middle line:84%
+then it could be that
+the horizontal data
+
+00:19:10.040 --> 00:19:11.332 align:middle line:90%
+has a very narrow distribution.
+
+00:19:11.332 --> 00:19:13.248 align:middle line:84%
+But you wouldn't want
+to therefore scale it up
+
+00:19:13.248 --> 00:19:15.120 align:middle line:84%
+because now it's
+like you're measuring
+
+00:19:15.120 --> 00:19:17.222 align:middle line:84%
+space in the horizontal
+axis differently
+
+00:19:17.222 --> 00:19:18.180 align:middle line:90%
+than the vertical axis.
+
+00:19:18.180 --> 00:19:18.280 align:middle line:90%
+Yeah.
+
+00:19:18.280 --> 00:19:20.197 align:middle line:84%
+So there's a lot of
+interesting considerations
+
+00:19:20.197 --> 00:19:22.000 align:middle line:84%
+that can come up where
+this could go wrong.
+
+00:19:22.000 --> 00:19:27.768 align:middle line:84%
+But I would say, in general,
+it's a good heuristic,
+
+00:19:27.768 --> 00:19:29.310 align:middle line:84%
+especially when you
+have measurements
+
+00:19:29.310 --> 00:19:30.435 align:middle line:90%
+on vastly different scales.
+
+00:19:30.435 --> 00:19:32.043 align:middle line:84%
+Like, you have some
+measurements that
+
+00:19:32.043 --> 00:19:34.210 align:middle line:84%
+are 10 million times bigger
+than other measurements.
+
+00:19:34.210 --> 00:19:36.270 align:middle line:84%
+It'll be very hard
+for your network
+
+00:19:36.270 --> 00:19:39.467 align:middle line:84%
+to learn to pay attention
+to the tiny measurements
+
+00:19:39.467 --> 00:19:42.050 align:middle line:84%
+if there's another measurement
+that's 10 million times bigger,
+
+00:19:42.050 --> 00:19:46.150 align:middle line:84%
+because the gradients will
+just be much, much smaller
+
+00:19:46.150 --> 00:19:47.890 align:middle line:90%
+for the data on a smaller scale.
+
+00:19:47.890 --> 00:19:53.170 align:middle line:90%
+
+
+00:19:53.170 --> 00:19:53.670 align:middle line:90%
+OK.
+
+00:19:53.670 --> 00:19:56.910 align:middle line:84%
+This slide is going to
+be a little more subtle.
+
+00:19:56.910 --> 00:19:59.550 align:middle line:90%
+So beware of low dimensions.
+
+00:19:59.550 --> 00:20:01.110 align:middle line:84%
+This is a slightly
+different thing
+
+00:20:01.110 --> 00:20:02.610 align:middle line:84%
+than maybe what
+you've heard before.
+
+00:20:02.610 --> 00:20:04.990 align:middle line:84%
+Maybe you've taken some
+statistics class or even
+
+00:20:04.990 --> 00:20:07.710 align:middle line:84%
+high-dimensional statistics and
+people said, oh, high dimensions
+
+00:20:07.710 --> 00:20:08.570 align:middle line:90%
+are weird.
+
+00:20:08.570 --> 00:20:10.150 align:middle line:90%
+Beware of high dimensions.
+
+00:20:10.150 --> 00:20:13.990 align:middle line:84%
+Things are different than your
+intuitions in high dimensions.
+
+00:20:13.990 --> 00:20:15.470 align:middle line:90%
+OK, that's true.
+
+00:20:15.470 --> 00:20:17.950 align:middle line:84%
+So the human intuitions
+we have are mostly
+
+00:20:17.950 --> 00:20:20.530 align:middle line:84%
+for low-dimensional,
+three-dimensional spaces.
+
+00:20:20.530 --> 00:20:22.850 align:middle line:84%
+The world is, like, three
+spatial coordinates.
+
+00:20:22.850 --> 00:20:24.290 align:middle line:90%
+Time is another dimension.
+
+00:20:24.290 --> 00:20:26.360 align:middle line:84%
+We're used to thinking in
+low-dimensional spaces.
+
+00:20:26.360 --> 00:20:27.835 align:middle line:84%
+We think of objects
+like a sphere
+
+00:20:27.835 --> 00:20:28.960 align:middle line:90%
+in a low-dimensional space.
+
+00:20:28.960 --> 00:20:30.260 align:middle line:90%
+We know what that looks like.
+
+00:20:30.260 --> 00:20:32.460 align:middle line:84%
+But you may know
+from other classes
+
+00:20:32.460 --> 00:20:34.460 align:middle line:84%
+that a sphere in
+high-dimensional space
+
+00:20:34.460 --> 00:20:37.940 align:middle line:84%
+has slightly
+different properties.
+
+00:20:37.940 --> 00:20:41.140 align:middle line:84%
+So a Gaussian distribution
+in high-dimensional space
+
+00:20:41.140 --> 00:20:43.780 align:middle line:84%
+is like a soap bubble, where
+almost all of the probability
+
+00:20:43.780 --> 00:20:47.940 align:middle line:84%
+is in a tiny little band around
+the surface of the sphere.
+
+00:20:47.940 --> 00:20:48.440 align:middle line:90%
+OK.
+
+00:20:48.440 --> 00:20:49.620 align:middle line:84%
+So things are a
+little bit different
+
+00:20:49.620 --> 00:20:51.495 align:middle line:84%
+in high-dimensional
+space than we're used to.
+
+00:20:51.495 --> 00:20:54.020 align:middle line:84%
+But what I want to point out
+is that if we weren't human
+
+00:20:54.020 --> 00:20:59.900 align:middle line:84%
+and we're just some
+ideal creatures of math,
+
+00:20:59.900 --> 00:21:02.100 align:middle line:84%
+then high dimensions
+is a simple one.
+
+00:21:02.100 --> 00:21:03.680 align:middle line:84%
+Things are simple
+in high dimensions,
+
+00:21:03.680 --> 00:21:05.000 align:middle line:84%
+and they're weird
+in low dimensions.
+
+00:21:05.000 --> 00:21:06.340 align:middle line:84%
+And deep learning is
+all about getting used
+
+00:21:06.340 --> 00:21:07.520 align:middle line:90%
+to thinking in high dimensions.
+
+00:21:07.520 --> 00:21:09.280 align:middle line:84%
+And everything gets
+simple in high dimensions.
+
+00:21:09.280 --> 00:21:10.863 align:middle line:84%
+So that's what's
+really nice about it.
+
+00:21:10.863 --> 00:21:12.780 align:middle line:90%
+So here's an example of that.
+
+00:21:12.780 --> 00:21:14.400 align:middle line:90%
+So we talked about RMS-norm.
+
+00:21:14.400 --> 00:21:17.300 align:middle line:84%
+Remember, Jeremy introduced
+that in one of his lectures.
+
+00:21:17.300 --> 00:21:19.060 align:middle line:84%
+And we sometimes will
+want to take the RMS
+
+00:21:19.060 --> 00:21:22.700 align:middle line:84%
+norm of the activations to
+achieve good effects on learning
+
+00:21:22.700 --> 00:21:24.010 align:middle line:90%
+dynamics.
+
+00:21:24.010 --> 00:21:25.477 align:middle line:84%
+And we also talked
+about layernorm,
+
+00:21:25.477 --> 00:21:27.310 align:middle line:84%
+which is the standard
+layer in transformers,
+
+00:21:27.310 --> 00:21:28.590 align:middle line:90%
+which is almost the same.
+
+00:21:28.590 --> 00:21:30.090 align:middle line:84%
+And in high dimensions,
+these things
+
+00:21:30.090 --> 00:21:32.010 align:middle line:90%
+behave almost identically.
+
+00:21:32.010 --> 00:21:33.810 align:middle line:84%
+So the only difference
+is, layernorm,
+
+00:21:33.810 --> 00:21:37.170 align:middle line:84%
+you subtract the mean
+over your vector,
+
+00:21:37.170 --> 00:21:39.410 align:middle line:84%
+and then you take the
+RMS-norm of that vector.
+
+00:21:39.410 --> 00:21:42.690 align:middle line:84%
+In RMS-norm, you don't subtract
+the mean of the vector.
+
+00:21:42.690 --> 00:21:48.770 align:middle line:84%
+So RMS-norm will tend
+to map data points
+
+00:21:48.770 --> 00:21:52.090 align:middle line:90%
+onto the unit hypersphere.
+
+00:21:52.090 --> 00:21:53.590 align:middle line:84%
+That's the effect
+of that operation.
+
+00:21:53.590 --> 00:21:55.257 align:middle line:84%
+So here's a visualization
+of the inputs.
+
+00:21:55.257 --> 00:21:56.930 align:middle line:84%
+It's like a cloud
+of data points.
+
+00:21:56.930 --> 00:21:59.890 align:middle line:84%
+And then the outputs,
+after an RMS-norm layer,
+
+00:21:59.890 --> 00:22:02.230 align:middle line:84%
+are going to map everything
+to this unit sphere.
+
+00:22:02.230 --> 00:22:04.230 align:middle line:90%
+So that is this normalization.
+
+00:22:04.230 --> 00:22:07.490 align:middle line:84%
+You get everything
+onto the unit.
+
+00:22:07.490 --> 00:22:10.473 align:middle line:84%
+Well, layernorm, you
+might think, OK, yeah,
+
+00:22:10.473 --> 00:22:11.890 align:middle line:84%
+it's basically the
+same operation.
+
+00:22:11.890 --> 00:22:13.098 align:middle line:90%
+And it is in high dimensions.
+
+00:22:13.098 --> 00:22:15.390 align:middle line:84%
+But in low dimensions,
+it has this effect.
+
+00:22:15.390 --> 00:22:19.230 align:middle line:84%
+So for 2D inputs-- this is a
+layernorm applied to 2D inputs.
+
+00:22:19.230 --> 00:22:20.970 align:middle line:84%
+The data points
+are the red points.
+
+00:22:20.970 --> 00:22:24.200 align:middle line:84%
+But layernorm is doing is by
+subtracting the mean-- like,
+
+00:22:24.200 --> 00:22:26.882 align:middle line:84%
+the vector x is
+two-dimensional for a 2D space.
+
+00:22:26.882 --> 00:22:29.340 align:middle line:84%
+And we're subtracting the mean
+of a two-dimensional vector.
+
+00:22:29.340 --> 00:22:30.740 align:middle line:84%
+I'm losing one
+degree of freedom.
+
+00:22:30.740 --> 00:22:34.760 align:middle line:84%
+And now that kind of degenerates
+into all of my outputs
+
+00:22:34.760 --> 00:22:36.160 align:middle line:90%
+have to be on--
+
+00:22:36.160 --> 00:22:38.317 align:middle line:84%
+I lost one degree of
+freedom, essentially.
+
+00:22:38.317 --> 00:22:40.900 align:middle line:84%
+And then the RMS norm kind of
+loses another degree of freedom.
+
+00:22:40.900 --> 00:22:42.825 align:middle line:84%
+So now the outputs have
+0 degrees of freedom,
+
+00:22:42.825 --> 00:22:45.200 align:middle line:84%
+and they end up being on these
+just two points as opposed
+
+00:22:45.200 --> 00:22:47.920 align:middle line:84%
+to being on a one-dimensional
+manifold, the circle
+
+00:22:47.920 --> 00:22:49.140 align:middle line:90%
+for RMS-norm.
+
+00:22:49.140 --> 00:22:49.640 align:middle line:90%
+OK.
+
+00:22:49.640 --> 00:22:54.035 align:middle line:84%
+So the point is just be
+careful in low dimensions.
+
+00:22:54.035 --> 00:22:56.160 align:middle line:84%
+Try to work in high dimensions
+as much as possible,
+
+00:22:56.160 --> 00:22:58.200 align:middle line:84%
+where things are
+nice and simple.
+
+00:22:58.200 --> 00:23:00.160 align:middle line:84%
+And get an intuition
+for high dimensions.
+
+00:23:00.160 --> 00:23:03.040 align:middle line:84%
+And especially, normalization
+layers, like batch norm,
+
+00:23:03.040 --> 00:23:05.540 align:middle line:84%
+won't work well if your
+batch size is small.
+
+00:23:05.540 --> 00:23:08.160 align:middle line:84%
+layernorm won't work well
+if your layer dimensionality
+
+00:23:08.160 --> 00:23:09.520 align:middle line:90%
+is small.
+
+00:23:09.520 --> 00:23:11.325 align:middle line:84%
+Or it will have weird
+effects, like this.
+
+00:23:11.325 --> 00:23:12.700 align:middle line:84%
+So you have to be
+really careful.
+
+00:23:12.700 --> 00:23:14.600 align:middle line:90%
+I remember I had a bug--
+
+00:23:14.600 --> 00:23:16.600 align:middle line:84%
+so the work that
+was the most popular
+
+00:23:16.600 --> 00:23:20.470 align:middle line:84%
+that I've ever been involved in
+was this project called Pix2Pix.
+
+00:23:20.470 --> 00:23:25.750 align:middle line:84%
+And in the initial code
+release of that project,
+
+00:23:25.750 --> 00:23:29.470 align:middle line:84%
+I had batch norm over
+a batch size of 1
+
+00:23:29.470 --> 00:23:30.910 align:middle line:90%
+for one of the baselines.
+
+00:23:30.910 --> 00:23:34.750 align:middle line:84%
+And batch norm over batch size
+of 1 means take a data point
+
+00:23:34.750 --> 00:23:37.070 align:middle line:84%
+and subtract the mean
+over a batch of 1.
+
+00:23:37.070 --> 00:23:38.570 align:middle line:84%
+It just take the
+data, subtract it.
+
+00:23:38.570 --> 00:23:39.390 align:middle line:90%
+It's 0.
+
+00:23:39.390 --> 00:23:42.150 align:middle line:84%
+So that baseline was
+trivially beaten.
+
+00:23:42.150 --> 00:23:42.987 align:middle line:90%
+And I corrected it.
+
+00:23:42.987 --> 00:23:44.570 align:middle line:84%
+We still beat the
+baseline in the end.
+
+00:23:44.570 --> 00:23:47.650 align:middle line:84%
+But that was out
+there for a while.
+
+00:23:47.650 --> 00:23:49.670 align:middle line:90%
+And that was just a bug.
+
+00:23:49.670 --> 00:23:51.730 align:middle line:84%
+So you can't take batch
+norm over batch size 1.
+
+00:23:51.730 --> 00:23:54.270 align:middle line:84%
+You can't do layernorm
+over layer size 1
+
+00:23:54.270 --> 00:23:57.270 align:middle line:84%
+if the dimensionality
+layer is 1.
+
+00:23:57.270 --> 00:23:57.770 align:middle line:90%
+OK.
+
+00:23:57.770 --> 00:23:59.228 align:middle line:84%
+So the general
+trick is just you're
+
+00:23:59.228 --> 00:24:03.670 align:middle line:84%
+going to be working with
+data tensors of batch size
+
+00:24:03.670 --> 00:24:06.097 align:middle line:84%
+N by M by C, maybe some
+other dimensions as
+
+00:24:06.097 --> 00:24:06.930 align:middle line:90%
+well, these tensors.
+
+00:24:06.930 --> 00:24:09.710 align:middle line:84%
+The weights are going
+to be matrices N by M.
+
+00:24:09.710 --> 00:24:12.870 align:middle line:84%
+Just make sure all of
+your dimensions are big,
+
+00:24:12.870 --> 00:24:14.910 align:middle line:90%
+and you'll be in good shape.
+
+00:24:14.910 --> 00:24:15.670 align:middle line:90%
+Yeah?
+
+00:24:15.670 --> 00:24:18.980 align:middle line:84%
+AUDIENCE: When you say big,
+what sort of scale do you mean?
+
+00:24:18.980 --> 00:24:19.980 align:middle line:90%
+PHILLIP ISOLA: Oh, yeah.
+
+00:24:19.980 --> 00:24:22.660 align:middle line:84%
+When I say big, what
+kind of scale do I mean?
+
+00:24:22.660 --> 00:24:24.120 align:middle line:90%
+Yeah, these are just heuristics.
+
+00:24:24.120 --> 00:24:24.787 align:middle line:90%
+So I don't know.
+
+00:24:24.787 --> 00:24:31.380 align:middle line:84%
+Let's say at least 10 and
+above, and ideally, probably
+
+00:24:31.380 --> 00:24:32.140 align:middle line:90%
+as big as--
+
+00:24:32.140 --> 00:24:34.140 align:middle line:84%
+the bigger, the better,
+in general, I would say.
+
+00:24:34.140 --> 00:24:36.605 align:middle line:84%
+Asymptotically, everything
+becomes nice and simple.
+
+00:24:36.605 --> 00:24:38.480 align:middle line:84%
+Deep learning is kind
+of like thermodynamics.
+
+00:24:38.480 --> 00:24:41.022 align:middle line:84%
+It's really hard to say anything
+about a set of three or four
+
+00:24:41.022 --> 00:24:41.600 align:middle line:90%
+molecules.
+
+00:24:41.600 --> 00:24:44.900 align:middle line:84%
+The three-body problem in
+physics is really hard to solve.
+
+00:24:44.900 --> 00:24:47.140 align:middle line:84%
+But it's very easy to say
+what the temperature is
+
+00:24:47.140 --> 00:24:51.700 align:middle line:84%
+of a billion atoms because,
+asymptotically, things
+
+00:24:51.700 --> 00:24:52.898 align:middle line:90%
+become very simple.
+
+00:24:52.898 --> 00:24:54.440 align:middle line:84%
+We leverage the law
+of large numbers.
+
+00:24:54.440 --> 00:24:55.398 align:middle line:90%
+So it's the same thing.
+
+00:24:55.398 --> 00:24:57.820 align:middle line:84%
+You always want to be
+toward the asymptotic limit.
+
+00:24:57.820 --> 00:24:58.320 align:middle line:90%
+OK.
+
+00:24:58.320 --> 00:24:59.160 align:middle line:90%
+What is the cost?
+
+00:24:59.160 --> 00:25:01.360 align:middle line:90%
+Well, money, time, energy.
+
+00:25:01.360 --> 00:25:03.460 align:middle line:90%
+So there is a trade-off.
+
+00:25:03.460 --> 00:25:05.300 align:middle line:84%
+There's not zero
+cost to increasing
+
+00:25:05.300 --> 00:25:06.400 align:middle line:90%
+the scale of these things.
+
+00:25:06.400 --> 00:25:11.740 align:middle line:84%
+But for statistics and
+inference and prediction,
+
+00:25:11.740 --> 00:25:12.540 align:middle line:90%
+bigger is better.
+
+00:25:12.540 --> 00:25:19.370 align:middle line:90%
+
+
+00:25:19.370 --> 00:25:19.910 align:middle line:90%
+Yeah.
+
+00:25:19.910 --> 00:25:22.070 align:middle line:84%
+These are basically things
+that I've already said.
+
+00:25:22.070 --> 00:25:24.030 align:middle line:84%
+But you want to know
+the range of your data.
+
+00:25:24.030 --> 00:25:25.850 align:middle line:84%
+You want to know the
+shape of your data.
+
+00:25:25.850 --> 00:25:29.930 align:middle line:84%
+And one little trick--
+this is coming from Evan--
+
+00:25:29.930 --> 00:25:32.810 align:middle line:84%
+is that if you want
+to sanity check
+
+00:25:32.810 --> 00:25:36.970 align:middle line:84%
+your neural net
+architecture, don't test it
+
+00:25:36.970 --> 00:25:41.770 align:middle line:84%
+on tensors in which different
+dimensions of the tensor
+
+00:25:41.770 --> 00:25:48.090 align:middle line:84%
+all are the same number, because
+it makes it much harder to catch
+
+00:25:48.090 --> 00:25:50.890 align:middle line:90%
+errors with reshaping.
+
+00:25:50.890 --> 00:25:54.330 align:middle line:84%
+Because it could be that you
+do some reshaping operations
+
+00:25:54.330 --> 00:25:57.850 align:middle line:84%
+and you still get a
+tensor of dimension 64
+
+00:25:57.850 --> 00:26:01.210 align:middle line:84%
+in the second dimension
+of that tensor.
+
+00:26:01.210 --> 00:26:03.252 align:middle line:84%
+But the first dimension
+also should be 64.
+
+00:26:03.252 --> 00:26:05.710 align:middle line:84%
+And you actually have permuted
+the tensor in the wrong way,
+
+00:26:05.710 --> 00:26:07.130 align:middle line:90%
+but you can't tell.
+
+00:26:07.130 --> 00:26:09.335 align:middle line:84%
+So you get kind of a
+better type checking
+
+00:26:09.335 --> 00:26:10.710 align:middle line:84%
+to make sure the
+numbers all work
+
+00:26:10.710 --> 00:26:12.770 align:middle line:84%
+if you use a unique
+set of numbers,
+
+00:26:12.770 --> 00:26:18.180 align:middle line:84%
+a unique dimensionality for
+each dimension of the tensor.
+
+00:26:18.180 --> 00:26:18.680 align:middle line:90%
+OK.
+
+00:26:18.680 --> 00:26:22.320 align:middle line:84%
+So it's a good way
+of just getting
+
+00:26:22.320 --> 00:26:24.060 align:middle line:90%
+syntax errors in your code.
+
+00:26:24.060 --> 00:26:28.950 align:middle line:84%
+And they'll throw a
+shape mismatch error
+
+00:26:28.950 --> 00:26:31.200 align:middle line:84%
+when you've used unique
+numbers if you're getting them
+
+00:26:31.200 --> 00:26:32.540 align:middle line:90%
+in the wrong order.
+
+00:26:32.540 --> 00:26:36.080 align:middle line:84%
+But they won't if you have
+the same dimensionality.
+
+00:26:36.080 --> 00:26:37.160 align:middle line:90%
+OK.
+
+00:26:37.160 --> 00:26:39.640 align:middle line:84%
+And yeah, be very
+careful with changing
+
+00:26:39.640 --> 00:26:42.580 align:middle line:90%
+the types of your tensors.
+
+00:26:42.580 --> 00:26:45.840 align:middle line:84%
+If you cast a tensor
+as a uint8 because you
+
+00:26:45.840 --> 00:26:48.040 align:middle line:84%
+think I'll save memory,
+well, uint8's can't
+
+00:26:48.040 --> 00:26:49.165 align:middle line:90%
+represent negative numbers.
+
+00:26:49.165 --> 00:26:51.540 align:middle line:84%
+So now all your negative data,
+if you have negative data,
+
+00:26:51.540 --> 00:26:52.100 align:middle line:90%
+will go away.
+
+00:26:52.100 --> 00:26:55.200 align:middle line:90%
+
+
+00:26:55.200 --> 00:26:56.640 align:middle line:90%
+So that's the point here.
+
+00:26:56.640 --> 00:26:57.980 align:middle line:90%
+What is negative 1 for a byte?
+
+00:26:57.980 --> 00:27:00.680 align:middle line:90%
+A byte is like a uint8.
+
+00:27:00.680 --> 00:27:02.342 align:middle line:84%
+And what if I've
+taken my input data--
+
+00:27:02.342 --> 00:27:04.300 align:middle line:84%
+I'm like, oh, I know my
+input data is positive,
+
+00:27:04.300 --> 00:27:05.675 align:middle line:84%
+but now I standardized
+it to make
+
+00:27:05.675 --> 00:27:10.500 align:middle line:84%
+it lie between the unit
+variance and centered on 0.
+
+00:27:10.500 --> 00:27:12.480 align:middle line:84%
+So that means it can
+have negative values.
+
+00:27:12.480 --> 00:27:14.022 align:middle line:84%
+But I still have
+the intuition, well,
+
+00:27:14.022 --> 00:27:15.528 align:middle line:84%
+I'm working with
+only positive data.
+
+00:27:15.528 --> 00:27:16.570 align:middle line:90%
+But I've standardized it.
+
+00:27:16.570 --> 00:27:18.643 align:middle line:84%
+Well, now it has
+negative values,
+
+00:27:18.643 --> 00:27:20.810 align:middle line:84%
+but it's uint8's, and it
+can't have negative values.
+
+00:27:20.810 --> 00:27:23.750 align:middle line:90%
+OK, there's going to be a bug.
+
+00:27:23.750 --> 00:27:26.222 align:middle line:90%
+OK.
+
+00:27:26.222 --> 00:27:30.270 align:middle line:84%
+So you've probably gotten the
+feeling for this in the Psets
+
+00:27:30.270 --> 00:27:32.030 align:middle line:84%
+already, but a lot
+of your code is just
+
+00:27:32.030 --> 00:27:34.230 align:middle line:90%
+going to be reshape operations.
+
+00:27:34.230 --> 00:27:36.093 align:middle line:84%
+And this becomes a
+bookkeeping nightmare.
+
+00:27:36.093 --> 00:27:37.510 align:middle line:84%
+You're going to
+have a lot of bugs
+
+00:27:37.510 --> 00:27:39.635 align:middle line:84%
+that come up just because
+you didn't reshape things
+
+00:27:39.635 --> 00:27:41.310 align:middle line:90%
+in the right way.
+
+00:27:41.310 --> 00:27:43.450 align:middle line:84%
+You're constantly
+transposing, permuting,
+
+00:27:43.450 --> 00:27:46.230 align:middle line:84%
+reshaping, flattening,
+unflattening, unsqueezing,
+
+00:27:46.230 --> 00:27:47.050 align:middle line:90%
+squeezing.
+
+00:27:47.050 --> 00:27:50.710 align:middle line:84%
+This is like half
+the code in PyTorch.
+
+00:27:50.710 --> 00:27:56.030 align:middle line:84%
+And I personally can never
+remember the conventions
+
+00:27:56.030 --> 00:27:56.810 align:middle line:90%
+for these things.
+
+00:27:56.810 --> 00:27:59.753 align:middle line:84%
+So if I do reshape
+a tensor-- let's
+
+00:27:59.753 --> 00:28:01.170 align:middle line:84%
+say it's a
+two-dimensional tensor.
+
+00:28:01.170 --> 00:28:04.790 align:middle line:84%
+And I reshape it into
+a flattened array--
+
+00:28:04.790 --> 00:28:09.350 align:middle line:84%
+so just a vector of the
+product of the two dimensions--
+
+00:28:09.350 --> 00:28:13.098 align:middle line:84%
+is this going to stack
+the rows into a sequence
+
+00:28:13.098 --> 00:28:14.640 align:middle line:84%
+or stack the columns
+into a sequence?
+
+00:28:14.640 --> 00:28:15.557 align:middle line:90%
+I don't even remember.
+
+00:28:15.557 --> 00:28:16.860 align:middle line:90%
+I don't know what this does.
+
+00:28:16.860 --> 00:28:19.140 align:middle line:90%
+Who knows, actually.
+
+00:28:19.140 --> 00:28:22.388 align:middle line:84%
+Is it going to be row major
+order or column major order?
+
+00:28:22.388 --> 00:28:24.180 align:middle line:84%
+If I have a matrix, is
+it going to read off
+
+00:28:24.180 --> 00:28:26.020 align:middle line:84%
+the first row and
+then the next row
+
+00:28:26.020 --> 00:28:28.980 align:middle line:90%
+and put it after the first row?
+
+00:28:28.980 --> 00:28:31.740 align:middle line:84%
+Does anyone know for
+reshape in PyTorch?
+
+00:28:31.740 --> 00:28:33.100 align:middle line:90%
+Yeah?
+
+00:28:33.100 --> 00:28:34.640 align:middle line:90%
+AUDIENCE: It's row contiguous.
+
+00:28:34.640 --> 00:28:35.760 align:middle line:84%
+PHILLIP ISOLA: OK,
+it's row contiguous
+
+00:28:35.760 --> 00:28:37.460 align:middle line:84%
+So it does the first row, and
+then it takes the next one
+
+00:28:37.460 --> 00:28:38.310 align:middle line:90%
+and puts it after it.
+
+00:28:38.310 --> 00:28:38.810 align:middle line:90%
+Right.
+
+00:28:38.810 --> 00:28:40.798 align:middle line:84%
+But it's hard to
+remember these things.
+
+00:28:40.798 --> 00:28:43.340 align:middle line:84%
+And you really don't want to
+have to remember all that stuff.
+
+00:28:43.340 --> 00:28:45.380 align:middle line:84%
+So this is a
+library that I think
+
+00:28:45.380 --> 00:28:48.980 align:middle line:84%
+makes some of that
+a lot easier, makes
+
+00:28:48.980 --> 00:28:54.020 align:middle line:84%
+keeping track of the reshape
+operations a little bit easier,
+
+00:28:54.020 --> 00:28:55.042 align:middle line:90%
+is einops.
+
+00:28:55.042 --> 00:28:57.000 align:middle line:84%
+It doesn't mean you don't
+have to think at all.
+
+00:28:57.000 --> 00:28:59.340 align:middle line:84%
+And you can still
+have bugs with einops.
+
+00:28:59.340 --> 00:29:02.040 align:middle line:84%
+But I found it to
+be very helpful.
+
+00:29:02.040 --> 00:29:05.380 align:middle line:84%
+So all of the kind of reshape,
+flatten, unsqueeze operations
+
+00:29:05.380 --> 00:29:07.020 align:middle line:90%
+now have a common notation.
+
+00:29:07.020 --> 00:29:08.700 align:middle line:90%
+They're just rearrange.
+
+00:29:08.700 --> 00:29:13.360 align:middle line:84%
+And you give a string,
+which is going to say--
+
+00:29:13.360 --> 00:29:20.360 align:middle line:84%
+it's kind of like a shorthand
+for telling the system what
+
+00:29:20.360 --> 00:29:24.360 align:middle line:84%
+is the set of reshapes that
+will map from one space
+
+00:29:24.360 --> 00:29:25.100 align:middle line:90%
+to another space.
+
+00:29:25.100 --> 00:29:27.480 align:middle line:84%
+So here, we have b, h, w,
+c, That means that, first, I
+
+00:29:27.480 --> 00:29:29.840 align:middle line:90%
+have a four-dimensional tensor.
+
+00:29:29.840 --> 00:29:33.320 align:middle line:84%
+And I'm going to map
+that to h, b, w, c.
+
+00:29:33.320 --> 00:29:34.420 align:middle line:90%
+b, w are in parentheses.
+
+00:29:34.420 --> 00:29:37.740 align:middle line:84%
+That means I'll flatten those
+two into a single dimension.
+
+00:29:37.740 --> 00:29:44.860 align:middle line:84%
+So it'll be an h by b
+times w by c tensor.
+
+00:29:44.860 --> 00:29:47.520 align:middle line:84%
+It'll be a tensor
+with three dimensions.
+
+00:29:47.520 --> 00:29:49.900 align:middle line:84%
+And yeah, you still have
+to worry a little bit.
+
+00:29:49.900 --> 00:29:52.760 align:middle line:84%
+Is it the row major order
+or column major order?
+
+00:29:52.760 --> 00:29:55.600 align:middle line:84%
+But it makes a lot of this
+easier to think about.
+
+00:29:55.600 --> 00:29:57.697 align:middle line:84%
+And it tends to have the
+property that-- or maybe
+
+00:29:57.697 --> 00:30:00.280 align:middle line:84%
+it always has the property that
+if I do the inverse operation,
+
+00:30:00.280 --> 00:30:01.300 align:middle line:90%
+it will be an identity.
+
+00:30:01.300 --> 00:30:06.560 align:middle line:84%
+So if I do reshape
+b h w c to h b w c
+
+00:30:06.560 --> 00:30:08.280 align:middle line:84%
+and then I do the
+inverse, where I
+
+00:30:08.280 --> 00:30:12.970 align:middle line:84%
+do h parentheses b w
+c and then to b h w c,
+
+00:30:12.970 --> 00:30:14.550 align:middle line:84%
+so I do the opposite
+direction-- if I
+
+00:30:14.550 --> 00:30:17.210 align:middle line:84%
+do those one after the other,
+I'll get back where I started.
+
+00:30:17.210 --> 00:30:18.290 align:middle line:90%
+They're inverses of each other.
+
+00:30:18.290 --> 00:30:19.410 align:middle line:90%
+So that's a nice property.
+
+00:30:19.410 --> 00:30:20.008 align:middle line:90%
+OK.
+
+00:30:20.008 --> 00:30:21.550 align:middle line:84%
+Reshape might have
+that property too,
+
+00:30:21.550 --> 00:30:23.910 align:middle line:90%
+but this makes it very easy.
+
+00:30:23.910 --> 00:30:25.390 align:middle line:90%
+OK.
+
+00:30:25.390 --> 00:30:27.130 align:middle line:90%
+So try einops.
+
+00:30:27.130 --> 00:30:27.630 align:middle line:90%
+OK.
+
+00:30:27.630 --> 00:30:29.030 align:middle line:84%
+As you can see,
+this lecture is just
+
+00:30:29.030 --> 00:30:31.447 align:middle line:84%
+going to be throwing a whole
+lot of little tips and tricks
+
+00:30:31.447 --> 00:30:32.338 align:middle line:90%
+to you.
+
+00:30:32.338 --> 00:30:34.130 align:middle line:84%
+And I'm hoping that
+some of them will stick
+
+00:30:34.130 --> 00:30:36.350 align:middle line:84%
+and you can go and
+pull on these later.
+
+00:30:36.350 --> 00:30:39.030 align:middle line:90%
+OK, so data augmentation.
+
+00:30:39.030 --> 00:30:41.050 align:middle line:84%
+You did some data
+augmentation in Pset 1,
+
+00:30:41.050 --> 00:30:42.770 align:middle line:84%
+so you know what
+data augmentation is.
+
+00:30:42.770 --> 00:30:44.270 align:middle line:90%
+Just a quick recap--
+
+00:30:44.270 --> 00:30:47.630 align:middle line:84%
+if I want to take small data
+and I want to make it bigger,
+
+00:30:47.630 --> 00:30:50.210 align:middle line:84%
+there's simple tricks
+which you can do,
+
+00:30:50.210 --> 00:30:53.550 align:middle line:84%
+which are apply transformations
+to your data, which should not
+
+00:30:53.550 --> 00:30:54.730 align:middle line:90%
+fundamentally change it.
+
+00:30:54.730 --> 00:30:57.830 align:middle line:84%
+So you want to be able
+to apply transformations
+
+00:30:57.830 --> 00:31:02.650 align:middle line:84%
+to, in this case, images that
+do not change the target class.
+
+00:31:02.650 --> 00:31:05.950 align:middle line:84%
+So this creates bigger
+data from smaller data.
+
+00:31:05.950 --> 00:31:09.460 align:middle line:84%
+And I think a lot of
+people have this impression
+
+00:31:09.460 --> 00:31:12.940 align:middle line:84%
+that data augmentation is a
+little bit ugly, a little hacky.
+
+00:31:12.940 --> 00:31:15.142 align:middle line:84%
+And there's a whole
+community of people who say,
+
+00:31:15.142 --> 00:31:17.100 align:middle line:84%
+oh, you should really
+replace data augmentation
+
+00:31:17.100 --> 00:31:23.660 align:middle line:84%
+with what we might call
+geometric deep learning, where
+
+00:31:23.660 --> 00:31:26.460 align:middle line:84%
+data augmentation is forcing
+invariance to this set
+
+00:31:26.460 --> 00:31:28.940 align:middle line:84%
+of transformations, forcing
+invariance to mirror flips
+
+00:31:28.940 --> 00:31:32.380 align:middle line:84%
+and crops and changing the
+lighting conditions very
+
+00:31:32.380 --> 00:31:35.140 align:middle line:84%
+slightly, like just
+changing the intensity.
+
+00:31:35.140 --> 00:31:37.580 align:middle line:84%
+So data augmentation
+says all of those changes
+
+00:31:37.580 --> 00:31:39.460 align:middle line:84%
+should have no
+effect on the label.
+
+00:31:39.460 --> 00:31:41.540 align:middle line:84%
+But geometric deep learning
+approaches say, no, I
+
+00:31:41.540 --> 00:31:46.060 align:middle line:84%
+should design an invariant
+neural network architecture.
+
+00:31:46.060 --> 00:31:48.638 align:middle line:84%
+I should use a ConvNet to
+achieve translation equivariance
+
+00:31:48.638 --> 00:31:50.680 align:middle line:84%
+and then pooling into two
+translation invariance.
+
+00:31:50.680 --> 00:31:52.480 align:middle line:84%
+And therefore, why do
+I need this cropping?
+
+00:31:52.480 --> 00:31:54.980 align:middle line:84%
+And there's all these
+arguments that I can actually
+
+00:31:54.980 --> 00:31:57.038 align:middle line:84%
+use an architecture to
+enforce the invariances
+
+00:31:57.038 --> 00:31:59.580 align:middle line:84%
+and equivariances and symmetries
+that I care about as opposed
+
+00:31:59.580 --> 00:32:01.300 align:middle line:90%
+to data augmentation.
+
+00:32:01.300 --> 00:32:03.780 align:middle line:84%
+But I think that
+that's mostly not
+
+00:32:03.780 --> 00:32:06.968 align:middle line:84%
+the right advice for a good
+hacker in machine learning.
+
+00:32:06.968 --> 00:32:09.010 align:middle line:84%
+I think the right advice
+is, data augmentation is
+
+00:32:09.010 --> 00:32:11.050 align:middle line:90%
+really easy, really intuitive.
+
+00:32:11.050 --> 00:32:13.390 align:middle line:90%
+And it's architecture agnostic.
+
+00:32:13.390 --> 00:32:14.590 align:middle line:90%
+That's the power of it.
+
+00:32:14.590 --> 00:32:16.210 align:middle line:90%
+It's all on the data side.
+
+00:32:16.210 --> 00:32:21.130 align:middle line:84%
+So you don't have to design
+some fancy symmetry-preserving
+
+00:32:21.130 --> 00:32:25.450 align:middle line:84%
+architecture graphnet that knows
+how molecule chirality should
+
+00:32:25.450 --> 00:32:26.710 align:middle line:90%
+be properly propagated.
+
+00:32:26.710 --> 00:32:27.670 align:middle line:84%
+You don't have to
+do any of that.
+
+00:32:27.670 --> 00:32:29.170 align:middle line:84%
+You just say, OK,
+here's the setup
+
+00:32:29.170 --> 00:32:31.690 align:middle line:84%
+of things I think are
+fine to do to my data.
+
+00:32:31.690 --> 00:32:34.835 align:middle line:84%
+And I'll feed that
+to any architecture.
+
+00:32:34.835 --> 00:32:36.210 align:middle line:84%
+I can send this
+to an MLP, and it
+
+00:32:36.210 --> 00:32:38.130 align:middle line:84%
+will be invariant to
+these operations too.
+
+00:32:38.130 --> 00:32:41.050 align:middle line:84%
+So data augmentation,
+I think, is the way
+
+00:32:41.050 --> 00:32:44.390 align:middle line:84%
+to go for most of the types of
+invariances you actually want.
+
+00:32:44.390 --> 00:32:45.710 align:middle line:90%
+It's just simpler.
+
+00:32:45.710 --> 00:32:49.370 align:middle line:84%
+And software engineering wise,
+it decouples these properties
+
+00:32:49.370 --> 00:32:51.570 align:middle line:90%
+from the architecture design.
+
+00:32:51.570 --> 00:32:52.070 align:middle line:90%
+OK.
+
+00:32:52.070 --> 00:32:52.670 align:middle line:90%
+That might change.
+
+00:32:52.670 --> 00:32:54.962 align:middle line:84%
+Maybe in a few years, we'll
+have a very clean framework
+
+00:32:54.962 --> 00:32:58.330 align:middle line:84%
+for geometric deep learning,
+and then we'll go to that.
+
+00:32:58.330 --> 00:32:58.830 align:middle line:90%
+OK.
+
+00:32:58.830 --> 00:33:00.038 align:middle line:90%
+But I love data augmentation.
+
+00:33:00.038 --> 00:33:02.090 align:middle line:84%
+I think it's one of the
+most important tools.
+
+00:33:02.090 --> 00:33:05.143 align:middle line:84%
+And there's another kind
+of data augmentation which
+
+00:33:05.143 --> 00:33:06.560 align:middle line:84%
+is really cool,
+which is sometimes
+
+00:33:06.560 --> 00:33:08.020 align:middle line:90%
+called domain randomization.
+
+00:33:08.020 --> 00:33:10.580 align:middle line:90%
+
+
+00:33:10.580 --> 00:33:12.140 align:middle line:90%
+Oh.
+
+00:33:12.140 --> 00:33:12.640 align:middle line:90%
+OK, yeah.
+
+00:33:12.640 --> 00:33:14.080 align:middle line:90%
+So I'm just showing--
+
+00:33:14.080 --> 00:33:16.620 align:middle line:84%
+here's a visualization of what
+data augmentation is doing.
+
+00:33:16.620 --> 00:33:20.850 align:middle line:84%
+But I think that you probably
+have thought about this before.
+
+00:33:20.850 --> 00:33:22.100 align:middle line:90%
+But we have our training data.
+
+00:33:22.100 --> 00:33:23.840 align:middle line:84%
+I just make more
+data from little data
+
+00:33:23.840 --> 00:33:28.160 align:middle line:84%
+by adding these other points
+by perturbing my input training
+
+00:33:28.160 --> 00:33:28.740 align:middle line:90%
+data.
+
+00:33:28.740 --> 00:33:30.782 align:middle line:84%
+And that just makes it so
+that my test data looks
+
+00:33:30.782 --> 00:33:32.500 align:middle line:90%
+like it's in distribution.
+
+00:33:32.500 --> 00:33:36.280 align:middle line:84%
+My test data just looks
+like more training data.
+
+00:33:36.280 --> 00:33:42.680 align:middle line:90%
+OK, so a little quiz now.
+
+00:33:42.680 --> 00:33:45.475 align:middle line:84%
+So which of these three loss
+curves would you be happy with?
+
+00:33:45.475 --> 00:33:47.100 align:middle line:84%
+Let's say you're
+running an experiment.
+
+00:33:47.100 --> 00:33:48.225 align:middle line:90%
+You're training your model.
+
+00:33:48.225 --> 00:33:50.280 align:middle line:84%
+Which one are you going
+to be happiest with?
+
+00:33:50.280 --> 00:33:54.320 align:middle line:84%
+So raise your hand if you think
+the leftmost image is the one
+
+00:33:54.320 --> 00:33:56.460 align:middle line:90%
+that you're most happy with.
+
+00:33:56.460 --> 00:33:56.960 align:middle line:90%
+OK.
+
+00:33:56.960 --> 00:33:58.520 align:middle line:90%
+We get, like, a third.
+
+00:33:58.520 --> 00:33:59.020 align:middle line:90%
+OK.
+
+00:33:59.020 --> 00:34:01.520 align:middle line:84%
+The middle one,
+are you happy with?
+
+00:34:01.520 --> 00:34:02.130 align:middle line:90%
+OK.
+
+00:34:02.130 --> 00:34:03.338 align:middle line:90%
+No one thinks the middle one.
+
+00:34:03.338 --> 00:34:04.070 align:middle line:90%
+The right one?
+
+00:34:04.070 --> 00:34:05.150 align:middle line:90%
+We get 2/3.
+
+00:34:05.150 --> 00:34:05.650 align:middle line:90%
+OK.
+
+00:34:05.650 --> 00:34:08.389 align:middle line:84%
+So you're all
+actually very clever.
+
+00:34:08.389 --> 00:34:10.705 align:middle line:84%
+The first guess,
+the naive guess,
+
+00:34:10.705 --> 00:34:11.830 align:middle line:90%
+would be that the left one.
+
+00:34:11.830 --> 00:34:13.650 align:middle line:84%
+And that is the right
+answer in some sense,
+
+00:34:13.650 --> 00:34:15.949 align:middle line:84%
+but it's not the answer
+I was looking for.
+
+00:34:15.949 --> 00:34:20.150 align:middle line:84%
+So what is wrong
+with the left curve?
+
+00:34:20.150 --> 00:34:20.650 align:middle line:90%
+OK.
+
+00:34:20.650 --> 00:34:22.688 align:middle line:90%
+So it's too easy.
+
+00:34:22.688 --> 00:34:25.230 align:middle line:84%
+If you're seeing a loss curve
+that just goes down really fast
+
+00:34:25.230 --> 00:34:27.110 align:middle line:84%
+and then it's just
+flat, well, you've
+
+00:34:27.110 --> 00:34:29.730 align:middle line:84%
+wasted time optimizing
+in the flat region.
+
+00:34:29.730 --> 00:34:30.538 align:middle line:90%
+I mean, maybe not.
+
+00:34:30.538 --> 00:34:31.830 align:middle line:90%
+Maybe it's decreasing a little.
+
+00:34:31.830 --> 00:34:33.288 align:middle line:84%
+But if it's truly
+flat, you're just
+
+00:34:33.288 --> 00:34:36.670 align:middle line:84%
+wasting flops by doing more
+training in that region.
+
+00:34:36.670 --> 00:34:41.429 align:middle line:84%
+And in general, you
+don't want to make
+
+00:34:41.429 --> 00:34:45.185 align:middle line:84%
+your problem so easy that
+training on it converges really,
+
+00:34:45.185 --> 00:34:45.810 align:middle line:90%
+really quickly.
+
+00:34:45.810 --> 00:34:49.590 align:middle line:84%
+You want to make your problem
+hard enough that you're actually
+
+00:34:49.590 --> 00:34:50.710 align:middle line:90%
+going to learn a lot.
+
+00:34:50.710 --> 00:34:52.550 align:middle line:84%
+So, OK, obviously
+the middle plot
+
+00:34:52.550 --> 00:34:55.510 align:middle line:84%
+is bad because your loss is
+going up as you train it.
+
+00:34:55.510 --> 00:34:57.750 align:middle line:84%
+But the kind of
+plot you want to see
+
+00:34:57.750 --> 00:34:59.570 align:middle line:84%
+is that, yes, your
+loss is going down.
+
+00:34:59.570 --> 00:35:02.660 align:middle line:90%
+It's very graceful and smooth.
+
+00:35:02.660 --> 00:35:05.200 align:middle line:84%
+But you're making
+continual progress,
+
+00:35:05.200 --> 00:35:06.820 align:middle line:90%
+and there's a long way to go.
+
+00:35:06.820 --> 00:35:08.340 align:middle line:84%
+And you've made the problem
+hard enough that there's
+
+00:35:08.340 --> 00:35:09.820 align:middle line:90%
+something interesting to learn.
+
+00:35:09.820 --> 00:35:13.040 align:middle line:84%
+So here's a rough
+recipe I have in mind.
+
+00:35:13.040 --> 00:35:16.300 align:middle line:84%
+So you definitely want to
+minimize your loss with respect
+
+00:35:16.300 --> 00:35:17.320 align:middle line:90%
+to your parameters.
+
+00:35:17.320 --> 00:35:18.840 align:middle line:90%
+That's backpropagation.
+
+00:35:18.840 --> 00:35:21.140 align:middle line:84%
+That's basically the
+main optimization thing
+
+00:35:21.140 --> 00:35:22.540 align:middle line:90%
+we do in deep learning.
+
+00:35:22.540 --> 00:35:25.720 align:middle line:84%
+But there's another thing that
+we don't usually optimize.
+
+00:35:25.720 --> 00:35:29.700 align:middle line:84%
+But if you're going to actually
+work on a largescale project,
+
+00:35:29.700 --> 00:35:32.140 align:middle line:84%
+most of your time
+will be on this part,
+
+00:35:32.140 --> 00:35:34.660 align:middle line:84%
+is changing your data
+to make it harder.
+
+00:35:34.660 --> 00:35:37.940 align:middle line:84%
+Make your data hard enough that
+there's a lot of information
+
+00:35:37.940 --> 00:35:40.260 align:middle line:90%
+you can get out of it.
+
+00:35:40.260 --> 00:35:42.240 align:middle line:84%
+So you don't necessarily
+want to max over data,
+
+00:35:42.240 --> 00:35:44.540 align:middle line:84%
+but you want to increase
+the difficulty of your data
+
+00:35:44.540 --> 00:35:47.780 align:middle line:84%
+until there's something
+interesting to learn from it.
+
+00:35:47.780 --> 00:35:49.660 align:middle line:84%
+And that's what domain
+randomization, that's
+
+00:35:49.660 --> 00:35:51.460 align:middle line:90%
+what data augmentation do.
+
+00:35:51.460 --> 00:35:55.280 align:middle line:84%
+They add more data so the
+learning problem becomes harder.
+
+00:35:55.280 --> 00:36:01.770 align:middle line:84%
+They're a little bit like going
+from the really bad, easy loss
+
+00:36:01.770 --> 00:36:04.570 align:middle line:84%
+function on the left,
+loss curve on the left,
+
+00:36:04.570 --> 00:36:05.790 align:middle line:90%
+to this one over here.
+
+00:36:05.790 --> 00:36:06.290 align:middle line:90%
+Why?
+
+00:36:06.290 --> 00:36:08.930 align:middle line:84%
+Because you're adding more
+data points that the model
+
+00:36:08.930 --> 00:36:09.970 align:middle line:90%
+has to learn about.
+
+00:36:09.970 --> 00:36:11.178 align:middle line:90%
+And why is that a good thing?
+
+00:36:11.178 --> 00:36:12.690 align:middle line:84%
+Because it will
+generalize better.
+
+00:36:12.690 --> 00:36:13.738 align:middle line:90%
+Right?
+
+00:36:13.738 --> 00:36:15.530 align:middle line:84%
+So fitting this
+distribution, understanding
+
+00:36:15.530 --> 00:36:18.125 align:middle line:84%
+that is easier than this,
+is easier than this.
+
+00:36:18.125 --> 00:36:20.250 align:middle line:84%
+But the last one, which is
+the hardest to train on,
+
+00:36:20.250 --> 00:36:22.630 align:middle line:90%
+is going to generalize the best.
+
+00:36:22.630 --> 00:36:23.130 align:middle line:90%
+OK.
+
+00:36:23.130 --> 00:36:27.050 align:middle line:84%
+So another version of that
+idea goes under the name domain
+
+00:36:27.050 --> 00:36:28.130 align:middle line:90%
+randomization.
+
+00:36:28.130 --> 00:36:30.770 align:middle line:84%
+So this is a popular
+term in robotics,
+
+00:36:30.770 --> 00:36:33.610 align:middle line:84%
+where we want to train a
+robot to be able to pick up
+
+00:36:33.610 --> 00:36:34.930 align:middle line:90%
+blocks on a table.
+
+00:36:34.930 --> 00:36:38.010 align:middle line:84%
+And I could train it with
+just one lighting condition
+
+00:36:38.010 --> 00:36:40.170 align:middle line:84%
+with just-- this is
+training in simulation
+
+00:36:40.170 --> 00:36:41.150 align:middle line:90%
+and testing in reality.
+
+00:36:41.150 --> 00:36:43.192 align:middle line:84%
+I could train it with just
+one particular setting
+
+00:36:43.192 --> 00:36:44.265 align:middle line:90%
+of colors of the blocks.
+
+00:36:44.265 --> 00:36:46.890 align:middle line:84%
+But then it will only know how
+to pick up blocks of that color.
+
+00:36:46.890 --> 00:36:48.470 align:middle line:84%
+I could train it with
+one lighting condition,
+
+00:36:48.470 --> 00:36:51.095 align:middle line:84%
+but then it will only work when
+I'm in that lighting condition.
+
+00:36:51.095 --> 00:36:53.330 align:middle line:84%
+So I make my problem
+harder by adding
+
+00:36:53.330 --> 00:36:54.725 align:middle line:90%
+all this random variation.
+
+00:36:54.725 --> 00:36:56.350 align:middle line:84%
+And it will take a
+lot longer to train,
+
+00:36:56.350 --> 00:36:59.000 align:middle line:84%
+but it will generalize
+better to any new test
+
+00:36:59.000 --> 00:37:00.720 align:middle line:84%
+environment with
+different color blocks
+
+00:37:00.720 --> 00:37:03.320 align:middle line:90%
+than it saw at training time.
+
+00:37:03.320 --> 00:37:03.825 align:middle line:90%
+Yeah?
+
+00:37:03.825 --> 00:37:05.200 align:middle line:84%
+AUDIENCE: Will it
+generalize even
+
+00:37:05.200 --> 00:37:08.197 align:middle line:84%
+to lighting solutions
+that will never happen?
+
+00:37:08.197 --> 00:37:10.280 align:middle line:84%
+PHILLIP ISOLA: Will it
+generalize to light changes
+
+00:37:10.280 --> 00:37:11.100 align:middle line:90%
+that never happen?
+
+00:37:11.100 --> 00:37:13.200 align:middle line:84%
+So the idea is that
+you want to make it
+
+00:37:13.200 --> 00:37:15.080 align:middle line:84%
+so that you've covered
+all possible lightings
+
+00:37:15.080 --> 00:37:17.080 align:middle line:84%
+in your training data so
+that the test data just
+
+00:37:17.080 --> 00:37:19.280 align:middle line:84%
+looks like another random
+lighting condition that
+
+00:37:19.280 --> 00:37:21.440 align:middle line:90%
+exists in the training data.
+
+00:37:21.440 --> 00:37:25.440 align:middle line:84%
+So the short answer is, no, it
+won't generalize to a lighting
+
+00:37:25.440 --> 00:37:29.380 align:middle line:84%
+configuration that's not seen in
+this randomized training data.
+
+00:37:29.380 --> 00:37:32.240 align:middle line:84%
+But the longer answer
+is, you potentially
+
+00:37:32.240 --> 00:37:37.440 align:middle line:84%
+could get the
+property that if you
+
+00:37:37.440 --> 00:37:39.260 align:middle line:84%
+train on a broad
+enough distribution,
+
+00:37:39.260 --> 00:37:42.200 align:middle line:84%
+maybe you start to get this
+kind of emergent generalization.
+
+00:37:42.200 --> 00:37:44.100 align:middle line:84%
+I think that I'll
+set that aside,
+
+00:37:44.100 --> 00:37:45.917 align:middle line:84%
+but I'll say the
+short answer is no.
+
+00:37:45.917 --> 00:37:48.000 align:middle line:84%
+But maybe there are cases
+where you would actually
+
+00:37:48.000 --> 00:37:50.912 align:middle line:84%
+generalize even better out
+of distribution with respect
+
+00:37:50.912 --> 00:37:52.620 align:middle line:84%
+to this randomized
+training distribution.
+
+00:37:52.620 --> 00:37:54.578 align:middle line:84%
+But it's a little more
+subtle, and I'm not sure
+
+00:37:54.578 --> 00:37:56.350 align:middle line:84%
+that there's a clear
+answer for that.
+
+00:37:56.350 --> 00:37:58.030 align:middle line:90%
+Yeah.
+
+00:37:58.030 --> 00:37:59.390 align:middle line:90%
+OK.
+
+00:37:59.390 --> 00:38:01.310 align:middle line:90%
+So what is this doing?
+
+00:38:01.310 --> 00:38:04.108 align:middle line:84%
+We're just minimizing the gap
+between the source domain, which
+
+00:38:04.108 --> 00:38:05.650 align:middle line:84%
+is simulation, and
+the target domain,
+
+00:38:05.650 --> 00:38:09.190 align:middle line:84%
+which is reality, by
+randomizing the source domain.
+
+00:38:09.190 --> 00:38:13.270 align:middle line:84%
+This is what OpenAI used for
+their robot hand some years ago.
+
+00:38:13.270 --> 00:38:17.350 align:middle line:84%
+And I'll just show you what
+their data augmentation looked
+
+00:38:17.350 --> 00:38:17.850 align:middle line:90%
+like.
+
+00:38:17.850 --> 00:38:19.810 align:middle line:84%
+So they just had a
+simulated environment.
+
+00:38:19.810 --> 00:38:22.177 align:middle line:84%
+They rendered that hand with
+a lot of random conditions.
+
+00:38:22.177 --> 00:38:24.010 align:middle line:84%
+They also randomized
+the physics parameters.
+
+00:38:24.010 --> 00:38:25.350 align:middle line:90%
+So they randomized gravity.
+
+00:38:25.350 --> 00:38:26.850 align:middle line:84%
+So why would they
+randomize gravity?
+
+00:38:26.850 --> 00:38:30.494 align:middle line:84%
+We know that gravity's
+negative 9.8 meters
+
+00:38:30.494 --> 00:38:32.670 align:middle line:90%
+per second, whatever it is.
+
+00:38:32.670 --> 00:38:36.650 align:middle line:84%
+And why would they
+randomize gravity?
+
+00:38:36.650 --> 00:38:38.150 align:middle line:90%
+What do you think?
+
+00:38:38.150 --> 00:38:39.430 align:middle line:90%
+Let's go here.
+
+00:38:39.430 --> 00:38:40.368 align:middle line:90%
+AUDIENCE: Space?
+
+00:38:40.368 --> 00:38:41.410 align:middle line:90%
+PHILLIP ISOLA: Oh, right.
+
+00:38:41.410 --> 00:38:41.530 align:middle line:90%
+OK.
+
+00:38:41.530 --> 00:38:42.405 align:middle line:90%
+AUDIENCE: [INAUDIBLE]
+
+00:38:42.405 --> 00:38:44.810 align:middle line:84%
+PHILLIP ISOLA: So the
+answer-- you go to space,
+
+00:38:44.810 --> 00:38:45.690 align:middle line:90%
+change the altitude.
+
+00:38:45.690 --> 00:38:47.932 align:middle line:84%
+Maybe you're on a
+different planet.
+
+00:38:47.932 --> 00:38:48.890 align:middle line:90%
+That's one good answer.
+
+00:38:48.890 --> 00:38:51.170 align:middle line:84%
+So like, if they want their
+robot to work on Mars,
+
+00:38:51.170 --> 00:38:52.250 align:middle line:90%
+this will work better.
+
+00:38:52.250 --> 00:38:54.442 align:middle line:84%
+That's not quite, I think,
+what they had in mind.
+
+00:38:54.442 --> 00:38:56.400 align:middle line:84%
+They weren't quite
+imagining going to Mars yet.
+
+00:38:56.400 --> 00:38:58.060 align:middle line:90%
+But-- OK.
+
+00:38:58.060 --> 00:39:00.520 align:middle line:84%
+AUDIENCE: When a machine
+is moving, are you--
+
+00:39:00.520 --> 00:39:03.000 align:middle line:84%
+[INAUDIBLE] they can
+have some acceleration,
+
+00:39:03.000 --> 00:39:04.220 align:middle line:90%
+can change the gravity.
+
+00:39:04.220 --> 00:39:05.560 align:middle line:84%
+PHILLIP ISOLA: That's
+a really good point.
+
+00:39:05.560 --> 00:39:08.185 align:middle line:84%
+So when the machine is moving,
+then your measurement of gravity
+
+00:39:08.185 --> 00:39:12.940 align:middle line:84%
+is affected by that because of
+some general relativity type--
+
+00:39:12.940 --> 00:39:15.457 align:middle line:90%
+like, reference frame.
+
+00:39:15.457 --> 00:39:17.540 align:middle line:84%
+You can't tell the difference
+between acceleration
+
+00:39:17.540 --> 00:39:20.140 align:middle line:84%
+and gravity,
+according to physics.
+
+00:39:20.140 --> 00:39:23.260 align:middle line:90%
+So that's another possibility.
+
+00:39:23.260 --> 00:39:24.360 align:middle line:90%
+I think that's part of it.
+
+00:39:24.360 --> 00:39:29.600 align:middle line:84%
+But what I think is the
+real reason is gravity--
+
+00:39:29.600 --> 00:39:31.900 align:middle line:84%
+they have these accelerometers
+that measure things,
+
+00:39:31.900 --> 00:39:35.280 align:middle line:84%
+like how the robot's moving and
+what the gravity direction is,
+
+00:39:35.280 --> 00:39:36.740 align:middle line:90%
+what's down, what's up.
+
+00:39:36.740 --> 00:39:38.460 align:middle line:84%
+And it was just a
+little bit noisy.
+
+00:39:38.460 --> 00:39:40.502 align:middle line:84%
+So they're just modeling
+that noise, essentially.
+
+00:39:40.502 --> 00:39:42.980 align:middle line:84%
+They're saying, well, actually,
+our physical measurement
+
+00:39:42.980 --> 00:39:47.180 align:middle line:84%
+of gravity might be pointing
+in the wrong direction.
+
+00:39:47.180 --> 00:39:49.620 align:middle line:84%
+Maybe 9.8 is always
+correct, but let's say
+
+00:39:49.620 --> 00:39:52.372 align:middle line:84%
+it's slightly miscalibrated, so
+slightly in the wrong direction.
+
+00:39:52.372 --> 00:39:54.830 align:middle line:84%
+Well, if I trained so that it's
+always slightly randomized,
+
+00:39:54.830 --> 00:39:56.190 align:middle line:84%
+it doesn't matter if
+I'm miscalibrated.
+
+00:39:56.190 --> 00:39:57.648 align:middle line:84%
+It'll still be
+within distribution,
+
+00:39:57.648 --> 00:40:00.250 align:middle line:84%
+and it'll still be
+robust to that variation.
+
+00:40:00.250 --> 00:40:01.950 align:middle line:90%
+OK, a lot of good answers there.
+
+00:40:01.950 --> 00:40:04.050 align:middle line:84%
+But here's the
+one that I thought
+
+00:40:04.050 --> 00:40:08.330 align:middle line:84%
+was the most important kind
+of surprise or the most
+
+00:40:08.330 --> 00:40:10.010 align:middle line:90%
+important lesson, is that--
+
+00:40:10.010 --> 00:40:13.590 align:middle line:84%
+this is on the x-axis, the years
+of training, simulated years.
+
+00:40:13.590 --> 00:40:15.690 align:middle line:84%
+So it trains in a
+few weeks, but it was
+
+00:40:15.690 --> 00:40:18.010 align:middle line:90%
+simulated years of experience.
+
+00:40:18.010 --> 00:40:21.630 align:middle line:84%
+And on the y-axis
+is the performance.
+
+00:40:21.630 --> 00:40:23.450 align:middle line:90%
+So higher is better.
+
+00:40:23.450 --> 00:40:26.980 align:middle line:84%
+And with no randomization, it
+learns really, really quickly.
+
+00:40:26.980 --> 00:40:29.230 align:middle line:84%
+So this is like that loss
+curve that goes down really,
+
+00:40:29.230 --> 00:40:31.010 align:middle line:90%
+really quickly.
+
+00:40:31.010 --> 00:40:33.055 align:middle line:84%
+And some engineer
+on this project
+
+00:40:33.055 --> 00:40:35.430 align:middle line:84%
+might have seen that curve
+and been like, OK, we're done.
+
+00:40:35.430 --> 00:40:36.217 align:middle line:90%
+We solved it.
+
+00:40:36.217 --> 00:40:37.550 align:middle line:90%
+But they were smarter than that.
+
+00:40:37.550 --> 00:40:39.650 align:middle line:84%
+And they said, no, no, let's
+add a lot of randomization
+
+00:40:39.650 --> 00:40:41.570 align:middle line:84%
+and make it robust to all the
+different errors in gravity
+
+00:40:41.570 --> 00:40:43.990 align:middle line:84%
+that we might be measuring
+and make it robust to all
+
+00:40:43.990 --> 00:40:44.990 align:middle line:90%
+the lighting conditions.
+
+00:40:44.990 --> 00:40:46.270 align:middle line:90%
+And then-- look at this.
+
+00:40:46.270 --> 00:40:48.910 align:middle line:84%
+It took, like, 10 times longer
+to get to the same level.
+
+00:40:48.910 --> 00:40:51.652 align:middle line:84%
+Like, this was one year of
+experience to get to there,
+
+00:40:51.652 --> 00:40:52.860 align:middle line:90%
+let's say, and then 10 years.
+
+00:40:52.860 --> 00:40:54.360 align:middle line:90%
+This is a logarithmic scale.
+
+00:40:54.360 --> 00:40:57.080 align:middle line:84%
+So they're having to train
+this thing for so much longer
+
+00:40:57.080 --> 00:41:00.400 align:middle line:84%
+to make it solve a much
+harder problem, which
+
+00:41:00.400 --> 00:41:03.160 align:middle line:84%
+is to solve robotic
+cube manipulation
+
+00:41:03.160 --> 00:41:05.640 align:middle line:84%
+under a lot of different
+conditions as opposed
+
+00:41:05.640 --> 00:41:06.865 align:middle line:90%
+to just one condition.
+
+00:41:06.865 --> 00:41:09.240 align:middle line:84%
+And if you reported that to
+your manager and you're like,
+
+00:41:09.240 --> 00:41:12.960 align:middle line:84%
+oh, I got a lower
+accuracy, well,
+
+00:41:12.960 --> 00:41:15.300 align:middle line:84%
+a bad manager would say,
+oh, get rid of that.
+
+00:41:15.300 --> 00:41:16.500 align:middle line:90%
+Make it learn quickly.
+
+00:41:16.500 --> 00:41:18.293 align:middle line:84%
+But that's wrong
+because you want
+
+00:41:18.293 --> 00:41:20.960 align:middle line:84%
+to make the problem hard enough
+that it will actually generalize
+
+00:41:20.960 --> 00:41:22.620 align:middle line:84%
+to the real cases
+you care about,
+
+00:41:22.620 --> 00:41:24.892 align:middle line:84%
+which are the test cases,
+not the training cases.
+
+00:41:24.892 --> 00:41:26.600 align:middle line:84%
+This is performance
+on the training data.
+
+00:41:26.600 --> 00:41:30.440 align:middle line:90%
+
+
+00:41:30.440 --> 00:41:30.940 align:middle line:90%
+OK.
+
+00:41:30.940 --> 00:41:33.340 align:middle line:84%
+So high training accuracy
+means the problem is too easy.
+
+00:41:33.340 --> 00:41:38.200 align:middle line:84%
+So make your problem hard enough
+that it will generalize better.
+
+00:41:38.200 --> 00:41:39.700 align:middle line:90%
+OK.
+
+00:41:39.700 --> 00:41:42.260 align:middle line:84%
+So let's see, continuing
+on with this theme.
+
+00:41:42.260 --> 00:41:47.360 align:middle line:84%
+So in academia, in universities,
+in research labs, most
+
+00:41:47.360 --> 00:41:50.130 align:middle line:84%
+of the time, in machine
+learning and deep learning,
+
+00:41:50.130 --> 00:41:51.050 align:middle line:90%
+we do the following.
+
+00:41:51.050 --> 00:41:52.730 align:middle line:90%
+We say we have fixed data.
+
+00:41:52.730 --> 00:41:54.703 align:middle line:84%
+You're given data and
+you have to model it.
+
+00:41:54.703 --> 00:41:56.870 align:middle line:84%
+And you design neural net
+architectures and learning
+
+00:41:56.870 --> 00:42:00.590 align:middle line:84%
+problems and objective
+functions and optimizers
+
+00:42:00.590 --> 00:42:04.510 align:middle line:84%
+to learn a function
+that models that data.
+
+00:42:04.510 --> 00:42:06.230 align:middle line:84%
+But this is actually
+not the way it
+
+00:42:06.230 --> 00:42:10.130 align:middle line:84%
+works in most real-world
+scenarios in industry
+
+00:42:10.130 --> 00:42:12.950 align:middle line:90%
+in practical scenarios.
+
+00:42:12.950 --> 00:42:14.710 align:middle line:84%
+It's usually the
+other way around.
+
+00:42:14.710 --> 00:42:17.390 align:middle line:84%
+You just download the
+latest, greatest model,
+
+00:42:17.390 --> 00:42:19.550 align:middle line:84%
+and you don't
+change it too much.
+
+00:42:19.550 --> 00:42:22.110 align:middle line:84%
+But what you do
+change is the data.
+
+00:42:22.110 --> 00:42:23.438 align:middle line:90%
+That's what companies can do.
+
+00:42:23.438 --> 00:42:24.730 align:middle line:90%
+That's what governments can do.
+
+00:42:24.730 --> 00:42:26.310 align:middle line:90%
+We can change the data.
+
+00:42:26.310 --> 00:42:29.990 align:middle line:84%
+And that's where most of the
+leverage, in my opinion, is.
+
+00:42:29.990 --> 00:42:31.970 align:middle line:90%
+So you can collect more data.
+
+00:42:31.970 --> 00:42:33.250 align:middle line:90%
+You can collect better data.
+
+00:42:33.250 --> 00:42:34.750 align:middle line:84%
+You can label your
+data in new ways.
+
+00:42:34.750 --> 00:42:35.968 align:middle line:90%
+You can change the data.
+
+00:42:35.968 --> 00:42:37.510 align:middle line:84%
+And this is an even
+more powerful set
+
+00:42:37.510 --> 00:42:39.610 align:middle line:84%
+of tools than changing
+the learning algorithm.
+
+00:42:39.610 --> 00:42:42.750 align:middle line:84%
+So most of this class and most
+classes you'll take at MIT
+
+00:42:42.750 --> 00:42:45.402 align:middle line:84%
+are about the algorithms
+and not the data.
+
+00:42:45.402 --> 00:42:46.860 align:middle line:84%
+But there's, I
+think, more leverage
+
+00:42:46.860 --> 00:42:49.960 align:middle line:84%
+to be had on the data
+side in practice.
+
+00:42:49.960 --> 00:42:50.460 align:middle line:90%
+OK.
+
+00:42:50.460 --> 00:42:52.600 align:middle line:84%
+So it's probably a
+problem in our curriculum,
+
+00:42:52.600 --> 00:42:54.100 align:middle line:84%
+and we should have
+more data science
+
+00:42:54.100 --> 00:42:58.660 align:middle line:90%
+or data-centered classes.
+
+00:42:58.660 --> 00:42:59.500 align:middle line:90%
+And we have some.
+
+00:42:59.500 --> 00:43:01.820 align:middle line:84%
+We'll talk a lot about
+data properties and things
+
+00:43:01.820 --> 00:43:03.040 align:middle line:90%
+like this too in this class.
+
+00:43:03.040 --> 00:43:03.540 align:middle line:90%
+OK.
+
+00:43:03.540 --> 00:43:05.380 align:middle line:90%
+So here's another little quiz.
+
+00:43:05.380 --> 00:43:07.700 align:middle line:84%
+So here is a
+language model that's
+
+00:43:07.700 --> 00:43:09.920 align:middle line:84%
+trying to predict the next
+word in these sentences.
+
+00:43:09.920 --> 00:43:15.220 align:middle line:84%
+And these are the first
+line of famous novels.
+
+00:43:15.220 --> 00:43:19.438 align:middle line:84%
+So what do you think is
+the second word after it?
+
+00:43:19.438 --> 00:43:20.980 align:middle line:84%
+Let's say I'm going
+to try to predict
+
+00:43:20.980 --> 00:43:22.320 align:middle line:90%
+next word, given previous word.
+
+00:43:22.320 --> 00:43:23.778 align:middle line:84%
+What do you think
+it's going to be?
+
+00:43:23.778 --> 00:43:25.420 align:middle line:84%
+This is a famous
+opening to a book.
+
+00:43:25.420 --> 00:43:26.420 align:middle line:90%
+AUDIENCE: All of them.
+
+00:43:26.420 --> 00:43:27.420 align:middle line:90%
+AUDIENCE: [INAUDIBLE]
+
+00:43:27.420 --> 00:43:29.100 align:middle line:90%
+PHILLIP ISOLA: It was.
+
+00:43:29.100 --> 00:43:31.332 align:middle line:90%
+Who knows what the book is?
+
+00:43:31.332 --> 00:43:32.787 align:middle line:90%
+AUDIENCE: Tale of Two Cities.
+
+00:43:32.787 --> 00:43:33.620 align:middle line:90%
+PHILLIP ISOLA: The--
+
+00:43:33.620 --> 00:43:34.940 align:middle line:90%
+AUDIENCE: Tale of Two Cities.
+
+00:43:34.940 --> 00:43:36.820 align:middle line:84%
+PHILLIP ISOLA:
+Tale of Two-- wow.
+
+00:43:36.820 --> 00:43:37.320 align:middle line:90%
+OK.
+
+00:43:37.320 --> 00:43:38.010 align:middle line:90%
+[LAUGHTER]
+
+00:43:38.010 --> 00:43:38.760 align:middle line:90%
+Yes, that's right.
+
+00:43:38.760 --> 00:43:39.302 align:middle line:90%
+You're right.
+
+00:43:39.302 --> 00:43:42.340 align:middle line:84%
+But there's actually
+a lot of other ones.
+
+00:43:42.340 --> 00:43:45.227 align:middle line:84%
+There's a lot of first
+lines-- so anyway, yeah.
+
+00:43:45.227 --> 00:43:46.310 align:middle line:90%
+"It was the best of times.
+
+00:43:46.310 --> 00:43:46.990 align:middle line:90%
+It was the worst of times."
+
+00:43:46.990 --> 00:43:47.990 align:middle line:84%
+That's actually
+what I had in mind.
+
+00:43:47.990 --> 00:43:49.710 align:middle line:84%
+But obviously, it's
+not the only answer.
+
+00:43:49.710 --> 00:43:50.590 align:middle line:90%
+What about the next one?
+
+00:43:50.590 --> 00:43:51.010 align:middle line:90%
+"Call me"--
+
+00:43:51.010 --> 00:43:51.650 align:middle line:90%
+AUDIENCE: Ishmael.
+
+00:43:51.650 --> 00:43:52.110 align:middle line:90%
+PHILLIP ISOLA: Ishmael.
+
+00:43:52.110 --> 00:43:52.270 align:middle line:90%
+OK.
+
+00:43:52.270 --> 00:43:53.250 align:middle line:90%
+That's Moby Dick.
+
+00:43:53.250 --> 00:43:54.430 align:middle line:90%
+"All happy families"--
+
+00:43:54.430 --> 00:43:54.930 align:middle line:90%
+AUDIENCE: [INAUDIBLE]
+
+00:43:54.930 --> 00:43:55.680 align:middle line:90%
+PHILLIP ISOLA: OK.
+
+00:43:55.680 --> 00:43:58.770 align:middle line:84%
+And hopefully you can hear from
+the volume that a lot of people
+
+00:43:58.770 --> 00:43:59.670 align:middle line:90%
+know the last one.
+
+00:43:59.670 --> 00:44:01.570 align:middle line:90%
+Not as many knew the first one.
+
+00:44:01.570 --> 00:44:03.050 align:middle line:90%
+What's the point?
+
+00:44:03.050 --> 00:44:06.480 align:middle line:84%
+The point is that prediction is
+easier the longer the input, OK.
+
+00:44:06.480 --> 00:44:08.730 align:middle line:84%
+Because the longer the input,
+the more information you
+
+00:44:08.730 --> 00:44:10.538 align:middle line:84%
+have with which to
+make that prediction.
+
+00:44:10.538 --> 00:44:12.330 align:middle line:84%
+And this is also
+something that people got,
+
+00:44:12.330 --> 00:44:14.770 align:middle line:84%
+I think, a little bit
+wrong historically.
+
+00:44:14.770 --> 00:44:16.650 align:middle line:84%
+It was kind of thought
+that, well, it'll
+
+00:44:16.650 --> 00:44:20.610 align:middle line:84%
+be harder to model strings of
+length n than strings of length
+
+00:44:20.610 --> 00:44:22.210 align:middle line:90%
+m less than n.
+
+00:44:22.210 --> 00:44:24.150 align:middle line:84%
+So back in the
+early days of NLP,
+
+00:44:24.150 --> 00:44:25.810 align:middle line:84%
+people would have
+these N-gram models.
+
+00:44:25.810 --> 00:44:30.430 align:middle line:84%
+And it was like a model of how
+words co-occur with each other.
+
+00:44:30.430 --> 00:44:31.388 align:middle line:90%
+And you'd have bigrams.
+
+00:44:31.388 --> 00:44:33.430 align:middle line:84%
+How often does this word
+co-occur with that word?
+
+00:44:33.430 --> 00:44:35.890 align:middle line:90%
+And trigrams and N-grams.
+
+00:44:35.890 --> 00:44:38.050 align:middle line:84%
+And you didn't want
+to make N too large.
+
+00:44:38.050 --> 00:44:40.510 align:middle line:84%
+But this was a little
+bit misguided, I think.
+
+00:44:40.510 --> 00:44:43.320 align:middle line:84%
+Really, you can make
+your prediction problem
+
+00:44:43.320 --> 00:44:46.240 align:middle line:84%
+much easier by making N
+really, really, really big.
+
+00:44:46.240 --> 00:44:48.400 align:middle line:84%
+There is a little
+technical distinction,
+
+00:44:48.400 --> 00:44:49.960 align:middle line:84%
+which is, in the
+N-gram error, you
+
+00:44:49.960 --> 00:44:51.840 align:middle line:84%
+are modeling the joint
+distribution of everything.
+
+00:44:51.840 --> 00:44:53.760 align:middle line:84%
+Here, you're modeling just
+the conditional distribution
+
+00:44:53.760 --> 00:44:55.580 align:middle line:84%
+on the last word given
+the previous words.
+
+00:44:55.580 --> 00:44:57.455 align:middle line:84%
+But I think it threw
+off our intuitions a bit
+
+00:44:57.455 --> 00:44:59.540 align:middle line:84%
+that the more data
+you put on the input,
+
+00:44:59.540 --> 00:45:01.620 align:middle line:84%
+the easier the prediction
+problem becomes.
+
+00:45:01.620 --> 00:45:04.200 align:middle line:84%
+So you should add a lot
+of data on your inputs.
+
+00:45:04.200 --> 00:45:06.440 align:middle line:90%
+And you can do this.
+
+00:45:06.440 --> 00:45:09.220 align:middle line:84%
+In research, maybe you just have
+a fixed standardized data set.
+
+00:45:09.220 --> 00:45:10.298 align:middle line:90%
+But in life, you don't.
+
+00:45:10.298 --> 00:45:11.340 align:middle line:90%
+You can change your data.
+
+00:45:11.340 --> 00:45:15.000 align:middle line:84%
+And that's the main thing that's
+going to give you performance.
+
+00:45:15.000 --> 00:45:19.280 align:middle line:84%
+So we have X, and we have Y.
+We're predicting Y from X.
+
+00:45:19.280 --> 00:45:21.540 align:middle line:84%
+So suppose you're designing
+a pharmaceutical drug.
+
+00:45:21.540 --> 00:45:24.920 align:middle line:84%
+And Y is going to be the
+effectiveness of the drug.
+
+00:45:24.920 --> 00:45:25.560 align:middle line:90%
+OK.
+
+00:45:25.560 --> 00:45:27.940 align:middle line:84%
+You generally can't
+change Y too much.
+
+00:45:27.940 --> 00:45:31.440 align:middle line:84%
+Like, maybe your boss just
+assigned you that job.
+
+00:45:31.440 --> 00:45:34.520 align:middle line:84%
+You don't get to have too
+much control over what
+
+00:45:34.520 --> 00:45:37.120 align:middle line:84%
+is the goal that's
+useful to society.
+
+00:45:37.120 --> 00:45:39.220 align:middle line:90%
+But you can change X a lot.
+
+00:45:39.220 --> 00:45:41.890 align:middle line:90%
+So what would you put in X?
+
+00:45:41.890 --> 00:45:43.830 align:middle line:84%
+Let's say I want to
+predict the effectiveness
+
+00:45:43.830 --> 00:45:44.970 align:middle line:90%
+of a pharmaceutical.
+
+00:45:44.970 --> 00:45:46.610 align:middle line:84%
+So maybe I'll put
+the chemical formula.
+
+00:45:46.610 --> 00:45:48.750 align:middle line:84%
+What else might you put
+in to make it an-- like,
+
+00:45:48.750 --> 00:45:51.020 align:middle line:84%
+if I only do that, OK,
+I can kind of predict
+
+00:45:51.020 --> 00:45:51.770 align:middle line:90%
+the effectiveness.
+
+00:45:51.770 --> 00:45:53.478 align:middle line:84%
+What else might you
+put into X to improve
+
+00:45:53.478 --> 00:45:56.150 align:middle line:90%
+your predictive performance?
+
+00:45:56.150 --> 00:45:58.590 align:middle line:84%
+So somebody shout
+out some ideas.
+
+00:45:58.590 --> 00:46:00.390 align:middle line:90%
+AUDIENCE: Patient data.
+
+00:46:00.390 --> 00:46:01.790 align:middle line:84%
+PHILLIP ISOLA:
+Patient data, yes.
+
+00:46:01.790 --> 00:46:03.470 align:middle line:84%
+Patient age,
+patient-- you can take
+
+00:46:03.470 --> 00:46:04.927 align:middle line:90%
+a biopsy, personalized medicine.
+
+00:46:04.927 --> 00:46:06.510 align:middle line:84%
+You're going to get
+better predictions
+
+00:46:06.510 --> 00:46:07.427 align:middle line:90%
+with more information.
+
+00:46:07.427 --> 00:46:07.927 align:middle line:90%
+OK.
+
+00:46:07.927 --> 00:46:08.548 align:middle line:90%
+What else?
+
+00:46:08.548 --> 00:46:10.090 align:middle line:84%
+The folding structure
+of the protein,
+
+00:46:10.090 --> 00:46:12.510 align:middle line:84%
+so not just the chemical
+structure, but the geometry.
+
+00:46:12.510 --> 00:46:13.770 align:middle line:90%
+What else might you put in?
+
+00:46:13.770 --> 00:46:16.488 align:middle line:90%
+
+
+00:46:16.488 --> 00:46:18.030 align:middle line:84%
+AUDIENCE: Other
+medicine that worked.
+
+00:46:18.030 --> 00:46:19.370 align:middle line:84%
+PHILLIP ISOLA: Other
+medicines that worked,
+
+00:46:19.370 --> 00:46:20.930 align:middle line:84%
+nearest neighbor,
+similar medicines.
+
+00:46:20.930 --> 00:46:21.470 align:middle line:90%
+Yeah.
+
+00:46:21.470 --> 00:46:23.330 align:middle line:90%
+OK, everything, the universe.
+
+00:46:23.330 --> 00:46:25.630 align:middle line:84%
+You should put the
+universe in, OK?
+
+00:46:25.630 --> 00:46:28.570 align:middle line:84%
+So the point is, the more
+information you condition on,
+
+00:46:28.570 --> 00:46:30.950 align:middle line:84%
+the easier the prediction
+problem becomes.
+
+00:46:30.950 --> 00:46:32.910 align:middle line:84%
+Now, this contradicts
+my previous advice
+
+00:46:32.910 --> 00:46:35.202 align:middle line:84%
+that you don't want to make
+your prediction problem too
+
+00:46:35.202 --> 00:46:37.070 align:middle line:84%
+easy because you might
+overfit to shortcuts.
+
+00:46:37.070 --> 00:46:39.190 align:middle line:84%
+Like, you might be
+putting in the R label
+
+00:46:39.190 --> 00:46:41.180 align:middle line:90%
+at the top of the cancer scan.
+
+00:46:41.180 --> 00:46:44.820 align:middle line:84%
+But I think, roughly, this
+is even better advice,
+
+00:46:44.820 --> 00:46:47.340 align:middle line:84%
+that you should put a lot of
+information into the inputs
+
+00:46:47.340 --> 00:46:49.060 align:middle line:84%
+to your modeling
+problem and control
+
+00:46:49.060 --> 00:46:51.820 align:middle line:90%
+overfitting in other ways.
+
+00:46:51.820 --> 00:46:52.320 align:middle line:90%
+OK.
+
+00:46:52.320 --> 00:46:55.700 align:middle line:90%
+So why is this a good recipe?
+
+00:46:55.700 --> 00:46:58.380 align:middle line:84%
+So if I'm going
+to map from X to Y
+
+00:46:58.380 --> 00:47:00.580 align:middle line:84%
+and I don't have a lot
+of information about X,
+
+00:47:00.580 --> 00:47:03.080 align:middle line:84%
+that means that there could be
+a lot of possible predictions
+
+00:47:03.080 --> 00:47:04.860 align:middle line:90%
+that are all equally valid.
+
+00:47:04.860 --> 00:47:08.300 align:middle line:84%
+So if I just know
+the chemical formula
+
+00:47:08.300 --> 00:47:10.730 align:middle line:84%
+and I'm trying to predict if
+it's a beneficial chemical
+
+00:47:10.730 --> 00:47:12.600 align:middle line:84%
+and I don't know anything
+about the patient,
+
+00:47:12.600 --> 00:47:15.540 align:middle line:84%
+then I have to say, well, with
+10% probability, it will help.
+
+00:47:15.540 --> 00:47:17.877 align:middle line:90%
+With 90%, it won't help.
+
+00:47:17.877 --> 00:47:19.460 align:middle line:84%
+And when it doesn't
+help, it might not
+
+00:47:19.460 --> 00:47:20.668 align:middle line:90%
+help in these different ways.
+
+00:47:20.668 --> 00:47:23.980 align:middle line:84%
+There's a complicated amount of
+uncertainty in the output space.
+
+00:47:23.980 --> 00:47:27.240 align:middle line:84%
+And with neural nets, you
+can always think of it
+
+00:47:27.240 --> 00:47:29.717 align:middle line:84%
+or you can often think of it
+as modeling a probability of Y
+
+00:47:29.717 --> 00:47:32.300 align:middle line:84%
+given X. We'll talk more about
+this in the generative modeling
+
+00:47:32.300 --> 00:47:33.660 align:middle line:90%
+lectures.
+
+00:47:33.660 --> 00:47:37.260 align:middle line:84%
+But if my probability, my
+uncertainty that I'm just
+
+00:47:37.260 --> 00:47:43.360 align:middle line:84%
+trying to model is
+complicated distribution,
+
+00:47:43.360 --> 00:47:47.040 align:middle line:84%
+then it's just very hard
+to solve this problem.
+
+00:47:47.040 --> 00:47:49.880 align:middle line:84%
+But there's a
+hack, which is that
+
+00:47:49.880 --> 00:47:52.720 align:middle line:84%
+standard neural net training
+that we've learned about so far
+
+00:47:52.720 --> 00:47:54.840 align:middle line:84%
+will use things like
+L2 loss function
+
+00:47:54.840 --> 00:47:56.520 align:middle line:84%
+to do regression,
+take some inputs
+
+00:47:56.520 --> 00:47:59.580 align:middle line:84%
+and make a point prediction
+of the output value.
+
+00:47:59.580 --> 00:48:02.120 align:middle line:84%
+So it doesn't handle
+modeling a whole distribution
+
+00:48:02.120 --> 00:48:04.560 align:middle line:90%
+of possibilities.
+
+00:48:04.560 --> 00:48:07.020 align:middle line:84%
+The standard tools we
+have so far only do this.
+
+00:48:07.020 --> 00:48:09.560 align:middle line:84%
+We'll learn about generative
+models that handle uncertainty
+
+00:48:09.560 --> 00:48:12.360 align:middle line:84%
+later, but that will
+be more complicated.
+
+00:48:12.360 --> 00:48:13.620 align:middle line:90%
+The simple models do this.
+
+00:48:13.620 --> 00:48:16.060 align:middle line:84%
+But you can solve this problem
+with the simple models.
+
+00:48:16.060 --> 00:48:20.240 align:middle line:84%
+And the way you do it is, you
+just put enough information in x
+
+00:48:20.240 --> 00:48:22.860 align:middle line:84%
+that probability of y given
+x becomes deterministic.
+
+00:48:22.860 --> 00:48:24.220 align:middle line:90%
+It becomes a delta function.
+
+00:48:24.220 --> 00:48:26.320 align:middle line:90%
+It looks like a single point.
+
+00:48:26.320 --> 00:48:27.860 align:middle line:90%
+And this hack works really well.
+
+00:48:27.860 --> 00:48:31.320 align:middle line:84%
+This is the hack that led to
+text-to-image models working
+
+00:48:31.320 --> 00:48:32.280 align:middle line:90%
+so well.
+
+00:48:32.280 --> 00:48:36.750 align:middle line:84%
+So here's the history of
+text-to-image generation--
+
+00:48:36.750 --> 00:48:38.430 align:middle line:84%
+or image generation,
+let's just say.
+
+00:48:38.430 --> 00:48:41.513 align:middle line:84%
+So in 2019, the best
+image generation,
+
+00:48:41.513 --> 00:48:42.930 align:middle line:84%
+it looked pretty
+cool at the time.
+
+00:48:42.930 --> 00:48:46.830 align:middle line:84%
+But in retrospect,
+it's just not much.
+
+00:48:46.830 --> 00:48:50.030 align:middle line:84%
+All it could do is make photos
+of faces, front-facing photos
+
+00:48:50.030 --> 00:48:51.618 align:middle line:90%
+of faces, good lighting.
+
+00:48:51.618 --> 00:48:53.910 align:middle line:84%
+It could just make this one
+really narrow kind of thing
+
+00:48:53.910 --> 00:48:54.870 align:middle line:90%
+in the world.
+
+00:48:54.870 --> 00:48:57.370 align:middle line:84%
+Imagine all the things you
+might want to visualize.
+
+00:48:57.370 --> 00:48:59.110 align:middle line:90%
+It can only make faces.
+
+00:48:59.110 --> 00:49:01.630 align:middle line:84%
+And what they were
+doing at that time
+
+00:49:01.630 --> 00:49:04.910 align:middle line:84%
+was they were training models
+that don't map X to Y, that just
+
+00:49:04.910 --> 00:49:06.570 align:middle line:90%
+Model Y, just model the output.
+
+00:49:06.570 --> 00:49:08.190 align:middle line:90%
+So the faces are the output.
+
+00:49:08.190 --> 00:49:10.230 align:middle line:84%
+So we had no
+information about X,
+
+00:49:10.230 --> 00:49:12.630 align:middle line:84%
+and we just have to model
+the entire possible space
+
+00:49:12.630 --> 00:49:13.870 align:middle line:90%
+of all faces.
+
+00:49:13.870 --> 00:49:16.090 align:middle line:84%
+So you can't do that for
+all images in the universe.
+
+00:49:16.090 --> 00:49:18.173 align:middle line:84%
+You can only do that for
+really narrow categories,
+
+00:49:18.173 --> 00:49:20.013 align:middle line:84%
+like all faces, with
+current technology.
+
+00:49:20.013 --> 00:49:21.430 align:middle line:84%
+But now we do have
+models that can
+
+00:49:21.430 --> 00:49:24.050 align:middle line:84%
+make all kind of crazy images,
+any image you can imagine,
+
+00:49:24.050 --> 00:49:24.550 align:middle line:90%
+right?
+
+00:49:24.550 --> 00:49:26.990 align:middle line:84%
+DALL-E, Stable
+Diffusion, Midjourney.
+
+00:49:26.990 --> 00:49:29.062 align:middle line:84%
+So what happened, what
+allowed that to happen
+
+00:49:29.062 --> 00:49:31.270 align:middle line:84%
+is because we switched to
+giving a lot of information
+
+00:49:31.270 --> 00:49:35.620 align:middle line:84%
+into the input to make it so
+that the problem of modeling
+
+00:49:35.620 --> 00:49:38.580 align:middle line:90%
+data is almost deterministic.
+
+00:49:38.580 --> 00:49:41.428 align:middle line:84%
+There's very little uncertainty
+about-- well, not very little.
+
+00:49:41.428 --> 00:49:42.220 align:middle line:90%
+There's still some.
+
+00:49:42.220 --> 00:49:43.877 align:middle line:84%
+But there's not as
+much uncertainty
+
+00:49:43.877 --> 00:49:45.460 align:middle line:84%
+about how something
+should look if you
+
+00:49:45.460 --> 00:49:48.020 align:middle line:84%
+have a sentence describing
+how it should look.
+
+00:49:48.020 --> 00:49:52.060 align:middle line:84%
+That makes it so that standard
+neural net methods actually
+
+00:49:52.060 --> 00:49:53.060 align:middle line:90%
+work.
+
+00:49:53.060 --> 00:49:53.560 align:middle line:90%
+OK.
+
+00:49:53.560 --> 00:49:55.420 align:middle line:84%
+So I don't think we've
+made that much progress
+
+00:49:55.420 --> 00:49:57.340 align:middle line:84%
+in generative modeling
+on modeling complicated
+
+00:49:57.340 --> 00:49:58.040 align:middle line:90%
+distributions.
+
+00:49:58.040 --> 00:50:01.380 align:middle line:84%
+We've actually just switched
+to modeling simple Gaussian
+
+00:50:01.380 --> 00:50:04.660 align:middle line:84%
+distributions conditioned
+on a lot of information.
+
+00:50:04.660 --> 00:50:06.260 align:middle line:84%
+But we'll talk more
+about this when
+
+00:50:06.260 --> 00:50:08.700 align:middle line:90%
+we get to generative modeling.
+
+00:50:08.700 --> 00:50:10.700 align:middle line:84%
+The point is that you
+can change your data
+
+00:50:10.700 --> 00:50:12.700 align:middle line:90%
+to make things work better.
+
+00:50:12.700 --> 00:50:16.660 align:middle line:84%
+And the big change that I'm
+recommending is, make it big.
+
+00:50:16.660 --> 00:50:19.160 align:middle line:84%
+Big means train
+on a lot of data.
+
+00:50:19.160 --> 00:50:20.800 align:middle line:84%
+That's the most
+obvious sense of big.
+
+00:50:20.800 --> 00:50:22.700 align:middle line:84%
+But it also means
+that your inputs
+
+00:50:22.700 --> 00:50:25.140 align:middle line:84%
+can be a big object, a
+high-dimensional vector.
+
+00:50:25.140 --> 00:50:27.380 align:middle line:84%
+Remember, high dimensions
+makes things easier-- a lot
+
+00:50:27.380 --> 00:50:29.140 align:middle line:84%
+of information in
+the input to pin down
+
+00:50:29.140 --> 00:50:32.140 align:middle line:84%
+the output so there's not
+uncertainty in that mapping.
+
+00:50:32.140 --> 00:50:34.310 align:middle line:84%
+And then this one's a
+little bit more subtle,
+
+00:50:34.310 --> 00:50:36.835 align:middle line:84%
+but I also would recommend
+making Y a big object.
+
+00:50:36.835 --> 00:50:38.210 align:middle line:84%
+But we'll get to
+that when we get
+
+00:50:38.210 --> 00:50:40.043 align:middle line:84%
+to generative modeling
+and foundation models
+
+00:50:40.043 --> 00:50:41.210 align:middle line:90%
+and things like this.
+
+00:50:41.210 --> 00:50:44.090 align:middle line:90%
+Yeah, question?
+
+00:50:44.090 --> 00:50:46.850 align:middle line:84%
+AUDIENCE: Have you seen
+or know of techniques
+
+00:50:46.850 --> 00:50:49.050 align:middle line:90%
+people used to handle--
+
+00:50:49.050 --> 00:50:51.430 align:middle line:84%
+I think this advice
+works really,
+
+00:50:51.430 --> 00:50:56.010 align:middle line:84%
+really well when you have a
+nice guide in your classes.
+
+00:50:56.010 --> 00:50:58.370 align:middle line:84%
+But I worked for four
+years at a company
+
+00:50:58.370 --> 00:51:01.230 align:middle line:90%
+that does like insurance tech.
+
+00:51:01.230 --> 00:51:04.090 align:middle line:84%
+And one of the problems we were
+solving is crash detection.
+
+00:51:04.090 --> 00:51:05.730 align:middle line:90%
+And like, Apple, I don't know.
+
+00:51:05.730 --> 00:51:08.630 align:middle line:84%
+They came out with their crash
+detection model a few years ago.
+
+00:51:08.630 --> 00:51:11.050 align:middle line:84%
+And we kind of laughed because
+they ran into a problem
+
+00:51:11.050 --> 00:51:13.970 align:middle line:84%
+very quickly that we had seen,
+was people go on roller coasters
+
+00:51:13.970 --> 00:51:16.290 align:middle line:84%
+and it starts detecting
+crashes, like crazy.
+
+00:51:16.290 --> 00:51:18.210 align:middle line:84%
+And one of the key
+problems in this domain
+
+00:51:18.210 --> 00:51:20.370 align:middle line:84%
+is that you're going
+to get five car
+
+00:51:20.370 --> 00:51:22.530 align:middle line:84%
+crashes for every
+million miles of driving.
+
+00:51:22.530 --> 00:51:25.610 align:middle line:84%
+So if you want to scale your
+data up really big but respect
+
+00:51:25.610 --> 00:51:30.490 align:middle line:84%
+with the distribution shift,
+like between less than
+
+00:51:30.490 --> 00:51:35.880 align:middle line:84%
+a fraction of a percent of
+actual data being true positive,
+
+00:51:35.880 --> 00:51:38.820 align:middle line:84%
+we end up training on 8-terabyte
+data sets that have 2,000
+
+00:51:38.820 --> 00:51:39.320 align:middle line:90%
+crashes.
+
+00:51:39.320 --> 00:51:42.218 align:middle line:84%
+And a lot of this
+[INAUDIBLE] does not scale.
+
+00:51:42.218 --> 00:51:43.760 align:middle line:84%
+PHILLIP ISOLA: So
+yeah, great comment
+
+00:51:43.760 --> 00:51:47.618 align:middle line:84%
+that if the stuff you care about
+in your data is extremely rare,
+
+00:51:47.618 --> 00:51:49.160 align:middle line:84%
+then just scaling
+your data might not
+
+00:51:49.160 --> 00:51:52.380 align:middle line:84%
+be the most efficient way of
+capturing those rare classes,
+
+00:51:52.380 --> 00:51:55.600 align:middle line:84%
+because you'll be wasting
+most of your scale
+
+00:51:55.600 --> 00:51:58.480 align:middle line:84%
+on the common case, which
+is already well understood.
+
+00:51:58.480 --> 00:52:01.100 align:middle line:84%
+And I'll mention
+this a little later,
+
+00:52:01.100 --> 00:52:06.000 align:middle line:84%
+but data diversity and coverage
+over the classes of interest,
+
+00:52:06.000 --> 00:52:07.460 align:middle line:84%
+that's the key
+thing that matters.
+
+00:52:07.460 --> 00:52:09.360 align:middle line:84%
+So scale is kind of a
+proxy for, actually,
+
+00:52:09.360 --> 00:52:12.120 align:middle line:84%
+coverage over all the
+different things that matter.
+
+00:52:12.120 --> 00:52:14.817 align:middle line:84%
+And yeah, diversity is
+the other key word there.
+
+00:52:14.817 --> 00:52:16.400 align:middle line:84%
+But here, I'm not
+just saying big data
+
+00:52:16.400 --> 00:52:18.640 align:middle line:84%
+as in a lot of data
+points, but also--
+
+00:52:18.640 --> 00:52:20.498 align:middle line:84%
+so if you have this
+rollercoaster issue,
+
+00:52:20.498 --> 00:52:21.540 align:middle line:90%
+how would you solve that?
+
+00:52:21.540 --> 00:52:23.540 align:middle line:84%
+Well, you would add more
+information and context
+
+00:52:23.540 --> 00:52:26.520 align:middle line:84%
+into the inputs to say that if
+I know I'm at an amusement park,
+
+00:52:26.520 --> 00:52:28.960 align:middle line:84%
+because that's in
+my context, then
+
+00:52:28.960 --> 00:52:31.230 align:middle line:84%
+you should have lower
+probability of states to crash.
+
+00:52:31.230 --> 00:52:33.010 align:middle line:84%
+And what do language
+models do now?
+
+00:52:33.010 --> 00:52:35.790 align:middle line:84%
+They're all trying to make
+the longest possible context.
+
+00:52:35.790 --> 00:52:37.980 align:middle line:84%
+You hear about, like,
+a-million-length contexts,
+
+00:52:37.980 --> 00:52:39.730 align:middle line:84%
+in terms of the tokens
+in language models.
+
+00:52:39.730 --> 00:52:42.010 align:middle line:84%
+This is basically trying
+to achieve the same thing.
+
+00:52:42.010 --> 00:52:44.230 align:middle line:84%
+If you have enough context,
+then a lot of things
+
+00:52:44.230 --> 00:52:48.830 align:middle line:84%
+become easier and
+more performant.
+
+00:52:48.830 --> 00:52:49.330 align:middle line:90%
+OK.
+
+00:52:49.330 --> 00:52:52.805 align:middle line:84%
+So that was all about
+data, and that was already
+
+00:52:52.805 --> 00:52:53.930 align:middle line:90%
+more than half the lecture.
+
+00:52:53.930 --> 00:52:56.263 align:middle line:84%
+So data is the most important
+thing in machine learning.
+
+00:52:56.263 --> 00:52:58.410 align:middle line:84%
+So it's good to it's good
+to focus mostly on that.
+
+00:52:58.410 --> 00:53:00.368 align:middle line:84%
+But models and other
+things are also important.
+
+00:53:00.368 --> 00:53:02.470 align:middle line:90%
+So let's talk a bit about that.
+
+00:53:02.470 --> 00:53:03.110 align:middle line:90%
+OK.
+
+00:53:03.110 --> 00:53:09.390 align:middle line:84%
+So I think the first principle
+of modeling is, keep it simple.
+
+00:53:09.390 --> 00:53:10.990 align:middle line:90%
+Why keep it simple?
+
+00:53:10.990 --> 00:53:13.270 align:middle line:90%
+It just pays off multiple times.
+
+00:53:13.270 --> 00:53:19.310 align:middle line:84%
+Simple models are easier to
+build, to debug, to share.
+
+00:53:19.310 --> 00:53:20.850 align:middle line:90%
+It's tractable to understand.
+
+00:53:20.850 --> 00:53:22.873 align:middle line:84%
+So we can't do
+any of this theory
+
+00:53:22.873 --> 00:53:24.790 align:middle line:84%
+and really understanding
+how these things work
+
+00:53:24.790 --> 00:53:26.817 align:middle line:84%
+and giving guarantees
+about them unless we
+
+00:53:26.817 --> 00:53:27.900 align:middle line:90%
+keep things really simple.
+
+00:53:27.900 --> 00:53:29.983 align:middle line:84%
+And it may be a little
+frustrating to be like, oh,
+
+00:53:29.983 --> 00:53:32.470 align:middle line:84%
+why are we proving
+properties of MLPs?
+
+00:53:32.470 --> 00:53:34.520 align:middle line:84%
+Like, I want to do a
+more complicated model.
+
+00:53:34.520 --> 00:53:37.880 align:middle line:84%
+But it's because it's easier
+on the simpler models,
+
+00:53:37.880 --> 00:53:41.020 align:middle line:84%
+and so we should take that
+as a constraint on what we
+
+00:53:41.020 --> 00:53:43.660 align:middle line:90%
+can actually make progress on.
+
+00:53:43.660 --> 00:53:46.140 align:middle line:84%
+It's easier to build theories
+around simple models.
+
+00:53:46.140 --> 00:53:47.293 align:middle line:90%
+But this is the other one.
+
+00:53:47.293 --> 00:53:48.960 align:middle line:84%
+You might think, oh,
+that's a trade-off.
+
+00:53:48.960 --> 00:53:50.800 align:middle line:84%
+Like, I want a really
+powerful model.
+
+00:53:50.800 --> 00:53:51.300 align:middle line:90%
+No.
+
+00:53:51.300 --> 00:53:54.500 align:middle line:84%
+Simple models are also
+the most powerful models.
+
+00:53:54.500 --> 00:53:57.300 align:middle line:84%
+Well, the simplest model
+that fits the data, that is,
+
+00:53:57.300 --> 00:54:00.780 align:middle line:84%
+by some arguments-- that we
+talked a little bit about--
+
+00:54:00.780 --> 00:54:02.320 align:middle line:90%
+going to be the best model.
+
+00:54:02.320 --> 00:54:04.520 align:middle line:84%
+And there's the intuitive
+argument of Occam's razor.
+
+00:54:04.520 --> 00:54:06.187 align:middle line:84%
+And then there's a
+lot of formalizations
+
+00:54:06.187 --> 00:54:09.100 align:middle line:84%
+of that with generalization
+bounds and ideas
+
+00:54:09.100 --> 00:54:11.440 align:middle line:90%
+of optimal inference.
+
+00:54:11.440 --> 00:54:11.940 align:middle line:90%
+OK.
+
+00:54:11.940 --> 00:54:13.020 align:middle line:90%
+So I would just say--
+
+00:54:13.020 --> 00:54:18.060 align:middle line:84%
+I've been saying this for
+years in lectures like this,
+
+00:54:18.060 --> 00:54:19.780 align:middle line:90%
+but I still think it's true.
+
+00:54:19.780 --> 00:54:23.940 align:middle line:84%
+If you focus on simplicity and
+overweigh that relative to what
+
+00:54:23.940 --> 00:54:27.570 align:middle line:84%
+the average person does and
+are willing to sacrifice
+
+00:54:27.570 --> 00:54:30.610 align:middle line:84%
+some accuracy, are willing to
+sacrifice some other things,
+
+00:54:30.610 --> 00:54:33.050 align:middle line:84%
+you'll have an unfair advantage,
+and your contributions
+
+00:54:33.050 --> 00:54:34.730 align:middle line:84%
+will really stand
+the test of time.
+
+00:54:34.730 --> 00:54:38.810 align:middle line:84%
+So what I tell my
+students is, if method A
+
+00:54:38.810 --> 00:54:40.930 align:middle line:84%
+gets 1% better on
+benchmarks than method B,
+
+00:54:40.930 --> 00:54:46.530 align:middle line:84%
+but method A is more complicated
+than method B by some factor,
+
+00:54:46.530 --> 00:54:49.505 align:middle line:84%
+go with the simpler--
+publish the simpler method.
+
+00:54:49.505 --> 00:54:51.130 align:middle line:84%
+There's so much
+competition in research
+
+00:54:51.130 --> 00:54:54.210 align:middle line:84%
+to have these bold numbers, the
+leaderboard or the benchmark.
+
+00:54:54.210 --> 00:54:57.850 align:middle line:84%
+And if you just remove
+all the bells and whistles
+
+00:54:57.850 --> 00:55:00.352 align:middle line:84%
+that got you to that bold
+number, that being the leader,
+
+00:55:00.352 --> 00:55:01.810 align:middle line:84%
+you'll probably
+have a method which
+
+00:55:01.810 --> 00:55:06.390 align:middle line:84%
+will stand the test of time
+and be higher impact long term.
+
+00:55:06.390 --> 00:55:08.870 align:middle line:84%
+So don't fight for that last
+1% by adding complexity.
+
+00:55:08.870 --> 00:55:10.850 align:middle line:84%
+Every bit of complexity
+you add has a cost.
+
+00:55:10.850 --> 00:55:13.490 align:middle line:84%
+And it's usually not
+worth a little tiny change
+
+00:55:13.490 --> 00:55:16.010 align:middle line:84%
+in accuracy on your problem,
+unless you're, like,
+
+00:55:16.010 --> 00:55:17.310 align:middle line:90%
+saving lives at a hospital.
+
+00:55:17.310 --> 00:55:17.810 align:middle line:90%
+OK.
+
+00:55:17.810 --> 00:55:19.990 align:middle line:84%
+So anyway, there are some
+cases where it might be.
+
+00:55:19.990 --> 00:55:21.407 align:middle line:84%
+But keep it as
+simple as possible.
+
+00:55:21.407 --> 00:55:22.290 align:middle line:90%
+AUDIENCE: [INAUDIBLE]
+
+00:55:22.290 --> 00:55:23.123 align:middle line:90%
+PHILLIP ISOLA: Yeah?
+
+00:55:23.123 --> 00:55:24.940 align:middle line:84%
+AUDIENCE: But a lot
+of times, how would
+
+00:55:24.940 --> 00:55:28.167 align:middle line:84%
+you know that
+you're sacrificing--
+
+00:55:28.167 --> 00:55:29.000 align:middle line:90%
+PHILLIP ISOLA: Yeah.
+
+00:55:29.000 --> 00:55:30.708 align:middle line:84%
+How do you know that
+you're sacrificing--
+
+00:55:30.708 --> 00:55:33.080 align:middle line:84%
+like, what is this trade-off
+ratio between complexity
+
+00:55:33.080 --> 00:55:36.965 align:middle line:84%
+of the method and accuracy
+on some benchmark?
+
+00:55:36.965 --> 00:55:38.340 align:middle line:84%
+I don't know how
+to measure that.
+
+00:55:38.340 --> 00:55:40.120 align:middle line:84%
+I just think most
+people are calibrated
+
+00:55:40.120 --> 00:55:43.640 align:middle line:84%
+too much toward accuracy or
+performance on the benchmark.
+
+00:55:43.640 --> 00:55:48.198 align:middle line:84%
+And it'd be lovely to have a
+way of measuring simplicity.
+
+00:55:48.198 --> 00:55:49.740 align:middle line:84%
+But again, we don't
+really have that.
+
+00:55:49.740 --> 00:55:51.680 align:middle line:90%
+So it's more just an intuition.
+
+00:55:51.680 --> 00:55:52.563 align:middle line:90%
+Yep?
+
+00:55:52.563 --> 00:55:54.480 align:middle line:84%
+AUDIENCE: Is it good to
+use out-of-domain data
+
+00:55:54.480 --> 00:55:57.720 align:middle line:84%
+for the training set so
+they don't have a test set?
+
+00:55:57.720 --> 00:56:00.000 align:middle line:84%
+PHILLIP ISOLA: Is it good
+to use out-of-domain data
+
+00:56:00.000 --> 00:56:00.860 align:middle line:90%
+in the training set?
+
+00:56:00.860 --> 00:56:02.920 align:middle line:90%
+Yes.
+
+00:56:02.920 --> 00:56:04.400 align:middle line:84%
+So roughly, again,
+this principle
+
+00:56:04.400 --> 00:56:06.280 align:middle line:84%
+that trained on as
+much as possible
+
+00:56:06.280 --> 00:56:09.420 align:middle line:84%
+and put as much information into
+access possible is, I think,
+
+00:56:09.420 --> 00:56:10.640 align:middle line:90%
+a good principle.
+
+00:56:10.640 --> 00:56:14.977 align:middle line:84%
+And I'll talk about the idea of
+pre-training in just a second.
+
+00:56:14.977 --> 00:56:17.060 align:middle line:84%
+And we'll see lectures on
+that a little bit later.
+
+00:56:17.060 --> 00:56:19.520 align:middle line:84%
+But the general
+trend is, if you have
+
+00:56:19.520 --> 00:56:22.700 align:middle line:84%
+data x y, and z and your
+problem is about data z,
+
+00:56:22.700 --> 00:56:24.090 align:middle line:90%
+you should train on x, y, and z.
+
+00:56:24.090 --> 00:56:26.230 align:middle line:84%
+Don't only train on z.
+x and y are strictly
+
+00:56:26.230 --> 00:56:28.890 align:middle line:84%
+beneficial towards z if
+you're doing things right.
+
+00:56:28.890 --> 00:56:32.630 align:middle line:84%
+Like, there's some kind of
+data-processing inequality type
+
+00:56:32.630 --> 00:56:33.130 align:middle line:90%
+argument.
+
+00:56:33.130 --> 00:56:34.770 align:middle line:84%
+You could always
+just ignore x and y
+
+00:56:34.770 --> 00:56:37.870 align:middle line:84%
+if you had the
+optimal algorithm.
+
+00:56:37.870 --> 00:56:38.370 align:middle line:90%
+OK.
+
+00:56:38.370 --> 00:56:42.050 align:middle line:84%
+So yeah, popularity matters
+more than performance.
+
+00:56:42.050 --> 00:56:45.070 align:middle line:84%
+And simplicity matters
+more than anything.
+
+00:56:45.070 --> 00:56:50.380 align:middle line:84%
+So you want to work with
+systems that are widely used.
+
+00:56:50.380 --> 00:56:52.130 align:middle line:84%
+That usually means
+they have to be simple.
+
+00:56:52.130 --> 00:56:54.280 align:middle line:84%
+And it also means that
+they will interface well
+
+00:56:54.280 --> 00:56:56.030 align:middle line:84%
+with the community and
+that you won't just
+
+00:56:56.030 --> 00:57:01.710 align:middle line:84%
+be building some amazing
+palace that nobody ever visits.
+
+00:57:01.710 --> 00:57:03.390 align:middle line:90%
+OK.
+
+00:57:03.390 --> 00:57:07.070 align:middle line:84%
+So a lot of folks are always
+going to be looking for,
+
+00:57:07.070 --> 00:57:09.570 align:middle line:84%
+like, but where do I even find
+the good model to start with?
+
+00:57:09.570 --> 00:57:11.362 align:middle line:84%
+Where do I find the
+popular standard model?
+
+00:57:11.362 --> 00:57:15.470 align:middle line:84%
+So GitHub, the number of
+stars or forks on GitHub
+
+00:57:15.470 --> 00:57:17.470 align:middle line:90%
+is a good proxy for quality.
+
+00:57:17.470 --> 00:57:23.320 align:middle line:84%
+So this is a little bit of a sad
+story, but popularity matters.
+
+00:57:23.320 --> 00:57:24.840 align:middle line:90%
+Don't look at the leaderboard.
+
+00:57:24.840 --> 00:57:25.680 align:middle line:90%
+Look at the number of stars.
+
+00:57:25.680 --> 00:57:27.555 align:middle line:84%
+The stars is more
+predictive of if it's going
+
+00:57:27.555 --> 00:57:29.280 align:middle line:90%
+to be useful than the accuracy.
+
+00:57:29.280 --> 00:57:30.540 align:middle line:84%
+Of course, this will
+mean that you're only
+
+00:57:30.540 --> 00:57:31.840 align:middle line:84%
+going to be doing
+things that are popular.
+
+00:57:31.840 --> 00:57:33.020 align:middle line:84%
+So if you want to do
+cutting-edge research,
+
+00:57:33.020 --> 00:57:34.660 align:middle line:84%
+where you're really
+changing, you're
+
+00:57:34.660 --> 00:57:36.460 align:middle line:84%
+innovating beyond
+the state of the art,
+
+00:57:36.460 --> 00:57:38.160 align:middle line:90%
+this advice does not apply.
+
+00:57:38.160 --> 00:57:41.020 align:middle line:84%
+But if you're just trying to
+solve a problem at a company,
+
+00:57:41.020 --> 00:57:42.820 align:middle line:90%
+popularity matters more.
+
+00:57:42.820 --> 00:57:45.170 align:middle line:90%
+OK.
+
+00:57:45.170 --> 00:57:48.060 align:middle line:84%
+So Hugging Face is
+a great resource
+
+00:57:48.060 --> 00:57:51.540 align:middle line:90%
+for wonderful popular models.
+
+00:57:51.540 --> 00:57:55.100 align:middle line:84%
+GitHub, PyTorch has a
+lot of repositories.
+
+00:57:55.100 --> 00:57:57.020 align:middle line:84%
+And Papers with
+Code is the place
+
+00:57:57.020 --> 00:57:59.500 align:middle line:84%
+to go for the leaderboards
+of the latest, greatest
+
+00:57:59.500 --> 00:58:00.720 align:middle line:90%
+state of the art model.
+
+00:58:00.720 --> 00:58:01.960 align:middle line:84%
+But you probably
+don't want to do that.
+
+00:58:01.960 --> 00:58:03.640 align:middle line:84%
+You want to look at the
+latest, greatest one.
+
+00:58:03.640 --> 00:58:05.280 align:middle line:84%
+Look at how many
+GitHub stars it has.
+
+00:58:05.280 --> 00:58:07.697 align:middle line:84%
+Go down the list until you
+find one that has 10,000 GitHub
+
+00:58:07.697 --> 00:58:09.680 align:middle line:90%
+stars, and do that one.
+
+00:58:09.680 --> 00:58:12.580 align:middle line:84%
+So the highest-performance model
+that has 10,000 GitHub stars is
+
+00:58:12.580 --> 00:58:14.980 align:middle line:90%
+like-- that's the rule of thumb.
+
+00:58:14.980 --> 00:58:15.480 align:middle line:90%
+OK.
+
+00:58:15.480 --> 00:58:19.050 align:middle line:84%
+But you definitely want to
+start with a pre-trained model
+
+00:58:19.050 --> 00:58:20.705 align:middle line:90%
+for practical purposes.
+
+00:58:20.705 --> 00:58:22.330 align:middle line:84%
+Again, this might
+differ between theory
+
+00:58:22.330 --> 00:58:24.163 align:middle line:84%
+or you're writing the
+latest research paper.
+
+00:58:24.163 --> 00:58:26.930 align:middle line:84%
+But if you just want a system
+to work, this is the advice.
+
+00:58:26.930 --> 00:58:30.530 align:middle line:84%
+So stand on the
+shoulders of giants.
+
+00:58:30.530 --> 00:58:31.700 align:middle line:90%
+Use pre-trained models.
+
+00:58:31.700 --> 00:58:33.450 align:middle line:84%
+We'll talk about
+pre-training and transfer
+
+00:58:33.450 --> 00:58:34.618 align:middle line:90%
+learning a little bit later.
+
+00:58:34.618 --> 00:58:36.410 align:middle line:84%
+But you generally don't
+want to be training
+
+00:58:36.410 --> 00:58:39.010 align:middle line:90%
+your systems from scratch.
+
+00:58:39.010 --> 00:58:41.262 align:middle line:84%
+And be aware of the flaws
+and the copyright issues
+
+00:58:41.262 --> 00:58:43.970 align:middle line:84%
+and the biases and all the other
+problems with pre-trained models
+
+00:58:43.970 --> 00:58:44.730 align:middle line:90%
+out there.
+
+00:58:44.730 --> 00:58:46.250 align:middle line:84%
+But there are some
+like AlphaFold
+
+00:58:46.250 --> 00:58:49.570 align:middle line:84%
+and AlphaFold 2, which are
+probably pretty safe to use.
+
+00:58:49.570 --> 00:58:52.670 align:middle line:84%
+There might not be too many
+negatives, social biases,
+
+00:58:52.670 --> 00:58:53.830 align:middle line:90%
+or ethical issues there.
+
+00:58:53.830 --> 00:58:56.850 align:middle line:90%
+
+
+00:58:56.850 --> 00:58:57.350 align:middle line:90%
+OK.
+
+00:58:57.350 --> 00:58:59.450 align:middle line:84%
+So here's another little
+trick that I like,
+
+00:58:59.450 --> 00:59:05.970 align:middle line:84%
+which is to transform your
+problem into a solved problem--
+
+00:59:05.970 --> 00:59:07.530 align:middle line:84%
+again, it goes back
+to the simplicity
+
+00:59:07.530 --> 00:59:10.290 align:middle line:84%
+and popularity are
+things that matter a lot.
+
+00:59:10.290 --> 00:59:13.110 align:middle line:84%
+So if there exists a
+solution to your problem,
+
+00:59:13.110 --> 00:59:16.570 align:middle line:84%
+just transform it
+into that solution.
+
+00:59:16.570 --> 00:59:18.840 align:middle line:84%
+This is a little
+like in CS theory,
+
+00:59:18.840 --> 00:59:21.660 align:middle line:84%
+where we talk about
+polynomial-time reducibility.
+
+00:59:21.660 --> 00:59:28.920 align:middle line:84%
+Like, I can show that I can find
+a polynomial-time method that
+
+00:59:28.920 --> 00:59:31.260 align:middle line:84%
+will convert my problem
+into a known problem.
+
+00:59:31.260 --> 00:59:33.600 align:middle line:84%
+And this gives me some way
+of understanding my problem.
+
+00:59:33.600 --> 00:59:34.100 align:middle line:90%
+OK.
+
+00:59:34.100 --> 00:59:36.480 align:middle line:84%
+So can I find a way of
+changing a new problem
+
+00:59:36.480 --> 00:59:38.275 align:middle line:90%
+that I don't know how to solve?
+
+00:59:38.275 --> 00:59:40.400 align:middle line:84%
+Like, in this example, I'll
+give image colorization
+
+00:59:40.400 --> 00:59:41.880 align:middle line:84%
+to a known problem
+that I already
+
+00:59:41.880 --> 00:59:44.480 align:middle line:84%
+know how to solve, like
+image classification.
+
+00:59:44.480 --> 00:59:45.000 align:middle line:90%
+OK.
+
+00:59:45.000 --> 00:59:47.280 align:middle line:84%
+So this is a project
+that I was involved
+
+00:59:47.280 --> 00:59:50.400 align:middle line:90%
+in almost 10 years ago now.
+
+00:59:50.400 --> 00:59:52.680 align:middle line:84%
+You're going to try
+to predict the color
+
+00:59:52.680 --> 00:59:55.103 align:middle line:84%
+of a black-and-white image,
+predict every pixel value.
+
+00:59:55.103 --> 00:59:56.520 align:middle line:84%
+So at first, you're
+thinking, this
+
+00:59:56.520 --> 00:59:58.820 align:middle line:84%
+doesn't look very much like
+just a classification problem.
+
+00:59:58.820 --> 01:00:00.612 align:middle line:84%
+I'm trying to do
+something like regression.
+
+01:00:00.612 --> 01:00:02.240 align:middle line:90%
+I'm trying to predict the color.
+
+01:00:02.240 --> 01:00:04.740 align:middle line:84%
+And I'm trying to predict the
+color of every pixel, not just
+
+01:00:04.740 --> 01:00:06.120 align:middle line:90%
+one label.
+
+01:00:06.120 --> 01:00:07.160 align:middle line:90%
+OK.
+
+01:00:07.160 --> 01:00:09.540 align:middle line:84%
+Well, we set it up as
+empirical risk minimization.
+
+01:00:09.540 --> 01:00:11.160 align:middle line:84%
+So find the function
+f that makes
+
+01:00:11.160 --> 01:00:16.208 align:middle line:84%
+the correct predictions on the
+training data and expectation.
+
+01:00:16.208 --> 01:00:18.750 align:middle line:84%
+You can predict the colors, and
+then you can concatenate them
+
+01:00:18.750 --> 01:00:19.850 align:middle line:90%
+with the input image.
+
+01:00:19.850 --> 01:00:21.290 align:middle line:84%
+So you don't have to
+predict the black and white.
+
+01:00:21.290 --> 01:00:22.373 align:middle line:90%
+It's already in the input.
+
+01:00:22.373 --> 01:00:24.830 align:middle line:90%
+You get a colorized photo.
+
+01:00:24.830 --> 01:00:25.330 align:middle line:90%
+OK.
+
+01:00:25.330 --> 01:00:28.750 align:middle line:84%
+So how do we turn colorization
+into-- how do we reduce that
+
+01:00:28.750 --> 01:00:30.445 align:middle line:90%
+into classification?
+
+01:00:30.445 --> 01:00:33.070 align:middle line:84%
+So, first, we say we could just
+predict the color of the image,
+
+01:00:33.070 --> 01:00:33.570 align:middle line:90%
+right?
+
+01:00:33.570 --> 01:00:34.890 align:middle line:90%
+Yellow, it's a class, right?
+
+01:00:34.890 --> 01:00:37.170 align:middle line:84%
+So just have k
+different color classes.
+
+01:00:37.170 --> 01:00:38.110 align:middle line:90%
+That would be OK.
+
+01:00:38.110 --> 01:00:41.230 align:middle line:84%
+So how do I turn
+colors into classes?
+
+01:00:41.230 --> 01:00:43.230 align:middle line:84%
+Well, I can just
+quantize my space.
+
+01:00:43.230 --> 01:00:45.570 align:middle line:84%
+So I can say, I'll have
+one class is yellow.
+
+01:00:45.570 --> 01:00:46.490 align:middle line:90%
+One class is orange.
+
+01:00:46.490 --> 01:00:47.830 align:middle line:90%
+One class is blue.
+
+01:00:47.830 --> 01:00:49.890 align:middle line:84%
+Each class, I'll represent
+with a one-hot vector,
+
+01:00:49.890 --> 01:00:53.550 align:middle line:84%
+just like we normally do
+for classification problems.
+
+01:00:53.550 --> 01:00:54.050 align:middle line:90%
+OK.
+
+01:00:54.050 --> 01:00:55.750 align:middle line:84%
+So now, rather than
+cat, dog, elephant,
+
+01:00:55.750 --> 01:00:58.070 align:middle line:84%
+it will be the blue
+class, the yellow class.
+
+01:00:58.070 --> 01:01:02.650 align:middle line:84%
+And each box here will be
+a different discrete class.
+
+01:01:02.650 --> 01:01:03.150 align:middle line:90%
+OK.
+
+01:01:03.150 --> 01:01:06.035 align:middle line:84%
+So now, just like I could
+predict the label as rockfish,
+
+01:01:06.035 --> 01:01:07.410 align:middle line:84%
+I can predict the
+label as color.
+
+01:01:07.410 --> 01:01:09.670 align:middle line:90%
+It's the same math.
+
+01:01:09.670 --> 01:01:10.510 align:middle line:90%
+OK.
+
+01:01:10.510 --> 01:01:13.710 align:middle line:84%
+But how do I do that
+for every pixel?
+
+01:01:13.710 --> 01:01:14.570 align:middle line:90%
+OK.
+
+01:01:14.570 --> 01:01:15.320 align:middle line:90%
+What do you think?
+
+01:01:15.320 --> 01:01:17.737 align:middle line:84%
+How am I to change from doing
+a whole-image classification
+
+01:01:17.737 --> 01:01:19.780 align:middle line:90%
+to a per-pixel classification?
+
+01:01:19.780 --> 01:01:22.020 align:middle line:90%
+We've already seen it.
+
+01:01:22.020 --> 01:01:23.317 align:middle line:90%
+What architecture should I use?
+
+01:01:23.317 --> 01:01:23.900 align:middle line:90%
+AUDIENCE: CNs.
+
+01:01:23.900 --> 01:01:25.000 align:middle line:90%
+PHILLIP ISOLA: CNN, ConvNet.
+
+01:01:25.000 --> 01:01:25.260 align:middle line:90%
+Yeah.
+
+01:01:25.260 --> 01:01:25.760 align:middle line:90%
+OK.
+
+01:01:25.760 --> 01:01:28.780 align:middle line:84%
+So ConvNet just says, I
+will predict the label
+
+01:01:28.780 --> 01:01:31.500 align:middle line:90%
+of the center pixel of a patch.
+
+01:01:31.500 --> 01:01:34.440 align:middle line:84%
+And if I slide that ConvNet
+across the whole image,
+
+01:01:34.440 --> 01:01:36.260 align:middle line:84%
+I will be predicting
+the label, the color,
+
+01:01:36.260 --> 01:01:38.420 align:middle line:90%
+of every pixel in the image.
+
+01:01:38.420 --> 01:01:41.180 align:middle line:84%
+So now I've converted
+classification
+
+01:01:41.180 --> 01:01:47.500 align:middle line:84%
+into per-pixel color class
+prediction over a sliding window
+
+01:01:47.500 --> 01:01:49.380 align:middle line:90%
+operator.
+
+01:01:49.380 --> 01:01:51.380 align:middle line:90%
+OK.
+
+01:01:51.380 --> 01:01:53.900 align:middle line:84%
+And so that allows me
+to formulate my problem
+
+01:01:53.900 --> 01:01:57.740 align:middle line:84%
+as classification, which
+is generally a good idea.
+
+01:01:57.740 --> 01:01:59.620 align:middle line:84%
+Or we would call it
+softmax regression
+
+01:01:59.620 --> 01:02:03.520 align:middle line:84%
+for the softmax
+cross-entropy loss.
+
+01:02:03.520 --> 01:02:04.020 align:middle line:90%
+OK.
+
+01:02:04.020 --> 01:02:07.660 align:middle line:84%
+So why is this
+generally a good idea?
+
+01:02:07.660 --> 01:02:09.560 align:middle line:84%
+Well, we have really
+good machinery for it.
+
+01:02:09.560 --> 01:02:10.940 align:middle line:90%
+We know how it works.
+
+01:02:10.940 --> 01:02:14.950 align:middle line:84%
+But there's another
+interesting property, which--
+
+01:02:14.950 --> 01:02:17.510 align:middle line:84%
+OK, I'm not going to have time
+to go into all the details.
+
+01:02:17.510 --> 01:02:25.690 align:middle line:84%
+But the softmax distribution,
+the categorical distribution
+
+01:02:25.690 --> 01:02:34.250 align:middle line:84%
+that you predict, is fully
+expressive over all possible--
+
+01:02:34.250 --> 01:02:38.010 align:middle line:84%
+so for every pixel, I'm
+going to predict the color.
+
+01:02:38.010 --> 01:02:41.210 align:middle line:84%
+And I'm actually modeling a
+fully expressive distribution
+
+01:02:41.210 --> 01:02:44.050 align:middle line:84%
+over the space of
+probability mass
+
+01:02:44.050 --> 01:02:49.150 align:middle line:84%
+functions over the discrete
+vocabulary that I'm modeling.
+
+01:02:49.150 --> 01:02:52.410 align:middle line:84%
+And this is the most general
+way of quantifying uncertainty
+
+01:02:52.410 --> 01:02:56.890 align:middle line:84%
+or modeling a distribution
+over a discrete variable.
+
+01:02:56.890 --> 01:02:59.290 align:middle line:84%
+And if I were doing,
+like, regression,
+
+01:02:59.290 --> 01:03:02.250 align:middle line:84%
+least-squares regression,
+that would not be the case.
+
+01:03:02.250 --> 01:03:04.430 align:middle line:84%
+It can only represent
+Gaussian distributions.
+
+01:03:04.430 --> 01:03:08.503 align:middle line:84%
+So this is why classification
+has this nice property
+
+01:03:08.503 --> 01:03:10.170 align:middle line:84%
+of being more expressive
+than regression
+
+01:03:10.170 --> 01:03:12.160 align:middle line:90%
+for this type of problem.
+
+01:03:12.160 --> 01:03:14.320 align:middle line:84%
+And discrete classes
+are also easy to label,
+
+01:03:14.320 --> 01:03:18.640 align:middle line:84%
+easy to talk about, easy
+for humans to understand.
+
+01:03:18.640 --> 01:03:20.440 align:middle line:90%
+OK.
+
+01:03:20.440 --> 01:03:22.500 align:middle line:84%
+Another one is that under
+this representation,
+
+01:03:22.500 --> 01:03:24.840 align:middle line:84%
+we remove the inductive bias
+about how we have measured
+
+01:03:24.840 --> 01:03:28.640 align:middle line:84%
+distance in the input space
+because all one-hot variables
+
+01:03:28.640 --> 01:03:30.600 align:middle line:90%
+are equidistant from each other.
+
+01:03:30.600 --> 01:03:35.260 align:middle line:84%
+So the distance is always 1 or
+0, is 0 if it's the same class
+
+01:03:35.260 --> 01:03:37.760 align:middle line:84%
+and 1 if it's two
+different classes.
+
+01:03:37.760 --> 01:03:40.400 align:middle line:84%
+So this removes
+inductive bias about how
+
+01:03:40.400 --> 01:03:42.700 align:middle line:90%
+we represent target variables.
+
+01:03:42.700 --> 01:03:43.200 align:middle line:90%
+OK.
+
+01:03:43.200 --> 01:03:46.240 align:middle line:84%
+So here are some
+good default choices
+
+01:03:46.240 --> 01:03:50.380 align:middle line:84%
+for this year for deep
+learning a new domain.
+
+01:03:50.380 --> 01:03:53.400 align:middle line:84%
+So turn your data
+into one-hot vectors.
+
+01:03:53.400 --> 01:03:57.520 align:middle line:84%
+Transform your goal into a
+cross-entropy classification.
+
+01:03:57.520 --> 01:04:02.300 align:middle line:84%
+And use Adam and
+transformer to solve it.
+
+01:04:02.300 --> 01:04:05.460 align:middle line:84%
+So just the basic recipe--
+this will work pretty well.
+
+01:04:05.460 --> 01:04:08.060 align:middle line:90%
+
+
+01:04:08.060 --> 01:04:08.560 align:middle line:90%
+OK.
+
+01:04:08.560 --> 01:04:10.950 align:middle line:84%
+But there's a few things
+that you should be aware of
+
+01:04:10.950 --> 01:04:12.490 align:middle line:90%
+not to use in my opinion.
+
+01:04:12.490 --> 01:04:13.990 align:middle line:90%
+Again, this is a bit subjective.
+
+01:04:13.990 --> 01:04:15.290 align:middle line:90%
+Don't use batch norm.
+
+01:04:15.290 --> 01:04:17.450 align:middle line:84%
+I think that lesson has
+kind of gotten out now,
+
+01:04:17.450 --> 01:04:20.190 align:middle line:84%
+so I don't know if I
+still need to say this.
+
+01:04:20.190 --> 01:04:23.390 align:middle line:84%
+But if you're using batch
+norm, just get rid of it.
+
+01:04:23.390 --> 01:04:26.630 align:middle line:84%
+So batch norm introduces
+a strong dependency
+
+01:04:26.630 --> 01:04:29.510 align:middle line:84%
+between the batch
+size, which is one
+
+01:04:29.510 --> 01:04:33.230 align:middle line:84%
+of the cardinal hyperparameters
+that matters in deep learning,
+
+01:04:33.230 --> 01:04:38.350 align:middle line:90%
+and the learning.
+
+01:04:38.350 --> 01:04:42.070 align:middle line:84%
+So batch norm is normalizing
+activations with respect
+
+01:04:42.070 --> 01:04:45.710 align:middle line:84%
+to the statistics
+of a data batch.
+
+01:04:45.710 --> 01:04:49.070 align:middle line:84%
+So you're introducing this
+even stronger dependency
+
+01:04:49.070 --> 01:04:49.730 align:middle line:90%
+on batch size.
+
+01:04:49.730 --> 01:04:51.550 align:middle line:84%
+So now your performance will
+change dramatically when
+
+01:04:51.550 --> 01:04:52.610 align:middle line:90%
+you change batch size.
+
+01:04:52.610 --> 01:04:56.237 align:middle line:84%
+And this means that if
+I change my batch size,
+
+01:04:56.237 --> 01:04:57.570 align:middle line:90%
+I have to retune my whole model.
+
+01:04:57.570 --> 01:04:59.650 align:middle line:84%
+And I don't really
+want to do that.
+
+01:04:59.650 --> 01:05:01.150 align:middle line:84%
+Batch norm has
+different performance
+
+01:05:01.150 --> 01:05:05.472 align:middle line:84%
+at training time and test
+time, which is undesirable.
+
+01:05:05.472 --> 01:05:07.430 align:middle line:84%
+Because at train time,
+I will have a big batch,
+
+01:05:07.430 --> 01:05:09.110 align:middle line:84%
+and I'll take the
+statistics from it.
+
+01:05:09.110 --> 01:05:10.860 align:middle line:84%
+At test time, I usually
+have just one data
+
+01:05:10.860 --> 01:05:13.560 align:middle line:84%
+point in processing, and I
+have to do something else.
+
+01:05:13.560 --> 01:05:15.880 align:middle line:84%
+I can't normalize with
+respect to the batch.
+
+01:05:15.880 --> 01:05:20.420 align:middle line:84%
+Instead, you use
+learned statistics.
+
+01:05:20.420 --> 01:05:23.340 align:middle line:84%
+It makes distributed computing
+really hard because I can't just
+
+01:05:23.340 --> 01:05:26.580 align:middle line:84%
+shard up my batch onto a
+lot of nodes in my cluster.
+
+01:05:26.580 --> 01:05:28.060 align:middle line:84%
+I have to communicate
+information
+
+01:05:28.060 --> 01:05:31.280 align:middle line:84%
+about the different elements
+of the batch across nodes.
+
+01:05:31.280 --> 01:05:33.940 align:middle line:84%
+So you have this
+communication overhead.
+
+01:05:33.940 --> 01:05:35.280 align:middle line:90%
+So just use layer norm.
+
+01:05:35.280 --> 01:05:37.360 align:middle line:84%
+That's the standard
+one right now.
+
+01:05:37.360 --> 01:05:40.300 align:middle line:84%
+Maybe there'll be other
+standards in the future--
+
+01:05:40.300 --> 01:05:43.793 align:middle line:84%
+some stuff you can read, if
+you want, on the problems
+
+01:05:43.793 --> 01:05:44.460 align:middle line:90%
+with batch norm.
+
+01:05:44.460 --> 01:05:46.980 align:middle line:84%
+And I already mentioned
+that in the Pix2Pix project,
+
+01:05:46.980 --> 01:05:50.000 align:middle line:84%
+we did batch norm on batch
+size 1 and had a bug.
+
+01:05:50.000 --> 01:05:52.620 align:middle line:90%
+So that's one problem.
+
+01:05:52.620 --> 01:05:55.840 align:middle line:84%
+But that's just for
+you to read after.
+
+01:05:55.840 --> 01:05:56.340 align:middle line:90%
+OK.
+
+01:05:56.340 --> 01:05:59.100 align:middle line:84%
+So the easiest way to get
+your model to perform better
+
+01:05:59.100 --> 01:06:01.560 align:middle line:84%
+is actually not to
+do anything fancy,
+
+01:06:01.560 --> 01:06:03.407 align:middle line:90%
+but just scale up your data.
+
+01:06:03.407 --> 01:06:04.240 align:middle line:90%
+I already said that.
+
+01:06:04.240 --> 01:06:05.073 align:middle line:90%
+Scale up your model.
+
+01:06:05.073 --> 01:06:07.930 align:middle line:84%
+Make the model
+bigger, wider, deeper
+
+01:06:07.930 --> 01:06:10.250 align:middle line:90%
+more channels, more heads.
+
+01:06:10.250 --> 01:06:11.230 align:middle line:90%
+And scale your compute.
+
+01:06:11.230 --> 01:06:12.930 align:middle line:90%
+Train it for longer.
+
+01:06:12.930 --> 01:06:16.548 align:middle line:84%
+So just remember that this
+is like the simple recipe.
+
+01:06:16.548 --> 01:06:18.590 align:middle line:84%
+This is kind of the scale
+is all you need recipe.
+
+01:06:18.590 --> 01:06:20.610 align:middle line:84%
+And it's not necessarily
+the entire story,
+
+01:06:20.610 --> 01:06:22.490 align:middle line:90%
+but it is part of the story.
+
+01:06:22.490 --> 01:06:25.537 align:middle line:84%
+So here's a reminder for me
+to tell the story about-- when
+
+01:06:25.537 --> 01:06:27.370 align:middle line:84%
+we were working on that
+colorization project
+
+01:06:27.370 --> 01:06:31.530 align:middle line:84%
+that I mentioned on
+the previous slides,
+
+01:06:31.530 --> 01:06:36.050 align:middle line:84%
+we were trying to come up
+with a new model as opposed
+
+01:06:36.050 --> 01:06:37.650 align:middle line:84%
+to just turning it
+into classification
+
+01:06:37.650 --> 01:06:39.483 align:middle line:84%
+and running a standard
+convolutional network
+
+01:06:39.483 --> 01:06:41.210 align:middle line:90%
+of the era.
+
+01:06:41.210 --> 01:06:46.410 align:middle line:84%
+And so Richard and I,
+who were working on this,
+
+01:06:46.410 --> 01:06:50.410 align:middle line:84%
+we went and visited a lab in
+France for a month that summer.
+
+01:06:50.410 --> 01:06:52.983 align:middle line:84%
+And when we left, Richard
+just said, OK, well, we
+
+01:06:52.983 --> 01:06:54.650 align:middle line:84%
+don't have our model
+ready yet, but I'll
+
+01:06:54.650 --> 01:06:56.855 align:middle line:84%
+let the baseline keep
+running while we're away.
+
+01:06:56.855 --> 01:06:58.230 align:middle line:84%
+And so we just
+turned the GPU on.
+
+01:06:58.230 --> 01:06:59.897 align:middle line:84%
+And it started doing
+this regular thing.
+
+01:06:59.897 --> 01:07:01.690 align:middle line:84%
+It had horrible
+results at the time.
+
+01:07:01.690 --> 01:07:02.270 align:middle line:90%
+And so we go.
+
+01:07:02.270 --> 01:07:04.270 align:middle line:84%
+And then, like, two weeks
+later, we check on it,
+
+01:07:04.270 --> 01:07:05.575 align:middle line:90%
+and it's beautiful.
+
+01:07:05.575 --> 01:07:06.950 align:middle line:84%
+And it's better
+than all the kind
+
+01:07:06.950 --> 01:07:09.690 align:middle line:84%
+of crazy advanced architectures
+and variants that we tried.
+
+01:07:09.690 --> 01:07:11.970 align:middle line:84%
+So just if you're ever
+not sure what to do,
+
+01:07:11.970 --> 01:07:13.950 align:middle line:90%
+just train for longer.
+
+01:07:13.950 --> 01:07:14.850 align:middle line:90%
+Go to France.
+
+01:07:14.850 --> 01:07:15.530 align:middle line:90%
+Go to the beach.
+
+01:07:15.530 --> 01:07:16.210 align:middle line:90%
+Relax.
+
+01:07:16.210 --> 01:07:18.310 align:middle line:90%
+[LAUGHTER]
+
+01:07:18.310 --> 01:07:21.230 align:middle line:84%
+And a lot of people call
+this the bitter lesson,
+
+01:07:21.230 --> 01:07:23.190 align:middle line:84%
+or they worry about
+this, and they
+
+01:07:23.190 --> 01:07:26.290 align:middle line:84%
+think it's diminishing
+to science and truth.
+
+01:07:26.290 --> 01:07:28.410 align:middle line:84%
+But it's like, truth
+might be simple and easy.
+
+01:07:28.410 --> 01:07:29.850 align:middle line:90%
+And if it is, all the better.
+
+01:07:29.850 --> 01:07:32.135 align:middle line:90%
+It's, to me, very sweet.
+
+01:07:32.135 --> 01:07:33.510 align:middle line:84%
+So I don't think
+that that is all
+
+01:07:33.510 --> 01:07:35.760 align:middle line:84%
+there is, but I do think
+that this is a really, really
+
+01:07:35.760 --> 01:07:38.230 align:middle line:90%
+big part of it.
+
+01:07:38.230 --> 01:07:39.450 align:middle line:90%
+OK.
+
+01:07:39.450 --> 01:07:42.710 align:middle line:84%
+So there are reasons
+to work at small scale,
+
+01:07:42.710 --> 01:07:44.690 align:middle line:84%
+because it will allow
+you to iterate quickly.
+
+01:07:44.690 --> 01:07:46.150 align:middle line:84%
+It will force you to be
+efficient and come up
+
+01:07:46.150 --> 01:07:47.983 align:middle line:84%
+with clever algorithms
+that do scale better.
+
+01:07:47.983 --> 01:07:51.590 align:middle line:84%
+But eventually-- I would say
+scaling is necessary but not
+
+01:07:51.590 --> 01:07:52.590 align:middle line:90%
+sufficient.
+
+01:07:52.590 --> 01:07:53.990 align:middle line:90%
+So it's not that scaling--
+
+01:07:53.990 --> 01:07:55.407 align:middle line:84%
+I don't really
+think there's going
+
+01:07:55.407 --> 01:07:57.950 align:middle line:84%
+to be any way of making
+performant, human-like
+
+01:07:57.950 --> 01:07:59.490 align:middle line:84%
+intelligence without
+massive scale.
+
+01:07:59.490 --> 01:08:01.365 align:middle line:84%
+That's just going to be
+a necessary condition
+
+01:08:01.365 --> 01:08:02.180 align:middle line:90%
+in my opinion.
+
+01:08:02.180 --> 01:08:02.680 align:middle line:90%
+OK.
+
+01:08:02.680 --> 01:08:04.340 align:middle line:84%
+So in my opinion,
+there's not a hope
+
+01:08:04.340 --> 01:08:06.620 align:middle line:84%
+to solving it with small
+models and not much data
+
+01:08:06.620 --> 01:08:08.460 align:middle line:90%
+and not much compute.
+
+01:08:08.460 --> 01:08:09.200 align:middle line:90%
+But we'll see.
+
+01:08:09.200 --> 01:08:12.620 align:middle line:84%
+Maybe somebody will
+come up with that.
+
+01:08:12.620 --> 01:08:17.092 align:middle line:84%
+So a lot of people make
+their whole system.
+
+01:08:17.092 --> 01:08:19.300 align:middle line:84%
+And then they get it to be
+really, really performant,
+
+01:08:19.300 --> 01:08:20.260 align:middle line:90%
+and then they stop.
+
+01:08:20.260 --> 01:08:21.880 align:middle line:84%
+But you're only half
+done when you get there.
+
+01:08:21.880 --> 01:08:24.000 align:middle line:84%
+When you get your system
+to work and be scaled up,
+
+01:08:24.000 --> 01:08:25.095 align:middle line:90%
+you're only half done.
+
+01:08:25.095 --> 01:08:27.220 align:middle line:84%
+And this advice comes from
+the author of The Little
+
+01:08:27.220 --> 01:08:28.939 align:middle line:90%
+Prince, which is shown here.
+
+01:08:28.939 --> 01:08:30.518 align:middle line:84%
+So once you get
+your system working,
+
+01:08:30.518 --> 01:08:32.060 align:middle line:84%
+now you should go
+back and remove all
+
+01:08:32.060 --> 01:08:33.240 align:middle line:90%
+the nonessential components.
+
+01:08:33.240 --> 01:08:35.859 align:middle line:84%
+Because you probably added a
+lot of things that, at the time,
+
+01:08:35.859 --> 01:08:38.149 align:middle line:84%
+were important but, once
+you scaled up and once
+
+01:08:38.149 --> 01:08:39.899 align:middle line:84%
+you got other parts
+of the system to work,
+
+01:08:39.899 --> 01:08:41.240 align:middle line:90%
+were no longer important.
+
+01:08:41.240 --> 01:08:43.500 align:middle line:84%
+So don't forget to go and
+remove all the stuff that's
+
+01:08:43.500 --> 01:08:45.120 align:middle line:90%
+nonessential.
+
+01:08:45.120 --> 01:08:48.243 align:middle line:84%
+So "perfection is finally
+attained not when there is no
+
+01:08:48.243 --> 01:08:50.660 align:middle line:84%
+longer anything to add but
+when there's no longer anything
+
+01:08:50.660 --> 01:08:51.979 align:middle line:90%
+to take away."
+
+01:08:51.979 --> 01:08:54.460 align:middle line:84%
+So I think projects should
+always go-- add, add, add
+
+01:08:54.460 --> 01:08:55.143 align:middle line:90%
+until it works.
+
+01:08:55.143 --> 01:08:57.060 align:middle line:84%
+Remove, remove, remove
+until it stops working.
+
+01:08:57.060 --> 01:08:57.810 align:middle line:90%
+And cut off there.
+
+01:08:57.810 --> 01:08:58.800 align:middle line:90%
+And then report it.
+
+01:08:58.800 --> 01:09:02.170 align:middle line:90%
+
+
+01:09:02.170 --> 01:09:02.930 align:middle line:90%
+OK.
+
+01:09:02.930 --> 01:09:05.667 align:middle line:84%
+I'm a little short on
+time, so I will go quickly
+
+01:09:05.667 --> 01:09:07.250 align:middle line:84%
+over a few slides
+or skip a few slides
+
+01:09:07.250 --> 01:09:09.970 align:middle line:84%
+to get to some of
+the final points.
+
+01:09:09.970 --> 01:09:14.529 align:middle line:84%
+Copilots, coding assistants,
+you should be using these,
+
+01:09:14.529 --> 01:09:15.710 align:middle line:90%
+not on your Psets.
+
+01:09:15.710 --> 01:09:18.970 align:middle line:84%
+So we're going to
+clarify on the next Pset
+
+01:09:18.970 --> 01:09:22.830 align:middle line:84%
+a little more about how to turn
+off the Colab's autocomplete.
+
+01:09:22.830 --> 01:09:24.290 align:middle line:90%
+We weren't super clear on that.
+
+01:09:24.290 --> 01:09:25.310 align:middle line:90%
+But it is course policy.
+
+01:09:25.310 --> 01:09:28.507 align:middle line:84%
+You shouldn't use AI
+assistants in a way
+
+01:09:28.507 --> 01:09:29.590 align:middle line:90%
+you wouldn't use a friend.
+
+01:09:29.590 --> 01:09:32.569 align:middle line:84%
+So you shouldn't have them just
+write all the code for you.
+
+01:09:32.569 --> 01:09:35.290 align:middle line:84%
+You can ask conceptual questions
+and iterate and figure things
+
+01:09:35.290 --> 01:09:36.109 align:middle line:90%
+out with them.
+
+01:09:36.109 --> 01:09:38.276 align:middle line:84%
+But for your final projects
+and for life in general,
+
+01:09:38.276 --> 01:09:40.192 align:middle line:84%
+you should absolutely
+use coding assistants.
+
+01:09:40.192 --> 01:09:42.109 align:middle line:84%
+These are just going to
+get better and better.
+
+01:09:42.109 --> 01:09:43.149 align:middle line:84%
+They have some
+mistakes right now,
+
+01:09:43.149 --> 01:09:45.770 align:middle line:84%
+but this will be an essential
+tool in the software engineer's
+
+01:09:45.770 --> 01:09:46.729 align:middle line:90%
+toolkit.
+
+01:09:46.729 --> 01:09:48.590 align:middle line:84%
+And you should be
+learning how to use them.
+
+01:09:48.590 --> 01:09:50.770 align:middle line:84%
+And this class is
+about AI, and so we're
+
+01:09:50.770 --> 01:09:53.850 align:middle line:84%
+very happy for you to
+learn how to use these.
+
+01:09:53.850 --> 01:09:56.490 align:middle line:84%
+But you should always--
+don't replace thinking.
+
+01:09:56.490 --> 01:09:59.018 align:middle line:84%
+Think first, and
+then ask the LLM.
+
+01:09:59.018 --> 01:10:01.560 align:middle line:84%
+Don't trust the code without
+understanding what it's actually
+
+01:10:01.560 --> 01:10:03.592 align:middle line:84%
+doing and verifying
+it and testing
+
+01:10:03.592 --> 01:10:05.300 align:middle line:84%
+So there's good practice
+for using these.
+
+01:10:05.300 --> 01:10:06.400 align:middle line:84%
+You definitely
+don't want to just
+
+01:10:06.400 --> 01:10:07.775 align:middle line:84%
+use them blindly
+without actually
+
+01:10:07.775 --> 01:10:10.520 align:middle line:84%
+having knowledge
+about how it works.
+
+01:10:10.520 --> 01:10:14.160 align:middle line:84%
+And general advice is, write
+a very clear docstring,
+
+01:10:14.160 --> 01:10:17.880 align:middle line:84%
+and then autocomplete with a
+Copilot will work pretty well.
+
+01:10:17.880 --> 01:10:21.600 align:middle line:84%
+And you can prompt it by saying,
+you're a really smart coder,
+
+01:10:21.600 --> 01:10:22.138 align:middle line:90%
+if you want.
+
+01:10:22.138 --> 01:10:23.680 align:middle line:84%
+But I think some of
+those tricks will
+
+01:10:23.680 --> 01:10:27.540 align:middle line:84%
+disappear because they're being
+baked into the new systems.
+
+01:10:27.540 --> 01:10:28.480 align:middle line:90%
+OK.
+
+01:10:28.480 --> 01:10:32.900 align:middle line:84%
+So, first, when you're going
+to optimize your models,
+
+01:10:32.900 --> 01:10:35.580 align:middle line:84%
+start with one data point and
+overfit to that data point,
+
+01:10:35.580 --> 01:10:36.740 align:middle line:90%
+then a few data points.
+
+01:10:36.740 --> 01:10:38.300 align:middle line:84%
+And then finally
+start scaling up.
+
+01:10:38.300 --> 01:10:39.740 align:middle line:90%
+So scaling comes last.
+
+01:10:39.740 --> 01:10:43.320 align:middle line:90%
+
+
+01:10:43.320 --> 01:10:45.700 align:middle line:84%
+Check your-- oh, actually,
+this one's kind of fun.
+
+01:10:45.700 --> 01:10:49.360 align:middle line:84%
+So it's good to get
+used to log numbers,
+
+01:10:49.360 --> 01:10:51.440 align:middle line:84%
+because most of the
+time, in deep learning,
+
+01:10:51.440 --> 01:10:53.040 align:middle line:84%
+we're talking about
+log probabilities.
+
+01:10:53.040 --> 01:10:58.230 align:middle line:84%
+Or like, the cross-entropy loss
+is the average log probability
+
+01:10:58.230 --> 01:11:00.230 align:middle line:90%
+of the data under the model.
+
+01:11:00.230 --> 01:11:02.130 align:middle line:84%
+And so get used to
+log probabilities.
+
+01:11:02.130 --> 01:11:04.230 align:middle line:90%
+Know, is a negative number OK?
+
+01:11:04.230 --> 01:11:05.970 align:middle line:84%
+Is smaller good,
+or is bigger good?
+
+01:11:05.970 --> 01:11:07.010 align:middle line:90%
+What if it comes out 0?
+
+01:11:07.010 --> 01:11:07.990 align:middle line:90%
+What does that mean?
+
+01:11:07.990 --> 01:11:11.110 align:middle line:84%
+So here's a few log probability
+numbers just to memorize.
+
+01:11:11.110 --> 01:11:13.390 align:middle line:84%
+So what does negative
+0.69-- if you
+
+01:11:13.390 --> 01:11:15.370 align:middle line:84%
+get that number as your
+loss, is that good?
+
+01:11:15.370 --> 01:11:16.230 align:middle line:90%
+Is that bad?
+
+01:11:16.230 --> 01:11:18.850 align:middle line:90%
+That's just log of 0.5.
+
+01:11:18.850 --> 01:11:20.950 align:middle line:84%
+So if you have a binary
+classification problem,
+
+01:11:20.950 --> 01:11:23.427 align:middle line:84%
+you'll often see you
+get negative 0.69.
+
+01:11:23.427 --> 01:11:25.010 align:middle line:84%
+You're like, OK, it
+looks pretty good.
+
+01:11:25.010 --> 01:11:26.030 align:middle line:90%
+No, that's chance.
+
+01:11:26.030 --> 01:11:28.190 align:middle line:84%
+That means you're
+outputting equal probability
+
+01:11:28.190 --> 01:11:31.990 align:middle line:84%
+to both classes for a binary
+classification problem
+
+01:11:31.990 --> 01:11:33.710 align:middle line:90%
+with equally weighted classes.
+
+01:11:33.710 --> 01:11:34.210 align:middle line:90%
+OK.
+
+01:11:34.210 --> 01:11:36.110 align:middle line:90%
+What is log of 10%?
+
+01:11:36.110 --> 01:11:38.830 align:middle line:84%
+Like, 10%-- we often have
+10-way classification problems
+
+01:11:38.830 --> 01:11:40.510 align:middle line:90%
+as our standard homeworks.
+
+01:11:40.510 --> 01:11:43.890 align:middle line:84%
+Negative 2.3 means
+you're at chance.
+
+01:11:43.890 --> 01:11:45.270 align:middle line:84%
+You're outputting
+10% probability
+
+01:11:45.270 --> 01:11:47.070 align:middle line:90%
+over all data points.
+
+01:11:47.070 --> 01:11:49.310 align:middle line:90%
+OK.
+
+01:11:49.310 --> 01:11:53.030 align:middle line:84%
+So with regression loss, like
+a least-squares loss, it better
+
+01:11:53.030 --> 01:11:56.720 align:middle line:84%
+not be negative, because the
+minimizer of least squares is 0.
+
+01:11:56.720 --> 01:12:00.020 align:middle line:84%
+The minimizers of log
+likelihood is negative infinity.
+
+01:12:00.020 --> 01:12:01.860 align:middle line:84%
+So it's good to
+get used to these
+
+01:12:01.860 --> 01:12:03.360 align:middle line:90%
+and know when to look for bugs.
+
+01:12:03.360 --> 01:12:05.440 align:middle line:84%
+If you see negative 1,000
+on a regression loss,
+
+01:12:05.440 --> 01:12:08.980 align:middle line:90%
+you know there's a bug.
+
+01:12:08.980 --> 01:12:11.740 align:middle line:90%
+OK.
+
+01:12:11.740 --> 01:12:17.480 align:middle line:84%
+Always tune your learning rate
+and, often, your batch size.
+
+01:12:17.480 --> 01:12:17.980 align:middle line:90%
+OK.
+
+01:12:17.980 --> 01:12:19.260 align:middle line:90%
+I just want to--
+
+01:12:19.260 --> 01:12:20.100 align:middle line:90%
+let's see.
+
+01:12:20.100 --> 01:12:21.080 align:middle line:90%
+Oh, I have a lot.
+
+01:12:21.080 --> 01:12:23.100 align:middle line:84%
+Well, you're going to have to
+read some of these slides after.
+
+01:12:23.100 --> 01:12:23.600 align:middle line:90%
+Yeah, sorry.
+
+01:12:23.600 --> 01:12:26.520 align:middle line:90%
+We got a little late start.
+
+01:12:26.520 --> 01:12:27.020 align:middle line:90%
+OK.
+
+01:12:27.020 --> 01:12:32.660 align:middle line:84%
+Another one that is kind
+of fun is, use exponential
+
+01:12:32.660 --> 01:12:34.900 align:middle line:84%
+moving averages to
+smooth things out.
+
+01:12:34.900 --> 01:12:36.560 align:middle line:90%
+So what is an EMA?
+
+01:12:36.560 --> 01:12:38.200 align:middle line:84%
+An EMA is Exponentially
+Moving Average.
+
+01:12:38.200 --> 01:12:40.300 align:middle line:84%
+It just says, take
+whatever value you have.
+
+01:12:40.300 --> 01:12:44.100 align:middle line:84%
+And over time, you will
+mix in the new value
+
+01:12:44.100 --> 01:12:48.378 align:middle line:84%
+with the previous values
+multiplied by some decay factor.
+
+01:12:48.378 --> 01:12:50.420 align:middle line:84%
+So you're exponentially
+decaying the contribution
+
+01:12:50.420 --> 01:12:52.860 align:middle line:84%
+of your previous values
+with the new values.
+
+01:12:52.860 --> 01:12:55.930 align:middle line:84%
+And people use this all
+the time to trade off
+
+01:12:55.930 --> 01:12:59.170 align:middle line:84%
+between averaging across
+space-- so let's say
+
+01:12:59.170 --> 01:13:00.770 align:middle line:90%
+I have a batch of gradients.
+
+01:13:00.770 --> 01:13:03.430 align:middle line:84%
+And I'm going to take
+an average over all my--
+
+01:13:03.430 --> 01:13:05.730 align:middle line:84%
+like, the sum of my
+gradients is going
+
+01:13:05.730 --> 01:13:10.170 align:middle line:84%
+to be my estimate of
+the total gradient.
+
+01:13:10.170 --> 01:13:13.105 align:middle line:84%
+And you can replace
+averaging across space,
+
+01:13:13.105 --> 01:13:15.230 align:middle line:84%
+across batch dimension,
+with averaging across time,
+
+01:13:15.230 --> 01:13:18.050 align:middle line:84%
+across iterates of your
+learning using EMA.
+
+01:13:18.050 --> 01:13:20.290 align:middle line:84%
+So it's a trade-off
+between time and space.
+
+01:13:20.290 --> 01:13:23.930 align:middle line:84%
+And whatever quantity you have
+in deep learning-- gradients,
+
+01:13:23.930 --> 01:13:27.370 align:middle line:84%
+activations, data, weights,
+even target predictions--
+
+01:13:27.370 --> 01:13:30.410 align:middle line:84%
+you might want to try
+putting an EMA on that.
+
+01:13:30.410 --> 01:13:32.810 align:middle line:84%
+You can, in PyTorch,
+just have some wrapper
+
+01:13:32.810 --> 01:13:35.430 align:middle line:84%
+that says this variable
+will not be its value
+
+01:13:35.430 --> 01:13:38.750 align:middle line:84%
+but be its value summed up
+over all the previous values.
+
+01:13:38.750 --> 01:13:43.410 align:middle line:84%
+And then it becomes kind of the
+EMA version of that variable.
+
+01:13:43.410 --> 01:13:46.850 align:middle line:90%
+OK.
+
+01:13:46.850 --> 01:13:50.110 align:middle line:84%
+So, yes, I packed way too
+much into this lecture.
+
+01:13:50.110 --> 01:13:50.610 align:middle line:90%
+OK.
+
+01:13:50.610 --> 01:13:52.200 align:middle line:84%
+This one, I want
+to point out too.
+
+01:13:52.200 --> 01:13:52.700 align:middle line:90%
+OK.
+
+01:13:52.700 --> 01:13:56.000 align:middle line:84%
+So there's all these pieces of
+advice and little tips here.
+
+01:13:56.000 --> 01:14:06.055 align:middle line:84%
+But if you're going to make some
+nice dish for dinner tonight,
+
+01:14:06.055 --> 01:14:07.180 align:middle line:90%
+which spice should you use?
+
+01:14:07.180 --> 01:14:09.560 align:middle line:84%
+So somebody might say
+coming from Google
+
+01:14:09.560 --> 01:14:12.468 align:middle line:84%
+or someone might say, oh,
+cayenne pepper is all you need.
+
+01:14:12.468 --> 01:14:13.260 align:middle line:90%
+It's just the best.
+
+01:14:13.260 --> 01:14:13.900 align:middle line:90%
+Just use that.
+
+01:14:13.900 --> 01:14:15.057 align:middle line:90%
+OK.
+
+01:14:15.057 --> 01:14:15.640 align:middle line:90%
+Is that right?
+
+01:14:15.640 --> 01:14:18.240 align:middle line:90%
+Is cayenne pepper all you need?
+
+01:14:18.240 --> 01:14:20.560 align:middle line:90%
+No, it's not quite like that.
+
+01:14:20.560 --> 01:14:22.085 align:middle line:84%
+So attention is
+not all you need.
+
+01:14:22.085 --> 01:14:23.960 align:middle line:84%
+Attention is one thing
+that works pretty well
+
+01:14:23.960 --> 01:14:26.480 align:middle line:90%
+and has certain effects.
+
+01:14:26.480 --> 01:14:27.800 align:middle line:90%
+ReLUs are nice.
+
+01:14:27.800 --> 01:14:29.700 align:middle line:84%
+But it's really
+like cooking to me.
+
+01:14:29.700 --> 01:14:32.600 align:middle line:84%
+It's very multimodal in this
+such landscape as a function
+
+01:14:32.600 --> 01:14:33.440 align:middle line:90%
+of all these things.
+
+01:14:33.440 --> 01:14:35.440 align:middle line:84%
+You want to find the right
+combination of spices
+
+01:14:35.440 --> 01:14:37.040 align:middle line:90%
+that solves your problem.
+
+01:14:37.040 --> 01:14:41.307 align:middle line:84%
+Every regularizer you add is
+going to have a certain effect.
+
+01:14:41.307 --> 01:14:42.140 align:middle line:90%
+And they'll overlap.
+
+01:14:42.140 --> 01:14:44.760 align:middle line:84%
+So you have to have
+some regularization.
+
+01:14:44.760 --> 01:14:46.420 align:middle line:84%
+Do you need to have
+skip connections?
+
+01:14:46.420 --> 01:14:48.795 align:middle line:84%
+Well, yes, you do if you have
+a really deep architecture.
+
+01:14:48.795 --> 01:14:51.590 align:middle line:84%
+But maybe you don't if you
+have an optimizer which
+
+01:14:51.590 --> 01:14:54.570 align:middle line:84%
+somehow doesn't have
+vanishing gradients.
+
+01:14:54.570 --> 01:14:56.770 align:middle line:84%
+So you have to get
+the right combination.
+
+01:14:56.770 --> 01:14:59.390 align:middle line:84%
+And there's many combinations
+that are all equally valid.
+
+01:14:59.390 --> 01:15:01.910 align:middle line:84%
+So you can have a
+nice, spicy chicken
+
+01:15:01.910 --> 01:15:04.050 align:middle line:84%
+dish with cayenne
+and peppers on it,
+
+01:15:04.050 --> 01:15:07.670 align:middle line:84%
+or you could have a nice
+sushi with miso and soy
+
+01:15:07.670 --> 01:15:08.930 align:middle line:90%
+sauce and things like this.
+
+01:15:08.930 --> 01:15:10.590 align:middle line:90%
+And they're both good.
+
+01:15:10.590 --> 01:15:13.310 align:middle line:84%
+And you just want to
+learn which ingredient
+
+01:15:13.310 --> 01:15:15.183 align:middle line:90%
+to use to have which effect.
+
+01:15:15.183 --> 01:15:16.350 align:middle line:90%
+Some ingredients regularize.
+
+01:15:16.350 --> 01:15:17.810 align:middle line:84%
+Some ingredients
+increase capacity.
+
+01:15:17.810 --> 01:15:20.410 align:middle line:84%
+Some ingredients make
+optimization faster.
+
+01:15:20.410 --> 01:15:22.550 align:middle line:84%
+So you just have to get
+the right combination.
+
+01:15:22.550 --> 01:15:23.590 align:middle line:90%
+And don't overspice.
+
+01:15:23.590 --> 01:15:25.470 align:middle line:90%
+Don't overrely on one.
+
+01:15:25.470 --> 01:15:25.970 align:middle line:90%
+OK.
+
+01:15:25.970 --> 01:15:28.110 align:middle line:90%
+So I think I'll end there.
+
+01:15:28.110 --> 01:15:29.790 align:middle line:84%
+The rest of the slides
+have various tips
+
+01:15:29.790 --> 01:15:30.890 align:middle line:84%
+that you can read
+on your own time.
+
+01:15:30.890 --> 01:15:32.432 align:middle line:84%
+I hope that they're
+self-explanatory.
+
+01:15:32.432 --> 01:15:34.310 align:middle line:90%
+And I will see you next week.
+
+01:15:34.310 --> 01:15:37.660 align:middle line:90%
+[APPLAUSE]
+
+01:15:37.660 --> 01:15:50.000 align:middle line:90%

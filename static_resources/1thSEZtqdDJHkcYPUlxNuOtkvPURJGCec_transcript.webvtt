@@ -1,0 +1,6054 @@
+WEBVTT
+
+00:00:00.000 --> 00:00:01.961 align:middle line:90%
+[SQUEAKING]
+
+00:00:01.961 --> 00:00:03.909 align:middle line:90%
+[RUSTLING]
+
+00:00:03.909 --> 00:00:05.370 align:middle line:90%
+[CLICKING]
+
+00:00:05.370 --> 00:00:12.680 align:middle line:90%
+
+
+00:00:12.680 --> 00:00:15.440 align:middle line:84%
+SARA BEERY: We're going to
+finish up our short series
+
+00:00:15.440 --> 00:00:18.400 align:middle line:90%
+on transfer learning today.
+
+00:00:18.400 --> 00:00:23.080 align:middle line:84%
+And the other logistical
+thing I did want to bring up
+
+00:00:23.080 --> 00:00:27.400 align:middle line:84%
+is I know that project
+proposals are due this Friday.
+
+00:00:27.400 --> 00:00:30.534 align:middle line:84%
+During our instructor meeting
+today, we put together a rubric
+
+00:00:30.534 --> 00:00:32.159 align:middle line:84%
+for those project
+proposals just to try
+
+00:00:32.159 --> 00:00:34.617 align:middle line:84%
+to give you guys a little bit
+more structured understanding
+
+00:00:34.617 --> 00:00:37.200 align:middle line:84%
+of what we're going to
+be evaluating those on.
+
+00:00:37.200 --> 00:00:39.480 align:middle line:90%
+So that's up on Piazza.
+
+00:00:39.480 --> 00:00:41.560 align:middle line:84%
+Essentially, it's
+like out of 10,
+
+00:00:41.560 --> 00:00:43.000 align:middle line:84%
+and there's five
+different things
+
+00:00:43.000 --> 00:00:44.733 align:middle line:90%
+that are each worth two points.
+
+00:00:44.733 --> 00:00:46.400 align:middle line:84%
+And then the other
+thing I wanted to say
+
+00:00:46.400 --> 00:00:48.400 align:middle line:84%
+is that this is
+actually, shockingly,
+
+00:00:48.400 --> 00:00:51.280 align:middle line:84%
+already my last lecture
+of the semester.
+
+00:00:51.280 --> 00:00:53.480 align:middle line:84%
+I don't know where
+the time goes,
+
+00:00:53.480 --> 00:00:56.280 align:middle line:84%
+but it has been
+really awesome getting
+
+00:00:56.280 --> 00:00:58.220 align:middle line:90%
+to lecture you this semester.
+
+00:00:58.220 --> 00:01:01.580 align:middle line:84%
+And I will probably see you
+towards the end of the semester
+
+00:01:01.580 --> 00:01:04.080 align:middle line:90%
+anyway, but yeah.
+
+00:01:04.080 --> 00:01:05.720 align:middle line:90%
+Time flies.
+
+00:01:05.720 --> 00:01:06.220 align:middle line:90%
+Cool.
+
+00:01:06.220 --> 00:01:10.060 align:middle line:84%
+So today, continuing
+that thread on thinking
+
+00:01:10.060 --> 00:01:12.772 align:middle line:84%
+about how we can transfer
+knowledge specifically
+
+00:01:12.772 --> 00:01:14.980 align:middle line:84%
+within the constraints of
+these deep learning models,
+
+00:01:14.980 --> 00:01:17.420 align:middle line:84%
+or these deep learning
+systems, today, we're
+
+00:01:17.420 --> 00:01:19.620 align:middle line:84%
+going to be specifically
+talking about how
+
+00:01:19.620 --> 00:01:23.340 align:middle line:84%
+we can transfer knowledge
+about the inputs to the system.
+
+00:01:23.340 --> 00:01:26.260 align:middle line:84%
+And so we're going to spend
+some time thinking about how
+
+00:01:26.260 --> 00:01:28.220 align:middle line:84%
+you can think about
+generative models
+
+00:01:28.220 --> 00:01:33.900 align:middle line:84%
+as another way to capture
+information about data inputs.
+
+00:01:33.900 --> 00:01:37.860 align:middle line:84%
+And then we're also going to
+talk a little bit about models
+
+00:01:37.860 --> 00:01:41.260 align:middle line:84%
+that learn to learn, so
+this idea of meta-learning
+
+00:01:41.260 --> 00:01:44.220 align:middle line:84%
+and how you can build models
+that are almost designed
+
+00:01:44.220 --> 00:01:46.460 align:middle line:84%
+to be good at transfer
+learning, designed
+
+00:01:46.460 --> 00:01:48.500 align:middle line:84%
+to be good at sharing
+information or learning
+
+00:01:48.500 --> 00:01:50.460 align:middle line:90%
+new things.
+
+00:01:50.460 --> 00:01:51.080 align:middle line:90%
+Cool.
+
+00:01:51.080 --> 00:01:57.520 align:middle line:84%
+So if we're thinking about
+knowledge about the inputs,
+
+00:01:57.520 --> 00:01:59.120 align:middle line:84%
+maybe one way to
+think about this
+
+00:01:59.120 --> 00:02:02.840 align:middle line:84%
+is if you know something about
+the distribution of inputs
+
+00:02:02.840 --> 00:02:05.240 align:middle line:84%
+you're going to
+expect, maybe there's
+
+00:02:05.240 --> 00:02:07.640 align:middle line:84%
+a way to actually use that
+to direct or accelerate
+
+00:02:07.640 --> 00:02:11.760 align:middle line:84%
+your learning or
+even directly target
+
+00:02:11.760 --> 00:02:14.840 align:middle line:90%
+a specific type of learning.
+
+00:02:14.840 --> 00:02:21.760 align:middle line:84%
+So you have a data set, and then
+we spent quite a few lectures
+
+00:02:21.760 --> 00:02:23.880 align:middle line:84%
+with Phil talking
+about this ability
+
+00:02:23.880 --> 00:02:28.380 align:middle line:84%
+to learn how to generate data
+from that same distribution,
+
+00:02:28.380 --> 00:02:31.080 align:middle line:84%
+this idea that you can
+use generative modeling.
+
+00:02:31.080 --> 00:02:35.040 align:middle line:84%
+And so now, that
+gives you access
+
+00:02:35.040 --> 00:02:37.360 align:middle line:84%
+to some model that
+then is able to sample
+
+00:02:37.360 --> 00:02:40.280 align:middle line:90%
+from that distribution.
+
+00:02:40.280 --> 00:02:43.320 align:middle line:84%
+And so here, at a
+first glance, this
+
+00:02:43.320 --> 00:02:44.740 align:middle line:90%
+might not seem that interesting.
+
+00:02:44.740 --> 00:02:46.640 align:middle line:84%
+You had data, and
+then you used it
+
+00:02:46.640 --> 00:02:49.820 align:middle line:84%
+to train a model that mimics
+the data that you already had.
+
+00:02:49.820 --> 00:02:53.440 align:middle line:84%
+But you already had the data,
+so how does it actually help?
+
+00:02:53.440 --> 00:02:56.420 align:middle line:84%
+How are you going to
+get more information out
+
+00:02:56.420 --> 00:02:58.900 align:middle line:84%
+of a system that's
+been trained to model
+
+00:02:58.900 --> 00:03:02.500 align:middle line:90%
+from a specific distribution?
+
+00:03:02.500 --> 00:03:05.100 align:middle line:84%
+But one of the
+interesting things
+
+00:03:05.100 --> 00:03:08.740 align:middle line:84%
+that you can think
+about this as is,
+
+00:03:08.740 --> 00:03:14.460 align:middle line:84%
+assuming that generative
+model is kind of very good,
+
+00:03:14.460 --> 00:03:20.000 align:middle line:84%
+you can almost think about
+the model itself as a new way,
+
+00:03:20.000 --> 00:03:22.500 align:middle line:84%
+or a new mechanism
+to access data,
+
+00:03:22.500 --> 00:03:26.940 align:middle line:84%
+going beyond the capabilities of
+the initial training data set.
+
+00:03:26.940 --> 00:03:29.600 align:middle line:84%
+So maybe you call
+it data plus plus.
+
+00:03:29.600 --> 00:03:32.660 align:middle line:84%
+And where does
+that additive value
+
+00:03:32.660 --> 00:03:34.540 align:middle line:84%
+that you're getting
+from a data generator
+
+00:03:34.540 --> 00:03:37.860 align:middle line:84%
+that you might not get
+from the data itself?
+
+00:03:37.860 --> 00:03:40.420 align:middle line:90%
+And here's an interesting quote.
+
+00:03:40.420 --> 00:03:44.220 align:middle line:84%
+So this is from the release
+of the first Stable Diffusion
+
+00:03:44.220 --> 00:03:44.940 align:middle line:90%
+model.
+
+00:03:44.940 --> 00:03:48.020 align:middle line:84%
+They said that, "This release
+is the culmination of many hours
+
+00:03:48.020 --> 00:03:52.900 align:middle line:84%
+of collective effort to create
+a single file that compresses
+
+00:03:52.900 --> 00:03:57.600 align:middle line:84%
+the visual information of
+humanity into a few gigabytes."
+
+00:03:57.600 --> 00:04:00.320 align:middle line:90%
+And that sounds pretty awesome.
+
+00:04:00.320 --> 00:04:03.840 align:middle line:84%
+So essentially, it's
+the idea that, actually,
+
+00:04:03.840 --> 00:04:09.497 align:middle line:84%
+a generative model is a really
+cool form of data compression.
+
+00:04:09.497 --> 00:04:11.080 align:middle line:84%
+So you can take that
+generative model,
+
+00:04:11.080 --> 00:04:15.380 align:middle line:84%
+and you can go from some latent
+variable to anything on Earth,
+
+00:04:15.380 --> 00:04:19.660 align:middle line:84%
+like any sort of visual-- all
+visual information of humanity,
+
+00:04:19.660 --> 00:04:23.600 align:middle line:84%
+then that is a shocking
+compression of everything.
+
+00:04:23.600 --> 00:04:25.880 align:middle line:84%
+You think about even
+just the storage capacity
+
+00:04:25.880 --> 00:04:27.480 align:middle line:84%
+of all the images
+on the internet
+
+00:04:27.480 --> 00:04:30.320 align:middle line:84%
+versus the storage capacity
+of a Stable Diffusion model.
+
+00:04:30.320 --> 00:04:33.000 align:middle line:84%
+That's a significant
+difference in terms
+
+00:04:33.000 --> 00:04:36.000 align:middle line:90%
+of what you're capturing.
+
+00:04:36.000 --> 00:04:45.440 align:middle line:84%
+So here, how do we think about
+what data plus plus means,
+
+00:04:45.440 --> 00:04:50.400 align:middle line:84%
+and how do we think about
+data as maybe like an object?
+
+00:04:50.400 --> 00:04:57.140 align:middle line:84%
+So if we start
+with some X, which
+
+00:04:57.140 --> 00:05:00.860 align:middle line:84%
+is the set of the original
+training data, which
+
+00:05:00.860 --> 00:05:05.580 align:middle line:84%
+is little x, z, which is
+a set of latent variables
+
+00:05:05.580 --> 00:05:08.340 align:middle line:84%
+that can correspond to
+the original training data
+
+00:05:08.340 --> 00:05:14.580 align:middle line:84%
+learned by our generative
+model, the mapping from z
+
+00:05:14.580 --> 00:05:16.620 align:middle line:84%
+to x-- so this is
+basically the mapping that
+
+00:05:16.620 --> 00:05:20.920 align:middle line:84%
+goes from some latent variable
+to a generated data point,
+
+00:05:20.920 --> 00:05:24.100 align:middle line:84%
+and that's G. That's the
+generative model we've learned.
+
+00:05:24.100 --> 00:05:27.380 align:middle line:84%
+And then if you also have
+G inverse-- essentially,
+
+00:05:27.380 --> 00:05:30.980 align:middle line:84%
+this inverse mapping that
+lets you go from data to its
+
+00:05:30.980 --> 00:05:33.820 align:middle line:90%
+associated latent variable--
+
+00:05:33.820 --> 00:05:35.980 align:middle line:90%
+you can actually define these.
+
+00:05:35.980 --> 00:05:38.340 align:middle line:84%
+You can take these
+and define operators
+
+00:05:38.340 --> 00:05:41.780 align:middle line:84%
+over those objects that
+enable us to do things
+
+00:05:41.780 --> 00:05:46.500 align:middle line:84%
+to the generator and the system
+of data plus generator of data
+
+00:05:46.500 --> 00:05:49.380 align:middle line:84%
+that we couldn't easily
+do to the data itself.
+
+00:05:49.380 --> 00:05:53.480 align:middle line:84%
+So for example, you can
+think about interpolation
+
+00:05:53.480 --> 00:05:55.880 align:middle line:90%
+over a data set.
+
+00:05:55.880 --> 00:05:58.060 align:middle line:84%
+Pretty standard definition
+of interpolation.
+
+00:05:58.060 --> 00:05:59.640 align:middle line:84%
+But now, you can
+think about maybe
+
+00:05:59.640 --> 00:06:04.520 align:middle line:84%
+some-- if you have one
+set of this, like X,
+
+00:06:04.520 --> 00:06:09.920 align:middle line:84%
+Mathcad X that's some data set,
+some latent space, a generator
+
+00:06:09.920 --> 00:06:12.780 align:middle line:84%
+for that latent space
+to data in the inverse.
+
+00:06:12.780 --> 00:06:15.160 align:middle line:84%
+If you have one of those, and
+you have another one that's
+
+00:06:15.160 --> 00:06:17.140 align:middle line:84%
+for some of different
+data set, possibly,
+
+00:06:17.140 --> 00:06:19.680 align:middle line:84%
+or a different generator, you
+can think about interpolating
+
+00:06:19.680 --> 00:06:21.400 align:middle line:90%
+between the two, right?
+
+00:06:21.400 --> 00:06:23.560 align:middle line:84%
+So some interpolation
+between those two things
+
+00:06:23.560 --> 00:06:26.040 align:middle line:90%
+would generate a new one.
+
+00:06:26.040 --> 00:06:28.760 align:middle line:84%
+And you can think about
+manipulation, right?
+
+00:06:28.760 --> 00:06:32.580 align:middle line:84%
+You can think about how you
+might add some bias term to that
+
+00:06:32.580 --> 00:06:36.440 align:middle line:84%
+that would give you, again,
+some whole new kind of object
+
+00:06:36.440 --> 00:06:39.200 align:middle line:84%
+for accessing and
+interacting with data.
+
+00:06:39.200 --> 00:06:41.680 align:middle line:90%
+You can think about composition.
+
+00:06:41.680 --> 00:06:44.680 align:middle line:84%
+So here, how do you actually
+kind of compose two things
+
+00:06:44.680 --> 00:06:46.600 align:middle line:84%
+is, of course, different
+from interpolating
+
+00:06:46.600 --> 00:06:47.960 align:middle line:90%
+between two things.
+
+00:06:47.960 --> 00:06:54.060 align:middle line:84%
+So now if you essentially
+are taking this space where
+
+00:06:54.060 --> 00:06:58.920 align:middle line:84%
+you have just these different
+data products or data objects,
+
+00:06:58.920 --> 00:07:02.860 align:middle line:84%
+you can think about really
+combining them and manipulating
+
+00:07:02.860 --> 00:07:04.500 align:middle line:90%
+them in interesting ways.
+
+00:07:04.500 --> 00:07:07.260 align:middle line:84%
+You can also think
+about optimization,
+
+00:07:07.260 --> 00:07:12.940 align:middle line:84%
+so how you might actually
+be able to explicitly find
+
+00:07:12.940 --> 00:07:17.980 align:middle line:84%
+some set of generator data,
+latent space inverse generator,
+
+00:07:17.980 --> 00:07:22.380 align:middle line:84%
+that's optimal for some given
+dimension of optimality.
+
+00:07:22.380 --> 00:07:27.460 align:middle line:84%
+And you can imagine
+taking that and bringing
+
+00:07:27.460 --> 00:07:30.405 align:middle line:84%
+it to bear on many,
+many different research
+
+00:07:30.405 --> 00:07:32.780 align:middle line:84%
+domains or problem domains
+that people are interested in.
+
+00:07:32.780 --> 00:07:35.020 align:middle line:84%
+Things like graphics,
+visualization,
+
+00:07:35.020 --> 00:07:39.020 align:middle line:84%
+data augmentation,
+counterfactual reasoning.
+
+00:07:39.020 --> 00:07:42.460 align:middle line:84%
+And all of this work is kind of
+somewhat in progress, actually.
+
+00:07:42.460 --> 00:07:45.100 align:middle line:84%
+So these are just some
+examples of papers
+
+00:07:45.100 --> 00:07:48.460 align:middle line:84%
+that start getting at these
+mechanisms of interpolation,
+
+00:07:48.460 --> 00:07:52.480 align:middle line:84%
+manipulation, composition, or
+optimization over generated data
+
+00:07:52.480 --> 00:07:54.240 align:middle line:90%
+objects.
+
+00:07:54.240 --> 00:07:59.440 align:middle line:84%
+So if we think about this
+space of generative models--
+
+00:07:59.440 --> 00:08:01.320 align:middle line:84%
+so here, this is
+now just visualizing
+
+00:08:01.320 --> 00:08:02.653 align:middle line:90%
+what we were just talking about.
+
+00:08:02.653 --> 00:08:04.480 align:middle line:84%
+We have some set of
+latent variables.
+
+00:08:04.480 --> 00:08:06.300 align:middle line:84%
+So these are maybe
+the controls, right?
+
+00:08:06.300 --> 00:08:08.640 align:middle line:84%
+This is kind of the
+way that you control
+
+00:08:08.640 --> 00:08:10.840 align:middle line:90%
+what you want to generate.
+
+00:08:10.840 --> 00:08:13.600 align:middle line:84%
+And maybe you've made some
+reasonable constraints
+
+00:08:13.600 --> 00:08:20.080 align:middle line:84%
+in your system so you can ensure
+that z is normally distributed.
+
+00:08:20.080 --> 00:08:25.320 align:middle line:84%
+Now, you have some
+generative model, G,
+
+00:08:25.320 --> 00:08:28.960 align:middle line:84%
+that will take any point
+in that latent space
+
+00:08:28.960 --> 00:08:30.740 align:middle line:90%
+and then synthesize an image.
+
+00:08:30.740 --> 00:08:37.280 align:middle line:84%
+So here, now, if you sampled a
+different point in latent space,
+
+00:08:37.280 --> 00:08:40.480 align:middle line:84%
+then you would sample
+a different image.
+
+00:08:40.480 --> 00:08:44.080 align:middle line:84%
+And so now, given
+the relationship
+
+00:08:44.080 --> 00:08:47.860 align:middle line:84%
+between dimensionality of
+movement in latent space
+
+00:08:47.860 --> 00:08:49.860 align:middle line:84%
+and the image that's
+generated, you
+
+00:08:49.860 --> 00:08:52.940 align:middle line:84%
+can think about this as
+a mechanism of control.
+
+00:08:52.940 --> 00:08:56.700 align:middle line:84%
+So maybe if you move along
+some controllable snippet
+
+00:08:56.700 --> 00:08:59.180 align:middle line:84%
+of the manifold
+of natural images,
+
+00:08:59.180 --> 00:09:03.060 align:middle line:84%
+you can explicitly do things
+like find some latent variable
+
+00:09:03.060 --> 00:09:06.100 align:middle line:84%
+in your latent space, some
+dimension in that latent space
+
+00:09:06.100 --> 00:09:09.020 align:middle line:84%
+that corresponds to
+something like pose
+
+00:09:09.020 --> 00:09:13.760 align:middle line:84%
+for this bird or
+orientation in some way.
+
+00:09:13.760 --> 00:09:17.300 align:middle line:84%
+And so maybe there's
+different dimensions
+
+00:09:17.300 --> 00:09:20.780 align:middle line:84%
+of this control in latent space
+that corresponds specifically
+
+00:09:20.780 --> 00:09:25.220 align:middle line:84%
+to disentangled factors
+of variation or change
+
+00:09:25.220 --> 00:09:28.500 align:middle line:84%
+in the space of those
+real generated images.
+
+00:09:28.500 --> 00:09:33.280 align:middle line:90%
+And so if you can find-- yeah?
+
+00:09:33.280 --> 00:09:37.140 align:middle line:84%
+AUDIENCE: On that slide, do you
+suppose that the two dimensions
+
+00:09:37.140 --> 00:09:39.740 align:middle line:90%
+are linearly independent?
+
+00:09:39.740 --> 00:09:41.860 align:middle line:90%
+And is it usually the case?
+
+00:09:41.860 --> 00:09:44.400 align:middle line:84%
+SARA BEERY: So your
+question is, are you
+
+00:09:44.400 --> 00:09:48.920 align:middle line:84%
+supposing that these dimensions
+in this kind of latent variable
+
+00:09:48.920 --> 00:09:52.120 align:middle line:90%
+space are linearly independent?
+
+00:09:52.120 --> 00:09:54.080 align:middle line:84%
+So I think the
+assumption here is
+
+00:09:54.080 --> 00:10:00.000 align:middle line:84%
+that there is some decomposable
+directions that are maybe
+
+00:10:00.000 --> 00:10:03.440 align:middle line:84%
+some projection of this where
+you can find orthogonality,
+
+00:10:03.440 --> 00:10:05.440 align:middle line:84%
+and that orthogonality
+then corresponds
+
+00:10:05.440 --> 00:10:13.920 align:middle line:84%
+to some very clean specific
+variables of variation
+
+00:10:13.920 --> 00:10:16.040 align:middle line:90%
+in the real image space.
+
+00:10:16.040 --> 00:10:24.760 align:middle line:84%
+In practice, sometimes,
+particularly for certain types
+
+00:10:24.760 --> 00:10:30.800 align:middle line:84%
+or certain categories of
+generative models, this is true,
+
+00:10:30.800 --> 00:10:33.380 align:middle line:84%
+but it's not necessarily
+easy to find.
+
+00:10:33.380 --> 00:10:38.040 align:middle line:84%
+So people will do this
+cherry picked thing
+
+00:10:38.040 --> 00:10:40.200 align:middle line:84%
+where they're like, hey,
+we found a dimension,
+
+00:10:40.200 --> 00:10:41.720 align:middle line:84%
+where if we move
+in this dimension,
+
+00:10:41.720 --> 00:10:44.640 align:middle line:84%
+you can see that it
+changes from day to night.
+
+00:10:44.640 --> 00:10:46.160 align:middle line:84%
+We'll talk more
+about some of these.
+
+00:10:46.160 --> 00:10:48.380 align:middle line:84%
+But I think one of
+the challenges of this
+
+00:10:48.380 --> 00:10:51.980 align:middle line:84%
+is, particularly as these latent
+spaces get higher dimensional,
+
+00:10:51.980 --> 00:10:54.500 align:middle line:84%
+being able to really
+explicitly disentangle
+
+00:10:54.500 --> 00:10:56.700 align:middle line:84%
+these dimensions of
+variation in a clean way can
+
+00:10:56.700 --> 00:10:59.760 align:middle line:84%
+be very difficult and
+can be highly heuristic.
+
+00:10:59.760 --> 00:11:00.260 align:middle line:90%
+Yeah.
+
+00:11:00.260 --> 00:11:02.820 align:middle line:90%
+
+
+00:11:02.820 --> 00:11:03.620 align:middle line:90%
+Cool.
+
+00:11:03.620 --> 00:11:07.740 align:middle line:84%
+So if you have that, if you have
+this kind of model that takes
+
+00:11:07.740 --> 00:11:11.620 align:middle line:84%
+you from data to what we're
+calling data plus plus,
+
+00:11:11.620 --> 00:11:16.860 align:middle line:84%
+and you can map now from your
+actual image now into the latent
+
+00:11:16.860 --> 00:11:19.900 align:middle line:84%
+space itself-- so this
+is that G inverse--
+
+00:11:19.900 --> 00:11:22.620 align:middle line:84%
+now, you have the ability to ask
+these interesting counterfactual
+
+00:11:22.620 --> 00:11:23.340 align:middle line:90%
+questions.
+
+00:11:23.340 --> 00:11:25.460 align:middle line:84%
+What would it look
+like if assuming
+
+00:11:25.460 --> 00:11:28.260 align:middle line:84%
+that you have these measurable
+and actionable dimensions
+
+00:11:28.260 --> 00:11:29.940 align:middle line:90%
+of variation?
+
+00:11:29.940 --> 00:11:32.400 align:middle line:90%
+So here, now, you could say, OK.
+
+00:11:32.400 --> 00:11:35.580 align:middle line:84%
+What would it look
+like if we moved around
+
+00:11:35.580 --> 00:11:36.605 align:middle line:90%
+in this latent space?
+
+00:11:36.605 --> 00:11:37.980 align:middle line:84%
+How do these
+different dimensions
+
+00:11:37.980 --> 00:11:42.160 align:middle line:84%
+correspond to
+different maybe things
+
+00:11:42.160 --> 00:11:45.080 align:middle line:84%
+within the manifold
+of real images?
+
+00:11:45.080 --> 00:11:47.160 align:middle line:84%
+So here's some work
+where you can actually
+
+00:11:47.160 --> 00:11:54.240 align:middle line:84%
+show that you can improve your
+ability to categorize something
+
+00:11:54.240 --> 00:11:59.800 align:middle line:84%
+by building an ensemble over
+different generated variations
+
+00:11:59.800 --> 00:12:02.320 align:middle line:84%
+of that input data
+in some manifold.
+
+00:12:02.320 --> 00:12:04.520 align:middle line:84%
+And so you get
+some, essentially,
+
+00:12:04.520 --> 00:12:08.760 align:middle line:84%
+improved accuracy and robustness
+by taking a real input image
+
+00:12:08.760 --> 00:12:12.060 align:middle line:84%
+and then figuring out where that
+corresponds to in latent space,
+
+00:12:12.060 --> 00:12:15.160 align:middle line:84%
+and then moving around nearby in
+the neighborhood of that thing
+
+00:12:15.160 --> 00:12:17.900 align:middle line:84%
+to find some maybe different
+poses, different orientations,
+
+00:12:17.900 --> 00:12:20.640 align:middle line:84%
+slightly different realistic
+manipulations of that input
+
+00:12:20.640 --> 00:12:23.120 align:middle line:84%
+image, and then
+taking an ensemble.
+
+00:12:23.120 --> 00:12:26.840 align:middle line:84%
+So it's almost like you're
+building some robustness
+
+00:12:26.840 --> 00:12:30.880 align:middle line:84%
+into your categorizer based
+on some interesting dimensions
+
+00:12:30.880 --> 00:12:33.680 align:middle line:84%
+of data augmentation,
+almost like test time
+
+00:12:33.680 --> 00:12:38.820 align:middle line:84%
+augmentation within
+the generator itself,
+
+00:12:38.820 --> 00:12:39.700 align:middle line:90%
+which is interesting.
+
+00:12:39.700 --> 00:12:41.200 align:middle line:84%
+So there's some
+nice work that shows
+
+00:12:41.200 --> 00:12:44.420 align:middle line:84%
+that, OK, actually, exploring
+dimensions of latent space
+
+00:12:44.420 --> 00:12:46.940 align:middle line:84%
+can give you something
+that actually
+
+00:12:46.940 --> 00:12:49.605 align:middle line:84%
+is more than the
+original training data.
+
+00:12:49.605 --> 00:12:51.980 align:middle line:84%
+Though I think an interesting
+and important point here is
+
+00:12:51.980 --> 00:12:55.620 align:middle line:84%
+there's so much kind of
+knowledge baked into this.
+
+00:12:55.620 --> 00:12:58.980 align:middle line:84%
+The fact that something
+nearby in that image space
+
+00:12:58.980 --> 00:13:02.560 align:middle line:84%
+should be reasonably--
+maybe the same category,
+
+00:13:02.560 --> 00:13:04.260 align:middle line:84%
+not actually break
+a category boundary
+
+00:13:04.260 --> 00:13:07.380 align:middle line:84%
+in some significant
+way, seems important.
+
+00:13:07.380 --> 00:13:09.780 align:middle line:84%
+And I often try
+to point out, some
+
+00:13:09.780 --> 00:13:12.260 align:middle line:84%
+of these assumptions that are
+built in, some of the ways
+
+00:13:12.260 --> 00:13:13.200 align:middle line:90%
+they might fail.
+
+00:13:13.200 --> 00:13:17.100 align:middle line:84%
+So if you are just trying to
+understand something like cat,
+
+00:13:17.100 --> 00:13:18.475 align:middle line:84%
+this is probably
+very reasonable.
+
+00:13:18.475 --> 00:13:20.142 align:middle line:84%
+If you're trying to
+understand something
+
+00:13:20.142 --> 00:13:22.660 align:middle line:84%
+about maybe a breed of cat,
+these dimensions of variation
+
+00:13:22.660 --> 00:13:24.910 align:middle line:84%
+might start to get more
+confusing in terms of breaking
+
+00:13:24.910 --> 00:13:25.840 align:middle line:90%
+that class boundary.
+
+00:13:25.840 --> 00:13:27.500 align:middle line:84%
+Because to me, as
+someone who spends
+
+00:13:27.500 --> 00:13:29.700 align:middle line:84%
+a lot of time thinking
+about animals,
+
+00:13:29.700 --> 00:13:32.180 align:middle line:84%
+the first image and
+the one in the middle
+
+00:13:32.180 --> 00:13:33.725 align:middle line:84%
+actually look like
+different breeds.
+
+00:13:33.725 --> 00:13:35.100 align:middle line:84%
+That difference
+in the morphology
+
+00:13:35.100 --> 00:13:37.120 align:middle line:84%
+with that extra
+length of the ears?
+
+00:13:37.120 --> 00:13:41.155 align:middle line:84%
+To me, if that's this type of
+cat, the fine grained level
+
+00:13:41.155 --> 00:13:42.780 align:middle line:84%
+of categorization
+you're interested in,
+
+00:13:42.780 --> 00:13:44.360 align:middle line:84%
+this might actually
+be more confusing
+
+00:13:44.360 --> 00:13:46.043 align:middle line:84%
+and potentially break
+that robustness.
+
+00:13:46.043 --> 00:13:47.960 align:middle line:84%
+So there's always some
+fundamental assumptions
+
+00:13:47.960 --> 00:13:49.335 align:middle line:84%
+about what you're
+actually trying
+
+00:13:49.335 --> 00:13:52.640 align:middle line:84%
+to do that are built in to the
+dimensions of variation that
+
+00:13:52.640 --> 00:13:57.120 align:middle line:84%
+are good or bad for
+a given problem.
+
+00:13:57.120 --> 00:13:58.920 align:middle line:84%
+And then there's
+this question of, how
+
+00:13:58.920 --> 00:14:02.283 align:middle line:84%
+do you discover these dimensions
+in a latent space, right?
+
+00:14:02.283 --> 00:14:04.200 align:middle line:84%
+So one interesting thing
+you could think about
+
+00:14:04.200 --> 00:14:07.175 align:middle line:84%
+is, if you're trying to discover
+an interesting dimension
+
+00:14:07.175 --> 00:14:08.800 align:middle line:84%
+of variation in a
+latent space, there's
+
+00:14:08.800 --> 00:14:10.217 align:middle line:84%
+ways you can do
+it experimentally.
+
+00:14:10.217 --> 00:14:12.020 align:middle line:90%
+You take an image of something.
+
+00:14:12.020 --> 00:14:14.920 align:middle line:84%
+You take an image of the same
+thing at night, for example,
+
+00:14:14.920 --> 00:14:17.980 align:middle line:84%
+and then you look at where those
+both mapped to in latent space.
+
+00:14:17.980 --> 00:14:20.400 align:middle line:84%
+And then you decide,
+you calculate
+
+00:14:20.400 --> 00:14:24.020 align:middle line:84%
+the vector of direction that
+goes from one to the other.
+
+00:14:24.020 --> 00:14:26.640 align:middle line:84%
+So now, you've almost
+calculated a vector of direction
+
+00:14:26.640 --> 00:14:30.480 align:middle line:84%
+that should correspond to this
+specific type of counterfactual.
+
+00:14:30.480 --> 00:14:33.320 align:middle line:84%
+And so then you can think
+about explicitly finding things
+
+00:14:33.320 --> 00:14:37.300 align:middle line:84%
+like dimensions of variation
+that zoom out on an image
+
+00:14:37.300 --> 00:14:40.580 align:middle line:84%
+or zoom in on an image or
+brighten it or darken it.
+
+00:14:40.580 --> 00:14:43.500 align:middle line:84%
+So in this case, they
+were able to find
+
+00:14:43.500 --> 00:14:46.420 align:middle line:84%
+corresponding specific
+shifts in the image that
+
+00:14:46.420 --> 00:14:50.140 align:middle line:84%
+can be used to then control
+images and ones that
+
+00:14:50.140 --> 00:14:51.200 align:middle line:90%
+are input agnostic.
+
+00:14:51.200 --> 00:14:54.380 align:middle line:84%
+So now, you can find this
+optimal direction or dimension
+
+00:14:54.380 --> 00:14:58.260 align:middle line:84%
+of variation by just
+kind of cropping images.
+
+00:14:58.260 --> 00:15:00.375 align:middle line:84%
+And then you take an
+ensemble of the directions
+
+00:15:00.375 --> 00:15:02.500 align:middle line:84%
+for each of those, and
+maybe you can find something
+
+00:15:02.500 --> 00:15:03.440 align:middle line:90%
+experimentally.
+
+00:15:03.440 --> 00:15:07.160 align:middle line:84%
+And so here, you have
+these dimensions of zoom.
+
+00:15:07.160 --> 00:15:09.780 align:middle line:84%
+You can find dimensions that
+correspond to shift even
+
+00:15:09.780 --> 00:15:11.700 align:middle line:90%
+across different input sizes.
+
+00:15:11.700 --> 00:15:13.340 align:middle line:84%
+You have dimensions
+that correspond
+
+00:15:13.340 --> 00:15:15.340 align:middle line:90%
+to brightening an image.
+
+00:15:15.340 --> 00:15:18.020 align:middle line:84%
+And then you have things
+like corresponding dimensions
+
+00:15:18.020 --> 00:15:19.440 align:middle line:90%
+of darkening an image.
+
+00:15:19.440 --> 00:15:21.380 align:middle line:84%
+So here, this is
+interesting, because I
+
+00:15:21.380 --> 00:15:23.620 align:middle line:84%
+would say that this is
+really capturing some very
+
+00:15:23.620 --> 00:15:25.280 align:middle line:90%
+specific bias in our data.
+
+00:15:25.280 --> 00:15:29.620 align:middle line:84%
+Because clearly, people are not
+taking pictures of volcanoes
+
+00:15:29.620 --> 00:15:31.820 align:middle line:84%
+in the dark that
+aren't erupting.
+
+00:15:31.820 --> 00:15:34.640 align:middle line:84%
+So when we try to make it dark,
+it thinks it needs to erupt,
+
+00:15:34.640 --> 00:15:35.140 align:middle line:90%
+right?
+
+00:15:35.140 --> 00:15:36.800 align:middle line:84%
+There's this clear
+bias that's just
+
+00:15:36.800 --> 00:15:39.240 align:middle line:90%
+built into the training data.
+
+00:15:39.240 --> 00:15:40.880 align:middle line:84%
+And there are some
+other cool examples
+
+00:15:40.880 --> 00:15:42.940 align:middle line:84%
+of this for other types
+of modalities as well.
+
+00:15:42.940 --> 00:15:46.500 align:middle line:84%
+So there's actually a really
+famous example from word2vec,
+
+00:15:46.500 --> 00:15:50.520 align:middle line:84%
+which is an embedding model for
+words like semantic meanings,
+
+00:15:50.520 --> 00:15:53.720 align:middle line:84%
+where there's a
+direction in the latent
+
+00:15:53.720 --> 00:15:57.440 align:middle line:84%
+space of models that will
+correspond to changing
+
+00:15:57.440 --> 00:15:58.800 align:middle line:90%
+the tense of the word.
+
+00:15:58.800 --> 00:16:00.200 align:middle line:84%
+So you can move
+in that direction
+
+00:16:00.200 --> 00:16:03.240 align:middle line:84%
+and go from swimming
+to swam and go
+
+00:16:03.240 --> 00:16:06.600 align:middle line:84%
+from walking to walk by
+moving the same direction
+
+00:16:06.600 --> 00:16:09.360 align:middle line:90%
+in that latent space for words.
+
+00:16:09.360 --> 00:16:14.520 align:middle line:84%
+So these types of examples
+of disentangled dimensions
+
+00:16:14.520 --> 00:16:16.760 align:middle line:84%
+of variation in latent
+space can be discovered
+
+00:16:16.760 --> 00:16:18.320 align:middle line:84%
+for many modalities
+and have been
+
+00:16:18.320 --> 00:16:19.940 align:middle line:90%
+discovered for many modalities.
+
+00:16:19.940 --> 00:16:23.280 align:middle line:90%
+
+
+00:16:23.280 --> 00:16:27.840 align:middle line:84%
+And then there's kind of
+like these explicit latent
+
+00:16:27.840 --> 00:16:31.580 align:middle line:84%
+space vectors that
+are disentangling
+
+00:16:31.580 --> 00:16:32.720 align:middle line:90%
+these factors of variation.
+
+00:16:32.720 --> 00:16:35.220 align:middle line:84%
+So you have things
+like winter to spring,
+
+00:16:35.220 --> 00:16:38.860 align:middle line:84%
+or turning on the lights,
+going from day to night.
+
+00:16:38.860 --> 00:16:40.940 align:middle line:90%
+The volcano eruption vector.
+
+00:16:40.940 --> 00:16:43.260 align:middle line:84%
+Though, again, you'll
+note that you're
+
+00:16:43.260 --> 00:16:46.660 align:middle line:84%
+more likely to get a
+more aggressive looking
+
+00:16:46.660 --> 00:16:51.060 align:middle line:84%
+eruptions at nighttime
+than during the day.
+
+00:16:51.060 --> 00:16:53.580 align:middle line:84%
+So there's been
+a lot of research
+
+00:16:53.580 --> 00:16:56.980 align:middle line:84%
+into how to efficiently discover
+these dimensions of variation
+
+00:16:56.980 --> 00:16:59.300 align:middle line:84%
+within a latent space, these
+disentangled dimensions
+
+00:16:59.300 --> 00:17:02.020 align:middle line:84%
+of variation, so let's look
+at that in a little bit more
+
+00:17:02.020 --> 00:17:03.620 align:middle line:90%
+technical detail.
+
+00:17:03.620 --> 00:17:07.700 align:middle line:84%
+So you can take a GAN, like a
+generative adversarial network,
+
+00:17:07.700 --> 00:17:11.859 align:middle line:84%
+and you can walk in a straight
+line in a latent space
+
+00:17:11.859 --> 00:17:15.260 align:middle line:84%
+and visualize what it looks like
+to walk in that straight line.
+
+00:17:15.260 --> 00:17:17.960 align:middle line:84%
+And it kind of works, but it
+can be really cherry picking.
+
+00:17:17.960 --> 00:17:21.099 align:middle line:84%
+So some of those
+directions correspond
+
+00:17:21.099 --> 00:17:23.140 align:middle line:84%
+to stuff that just
+looks like trash
+
+00:17:23.140 --> 00:17:25.540 align:middle line:84%
+or is just not easily
+disentangled into something
+
+00:17:25.540 --> 00:17:27.220 align:middle line:90%
+that we can interpret.
+
+00:17:27.220 --> 00:17:29.840 align:middle line:84%
+And then there's some of
+fancier versions of a GAN,
+
+00:17:29.840 --> 00:17:32.840 align:middle line:84%
+like StyleGAN, where they
+actually explicitly noticed
+
+00:17:32.840 --> 00:17:37.680 align:middle line:84%
+that any layer of the model,
+any of those intermediate
+
+00:17:37.680 --> 00:17:41.300 align:middle line:84%
+representations, also represents
+a latent space for the model.
+
+00:17:41.300 --> 00:17:45.080 align:middle line:84%
+And so they determined
+that there's actually
+
+00:17:45.080 --> 00:17:49.020 align:middle line:84%
+earlier layers in the
+model that are better,
+
+00:17:49.020 --> 00:17:52.480 align:middle line:84%
+quote, unquote, latent
+representations than
+
+00:17:52.480 --> 00:17:55.920 align:middle line:84%
+the z representation, that
+initial input representation.
+
+00:17:55.920 --> 00:18:00.060 align:middle line:84%
+And so then we'll try and
+talk about why that might be,
+
+00:18:00.060 --> 00:18:02.720 align:middle line:84%
+why it might be better to
+actually think about the latent
+
+00:18:02.720 --> 00:18:05.320 align:middle line:84%
+space from somewhere
+intermediate in the model
+
+00:18:05.320 --> 00:18:10.160 align:middle line:84%
+versus explicitly with
+that input latent vector.
+
+00:18:10.160 --> 00:18:16.040 align:middle line:84%
+So if we have some
+natural image manifold, X,
+
+00:18:16.040 --> 00:18:20.920 align:middle line:84%
+so some nonlinear
+data space, and now,
+
+00:18:20.920 --> 00:18:25.320 align:middle line:84%
+we have some starting point, so
+this is the corresponding point
+
+00:18:25.320 --> 00:18:28.140 align:middle line:84%
+in that data natural image
+manifold corresponding
+
+00:18:28.140 --> 00:18:29.900 align:middle line:90%
+to this bird, this blue bird.
+
+00:18:29.900 --> 00:18:32.580 align:middle line:84%
+Maybe you have
+another point here.
+
+00:18:32.580 --> 00:18:34.740 align:middle line:84%
+This is corresponding
+to this fly.
+
+00:18:34.740 --> 00:18:37.460 align:middle line:84%
+So if you think about linear
+interpolation between these two
+
+00:18:37.460 --> 00:18:43.660 align:middle line:84%
+points, arguably, you're moving
+off the manifold of real images.
+
+00:18:43.660 --> 00:18:48.740 align:middle line:84%
+There's stuff in one end
+and in the other that
+
+00:18:48.740 --> 00:18:52.860 align:middle line:84%
+are more realistic looking, but
+this direct linear interpolation
+
+00:18:52.860 --> 00:18:54.500 align:middle line:84%
+in image space just
+gives you stuff
+
+00:18:54.500 --> 00:18:58.060 align:middle line:84%
+in the middle that's basically
+these obvious kind of just
+
+00:18:58.060 --> 00:19:00.020 align:middle line:90%
+additive images.
+
+00:19:00.020 --> 00:19:03.740 align:middle line:84%
+And it doesn't look anything
+like any realistic natural world
+
+00:19:03.740 --> 00:19:04.280 align:middle line:90%
+image would.
+
+00:19:04.280 --> 00:19:05.780 align:middle line:84%
+It just doesn't
+match the statistics
+
+00:19:05.780 --> 00:19:07.420 align:middle line:90%
+of real natural images.
+
+00:19:07.420 --> 00:19:13.100 align:middle line:84%
+So instead, if we have some
+sort of latent space that--
+
+00:19:13.100 --> 00:19:15.600 align:middle line:84%
+now, we've learned this data
+plus plus representation.
+
+00:19:15.600 --> 00:19:18.840 align:middle line:84%
+So now, we have a latent
+space that's well-behaved,
+
+00:19:18.840 --> 00:19:22.900 align:middle line:84%
+and we can map from that
+directly to that natural image
+
+00:19:22.900 --> 00:19:24.340 align:middle line:90%
+manifold.
+
+00:19:24.340 --> 00:19:27.040 align:middle line:84%
+Then, you can imagine that
+interpolating linearly
+
+00:19:27.040 --> 00:19:29.920 align:middle line:84%
+in the latent space would
+correspond to a nonlinear
+
+00:19:29.920 --> 00:19:32.060 align:middle line:84%
+interpolation in that
+data manifold space,
+
+00:19:32.060 --> 00:19:34.320 align:middle line:84%
+but it would ensure
+that you're mapping
+
+00:19:34.320 --> 00:19:37.340 align:middle line:84%
+within the manifold of real
+natural images the whole way.
+
+00:19:37.340 --> 00:19:40.400 align:middle line:84%
+Because by definition,
+we've constructed something
+
+00:19:40.400 --> 00:19:42.200 align:middle line:84%
+where any point in
+that latent space
+
+00:19:42.200 --> 00:19:45.680 align:middle line:84%
+will map to the
+natural image manifold.
+
+00:19:45.680 --> 00:19:49.200 align:middle line:84%
+So now, if you do that same
+interpolation-- and this is
+
+00:19:49.200 --> 00:19:51.840 align:middle line:84%
+from a paper called
+BigGAN back in 2018--
+
+00:19:51.840 --> 00:19:55.800 align:middle line:84%
+you do get stuff that at
+least looks a little bit more
+
+00:19:55.800 --> 00:19:57.300 align:middle line:90%
+like natural images.
+
+00:19:57.300 --> 00:19:59.300 align:middle line:84%
+But they might not
+really map to reality.
+
+00:19:59.300 --> 00:20:02.780 align:middle line:84%
+You get some really weird
+things like this half bird,
+
+00:20:02.780 --> 00:20:04.840 align:middle line:84%
+half fly thing where,
+basically, the model
+
+00:20:04.840 --> 00:20:06.080 align:middle line:90%
+is just doing its best.
+
+00:20:06.080 --> 00:20:08.080 align:middle line:84%
+It's doing its best
+to find some way
+
+00:20:08.080 --> 00:20:10.480 align:middle line:84%
+to reasonably interpolate
+between these two things
+
+00:20:10.480 --> 00:20:13.280 align:middle line:84%
+and stay within the
+constraints of that trained
+
+00:20:13.280 --> 00:20:17.160 align:middle line:90%
+natural image manifold mapping.
+
+00:20:17.160 --> 00:20:20.255 align:middle line:84%
+But that z space,
+so this z space
+
+00:20:20.255 --> 00:20:21.880 align:middle line:84%
+here where we're
+mapping from one point
+
+00:20:21.880 --> 00:20:25.940 align:middle line:84%
+to another in a
+linear way, might not
+
+00:20:25.940 --> 00:20:30.560 align:middle line:84%
+be the best way to organize
+the data to interpolate along.
+
+00:20:30.560 --> 00:20:33.140 align:middle line:84%
+And so let's look at
+why that might be.
+
+00:20:33.140 --> 00:20:36.640 align:middle line:84%
+So it goes back to
+the lecture from VAEs.
+
+00:20:36.640 --> 00:20:39.460 align:middle line:84%
+If you guys remember, you
+have this data distribution
+
+00:20:39.460 --> 00:20:41.275 align:middle line:84%
+that maps to a
+latent distribution,
+
+00:20:41.275 --> 00:20:42.900 align:middle line:84%
+and you have a latent
+distribution that
+
+00:20:42.900 --> 00:20:44.780 align:middle line:90%
+maps to a data distribution.
+
+00:20:44.780 --> 00:20:47.500 align:middle line:84%
+And so at the bottom, we're
+coloring the correspondence
+
+00:20:47.500 --> 00:20:49.140 align:middle line:84%
+between those two
+spaces, essentially,
+
+00:20:49.140 --> 00:20:51.980 align:middle line:84%
+like if you're going to map
+these two things back and forth.
+
+00:20:51.980 --> 00:20:57.540 align:middle line:84%
+So here, if I say the same color
+on the natural image manifold
+
+00:20:57.540 --> 00:21:00.140 align:middle line:84%
+of green, for example, would
+match the same color green
+
+00:21:00.140 --> 00:21:01.860 align:middle line:90%
+in the latent space.
+
+00:21:01.860 --> 00:21:07.580 align:middle line:84%
+So now, let's visualize what
+happens as this gets trained.
+
+00:21:07.580 --> 00:21:10.860 align:middle line:84%
+So here, if we're watching
+this thing get trained,
+
+00:21:10.860 --> 00:21:16.180 align:middle line:84%
+you can see how it's going
+from the natural image manifold
+
+00:21:16.180 --> 00:21:17.120 align:middle line:90%
+to that latent space.
+
+00:21:17.120 --> 00:21:19.780 align:middle line:84%
+It's almost like you've
+taken something and tried
+
+00:21:19.780 --> 00:21:22.040 align:middle line:90%
+to crumple it into a ball.
+
+00:21:22.040 --> 00:21:24.480 align:middle line:84%
+And so even though
+we've said explicitly
+
+00:21:24.480 --> 00:21:26.600 align:middle line:84%
+that, OK, everything
+in that latent space
+
+00:21:26.600 --> 00:21:29.480 align:middle line:84%
+should correspond to something
+on the natural image manifold,
+
+00:21:29.480 --> 00:21:32.400 align:middle line:84%
+actually, there's
+this weird stuff here.
+
+00:21:32.400 --> 00:21:37.898 align:middle line:84%
+There's danger zones where
+essentially, here, it's
+
+00:21:37.898 --> 00:21:39.940 align:middle line:84%
+going to be closer to the
+natural image manifold.
+
+00:21:39.940 --> 00:21:41.920 align:middle line:84%
+But if you're going
+from here to here,
+
+00:21:41.920 --> 00:21:46.440 align:middle line:84%
+there's going to maybe be seams
+in that linear interpolation
+
+00:21:46.440 --> 00:21:52.040 align:middle line:84%
+that will correspond to
+pretty jarring shifts
+
+00:21:52.040 --> 00:21:55.000 align:middle line:84%
+where things that are
+nearby in latent space
+
+00:21:55.000 --> 00:21:57.640 align:middle line:84%
+could potentially be quite far
+away from each other in data
+
+00:21:57.640 --> 00:21:59.360 align:middle line:90%
+space.
+
+00:21:59.360 --> 00:22:01.940 align:middle line:84%
+And so essentially,
+that z representation,
+
+00:22:01.940 --> 00:22:05.060 align:middle line:84%
+if you're doing linear
+interpolation across that seam,
+
+00:22:05.060 --> 00:22:06.540 align:middle line:90%
+it could be unnatural.
+
+00:22:06.540 --> 00:22:10.000 align:middle line:84%
+And that might be
+one of the ways
+
+00:22:10.000 --> 00:22:12.560 align:middle line:84%
+to motivate the
+discovery that they
+
+00:22:12.560 --> 00:22:15.200 align:middle line:84%
+found in the StyleGAN
+paper, which is essentially
+
+00:22:15.200 --> 00:22:18.600 align:middle line:84%
+that using some intermediate
+representation somewhere
+
+00:22:18.600 --> 00:22:22.180 align:middle line:84%
+in between that's not quite
+fully convex, but maybe
+
+00:22:22.180 --> 00:22:25.980 align:middle line:84%
+like a little bit
+less distorted--
+
+00:22:25.980 --> 00:22:27.860 align:middle line:84%
+so some kind of
+intermediate thing
+
+00:22:27.860 --> 00:22:32.340 align:middle line:84%
+where you're possibly less
+likely to jump across a seam
+
+00:22:32.340 --> 00:22:35.820 align:middle line:90%
+or fall into some danger zone.
+
+00:22:35.820 --> 00:22:37.880 align:middle line:84%
+Basically, just
+somewhere in between
+
+00:22:37.880 --> 00:22:40.220 align:middle line:84%
+might be the right place
+to interpolate and get
+
+00:22:40.220 --> 00:22:43.740 align:middle line:84%
+things that look more
+realistic and behave
+
+00:22:43.740 --> 00:22:46.140 align:middle line:90%
+in a more friendly way.
+
+00:22:46.140 --> 00:22:48.780 align:middle line:84%
+And empirically
+and qualitatively,
+
+00:22:48.780 --> 00:22:51.180 align:middle line:90%
+that's sometimes true.
+
+00:22:51.180 --> 00:22:53.300 align:middle line:84%
+It's our favorite way
+to say things, right?
+
+00:22:53.300 --> 00:22:54.260 align:middle line:90%
+Sometimes.
+
+00:22:54.260 --> 00:22:56.960 align:middle line:84%
+But it does actually
+correspond in some nice ways.
+
+00:22:56.960 --> 00:23:02.200 align:middle line:84%
+So here, this was a work
+where they took that w space,
+
+00:23:02.200 --> 00:23:05.740 align:middle line:84%
+that intermediate space, and
+they demonstrated that they
+
+00:23:05.740 --> 00:23:09.500 align:middle line:84%
+could use it using-- this was
+a work called StyleSpace--
+
+00:23:09.500 --> 00:23:12.350 align:middle line:84%
+to very cleanly
+isolate and disentangle
+
+00:23:12.350 --> 00:23:13.600 align:middle line:90%
+these dimensions of variation.
+
+00:23:13.600 --> 00:23:15.683 align:middle line:84%
+And they got some really
+nice qualitative results.
+
+00:23:15.683 --> 00:23:19.040 align:middle line:84%
+So here, they're
+able to vary things
+
+00:23:19.040 --> 00:23:23.240 align:middle line:84%
+at the level of granularity of
+hood styles or headlight types
+
+00:23:23.240 --> 00:23:26.340 align:middle line:90%
+or body colors or background.
+
+00:23:26.340 --> 00:23:29.120 align:middle line:90%
+
+
+00:23:29.120 --> 00:23:29.620 align:middle line:90%
+Yeah.
+
+00:23:29.620 --> 00:23:32.200 align:middle line:84%
+So it does seem to
+suggest that basically
+
+00:23:32.200 --> 00:23:37.440 align:middle line:84%
+by removing some of those, like
+weird, badly behaved portions
+
+00:23:37.440 --> 00:23:40.400 align:middle line:84%
+of linear interpolation, by
+moving to this more intermediate
+
+00:23:40.400 --> 00:23:42.040 align:middle line:84%
+space, is beneficial
+when you're trying
+
+00:23:42.040 --> 00:23:45.720 align:middle line:84%
+to find these disentangled
+dimensions of variation.
+
+00:23:45.720 --> 00:23:47.040 align:middle line:90%
+Cool.
+
+00:23:47.040 --> 00:23:51.780 align:middle line:84%
+So now, let's talk about how you
+would label this generated data.
+
+00:23:51.780 --> 00:23:55.180 align:middle line:84%
+So you have a label for
+all your real images.
+
+00:23:55.180 --> 00:23:57.120 align:middle line:84%
+Well, maybe you don't,
+but assume you do.
+
+00:23:57.120 --> 00:23:58.960 align:middle line:84%
+Assume that the data
+you started from,
+
+00:23:58.960 --> 00:24:00.877 align:middle line:84%
+that you're training
+this generative model on,
+
+00:24:00.877 --> 00:24:02.040 align:middle line:90%
+you had labeled.
+
+00:24:02.040 --> 00:24:05.800 align:middle line:84%
+And now, you have
+some space in here
+
+00:24:05.800 --> 00:24:08.220 align:middle line:84%
+that corresponds
+to that real data.
+
+00:24:08.220 --> 00:24:10.000 align:middle line:84%
+But then there's a
+lot of other space
+
+00:24:10.000 --> 00:24:14.040 align:middle line:84%
+that corresponds to
+purely generated data.
+
+00:24:14.040 --> 00:24:16.860 align:middle line:84%
+So the argument here is
+that by construction,
+
+00:24:16.860 --> 00:24:20.700 align:middle line:84%
+that things that are close
+together in this manifold,
+
+00:24:20.700 --> 00:24:22.880 align:middle line:90%
+should be semantically related.
+
+00:24:22.880 --> 00:24:26.040 align:middle line:84%
+And so if you don't move
+too far on the manifold,
+
+00:24:26.040 --> 00:24:30.220 align:middle line:84%
+you should argue that the
+category should stay the same,
+
+00:24:30.220 --> 00:24:32.420 align:middle line:84%
+or at least this
+is the assumption.
+
+00:24:32.420 --> 00:24:35.940 align:middle line:84%
+And so then you can rely on
+the normal inductive bias
+
+00:24:35.940 --> 00:24:37.940 align:middle line:84%
+and machine learning that
+assigns similar labels
+
+00:24:37.940 --> 00:24:40.160 align:middle line:84%
+to nearby points, if
+it's reasonably well
+
+00:24:40.160 --> 00:24:41.620 align:middle line:90%
+semantically clustered.
+
+00:24:41.620 --> 00:24:44.140 align:middle line:84%
+So here, if you know,
+for example, these
+
+00:24:44.140 --> 00:24:47.220 align:middle line:84%
+are real data points where
+you know their true label,
+
+00:24:47.220 --> 00:24:49.740 align:middle line:84%
+then you could assume
+that things sampled
+
+00:24:49.740 --> 00:24:52.180 align:middle line:84%
+from those similar data
+points would actually
+
+00:24:52.180 --> 00:24:54.300 align:middle line:90%
+correspond to similar things.
+
+00:24:54.300 --> 00:24:57.800 align:middle line:84%
+And so here, maybe
+in this region,
+
+00:24:57.800 --> 00:25:00.527 align:middle line:84%
+yes, there's dimensions of
+variation that are captured,
+
+00:25:00.527 --> 00:25:02.860 align:middle line:84%
+but they're not changing the
+underlying semantic meaning
+
+00:25:02.860 --> 00:25:06.100 align:middle line:84%
+of the object itself, that
+these small variations are
+
+00:25:06.100 --> 00:25:09.140 align:middle line:84%
+more corresponding to these
+dimensions of variation
+
+00:25:09.140 --> 00:25:14.560 align:middle line:84%
+in the context, in maybe the
+scene, the visualization,
+
+00:25:14.560 --> 00:25:20.240 align:middle line:84%
+but it's not changing the
+category that's being captured.
+
+00:25:20.240 --> 00:25:22.240 align:middle line:84%
+And so this was
+explicitly explored
+
+00:25:22.240 --> 00:25:26.640 align:middle line:84%
+in this paper called
+DatasetGAN where they basically
+
+00:25:26.640 --> 00:25:29.840 align:middle line:84%
+trained a GAN on
+one type of data,
+
+00:25:29.840 --> 00:25:34.760 align:middle line:84%
+and then they wanted to solve a
+new task related to that data,
+
+00:25:34.760 --> 00:25:38.400 align:middle line:84%
+so specifically labeling
+the parts of a car
+
+00:25:38.400 --> 00:25:41.000 align:middle line:90%
+with semantic segmentation.
+
+00:25:41.000 --> 00:25:43.520 align:middle line:84%
+And so then what they
+did is they used StyleGAN
+
+00:25:43.520 --> 00:25:46.120 align:middle line:84%
+to efficiently
+label data in terms
+
+00:25:46.120 --> 00:25:48.200 align:middle line:84%
+of the semantic
+segmentation labels, which
+
+00:25:48.200 --> 00:25:50.200 align:middle line:84%
+can be quite
+expensive, by defining
+
+00:25:50.200 --> 00:25:54.000 align:middle line:84%
+an additional labeling
+arm, which is essentially
+
+00:25:54.000 --> 00:25:56.960 align:middle line:84%
+the output of a StyleGAN
+with just a few examples.
+
+00:25:56.960 --> 00:26:00.400 align:middle line:84%
+And then you can use that model
+to generate a really large data
+
+00:26:00.400 --> 00:26:02.662 align:middle line:84%
+set of images and
+corresponding labels.
+
+00:26:02.662 --> 00:26:04.120 align:middle line:84%
+They are weak
+labels, but there are
+
+00:26:04.120 --> 00:26:08.740 align:middle line:84%
+labels that are explicitly
+based on this well-structured,
+
+00:26:08.740 --> 00:26:11.100 align:middle line:90%
+well-aligned latent space.
+
+00:26:11.100 --> 00:26:13.100 align:middle line:84%
+And then you can train a
+part segmentation model
+
+00:26:13.100 --> 00:26:15.420 align:middle line:84%
+on the synthetic data and
+test it on the real data
+
+00:26:15.420 --> 00:26:17.540 align:middle line:84%
+and show that it's
+actually beneficial.
+
+00:26:17.540 --> 00:26:21.340 align:middle line:84%
+So being a little bit
+more specific about this,
+
+00:26:21.340 --> 00:26:24.940 align:middle line:84%
+essentially, if you're trying
+to train that labeling arm,
+
+00:26:24.940 --> 00:26:27.660 align:middle line:84%
+they do that using the
+latent space and then just
+
+00:26:27.660 --> 00:26:31.820 align:middle line:84%
+a really, really small number
+of manually labeled examples.
+
+00:26:31.820 --> 00:26:33.540 align:middle line:84%
+And this is valuable,
+particularly
+
+00:26:33.540 --> 00:26:36.873 align:middle line:84%
+because semantic segmentation
+labels are really expensive.
+
+00:26:36.873 --> 00:26:38.540 align:middle line:84%
+How many of you have
+ever actually tried
+
+00:26:38.540 --> 00:26:42.100 align:middle line:84%
+to label data for
+semantic segmentation?
+
+00:26:42.100 --> 00:26:42.600 align:middle line:90%
+Yeah.
+
+00:26:42.600 --> 00:26:43.740 align:middle line:90%
+It sucks.
+
+00:26:43.740 --> 00:26:45.780 align:middle line:90%
+It's super slow.
+
+00:26:45.780 --> 00:26:48.380 align:middle line:84%
+Especially the parts
+that are really fine
+
+00:26:48.380 --> 00:26:50.480 align:middle line:84%
+grained, like the
+boundaries of objects,
+
+00:26:50.480 --> 00:26:54.500 align:middle line:84%
+it just takes forever to really
+try to get it very correct.
+
+00:26:54.500 --> 00:26:58.780 align:middle line:84%
+And so being able to efficiently
+benefit from just a few of those
+
+00:26:58.780 --> 00:27:02.500 align:middle line:84%
+and then be able to generalize
+well is pretty valuable.
+
+00:27:02.500 --> 00:27:06.500 align:middle line:84%
+So essentially, here, you map
+human labels in the pixel space
+
+00:27:06.500 --> 00:27:09.980 align:middle line:84%
+through the network to some of
+these intermediate features that
+
+00:27:09.980 --> 00:27:14.880 align:middle line:84%
+have some sort of maintained
+spatial relationships
+
+00:27:14.880 --> 00:27:16.480 align:middle line:90%
+and arrangement.
+
+00:27:16.480 --> 00:27:20.547 align:middle line:84%
+So basically, you take
+the original data,
+
+00:27:20.547 --> 00:27:22.880 align:middle line:84%
+and then you run it through
+what they're calling a style
+
+00:27:22.880 --> 00:27:24.255 align:middle line:84%
+interpreter, but
+it's essentially
+
+00:27:24.255 --> 00:27:26.000 align:middle line:90%
+something like a StyleGAN.
+
+00:27:26.000 --> 00:27:33.160 align:middle line:84%
+That gets you a representation
+of these specific pixel vectors
+
+00:27:33.160 --> 00:27:37.420 align:middle line:84%
+that you can then train a
+model, a really efficient model,
+
+00:27:37.420 --> 00:27:40.400 align:middle line:84%
+predictive model, to map between
+those features and part labels.
+
+00:27:40.400 --> 00:27:43.080 align:middle line:84%
+So essentially, it's
+like relying on the fact
+
+00:27:43.080 --> 00:27:45.320 align:middle line:84%
+that training this
+generator forced the model
+
+00:27:45.320 --> 00:27:49.720 align:middle line:84%
+to learn a really well-behaved,
+well-aligned representation
+
+00:27:49.720 --> 00:27:52.680 align:middle line:84%
+space in terms of these
+dimensions of variation
+
+00:27:52.680 --> 00:27:53.743 align:middle line:90%
+and similarity.
+
+00:27:53.743 --> 00:27:56.160 align:middle line:84%
+And then they could show that
+you could really efficiently
+
+00:27:56.160 --> 00:28:00.480 align:middle line:84%
+train these accurate predictive
+models because the features
+
+00:28:00.480 --> 00:28:03.560 align:middle line:84%
+themselves were better organized
+and more semantically meaningful
+
+00:28:03.560 --> 00:28:06.120 align:middle line:84%
+than the pixels that you
+might be starting with.
+
+00:28:06.120 --> 00:28:11.260 align:middle line:84%
+So instead of trying to go
+from images and pixel labels
+
+00:28:11.260 --> 00:28:14.460 align:middle line:84%
+to a trained model that
+generates pixel labels given
+
+00:28:14.460 --> 00:28:17.620 align:middle line:84%
+this input image, you
+basically take the input image,
+
+00:28:17.620 --> 00:28:19.920 align:middle line:84%
+run it through to some
+intermediate feature space,
+
+00:28:19.920 --> 00:28:21.878 align:middle line:84%
+and then you've trained
+this really lightweight
+
+00:28:21.878 --> 00:28:24.220 align:middle line:84%
+predictive model to go
+from those features that
+
+00:28:24.220 --> 00:28:25.980 align:middle line:84%
+are learned by a
+generative model
+
+00:28:25.980 --> 00:28:30.860 align:middle line:84%
+to the correct
+semantic segmentation.
+
+00:28:30.860 --> 00:28:33.020 align:middle line:84%
+And they had some
+pretty nice examples
+
+00:28:33.020 --> 00:28:34.920 align:middle line:84%
+of how they were kind
+of able to do this.
+
+00:28:34.920 --> 00:28:36.920 align:middle line:84%
+And qualitatively
+and quantitatively,
+
+00:28:36.920 --> 00:28:39.340 align:middle line:84%
+they were able to show that
+this worked quite well,
+
+00:28:39.340 --> 00:28:42.740 align:middle line:84%
+and they got this kind
+of nice result, which
+
+00:28:42.740 --> 00:28:48.180 align:middle line:84%
+is that a single labeled GAN
+image was worth about 100
+
+00:28:48.180 --> 00:28:51.900 align:middle line:84%
+labeled regular images, just in
+terms of the training efficiency
+
+00:28:51.900 --> 00:28:56.140 align:middle line:84%
+versus the same
+amount of accuracy.
+
+00:28:56.140 --> 00:29:00.570 align:middle line:84%
+And these types of things are
+increasingly commonly explored,
+
+00:29:00.570 --> 00:29:02.820 align:middle line:84%
+particularly for these types
+of labels that are really
+
+00:29:02.820 --> 00:29:05.300 align:middle line:90%
+expensive to collect.
+
+00:29:05.300 --> 00:29:08.800 align:middle line:84%
+And interestingly,
+this question of,
+
+00:29:08.800 --> 00:29:11.920 align:middle line:84%
+how do you efficiently train
+these types of things based
+
+00:29:11.920 --> 00:29:14.780 align:middle line:84%
+on well-learned representation
+spaces or foundation models,
+
+00:29:14.780 --> 00:29:16.882 align:middle line:84%
+even ones that are not
+necessarily generative?
+
+00:29:16.882 --> 00:29:18.340 align:middle line:84%
+has also been really
+well explored.
+
+00:29:18.340 --> 00:29:19.800 align:middle line:84%
+And so these days,
+if you're trying
+
+00:29:19.800 --> 00:29:23.080 align:middle line:84%
+to do semantic
+segmentation, most people
+
+00:29:23.080 --> 00:29:26.200 align:middle line:84%
+start from something that's
+called SAM, the Segment Anything
+
+00:29:26.200 --> 00:29:28.480 align:middle line:84%
+Model, which is a model
+that relied essentially
+
+00:29:28.480 --> 00:29:32.980 align:middle line:84%
+on building a really
+large data set
+
+00:29:32.980 --> 00:29:35.740 align:middle line:84%
+using some pretty cute
+hacks for self-supervision.
+
+00:29:35.740 --> 00:29:38.960 align:middle line:84%
+You take an object, and you
+use copy paste augmentation
+
+00:29:38.960 --> 00:29:41.700 align:middle line:84%
+to guarantee that you
+have that correct mask now
+
+00:29:41.700 --> 00:29:44.080 align:middle line:84%
+in a bunch of different
+relationships and orientations.
+
+00:29:44.080 --> 00:29:46.600 align:middle line:84%
+You use some similar
+ideas from something
+
+00:29:46.600 --> 00:29:50.720 align:middle line:84%
+like DINOv2 that really captures
+fine grained semantic meaning
+
+00:29:50.720 --> 00:29:52.680 align:middle line:84%
+in those feature
+spaces, and then you're
+
+00:29:52.680 --> 00:29:55.640 align:middle line:84%
+able to learn a really
+generalizable and robust
+
+00:29:55.640 --> 00:29:57.700 align:middle line:84%
+segmentation model
+on top of that.
+
+00:29:57.700 --> 00:30:00.920 align:middle line:90%
+
+
+00:30:00.920 --> 00:30:01.700 align:middle line:90%
+Cool.
+
+00:30:01.700 --> 00:30:05.040 align:middle line:84%
+So then you can
+also think about how
+
+00:30:05.040 --> 00:30:08.460 align:middle line:84%
+these generative models'
+data plus plus approach
+
+00:30:08.460 --> 00:30:12.140 align:middle line:84%
+can start to teach you how
+to explain things or increase
+
+00:30:12.140 --> 00:30:15.180 align:middle line:84%
+the interpretability of
+some of these dimensions.
+
+00:30:15.180 --> 00:30:18.912 align:middle line:84%
+So in standard classification,
+we take an image,
+
+00:30:18.912 --> 00:30:20.620 align:middle line:84%
+we run it through a
+classification model,
+
+00:30:20.620 --> 00:30:22.560 align:middle line:90%
+and it tries to predict cat.
+
+00:30:22.560 --> 00:30:23.460 align:middle line:90%
+It's like, OK.
+
+00:30:23.460 --> 00:30:26.260 align:middle line:90%
+It tries to predict a category.
+
+00:30:26.260 --> 00:30:30.460 align:middle line:84%
+But now, the question
+is, can we say something
+
+00:30:30.460 --> 00:30:34.900 align:middle line:84%
+interesting about why the image
+was classified as a cat using
+
+00:30:34.900 --> 00:30:37.060 align:middle line:84%
+this ability and this
+data plus plus space
+
+00:30:37.060 --> 00:30:39.940 align:middle line:90%
+to explore counterfactuals?
+
+00:30:39.940 --> 00:30:42.147 align:middle line:90%
+So here, you take the cat.
+
+00:30:42.147 --> 00:30:43.980 align:middle line:84%
+You take it from this
+data space and turn it
+
+00:30:43.980 --> 00:30:45.780 align:middle line:84%
+into this quote,
+unquote, data plus plus
+
+00:30:45.780 --> 00:30:50.420 align:middle line:84%
+space where now you have some
+maybe encoder, some generator.
+
+00:30:50.420 --> 00:30:52.540 align:middle line:84%
+So you're mapping
+through, essentially,
+
+00:30:52.540 --> 00:30:56.860 align:middle line:84%
+your G inverse and then through
+your G to get the same data.
+
+00:30:56.860 --> 00:30:59.540 align:middle line:84%
+But now what you
+can do is you can
+
+00:30:59.540 --> 00:31:06.660 align:middle line:84%
+look from this predicted class
+using-- from the generator,
+
+00:31:06.660 --> 00:31:09.280 align:middle line:84%
+looking at the classes
+that are predicted,
+
+00:31:09.280 --> 00:31:15.320 align:middle line:84%
+you can now explicitly try to
+perturb in the latent space
+
+00:31:15.320 --> 00:31:18.920 align:middle line:84%
+to understand how that would
+cause your prediction to change.
+
+00:31:18.920 --> 00:31:22.600 align:middle line:84%
+So this gives you some ranking
+of the changes in the latent
+
+00:31:22.600 --> 00:31:24.840 align:middle line:84%
+space and manipulations
+of these latent variables
+
+00:31:24.840 --> 00:31:28.320 align:middle line:84%
+that maximally lead to the
+idea of changing a concept.
+
+00:31:28.320 --> 00:31:32.680 align:middle line:84%
+So it helps you understand what
+maybe features of this image
+
+00:31:32.680 --> 00:31:37.160 align:middle line:84%
+are most identifiable as
+the category of interest.
+
+00:31:37.160 --> 00:31:40.720 align:middle line:84%
+And so here, this StylEx, it's
+like almost like StyleSpace
+
+00:31:40.720 --> 00:31:42.160 align:middle line:90%
+explanation approach.
+
+00:31:42.160 --> 00:31:46.000 align:middle line:84%
+It tries to find the topK
+StyleSpace directions, so
+
+00:31:46.000 --> 00:31:51.160 align:middle line:84%
+these latent space directions of
+variation, that will most affect
+
+00:31:51.160 --> 00:31:53.600 align:middle line:90%
+which class the model predicts.
+
+00:31:53.600 --> 00:31:57.580 align:middle line:84%
+And so here, there's some
+interesting stuff, right?
+
+00:31:57.580 --> 00:32:02.260 align:middle line:84%
+You can look at what happens if
+you open the mouth of the thing,
+
+00:32:02.260 --> 00:32:04.980 align:middle line:84%
+and it turns out that that
+is a really strong dimension
+
+00:32:04.980 --> 00:32:08.040 align:middle line:84%
+of variation for moving the
+prediction from cat to dog,
+
+00:32:08.040 --> 00:32:12.980 align:middle line:84%
+probably because dogs tend to
+pant a lot more than cats do.
+
+00:32:12.980 --> 00:32:16.100 align:middle line:84%
+So it's a very
+cute interpolation.
+
+00:32:16.100 --> 00:32:18.700 align:middle line:90%
+
+
+00:32:18.700 --> 00:32:23.940 align:middle line:84%
+You can also look at
+changing something
+
+00:32:23.940 --> 00:32:26.800 align:middle line:84%
+about the size of the
+pupils relative to the eyes,
+
+00:32:26.800 --> 00:32:28.860 align:middle line:84%
+and that also shifts
+the probability
+
+00:32:28.860 --> 00:32:30.740 align:middle line:84%
+that you have
+something like a cat.
+
+00:32:30.740 --> 00:32:34.840 align:middle line:84%
+Or you can think about changing
+how pointy the ears are,
+
+00:32:34.840 --> 00:32:37.340 align:middle line:84%
+and that also
+tends to correspond
+
+00:32:37.340 --> 00:32:39.140 align:middle line:84%
+from an explainability
+standpoint
+
+00:32:39.140 --> 00:32:42.120 align:middle line:84%
+to why the model thinks it's
+a cat versus something else.
+
+00:32:42.120 --> 00:32:46.380 align:middle line:84%
+And so this kind of gives
+us this sense of-- it's
+
+00:32:46.380 --> 00:32:50.380 align:middle line:84%
+just another mechanism to
+try to probe the underlying
+
+00:32:50.380 --> 00:32:52.680 align:middle line:84%
+things that the model has
+learned or has understood.
+
+00:32:52.680 --> 00:32:55.440 align:middle line:84%
+And you can imagine that
+this does tell you, again,
+
+00:32:55.440 --> 00:32:58.420 align:middle line:84%
+something about the underlying
+bias in our training data,
+
+00:32:58.420 --> 00:33:01.080 align:middle line:84%
+because there are many
+cats that have ears that
+
+00:33:01.080 --> 00:33:03.800 align:middle line:90%
+are kind of shorter like that.
+
+00:33:03.800 --> 00:33:06.820 align:middle line:84%
+British shorthairs have
+short ears just like that.
+
+00:33:06.820 --> 00:33:10.040 align:middle line:84%
+But more often
+than not, something
+
+00:33:10.040 --> 00:33:11.670 align:middle line:84%
+that has long,
+pointy ears is a cat,
+
+00:33:11.670 --> 00:33:13.920 align:middle line:84%
+and maybe something with a
+shorter or folded over ears
+
+00:33:13.920 --> 00:33:15.320 align:middle line:90%
+might be a dog.
+
+00:33:15.320 --> 00:33:17.540 align:middle line:84%
+So it's capturing some
+dimensions of bias,
+
+00:33:17.540 --> 00:33:20.933 align:middle line:90%
+I think, in the data as well.
+
+00:33:20.933 --> 00:33:22.600 align:middle line:84%
+And so you can think
+about this in terms
+
+00:33:22.600 --> 00:33:27.680 align:middle line:84%
+of how we generate maybe
+class specific explanations.
+
+00:33:27.680 --> 00:33:32.480 align:middle line:84%
+So here, if you have something
+like a perceived age classifier,
+
+00:33:32.480 --> 00:33:36.920 align:middle line:84%
+then you can start really
+probing these weird dimensions
+
+00:33:36.920 --> 00:33:42.380 align:middle line:84%
+of bias and see how that affects
+the perceived age of a model.
+
+00:33:42.380 --> 00:33:47.870 align:middle line:84%
+So now, the model is
+predicting an age.
+
+00:33:47.870 --> 00:33:51.040 align:middle line:84%
+And so one of the
+things that's quite odd
+
+00:33:51.040 --> 00:33:57.480 align:middle line:84%
+here is you'll see specifically
+that thicker eyebrows are
+
+00:33:57.480 --> 00:34:01.580 align:middle line:84%
+corresponding responding
+to more youthful age.
+
+00:34:01.580 --> 00:34:05.020 align:middle line:84%
+Lighter skin is corresponding to
+more youthful age, though also
+
+00:34:05.020 --> 00:34:09.060 align:middle line:84%
+you'll note that it's lighter,
+but also sometimes less
+
+00:34:09.060 --> 00:34:12.120 align:middle line:84%
+textured, which is one
+of these dimensions.
+
+00:34:12.120 --> 00:34:14.100 align:middle line:84%
+It's not a super, super
+disentangled dimension
+
+00:34:14.100 --> 00:34:15.179 align:middle line:90%
+of variation.
+
+00:34:15.179 --> 00:34:20.020 align:middle line:84%
+Or something like adding
+glasses or very obviously going
+
+00:34:20.020 --> 00:34:22.380 align:middle line:90%
+to gray hair.
+
+00:34:22.380 --> 00:34:24.370 align:middle line:84%
+So these were all
+things that were learned
+
+00:34:24.370 --> 00:34:26.620 align:middle line:84%
+in terms of finding these
+dimensions of variation that
+
+00:34:26.620 --> 00:34:29.820 align:middle line:84%
+corresponded to specific
+types of prediction.
+
+00:34:29.820 --> 00:34:31.820 align:middle line:90%
+And it maybe makes sense.
+
+00:34:31.820 --> 00:34:34.760 align:middle line:84%
+Older people might be, in
+terms of your data bias,
+
+00:34:34.760 --> 00:34:37.820 align:middle line:90%
+more likely to have white hair.
+
+00:34:37.820 --> 00:34:41.139 align:middle line:84%
+That's something that's
+actually pretty ubiquitous.
+
+00:34:41.139 --> 00:34:43.790 align:middle line:84%
+But you could also
+imagine that some
+
+00:34:43.790 --> 00:34:45.540 align:middle line:84%
+of these dimensions
+of variation would not
+
+00:34:45.540 --> 00:34:48.940 align:middle line:84%
+be something you would want
+a model to necessarily learn.
+
+00:34:48.940 --> 00:34:50.860 align:middle line:84%
+These might capture
+dimensions of bias
+
+00:34:50.860 --> 00:34:53.300 align:middle line:84%
+that may be related to
+the fairness of the equity
+
+00:34:53.300 --> 00:34:55.739 align:middle line:90%
+of a model that we deploy.
+
+00:34:55.739 --> 00:34:58.260 align:middle line:84%
+So then what do you actually
+do with what you learn?
+
+00:34:58.260 --> 00:35:01.400 align:middle line:84%
+Well, one way we
+could look at this
+
+00:35:01.400 --> 00:35:03.840 align:middle line:84%
+is like, well,
+instead of looking
+
+00:35:03.840 --> 00:35:05.720 align:middle line:84%
+at things like these
+dimensions of variation
+
+00:35:05.720 --> 00:35:08.240 align:middle line:84%
+from internet images,
+can we take it
+
+00:35:08.240 --> 00:35:10.920 align:middle line:84%
+to scientific data
+or medical data?
+
+00:35:10.920 --> 00:35:15.720 align:middle line:84%
+So here, this is using that same
+type of explainability mechanism
+
+00:35:15.720 --> 00:35:19.640 align:middle line:84%
+from a generative model
+to try to understand
+
+00:35:19.640 --> 00:35:23.880 align:middle line:84%
+how to categorize different
+retinal fundus images.
+
+00:35:23.880 --> 00:35:27.560 align:middle line:84%
+And here, we're showing the
+top four examples of things
+
+00:35:27.560 --> 00:35:29.880 align:middle line:84%
+that real doctors
+are looking for
+
+00:35:29.880 --> 00:35:34.240 align:middle line:84%
+and then how you might actually
+change that image maximally
+
+00:35:34.240 --> 00:35:36.640 align:middle line:84%
+to correspond to
+something predictive
+
+00:35:36.640 --> 00:35:39.760 align:middle line:84%
+of a specific
+disease, for example.
+
+00:35:39.760 --> 00:35:41.560 align:middle line:84%
+And this is quite
+interesting because it
+
+00:35:41.560 --> 00:35:43.620 align:middle line:84%
+does actually-- if you
+show these to a doctor,
+
+00:35:43.620 --> 00:35:45.972 align:middle line:84%
+it does correspond with
+the types of even very
+
+00:35:45.972 --> 00:35:47.680 align:middle line:84%
+fine grained features
+that a doctor might
+
+00:35:47.680 --> 00:35:50.520 align:middle line:84%
+use to actually categorize
+a specific type of disease.
+
+00:35:50.520 --> 00:35:53.260 align:middle line:84%
+So from that sense, from an
+explainability standpoint,
+
+00:35:53.260 --> 00:35:55.060 align:middle line:84%
+it's almost a way to
+build trust in a model
+
+00:35:55.060 --> 00:35:56.760 align:middle line:84%
+because an expert
+would say, OK, yeah.
+
+00:35:56.760 --> 00:35:57.680 align:middle line:90%
+No, I do agree.
+
+00:35:57.680 --> 00:36:01.420 align:middle line:84%
+I do agree that is a reasonable
+dimension of variation
+
+00:36:01.420 --> 00:36:05.660 align:middle line:84%
+that I also would correspond
+to a specific type of disease.
+
+00:36:05.660 --> 00:36:08.420 align:middle line:84%
+It's almost a reassurance that
+the model isn't picking up
+
+00:36:08.420 --> 00:36:11.220 align:middle line:84%
+too many odd other
+correlative factors that
+
+00:36:11.220 --> 00:36:15.220 align:middle line:84%
+might be things that we don't
+want to model to correspond to.
+
+00:36:15.220 --> 00:36:17.220 align:middle line:84%
+But of course, one of the
+really big limitations
+
+00:36:17.220 --> 00:36:20.180 align:middle line:84%
+of all of these
+approaches is that you are
+
+00:36:20.180 --> 00:36:22.880 align:middle line:90%
+required to figure out how--
+
+00:36:22.880 --> 00:36:25.660 align:middle line:84%
+you have to discover those
+latent space variations
+
+00:36:25.660 --> 00:36:27.540 align:middle line:84%
+and then manually
+analyze or to find
+
+00:36:27.540 --> 00:36:29.260 align:middle line:90%
+what they might correspond to.
+
+00:36:29.260 --> 00:36:31.520 align:middle line:84%
+And that takes a lot
+of effort, right?
+
+00:36:31.520 --> 00:36:33.180 align:middle line:84%
+So getting to the
+point where they
+
+00:36:33.180 --> 00:36:36.860 align:middle line:84%
+had these examples of these
+specific dimensions of variation
+
+00:36:36.860 --> 00:36:41.420 align:middle line:84%
+that corresponded really
+well to these real diseases,
+
+00:36:41.420 --> 00:36:45.900 align:middle line:84%
+I'm sure it took a lot of
+handcrafting and a lot of time.
+
+00:36:45.900 --> 00:36:49.540 align:middle line:84%
+And so recent work tries
+to do similar types
+
+00:36:49.540 --> 00:36:52.780 align:middle line:84%
+of counterfactual
+reasoning or understanding.
+
+00:36:52.780 --> 00:36:55.360 align:middle line:84%
+But here, I'm
+actually just using
+
+00:36:55.360 --> 00:36:58.120 align:middle line:84%
+text conditioning for
+modern diffusion models,
+
+00:36:58.120 --> 00:37:00.880 align:middle line:84%
+or other types of conditioning
+using diffusion models, that
+
+00:37:00.880 --> 00:37:03.360 align:middle line:84%
+give us really simple and
+interpretable mechanisms
+
+00:37:03.360 --> 00:37:06.600 align:middle line:84%
+for control, though, of course,
+there's not always perfect
+
+00:37:06.600 --> 00:37:08.840 align:middle line:84%
+alignment between
+maybe your text control
+
+00:37:08.840 --> 00:37:12.400 align:middle line:84%
+and what actually gets
+generated by the generator.
+
+00:37:12.400 --> 00:37:14.320 align:middle line:84%
+But it does make
+this ability to test
+
+00:37:14.320 --> 00:37:18.900 align:middle line:84%
+these counterfactual hypotheses,
+in many ways, pretty efficient.
+
+00:37:18.900 --> 00:37:22.000 align:middle line:84%
+So I showed this
+work actually before,
+
+00:37:22.000 --> 00:37:24.680 align:middle line:84%
+but this is work where they
+very specifically looked
+
+00:37:24.680 --> 00:37:28.200 align:middle line:84%
+at using almost like
+human intelligence
+
+00:37:28.200 --> 00:37:30.140 align:middle line:84%
+to generate possible
+counterfactuals,
+
+00:37:30.140 --> 00:37:32.480 align:middle line:84%
+using text conditioning
+on generative images,
+
+00:37:32.480 --> 00:37:36.640 align:middle line:84%
+and then explicitly testing,
+quantitatively, the performance
+
+00:37:36.640 --> 00:37:41.480 align:middle line:84%
+of models given these different
+human-derived counterfactuals.
+
+00:37:41.480 --> 00:37:45.480 align:middle line:84%
+And they showed that it's
+just a really nice way to do,
+
+00:37:45.480 --> 00:37:48.400 align:middle line:84%
+essentially, interfaces
+with your data sets,
+
+00:37:48.400 --> 00:37:52.210 align:middle line:84%
+basically using the generator
+trained on top of data
+
+00:37:52.210 --> 00:37:57.810 align:middle line:84%
+as a direct investigation
+mechanism or interaction
+
+00:37:57.810 --> 00:38:00.170 align:middle line:84%
+mechanism with the
+underlying real data
+
+00:38:00.170 --> 00:38:02.950 align:middle line:84%
+set itself understanding
+the dimensions of bias.
+
+00:38:02.950 --> 00:38:05.530 align:middle line:90%
+
+
+00:38:05.530 --> 00:38:07.490 align:middle line:90%
+Cool.
+
+00:38:07.490 --> 00:38:09.810 align:middle line:84%
+And then I think there's
+also this question of--
+
+00:38:09.810 --> 00:38:11.430 align:middle line:90%
+OK.
+
+00:38:11.430 --> 00:38:14.210 align:middle line:84%
+The data the generated
+data is potentially
+
+00:38:14.210 --> 00:38:18.430 align:middle line:84%
+useful for explainability or
+for our data set exploration.
+
+00:38:18.430 --> 00:38:22.770 align:middle line:84%
+But it is also useful for
+representation learning?
+
+00:38:22.770 --> 00:38:26.547 align:middle line:84%
+Can you learn from generated
+data in the same way
+
+00:38:26.547 --> 00:38:29.130 align:middle line:84%
+that you might be able to learn,
+or maybe even in a better way
+
+00:38:29.130 --> 00:38:31.490 align:middle line:84%
+than you might be able
+to learn, from real data?
+
+00:38:31.490 --> 00:38:34.410 align:middle line:84%
+And this is where it
+gets kind of complicated.
+
+00:38:34.410 --> 00:38:36.930 align:middle line:84%
+So here's a work where they
+basically said, OK, you
+
+00:38:36.930 --> 00:38:40.810 align:middle line:84%
+have some data set
+x, and then you're
+
+00:38:40.810 --> 00:38:44.730 align:middle line:84%
+going to train a generative
+model on top of that data set.
+
+00:38:44.730 --> 00:38:47.675 align:middle line:84%
+And the idea is somehow
+the generative model
+
+00:38:47.675 --> 00:38:49.050 align:middle line:84%
+trained on top of
+the data set is
+
+00:38:49.050 --> 00:38:53.010 align:middle line:84%
+going to capture either the same
+information as the data set,
+
+00:38:53.010 --> 00:38:55.030 align:middle line:84%
+or maybe arguably
+slightly more information
+
+00:38:55.030 --> 00:38:57.430 align:middle line:90%
+than the underlying data set.
+
+00:38:57.430 --> 00:38:59.230 align:middle line:84%
+And then that might
+actually be able to be
+
+00:38:59.230 --> 00:39:02.050 align:middle line:84%
+useful for
+representation learning.
+
+00:39:02.050 --> 00:39:04.230 align:middle line:84%
+So here, kind of similar
+to that other example
+
+00:39:04.230 --> 00:39:06.570 align:middle line:84%
+with the multi-view
+ensembling from GANs,
+
+00:39:06.570 --> 00:39:08.510 align:middle line:84%
+they're explicitly
+looking at your ability
+
+00:39:08.510 --> 00:39:10.670 align:middle line:84%
+to generate maybe
+the same real image
+
+00:39:10.670 --> 00:39:14.590 align:middle line:84%
+from different perspectives
+or from different views,
+
+00:39:14.590 --> 00:39:20.030 align:middle line:84%
+and then use that as the input
+to contrastive learning models.
+
+00:39:20.030 --> 00:39:22.590 align:middle line:84%
+So here, trying to learn
+a representation space
+
+00:39:22.590 --> 00:39:24.750 align:middle line:90%
+where you're saying, all right.
+
+00:39:24.750 --> 00:39:27.628 align:middle line:84%
+Here's two images from
+the same category.
+
+00:39:27.628 --> 00:39:29.170 align:middle line:84%
+Here's one from a
+different category.
+
+00:39:29.170 --> 00:39:32.910 align:middle line:84%
+And then you're training
+that contrastive style loss.
+
+00:39:32.910 --> 00:39:33.590 align:middle line:90%
+Yeah.
+
+00:39:33.590 --> 00:39:35.710 align:middle line:84%
+AUDIENCE: So is this
+trained from scratch,
+
+00:39:35.710 --> 00:39:37.622 align:middle line:84%
+or is this transfer
+learning to some degree?
+
+00:39:37.622 --> 00:39:38.330 align:middle line:90%
+SARA BEERY: Yeah.
+
+00:39:38.330 --> 00:39:41.070 align:middle line:84%
+That's an interesting way--
+it's an interesting question.
+
+00:39:41.070 --> 00:39:45.230 align:middle line:84%
+I mean, arguably, this is a
+mechanism of transfer learning,
+
+00:39:45.230 --> 00:39:46.262 align:middle line:90%
+assuming that--
+
+00:39:46.262 --> 00:39:48.470 align:middle line:84%
+AUDIENCE: Well, I guess to
+get to the original model,
+
+00:39:48.470 --> 00:39:51.130 align:middle line:84%
+was that built on
+some pretrained model
+
+00:39:51.130 --> 00:39:52.795 align:middle line:90%
+for image analysis?
+
+00:39:52.795 --> 00:39:54.170 align:middle line:84%
+SARA BEERY: Which
+original model?
+
+00:39:54.170 --> 00:39:57.030 align:middle line:84%
+We're talking about
+kind of a system here.
+
+00:39:57.030 --> 00:39:58.370 align:middle line:90%
+AUDIENCE: [INAUDIBLE]
+
+00:39:58.370 --> 00:40:00.370 align:middle line:84%
+SARA BEERY: This
+generative model?
+
+00:40:00.370 --> 00:40:04.650 align:middle line:84%
+So let's assume for
+the sake of simplicity
+
+00:40:04.650 --> 00:40:06.690 align:middle line:84%
+that this is trained
+from scratch on that,
+
+00:40:06.690 --> 00:40:09.710 align:middle line:84%
+because otherwise, it gets even
+more complicated to understand.
+
+00:40:09.710 --> 00:40:13.170 align:middle line:84%
+And this actually, I think,
+is one of the difficulties
+
+00:40:13.170 --> 00:40:17.090 align:middle line:84%
+currently when people are trying
+to understand whether we can--
+
+00:40:17.090 --> 00:40:19.970 align:middle line:84%
+there's this kind of
+broader meta argument going
+
+00:40:19.970 --> 00:40:21.930 align:middle line:84%
+on in the community
+of whether it
+
+00:40:21.930 --> 00:40:25.450 align:middle line:84%
+is possible to get
+more information out
+
+00:40:25.450 --> 00:40:30.250 align:middle line:84%
+of a generator trained on data
+than the underlying data itself.
+
+00:40:30.250 --> 00:40:31.910 align:middle line:84%
+From an information
+theory perspective,
+
+00:40:31.910 --> 00:40:34.010 align:middle line:84%
+it's like, how could you
+possibly create something
+
+00:40:34.010 --> 00:40:34.770 align:middle line:90%
+from nothing?
+
+00:40:34.770 --> 00:40:36.890 align:middle line:84%
+If you have the data, and that's
+all the information you have,
+
+00:40:36.890 --> 00:40:39.030 align:middle line:84%
+you couldn't maybe get
+more information out of it.
+
+00:40:39.030 --> 00:40:41.210 align:middle line:84%
+But then there's kind of
+the counterargument, which
+
+00:40:41.210 --> 00:40:43.730 align:middle line:84%
+is actually like our
+architecture design,
+
+00:40:43.730 --> 00:40:47.230 align:middle line:84%
+and the design of
+the training systems
+
+00:40:47.230 --> 00:40:49.750 align:middle line:84%
+builds in knowledge that
+would not necessarily
+
+00:40:49.750 --> 00:40:51.570 align:middle line:90%
+have already been built in.
+
+00:40:51.570 --> 00:40:54.350 align:middle line:84%
+And actually, you could argue
+that the construction of things
+
+00:40:54.350 --> 00:40:56.390 align:middle line:84%
+like convolutional
+neural networks
+
+00:40:56.390 --> 00:40:59.630 align:middle line:84%
+fundamentally are an injection
+of additional knowledge
+
+00:40:59.630 --> 00:41:03.470 align:middle line:84%
+beyond just the underlying
+intermediate data.
+
+00:41:03.470 --> 00:41:06.950 align:middle line:84%
+We're building knowledge into
+the design of our architectures
+
+00:41:06.950 --> 00:41:10.030 align:middle line:84%
+and our loss functions based
+on our understanding of what,
+
+00:41:10.030 --> 00:41:12.790 align:middle line:84%
+for example, structure
+we expect to see.
+
+00:41:12.790 --> 00:41:15.270 align:middle line:84%
+So convolutional neural
+networks basically say,
+
+00:41:15.270 --> 00:41:18.910 align:middle line:84%
+we expect there to be
+local structure in images.
+
+00:41:18.910 --> 00:41:23.870 align:middle line:84%
+And so then the argument
+is, isn't data augmentation
+
+00:41:23.870 --> 00:41:28.350 align:middle line:84%
+a mechanism-- you could argue
+that random flipping is an image
+
+00:41:28.350 --> 00:41:31.310 align:middle line:90%
+generation algorithm, right?
+
+00:41:31.310 --> 00:41:33.510 align:middle line:84%
+I mean, depending
+on how you want
+
+00:41:33.510 --> 00:41:36.250 align:middle line:84%
+to define that,
+semantically, it is, right?
+
+00:41:36.250 --> 00:41:37.590 align:middle line:90%
+You've taken an image.
+
+00:41:37.590 --> 00:41:42.190 align:middle line:84%
+You've used some algorithm to
+generate a new image that you
+
+00:41:42.190 --> 00:41:45.870 align:middle line:84%
+guarantee still has fidelity to
+the class that you care about.
+
+00:41:45.870 --> 00:41:49.810 align:middle line:90%
+
+
+00:41:49.810 --> 00:41:55.930 align:middle line:84%
+And then things like this
+copy paste, cut and paste
+
+00:41:55.930 --> 00:41:57.890 align:middle line:84%
+style data augmentation,
+that's even
+
+00:41:57.890 --> 00:41:59.370 align:middle line:84%
+getting maybe
+closer to something
+
+00:41:59.370 --> 00:42:01.537 align:middle line:84%
+like a learned generative
+model, because now, you're
+
+00:42:01.537 --> 00:42:04.650 align:middle line:84%
+building explicit assumptions
+about taking foreground objects
+
+00:42:04.650 --> 00:42:06.630 align:middle line:84%
+and putting them on
+different backgrounds.
+
+00:42:06.630 --> 00:42:08.570 align:middle line:84%
+This is like a really
+useful mechanism
+
+00:42:08.570 --> 00:42:11.290 align:middle line:84%
+for increasing the robustness
+of machine learning models, just
+
+00:42:11.290 --> 00:42:14.290 align:middle line:84%
+these engineering hacks
+about how we manipulate
+
+00:42:14.290 --> 00:42:15.663 align:middle line:90%
+the data during training.
+
+00:42:15.663 --> 00:42:17.330 align:middle line:84%
+And then maybe the
+argument is like, how
+
+00:42:17.330 --> 00:42:18.970 align:middle line:84%
+is that any different
+from something
+
+00:42:18.970 --> 00:42:21.930 align:middle line:84%
+like learning a generator
+that can interpolate maybe
+
+00:42:21.930 --> 00:42:25.090 align:middle line:84%
+in something closer
+to the image manifold?
+
+00:42:25.090 --> 00:42:27.830 align:middle line:90%
+So it's a bit semantic.
+
+00:42:27.830 --> 00:42:31.250 align:middle line:90%
+
+
+00:42:31.250 --> 00:42:33.270 align:middle line:84%
+Anyway, I have been
+thinking about this a lot.
+
+00:42:33.270 --> 00:42:35.770 align:middle line:84%
+I have a grad student who's
+been looking at whether we can--
+
+00:42:35.770 --> 00:42:37.210 align:middle line:84%
+I really, really
+specifically want
+
+00:42:37.210 --> 00:42:40.850 align:middle line:84%
+to be able to learn, maybe
+using generative models,
+
+00:42:40.850 --> 00:42:43.710 align:middle line:84%
+to do a better job, a more
+robust job, of recognizing
+
+00:42:43.710 --> 00:42:45.430 align:middle line:90%
+rare things.
+
+00:42:45.430 --> 00:42:47.350 align:middle line:84%
+But now, you've
+really gotten yourself
+
+00:42:47.350 --> 00:42:50.090 align:middle line:90%
+in a chicken and egg problem.
+
+00:42:50.090 --> 00:42:53.590 align:middle line:84%
+Because the thing is rare, it's
+hard to train a generator that
+
+00:42:53.590 --> 00:42:55.410 align:middle line:84%
+does a good job
+of generating it,
+
+00:42:55.410 --> 00:42:57.325 align:middle line:84%
+and then the reverse
+is also true.
+
+00:42:57.325 --> 00:42:59.950 align:middle line:84%
+And there have been people that
+have shown that you can improve
+
+00:42:59.950 --> 00:43:02.463 align:middle line:84%
+rare categorization
+using generative models,
+
+00:43:02.463 --> 00:43:04.630 align:middle line:84%
+but they cheat, and they
+train the generative models
+
+00:43:04.630 --> 00:43:07.220 align:middle line:90%
+on a lot of data.
+
+00:43:07.220 --> 00:43:10.070 align:middle line:84%
+So far, we have been
+able to find ways
+
+00:43:10.070 --> 00:43:12.750 align:middle line:84%
+where you can get some gains
+in very specific constrained
+
+00:43:12.750 --> 00:43:15.990 align:middle line:84%
+scenarios, but it's not
+just naive and simple.
+
+00:43:15.990 --> 00:43:18.750 align:middle line:84%
+Anyway, the point
+here is that you
+
+00:43:18.750 --> 00:43:22.110 align:middle line:84%
+can take the classical
+contrastive learning approach
+
+00:43:22.110 --> 00:43:24.750 align:middle line:84%
+where we're using our
+knowledge-based image
+
+00:43:24.750 --> 00:43:28.030 align:middle line:84%
+generation, where we've done
+these specific types of warping
+
+00:43:28.030 --> 00:43:32.670 align:middle line:84%
+or whatever, random cropping,
+flipping, to the initial image
+
+00:43:32.670 --> 00:43:35.510 align:middle line:84%
+color jitter, in a way that
+we know doesn't necessarily
+
+00:43:35.510 --> 00:43:36.810 align:middle line:90%
+break the category boundary.
+
+00:43:36.810 --> 00:43:39.430 align:middle line:84%
+We still want it to
+be the same thing.
+
+00:43:39.430 --> 00:43:42.530 align:middle line:84%
+And here, we're instead going
+to move just a little bit
+
+00:43:42.530 --> 00:43:48.130 align:middle line:84%
+in some latent space to create
+now this mapping in data space
+
+00:43:48.130 --> 00:43:50.850 align:middle line:84%
+through what should be the
+manifold of real images,
+
+00:43:50.850 --> 00:43:53.210 align:middle line:84%
+and then use that as
+your transformation
+
+00:43:53.210 --> 00:43:55.330 align:middle line:84%
+for your contrastive
+learning model.
+
+00:43:55.330 --> 00:43:55.910 align:middle line:90%
+Yeah.
+
+00:43:55.910 --> 00:43:58.618 align:middle line:84%
+AUDIENCE: I had a question about
+this, which kind of relates back
+
+00:43:58.618 --> 00:44:03.570 align:middle line:84%
+to earlier when we talked about
+the idea of small local movement
+
+00:44:03.570 --> 00:44:06.530 align:middle line:84%
+in the latent space not
+crossing a boundary.
+
+00:44:06.530 --> 00:44:12.050 align:middle line:84%
+I mean, intuitively, if you have
+just a 2D latent space and a 10
+
+00:44:12.050 --> 00:44:16.330 align:middle line:84%
+class classification problem,
+you could imagine some very
+
+00:44:16.330 --> 00:44:18.690 align:middle line:84%
+naive pie chart
+that has 10 slices.
+
+00:44:18.690 --> 00:44:21.170 align:middle line:84%
+And there has to
+exist a boundary
+
+00:44:21.170 --> 00:44:23.583 align:middle line:84%
+somewhere between
+category 1 and category 2.
+
+00:44:23.583 --> 00:44:24.250 align:middle line:90%
+SARA BEERY: Yes.
+
+00:44:24.250 --> 00:44:26.333 align:middle line:84%
+AUDIENCE: So is this just
+a probabilistic argument
+
+00:44:26.333 --> 00:44:29.090 align:middle line:84%
+that in a high enough
+dimensional latent space,
+
+00:44:29.090 --> 00:44:33.130 align:middle line:84%
+the odds that you would sample
+a location where the boundary
+
+00:44:33.130 --> 00:44:37.010 align:middle line:84%
+shifts is so unlikely
+that you can get away
+
+00:44:37.010 --> 00:44:40.390 align:middle line:84%
+with this kind of approach
+to training for contrastive
+
+00:44:40.390 --> 00:44:41.430 align:middle line:90%
+learning?
+
+00:44:41.430 --> 00:44:43.690 align:middle line:84%
+SARA BEERY: Or I would
+even go beyond that,
+
+00:44:43.690 --> 00:44:47.630 align:middle line:84%
+and I would even say
+as long as you define
+
+00:44:47.630 --> 00:44:50.510 align:middle line:90%
+some dimension of movement--
+
+00:44:50.510 --> 00:44:52.550 align:middle line:84%
+as long as, most
+of the time, it's
+
+00:44:52.550 --> 00:44:55.270 align:middle line:84%
+not crossing a class boundary--
+if it does cross a class
+
+00:44:55.270 --> 00:44:57.050 align:middle line:84%
+boundary a very small
+amount of the time
+
+00:44:57.050 --> 00:44:59.150 align:middle line:84%
+still, by the way we
+train these models,
+
+00:44:59.150 --> 00:45:01.210 align:middle line:84%
+it's almost like the
+noise will come out.
+
+00:45:01.210 --> 00:45:05.070 align:middle line:84%
+It's almost a mechanism
+for regularization.
+
+00:45:05.070 --> 00:45:08.510 align:middle line:84%
+Of course, there's
+counterarguments to that.
+
+00:45:08.510 --> 00:45:10.870 align:middle line:84%
+It depends on how egregious
+those boundaries are
+
+00:45:10.870 --> 00:45:13.870 align:middle line:84%
+and how frequently
+you're crossing them.
+
+00:45:13.870 --> 00:45:14.370 align:middle line:90%
+Yeah.
+
+00:45:14.370 --> 00:45:17.230 align:middle line:90%
+I would say as long as--
+
+00:45:17.230 --> 00:45:19.910 align:middle line:84%
+if you want to make a
+probabilistic argument,
+
+00:45:19.910 --> 00:45:21.790 align:middle line:84%
+and you want to map
+that to something that's
+
+00:45:21.790 --> 00:45:25.950 align:middle line:84%
+like a physical area argument,
+like the area of the model where
+
+00:45:25.950 --> 00:45:29.470 align:middle line:84%
+moving in a small amount
+corresponds to a reasonably
+
+00:45:29.470 --> 00:45:31.750 align:middle line:84%
+maintaining the
+category boundary
+
+00:45:31.750 --> 00:45:34.190 align:middle line:84%
+relative to the areas where
+you are crossing category
+
+00:45:34.190 --> 00:45:38.030 align:middle line:84%
+boundaries-- as long as
+that ratio is quite large,
+
+00:45:38.030 --> 00:45:40.710 align:middle line:84%
+then I imagine you would still
+learned something useful,
+
+00:45:40.710 --> 00:45:41.950 align:middle line:90%
+even if sometimes it's wrong.
+
+00:45:41.950 --> 00:45:45.370 align:middle line:84%
+It's just like how in the
+standard contrastive learning
+
+00:45:45.370 --> 00:45:47.930 align:middle line:84%
+objectives, we did see
+some improvement when
+
+00:45:47.930 --> 00:45:51.550 align:middle line:84%
+you could explicitly remove
+these false positive,
+
+00:45:51.550 --> 00:45:54.090 align:middle line:84%
+false negative type things
+where, within your batch,
+
+00:45:54.090 --> 00:45:56.490 align:middle line:84%
+you would have maybe
+two images of dogs.
+
+00:45:56.490 --> 00:45:58.870 align:middle line:84%
+And now, they're being treated
+as a different category
+
+00:45:58.870 --> 00:46:00.370 align:middle line:84%
+during your
+representation learning.
+
+00:46:00.370 --> 00:46:02.203 align:middle line:84%
+You're explicitly saying
+those things should
+
+00:46:02.203 --> 00:46:04.610 align:middle line:84%
+be far apart,
+though they actually
+
+00:46:04.610 --> 00:46:08.770 align:middle line:90%
+represent the same category.
+
+00:46:08.770 --> 00:46:10.610 align:middle line:84%
+If you could remove
+all of those,
+
+00:46:10.610 --> 00:46:12.810 align:middle line:90%
+the models did train better.
+
+00:46:12.810 --> 00:46:14.530 align:middle line:84%
+There were these
+nice examples where
+
+00:46:14.530 --> 00:46:16.238 align:middle line:84%
+you could show, if
+you removed these kind
+
+00:46:16.238 --> 00:46:19.910 align:middle line:84%
+of false characterizations by
+using supervision, for example,
+
+00:46:19.910 --> 00:46:21.630 align:middle line:84%
+you got better
+representation learning.
+
+00:46:21.630 --> 00:46:24.130 align:middle line:84%
+But the model's still able to
+learn useful representations
+
+00:46:24.130 --> 00:46:26.970 align:middle line:84%
+even when those
+do exist in there.
+
+00:46:26.970 --> 00:46:29.610 align:middle line:90%
+Yeah.
+
+00:46:29.610 --> 00:46:30.110 align:middle line:90%
+Cool.
+
+00:46:30.110 --> 00:46:30.670 align:middle line:90%
+So yeah.
+
+00:46:30.670 --> 00:46:32.420 align:middle line:84%
+Now, here, it's just
+a different mechanism
+
+00:46:32.420 --> 00:46:34.050 align:middle line:84%
+for constructing
+these positive pairs
+
+00:46:34.050 --> 00:46:36.590 align:middle line:84%
+to train your contrastive
+learning algorithm.
+
+00:46:36.590 --> 00:46:40.950 align:middle line:84%
+And so here, as opposed to
+your standard SimCLR type views
+
+00:46:40.950 --> 00:46:44.310 align:middle line:84%
+where you have two views of
+the same thing where it's maybe
+
+00:46:44.310 --> 00:46:48.150 align:middle line:84%
+cropped from different areas or
+warped in terms of the color,
+
+00:46:48.150 --> 00:46:50.150 align:middle line:90%
+now, you're taking latent views.
+
+00:46:50.150 --> 00:46:53.930 align:middle line:84%
+You're taking some ball
+around the real image.
+
+00:46:53.930 --> 00:46:55.890 align:middle line:84%
+And any dimension, you
+would move in that ball,
+
+00:46:55.890 --> 00:46:58.190 align:middle line:84%
+you could argue, would
+be a different view
+
+00:46:58.190 --> 00:47:00.950 align:middle line:90%
+of the same thing.
+
+00:47:00.950 --> 00:47:05.375 align:middle line:84%
+And then now, just
+how we might say,
+
+00:47:05.375 --> 00:47:06.750 align:middle line:84%
+OK, these are all
+different views
+
+00:47:06.750 --> 00:47:08.167 align:middle line:84%
+of the same thing
+for the purposes
+
+00:47:08.167 --> 00:47:09.510 align:middle line:90%
+of contrastive learning.
+
+00:47:09.510 --> 00:47:11.510 align:middle line:84%
+Here, you can say, these
+are all different views
+
+00:47:11.510 --> 00:47:12.710 align:middle line:90%
+of the same thing.
+
+00:47:12.710 --> 00:47:16.590 align:middle line:84%
+Now, one interesting dimension
+here, just generally,
+
+00:47:16.590 --> 00:47:20.710 align:middle line:84%
+is this question of
+diversity versus fidelity
+
+00:47:20.710 --> 00:47:23.600 align:middle line:84%
+when it comes to the
+usefulness of training signal.
+
+00:47:23.600 --> 00:47:25.850 align:middle line:84%
+This is also something I've
+been thinking about a lot.
+
+00:47:25.850 --> 00:47:29.870 align:middle line:84%
+So it's probably
+more useful to know
+
+00:47:29.870 --> 00:47:32.870 align:middle line:84%
+that two things that are more
+different from each other
+
+00:47:32.870 --> 00:47:36.050 align:middle line:84%
+are, in fact, the same than it
+is to know that two things that
+
+00:47:36.050 --> 00:47:38.970 align:middle line:84%
+are almost identical to each
+other are, in fact, the same.
+
+00:47:38.970 --> 00:47:42.450 align:middle line:84%
+So for example, if you
+look at this middle set
+
+00:47:42.450 --> 00:47:45.570 align:middle line:84%
+here, where these are
+all American robins,
+
+00:47:45.570 --> 00:47:48.410 align:middle line:84%
+the pose of this American
+robin in basically all of these
+
+00:47:48.410 --> 00:47:49.350 align:middle line:90%
+is nearly identical.
+
+00:47:49.350 --> 00:47:52.270 align:middle line:84%
+The construction of the
+image, the orientation,
+
+00:47:52.270 --> 00:47:54.410 align:middle line:84%
+et cetera, of the image
+is almost identical.
+
+00:47:54.410 --> 00:47:56.690 align:middle line:84%
+There's not a lot
+of diversity here.
+
+00:47:56.690 --> 00:47:59.170 align:middle line:84%
+And so actually from a
+learning signal perspective,
+
+00:47:59.170 --> 00:48:02.370 align:middle line:84%
+this might be less
+useful, arguably,
+
+00:48:02.370 --> 00:48:06.150 align:middle line:84%
+than something that also does
+something like random flipping.
+
+00:48:06.150 --> 00:48:08.730 align:middle line:84%
+And so I think
+there is this kind
+
+00:48:08.730 --> 00:48:11.710 align:middle line:84%
+of interesting challenge
+with these generative models,
+
+00:48:11.710 --> 00:48:15.330 align:middle line:84%
+broadly, with GANs, with
+diffusion models, et cetera.
+
+00:48:15.330 --> 00:48:17.930 align:middle line:84%
+Even with some of these
+personalization style
+
+00:48:17.930 --> 00:48:21.290 align:middle line:84%
+models that are trying to do
+a really nice job of capturing
+
+00:48:21.290 --> 00:48:24.770 align:middle line:84%
+something specific,
+often, there's
+
+00:48:24.770 --> 00:48:27.130 align:middle line:84%
+almost like a Pareto
+frontier with these models
+
+00:48:27.130 --> 00:48:30.010 align:middle line:84%
+when it comes to this trade off
+between diversity and fidelity.
+
+00:48:30.010 --> 00:48:32.910 align:middle line:84%
+And so you can't
+to get the model
+
+00:48:32.910 --> 00:48:35.350 align:middle line:84%
+to generate things that
+are really diverse, maybe
+
+00:48:35.350 --> 00:48:39.830 align:middle line:84%
+in terms of their context,
+or their scene structure,
+
+00:48:39.830 --> 00:48:41.810 align:middle line:90%
+without giving up fidelity.
+
+00:48:41.810 --> 00:48:46.990 align:middle line:84%
+You end up in this space where
+you can generate a robin that's
+
+00:48:46.990 --> 00:48:48.650 align:middle line:84%
+positioned differently
+in the scene,
+
+00:48:48.650 --> 00:48:52.030 align:middle line:84%
+maybe flying, different
+pose, and you can try
+
+00:48:52.030 --> 00:48:53.370 align:middle line:90%
+to force the model to do that.
+
+00:48:53.370 --> 00:48:55.350 align:middle line:84%
+And it will, but it
+probably won't actually
+
+00:48:55.350 --> 00:48:58.830 align:middle line:84%
+be very robin-like anymore
+if this is the input
+
+00:48:58.830 --> 00:49:01.990 align:middle line:90%
+image that you're working from.
+
+00:49:01.990 --> 00:49:03.150 align:middle line:90%
+Yeah.
+
+00:49:03.150 --> 00:49:05.270 align:middle line:84%
+AUDIENCE: In the
+latent space, when
+
+00:49:05.270 --> 00:49:08.970 align:middle line:84%
+you're moving around the
+image feature vector,
+
+00:49:08.970 --> 00:49:11.870 align:middle line:84%
+would you say that
+the images around it
+
+00:49:11.870 --> 00:49:14.430 align:middle line:90%
+belong to the same class?
+
+00:49:14.430 --> 00:49:16.230 align:middle line:84%
+How do you know
+how far you can go?
+
+00:49:16.230 --> 00:49:20.110 align:middle line:84%
+And that distance, is it
+the same for all classes?
+
+00:49:20.110 --> 00:49:22.430 align:middle line:84%
+You can imagine
+for classes of one,
+
+00:49:22.430 --> 00:49:25.942 align:middle line:84%
+one class is overrepresented
+compared to another class.
+
+00:49:25.942 --> 00:49:26.650 align:middle line:90%
+SARA BEERY: Yeah.
+
+00:49:26.650 --> 00:49:28.030 align:middle line:84%
+So the question
+is basically, how
+
+00:49:28.030 --> 00:49:31.290 align:middle line:84%
+do you know how far you
+can go in the latent space
+
+00:49:31.290 --> 00:49:33.850 align:middle line:84%
+and have it still map
+to the same category?
+
+00:49:33.850 --> 00:49:36.810 align:middle line:84%
+And does that
+distance correspond--
+
+00:49:36.810 --> 00:49:38.890 align:middle line:84%
+is the optimal
+amount of distance
+
+00:49:38.890 --> 00:49:40.570 align:middle line:84%
+you could go for
+any given category
+
+00:49:40.570 --> 00:49:42.450 align:middle line:90%
+the same across all categories?
+
+00:49:42.450 --> 00:49:46.010 align:middle line:84%
+So I would say experimentally,
+in a lot of these papers,
+
+00:49:46.010 --> 00:49:48.310 align:middle line:84%
+they're using this as a
+hyperparameter, right?
+
+00:49:48.310 --> 00:49:49.810 align:middle line:84%
+They're basically
+saying, all right.
+
+00:49:49.810 --> 00:49:53.410 align:middle line:84%
+We're going to define
+some radius in something
+
+00:49:53.410 --> 00:49:57.890 align:middle line:84%
+like cosine distance,
+and we're going to sample
+
+00:49:57.890 --> 00:49:59.070 align:middle line:90%
+within that radius.
+
+00:49:59.070 --> 00:50:02.382 align:middle line:84%
+And we're going to test for
+different radiuses or radii.
+
+00:50:02.382 --> 00:50:04.090 align:middle line:84%
+And then we're going
+to pick the one that
+
+00:50:04.090 --> 00:50:07.570 align:middle line:90%
+does the best on our test data.
+
+00:50:07.570 --> 00:50:09.718 align:middle line:84%
+That's a bit disappointing,
+because I actually
+
+00:50:09.718 --> 00:50:11.510 align:middle line:84%
+think that's a really
+interesting question.
+
+00:50:11.510 --> 00:50:16.410 align:middle line:84%
+How do you determine how far you
+can go before it crosses a class
+
+00:50:16.410 --> 00:50:17.150 align:middle line:90%
+boundary?
+
+00:50:17.150 --> 00:50:21.050 align:middle line:84%
+And almost by
+definition, you start
+
+00:50:21.050 --> 00:50:22.990 align:middle line:84%
+getting into these
+really messy questions,
+
+00:50:22.990 --> 00:50:25.410 align:middle line:84%
+particularly as these
+models are able to generate
+
+00:50:25.410 --> 00:50:29.610 align:middle line:84%
+things that are realistic
+looking but impossible.
+
+00:50:29.610 --> 00:50:32.510 align:middle line:90%
+
+
+00:50:32.510 --> 00:50:34.710 align:middle line:84%
+Me and Phil actually argue
+about this quite a lot.
+
+00:50:34.710 --> 00:50:37.470 align:middle line:84%
+If you had a
+picture of your mom,
+
+00:50:37.470 --> 00:50:40.050 align:middle line:84%
+but you had another eye in
+the middle of her forehead,
+
+00:50:40.050 --> 00:50:42.670 align:middle line:90%
+is it still your mom?
+
+00:50:42.670 --> 00:50:44.890 align:middle line:90%
+What do you guys think?
+
+00:50:44.890 --> 00:50:46.770 align:middle line:84%
+Is it still your mom
+if she has three eyes?
+
+00:50:46.770 --> 00:50:50.550 align:middle line:90%
+
+
+00:50:50.550 --> 00:50:51.970 align:middle line:90%
+There's not a right answer here.
+
+00:50:51.970 --> 00:50:55.070 align:middle line:84%
+And so if some of the
+dimensions of interpolation
+
+00:50:55.070 --> 00:50:57.693 align:middle line:84%
+you can move into are still
+kind of realistic looking,
+
+00:50:57.693 --> 00:51:00.110 align:middle line:84%
+but actually impossible-- so
+maybe if you think about this
+
+00:51:00.110 --> 00:51:02.130 align:middle line:84%
+from a species
+categorization perspective,
+
+00:51:02.130 --> 00:51:04.010 align:middle line:84%
+you take like this
+American robin,
+
+00:51:04.010 --> 00:51:09.190 align:middle line:84%
+and then you make the
+chest gray instead of red.
+
+00:51:09.190 --> 00:51:11.150 align:middle line:90%
+That's not a real bird.
+
+00:51:11.150 --> 00:51:14.893 align:middle line:84%
+So now, you have things
+that look like birds,
+
+00:51:14.893 --> 00:51:16.310 align:middle line:84%
+but they don't
+actually correspond
+
+00:51:16.310 --> 00:51:19.030 align:middle line:90%
+to any real category of bird.
+
+00:51:19.030 --> 00:51:21.210 align:middle line:84%
+And so then what should
+that be categorized as?
+
+00:51:21.210 --> 00:51:24.190 align:middle line:84%
+And so somehow,
+understanding the boundary
+
+00:51:24.190 --> 00:51:27.850 align:middle line:84%
+of a class, a really important
+component to being able to do
+
+00:51:27.850 --> 00:51:31.850 align:middle line:84%
+that is having representative
+data from all the dimensions
+
+00:51:31.850 --> 00:51:34.330 align:middle line:84%
+of real variation
+for that class so you
+
+00:51:34.330 --> 00:51:36.590 align:middle line:84%
+can define what the
+reasonable class boundary is.
+
+00:51:36.590 --> 00:51:39.250 align:middle line:84%
+That's one of the reasons that
+few shot learning is so hard,
+
+00:51:39.250 --> 00:51:41.930 align:middle line:84%
+because it often
+means we don't have
+
+00:51:41.930 --> 00:51:43.770 align:middle line:84%
+a good, well understood
+representation
+
+00:51:43.770 --> 00:51:46.150 align:middle line:84%
+space of the boundaries
+of the real class.
+
+00:51:46.150 --> 00:51:47.450 align:middle line:90%
+And so we don't know.
+
+00:51:47.450 --> 00:51:50.530 align:middle line:84%
+If you've never seen a picture
+of a bird as a juvenile,
+
+00:51:50.530 --> 00:51:54.790 align:middle line:84%
+we don't know what the real
+class boundary should be.
+
+00:51:54.790 --> 00:51:55.290 align:middle line:90%
+Yeah.
+
+00:51:55.290 --> 00:51:57.623 align:middle line:84%
+AUDIENCE: Isn't that just
+like a fundamental shortcoming
+
+00:51:57.623 --> 00:52:00.650 align:middle line:84%
+of classification as
+a learning objective?
+
+00:52:00.650 --> 00:52:04.810 align:middle line:84%
+CLIP was almost a better
+idea where they're just
+
+00:52:04.810 --> 00:52:08.050 align:middle line:84%
+saying that you should
+learn to embed text
+
+00:52:08.050 --> 00:52:11.970 align:middle line:84%
+descriptions of images close
+to that embedding of the image,
+
+00:52:11.970 --> 00:52:15.490 align:middle line:84%
+and you can capture more
+truth about the world.
+
+00:52:15.490 --> 00:52:17.068 align:middle line:84%
+To your point about
+the robin chest--
+
+00:52:17.068 --> 00:52:18.110 align:middle line:90%
+I mean, this isn't exact.
+
+00:52:18.110 --> 00:52:21.810 align:middle line:84%
+But imagine you have
+an albino robin.
+
+00:52:21.810 --> 00:52:24.330 align:middle line:84%
+That's still a robin, and
+a human can look at it
+
+00:52:24.330 --> 00:52:25.850 align:middle line:84%
+and be like, yeah,
+that's a robin.
+
+00:52:25.850 --> 00:52:29.670 align:middle line:84%
+But from your definition of
+the classification perspective,
+
+00:52:29.670 --> 00:52:30.190 align:middle line:90%
+I doubt--
+
+00:52:30.190 --> 00:52:34.050 align:middle line:84%
+I think you're right that for a
+specific type of classification,
+
+00:52:34.050 --> 00:52:35.550 align:middle line:84%
+whatever you define
+that class to be
+
+00:52:35.550 --> 00:52:39.990 align:middle line:84%
+is the extent to which the
+model can learn [INAUDIBLE].
+
+00:52:39.990 --> 00:52:42.842 align:middle line:84%
+So isn't this just a
+shortcoming of classification?
+
+00:52:42.842 --> 00:52:43.550 align:middle line:90%
+SARA BEERY: Yeah.
+
+00:52:43.550 --> 00:52:46.710 align:middle line:84%
+So the argument is,
+basically, this challenge
+
+00:52:46.710 --> 00:52:49.190 align:middle line:84%
+of being able to understand
+category boundaries
+
+00:52:49.190 --> 00:52:53.430 align:middle line:84%
+is maybe a limitation of the
+underlying philosophical concept
+
+00:52:53.430 --> 00:52:56.590 align:middle line:84%
+of trying to categorize
+things with some sort of list
+
+00:52:56.590 --> 00:52:58.350 align:middle line:90%
+of specific categories.
+
+00:52:58.350 --> 00:53:03.070 align:middle line:84%
+And actually, if you really
+want to get deep into it,
+
+00:53:03.070 --> 00:53:07.590 align:middle line:84%
+there's a lot of literature from
+philosophy about the concept
+
+00:53:07.590 --> 00:53:08.870 align:middle line:90%
+of categorization.
+
+00:53:08.870 --> 00:53:15.050 align:middle line:84%
+And there's kind of these
+explicit differences of opinion
+
+00:53:15.050 --> 00:53:17.510 align:middle line:84%
+when you look at historical
+philosophers around the idea
+
+00:53:17.510 --> 00:53:21.830 align:middle line:84%
+that it's possible to categorize
+something as a list of all
+
+00:53:21.830 --> 00:53:25.075 align:middle line:90%
+its attributes.
+
+00:53:25.075 --> 00:53:25.950 align:middle line:90%
+So you could say, OK.
+
+00:53:25.950 --> 00:53:28.850 align:middle line:84%
+A robin is a bird with a
+black face and a red chest
+
+00:53:28.850 --> 00:53:33.530 align:middle line:84%
+and yellow feet and
+a round structure
+
+00:53:33.530 --> 00:53:35.550 align:middle line:84%
+and a yellow eye
+with a black pupil.
+
+00:53:35.550 --> 00:53:39.690 align:middle line:84%
+And so there's this
+idea that any object can
+
+00:53:39.690 --> 00:53:43.170 align:middle line:84%
+be defined as a list
+of characteristics
+
+00:53:43.170 --> 00:53:45.370 align:middle line:90%
+you're looking for.
+
+00:53:45.370 --> 00:53:47.370 align:middle line:84%
+And then if you have
+the kind of mapping
+
+00:53:47.370 --> 00:53:50.190 align:middle line:84%
+of the set of characteristics
+to the things you care about,
+
+00:53:50.190 --> 00:53:52.410 align:middle line:90%
+then that's all you need.
+
+00:53:52.410 --> 00:53:53.970 align:middle line:84%
+My argument is kind
+of like, that's
+
+00:53:53.970 --> 00:53:56.090 align:middle line:84%
+the CLIP approach, in
+a way, because you're
+
+00:53:56.090 --> 00:53:58.090 align:middle line:84%
+trying to learn something
+about the relationship
+
+00:53:58.090 --> 00:54:01.742 align:middle line:84%
+between textual semantic
+concepts and things in images.
+
+00:54:01.742 --> 00:54:03.450 align:middle line:84%
+And there's been a
+lot of work since CLIP
+
+00:54:03.450 --> 00:54:07.170 align:middle line:84%
+that actually tries to
+really explicitly ground
+
+00:54:07.170 --> 00:54:10.970 align:middle line:84%
+semantic concepts from text
+into the visual components that
+
+00:54:10.970 --> 00:54:12.170 align:middle line:90%
+corresponds to.
+
+00:54:12.170 --> 00:54:17.130 align:middle line:84%
+But I think the argument is
+that, no matter what, if you
+
+00:54:17.130 --> 00:54:22.430 align:middle line:84%
+give me a list of a
+fixed list of attributes,
+
+00:54:22.430 --> 00:54:24.305 align:middle line:84%
+and you try to map
+that to a category,
+
+00:54:24.305 --> 00:54:26.930 align:middle line:84%
+you can basically come up with
+a counterexample that breaks it.
+
+00:54:26.930 --> 00:54:30.115 align:middle line:90%
+
+
+00:54:30.115 --> 00:54:31.542 align:middle line:84%
+And then there's
+the question of,
+
+00:54:31.542 --> 00:54:33.250 align:middle line:84%
+where do you want to
+draw the boundaries?
+
+00:54:33.250 --> 00:54:37.110 align:middle line:84%
+That somehow has to be
+related to some goal.
+
+00:54:37.110 --> 00:54:39.450 align:middle line:84%
+So I'm getting really
+philosophical here.
+
+00:54:39.450 --> 00:54:46.750 align:middle line:84%
+So if I showed you like an
+apple and a bell pepper,
+
+00:54:46.750 --> 00:54:51.350 align:middle line:84%
+and there was a green apple
+and bell pepper and a red apple
+
+00:54:51.350 --> 00:54:55.430 align:middle line:84%
+and bell pepper, there's
+multiple reasonable ways
+
+00:54:55.430 --> 00:54:59.077 align:middle line:90%
+to split the set of groups.
+
+00:54:59.077 --> 00:55:00.910 align:middle line:84%
+So in the end, it always
+just comes down to,
+
+00:55:00.910 --> 00:55:04.190 align:middle line:84%
+what do you really need
+the representation space
+
+00:55:04.190 --> 00:55:05.330 align:middle line:90%
+to do for you?
+
+00:55:05.330 --> 00:55:07.590 align:middle line:84%
+And then what types of
+dimensions of variation
+
+00:55:07.590 --> 00:55:11.550 align:middle line:90%
+do you want to capture there?
+
+00:55:11.550 --> 00:55:16.670 align:middle line:84%
+And then the albino robin
+example is a great example
+
+00:55:16.670 --> 00:55:20.530 align:middle line:84%
+of ways that we are very
+good at generalizing,
+
+00:55:20.530 --> 00:55:24.090 align:middle line:84%
+but I would actually argue that
+models like CLIP still cannot
+
+00:55:24.090 --> 00:55:25.390 align:middle line:90%
+capture effectively.
+
+00:55:25.390 --> 00:55:28.130 align:middle line:90%
+
+
+00:55:28.130 --> 00:55:28.630 align:middle line:90%
+Yeah.
+
+00:55:28.630 --> 00:55:31.270 align:middle line:84%
+And then you could tell me,
+if you were a bird expert,
+
+00:55:31.270 --> 00:55:33.830 align:middle line:84%
+oh, actually, that looks like
+it might be an albino robin,
+
+00:55:33.830 --> 00:55:35.455 align:middle line:84%
+but that's actually
+this other species.
+
+00:55:35.455 --> 00:55:39.270 align:middle line:84%
+And I'd believe you,
+because I don't know.
+
+00:55:39.270 --> 00:55:39.770 align:middle line:90%
+Yeah.
+
+00:55:39.770 --> 00:55:43.075 align:middle line:84%
+So I think this is
+really fascinating.
+
+00:55:43.075 --> 00:55:45.450 align:middle line:84%
+I think it starts getting at
+some really interesting kind
+
+00:55:45.450 --> 00:55:47.370 align:middle line:84%
+of meaty questions
+about, what do we really
+
+00:55:47.370 --> 00:55:50.130 align:middle line:90%
+want from representations?
+
+00:55:50.130 --> 00:55:53.210 align:middle line:84%
+And what does it really mean to
+move through a representation
+
+00:55:53.210 --> 00:55:54.490 align:middle line:90%
+space?
+
+00:55:54.490 --> 00:55:59.490 align:middle line:84%
+But so here, again, kind of
+going back to this idea of,
+
+00:55:59.490 --> 00:56:02.530 align:middle line:84%
+do contrastive learning
+from real data based
+
+00:56:02.530 --> 00:56:04.250 align:middle line:84%
+on some of heuristic
+set of rules
+
+00:56:04.250 --> 00:56:07.290 align:middle line:84%
+that we say don't break the
+class boundary versus if you do
+
+00:56:07.290 --> 00:56:10.610 align:middle line:84%
+it from generative data based
+on some experimental setup
+
+00:56:10.610 --> 00:56:15.250 align:middle line:84%
+of parameters around how far you
+can move in any given direction,
+
+00:56:15.250 --> 00:56:18.470 align:middle line:84%
+that you're able to now, instead
+of going from some data space
+
+00:56:18.470 --> 00:56:22.430 align:middle line:84%
+to a representation space,
+go from some latent space
+
+00:56:22.430 --> 00:56:25.630 align:middle line:84%
+into a data space into
+a representation space.
+
+00:56:25.630 --> 00:56:28.950 align:middle line:84%
+And they were able to
+show that if you're
+
+00:56:28.950 --> 00:56:31.990 align:middle line:84%
+doing linear transfer
+from ImageNet1000,
+
+00:56:31.990 --> 00:56:36.790 align:middle line:84%
+you can get 43.9%
+top-1 accuracy here.
+
+00:56:36.790 --> 00:56:43.190 align:middle line:84%
+But only using real data to
+train these models now mapping
+
+00:56:43.190 --> 00:56:44.698 align:middle line:84%
+through these kind
+of information
+
+00:56:44.698 --> 00:56:46.990 align:middle line:84%
+bottlenecks in a way of these
+different types of latent
+
+00:56:46.990 --> 00:56:48.810 align:middle line:90%
+spaces, you can do pretty well.
+
+00:56:48.810 --> 00:56:52.270 align:middle line:90%
+You can get 35.7% accuracy.
+
+00:56:52.270 --> 00:56:54.550 align:middle line:84%
+But then if you
+add in that ability
+
+00:56:54.550 --> 00:56:57.470 align:middle line:84%
+to move in that latent
+space, the accuracy
+
+00:56:57.470 --> 00:56:59.830 align:middle line:90%
+goes up to about 42.6%.
+
+00:56:59.830 --> 00:57:02.115 align:middle line:84%
+So here, you'll note
+neither of these
+
+00:57:02.115 --> 00:57:04.490 align:middle line:84%
+are as good as just training
+on the real data themselves.
+
+00:57:04.490 --> 00:57:06.270 align:middle line:84%
+So clearly, there's
+some limitations
+
+00:57:06.270 --> 00:57:07.830 align:middle line:90%
+in terms of the mechanism.
+
+00:57:07.830 --> 00:57:10.590 align:middle line:84%
+But the argument
+is that if you were
+
+00:57:10.590 --> 00:57:13.090 align:middle line:84%
+able to build the
+system effectively,
+
+00:57:13.090 --> 00:57:17.010 align:middle line:84%
+the ability to interpolate and
+have these reasonable dimensions
+
+00:57:17.010 --> 00:57:20.210 align:middle line:84%
+of variation within that
+original latent space
+
+00:57:20.210 --> 00:57:22.210 align:middle line:84%
+could potentially
+add a lot of value.
+
+00:57:22.210 --> 00:57:27.210 align:middle line:84%
+This is a pretty significant
+boost in performance.
+
+00:57:27.210 --> 00:57:29.930 align:middle line:84%
+So then the argument is that
+these deep generative views
+
+00:57:29.930 --> 00:57:33.650 align:middle line:84%
+is one dimension of variation,
+just different viewpoints,
+
+00:57:33.650 --> 00:57:37.010 align:middle line:84%
+can improve contrastive learning
+beyond only using standard data
+
+00:57:37.010 --> 00:57:37.950 align:middle line:90%
+augmentation.
+
+00:57:37.950 --> 00:57:40.850 align:middle line:84%
+And if the generative
+model is high quality,
+
+00:57:40.850 --> 00:57:42.450 align:middle line:84%
+you could even
+potentially outperform
+
+00:57:42.450 --> 00:57:44.033 align:middle line:90%
+learning from real data.
+
+00:57:44.033 --> 00:57:45.450 align:middle line:84%
+But that, of course,
+means that we
+
+00:57:45.450 --> 00:57:48.650 align:middle line:84%
+need the generator to
+be high quality, which
+
+00:57:48.650 --> 00:57:52.607 align:middle line:84%
+it's not for many things
+that are uncommon.
+
+00:57:52.607 --> 00:57:54.190 align:middle line:84%
+One of the things
+that is kind of fun,
+
+00:57:54.190 --> 00:57:56.110 align:middle line:84%
+if you try and play
+with these models,
+
+00:57:56.110 --> 00:57:58.970 align:middle line:84%
+is looking at what
+they understand
+
+00:57:58.970 --> 00:58:02.202 align:middle line:84%
+and trying to get them to
+break out of their priors.
+
+00:58:02.202 --> 00:58:03.910 align:middle line:84%
+So there's some classic
+examples of this.
+
+00:58:03.910 --> 00:58:07.990 align:middle line:84%
+If you ask models to generate
+a bunch of pictures of birds,
+
+00:58:07.990 --> 00:58:09.790 align:middle line:84%
+if you ask it to
+generate orioles,
+
+00:58:09.790 --> 00:58:11.790 align:middle line:84%
+it'll give you baseball
+players, right?
+
+00:58:11.790 --> 00:58:14.830 align:middle line:84%
+There's this semantic
+prior that gets
+
+00:58:14.830 --> 00:58:18.533 align:middle line:84%
+broken by the training data
+in really interesting ways.
+
+00:58:18.533 --> 00:58:20.450 align:middle line:84%
+But then there's also
+other interesting stuff.
+
+00:58:20.450 --> 00:58:25.030 align:middle line:84%
+If you ask the model to generate
+a toucan with a short beak,
+
+00:58:25.030 --> 00:58:27.110 align:middle line:84%
+it's really hard
+to get it to do it.
+
+00:58:27.110 --> 00:58:28.013 align:middle line:90%
+It just won't.
+
+00:58:28.013 --> 00:58:28.930 align:middle line:90%
+It's like, no, no, no.
+
+00:58:28.930 --> 00:58:33.310 align:middle line:84%
+Toucan somehow overpowers
+these mechanisms of morphology.
+
+00:58:33.310 --> 00:58:37.470 align:middle line:84%
+And I've also found that they're
+much better at generating
+
+00:58:37.470 --> 00:58:40.790 align:middle line:84%
+dimensions-- they're much better
+at changing texture than shape.
+
+00:58:40.790 --> 00:58:42.350 align:middle line:84%
+So it turns out
+that the models seem
+
+00:58:42.350 --> 00:58:44.630 align:middle line:84%
+to have learned really
+strong shape priors that
+
+00:58:44.630 --> 00:58:48.470 align:middle line:84%
+are hard to break out of
+for any given category,
+
+00:58:48.470 --> 00:58:51.630 align:middle line:84%
+but they've gotten quite
+good at swapping textures
+
+00:58:51.630 --> 00:58:52.370 align:middle line:90%
+for a category.
+
+00:58:52.370 --> 00:58:56.820 align:middle line:84%
+So you can say, oh, make a
+baseball, but make it furry.
+
+00:58:56.820 --> 00:58:57.570 align:middle line:90%
+And it's like, OK.
+
+00:58:57.570 --> 00:58:58.862 align:middle line:90%
+It swaps the texture just fine.
+
+00:58:58.862 --> 00:59:02.330 align:middle line:84%
+But if you say make a baseball,
+but make it star shaped,
+
+00:59:02.330 --> 00:59:03.907 align:middle line:90%
+it gets a little harder.
+
+00:59:03.907 --> 00:59:05.490 align:middle line:84%
+And I think that's
+really interesting.
+
+00:59:05.490 --> 00:59:06.865 align:middle line:84%
+I think it's
+interesting to think
+
+00:59:06.865 --> 00:59:10.970 align:middle line:84%
+about why shape might be encoded
+in a stronger way than texture.
+
+00:59:10.970 --> 00:59:14.650 align:middle line:84%
+And there's some recent work
+that shows some really nice--
+
+00:59:14.650 --> 00:59:17.250 align:middle line:84%
+in this space of trying
+to build effective
+
+00:59:17.250 --> 00:59:20.010 align:middle line:84%
+data augmentation
+through generation.
+
+00:59:20.010 --> 00:59:22.730 align:middle line:90%
+It just came out at ECCV.
+
+00:59:22.730 --> 00:59:30.110 align:middle line:84%
+They basically use the scene
+structure as a fixed thing.
+
+00:59:30.110 --> 00:59:32.305 align:middle line:84%
+So they mask out the entire
+dimension of the scene.
+
+00:59:32.305 --> 00:59:33.930 align:middle line:84%
+So now, you're
+guaranteeing that you're
+
+00:59:33.930 --> 00:59:36.263 align:middle line:84%
+going to have a realistic
+scene because it's a real one.
+
+00:59:36.263 --> 00:59:39.130 align:middle line:84%
+So maybe you have two
+dogs sitting on a bench.
+
+00:59:39.130 --> 00:59:42.130 align:middle line:84%
+Now, the way that they
+actually do their generation
+
+00:59:42.130 --> 00:59:47.690 align:middle line:84%
+to get these new cases is they
+take each individual object,
+
+00:59:47.690 --> 00:59:50.570 align:middle line:84%
+and then they change it
+to a different instance
+
+00:59:50.570 --> 00:59:52.010 align:middle line:90%
+within the data set.
+
+00:59:52.010 --> 00:59:54.850 align:middle line:84%
+So you basically say, I'm going
+to learn some personalization
+
+00:59:54.850 --> 00:59:58.250 align:middle line:84%
+model for every individual
+dog in the data set,
+
+00:59:58.250 --> 01:00:00.490 align:middle line:84%
+and then I'm going to
+condition on the mask
+
+01:00:00.490 --> 01:00:03.030 align:middle line:84%
+that I have and generate
+it with that instance.
+
+01:00:03.030 --> 01:00:06.290 align:middle line:84%
+So they basically call it
+instance augmented generation,
+
+01:00:06.290 --> 01:00:08.410 align:middle line:84%
+and they do get some
+really nice results.
+
+01:00:08.410 --> 01:00:10.870 align:middle line:84%
+And what it is,
+basically, it's breaking
+
+01:00:10.870 --> 01:00:13.910 align:middle line:84%
+these correlations
+between scene structure
+
+01:00:13.910 --> 01:00:16.990 align:middle line:84%
+and individual objects in
+a really realistic way.
+
+01:00:16.990 --> 01:00:20.990 align:middle line:84%
+And the images do look
+reasonably correct.
+
+01:00:20.990 --> 01:00:24.450 align:middle line:84%
+But the shape thing
+gets weird again.
+
+01:00:24.450 --> 01:00:29.270 align:middle line:84%
+So because that data set has
+bird defined as a category,
+
+01:00:29.270 --> 01:00:31.890 align:middle line:84%
+you can take any
+bird of any shape,
+
+01:00:31.890 --> 01:00:34.710 align:middle line:84%
+and you can replace it with
+the texture, essentially,
+
+01:00:34.710 --> 01:00:36.170 align:middle line:90%
+of a different bird.
+
+01:00:36.170 --> 01:00:37.890 align:middle line:84%
+But birds are very
+different shapes,
+
+01:00:37.890 --> 01:00:41.250 align:middle line:84%
+so it'll take something
+like a little round bird,
+
+01:00:41.250 --> 01:00:44.852 align:middle line:84%
+and then it'll try to squash
+an eagle into that shape.
+
+01:00:44.852 --> 01:00:46.310 align:middle line:84%
+And this is something
+that wouldn't
+
+01:00:46.310 --> 01:00:48.990 align:middle line:84%
+happen if the granularity
+of their categories
+
+01:00:48.990 --> 01:00:52.690 align:middle line:84%
+in the labeled space was a
+little bit more fine grained.
+
+01:00:52.690 --> 01:00:54.990 align:middle line:84%
+And again, it's just
+built in assumptions
+
+01:00:54.990 --> 01:00:56.790 align:middle line:84%
+about the amount
+of shape variation
+
+01:00:56.790 --> 01:00:59.590 align:middle line:84%
+you might have within a given
+defined category of interest
+
+01:00:59.590 --> 01:01:01.270 align:middle line:90%
+from a human perspective.
+
+01:01:01.270 --> 01:01:03.610 align:middle line:84%
+Anyway, that's enough
+philosophy for now.
+
+01:01:03.610 --> 01:01:05.670 align:middle line:84%
+So essentially,
+data plus plus says
+
+01:01:05.670 --> 01:01:09.970 align:middle line:84%
+that you might be able to sample
+from an implicit generative
+
+01:01:09.970 --> 01:01:12.410 align:middle line:84%
+model and use it
+to act like some
+
+01:01:12.410 --> 01:01:18.490 align:middle line:84%
+of decorative or interactive
+or mechanism to get data
+
+01:01:18.490 --> 01:01:20.050 align:middle line:90%
+with extra functionality.
+
+01:01:20.050 --> 01:01:22.070 align:middle line:84%
+And so you can define
+operators on that,
+
+01:01:22.070 --> 01:01:24.670 align:middle line:84%
+things like interpolation,
+extrapolation, manipulation,
+
+01:01:24.670 --> 01:01:26.890 align:middle line:84%
+composition,
+optimization, and you
+
+01:01:26.890 --> 01:01:30.650 align:middle line:84%
+can use it to label data
+potentially quite efficiently.
+
+01:01:30.650 --> 01:01:34.210 align:middle line:84%
+So the argument here is
+that maybe everything you
+
+01:01:34.210 --> 01:01:35.930 align:middle line:84%
+can do with regular
+data, you could also
+
+01:01:35.930 --> 01:01:40.330 align:middle line:84%
+try to do with this
+generation-augmented data.
+
+01:01:40.330 --> 01:01:41.630 align:middle line:90%
+And it might work better.
+
+01:01:41.630 --> 01:01:43.930 align:middle line:84%
+But I think there's still
+a lot of research that
+
+01:01:43.930 --> 01:01:48.610 align:middle line:84%
+needs to be done in this
+space to really achieve
+
+01:01:48.610 --> 01:01:51.170 align:middle line:84%
+the benefits that we think
+there's potential for.
+
+01:01:51.170 --> 01:01:53.270 align:middle line:84%
+We need generators that
+can learn with less data,
+
+01:01:53.270 --> 01:01:57.058 align:middle line:84%
+and we need to
+better understand how
+
+01:01:57.058 --> 01:01:58.350 align:middle line:90%
+these things are being learned.
+
+01:01:58.350 --> 01:01:58.930 align:middle line:90%
+Yeah.
+
+01:01:58.930 --> 01:02:00.055 align:middle line:90%
+AUDIENCE: So two questions.
+
+01:02:00.055 --> 01:02:01.030 align:middle line:90%
+One on the bias.
+
+01:02:01.030 --> 01:02:04.050 align:middle line:84%
+So I'm just curious to know,
+how can we figure out if there's
+
+01:02:04.050 --> 01:02:05.470 align:middle line:90%
+biases in the training?
+
+01:02:05.470 --> 01:02:10.110 align:middle line:84%
+Like in this case, we correlate
+darkness equals volcano eruption
+
+01:02:10.110 --> 01:02:12.470 align:middle line:84%
+without seeing the
+images, because this
+
+01:02:12.470 --> 01:02:15.110 align:middle line:84%
+is-- we can see it visually,
+but if the data set is
+
+01:02:15.110 --> 01:02:16.210 align:middle line:90%
+so large we can't see it.
+
+01:02:16.210 --> 01:02:18.630 align:middle line:84%
+And the second one is,
+how do we prioritize
+
+01:02:18.630 --> 01:02:20.890 align:middle line:90%
+diversity versus accuracy?
+
+01:02:20.890 --> 01:02:23.070 align:middle line:84%
+So the example you
+gave of a little bird
+
+01:02:23.070 --> 01:02:26.430 align:middle line:84%
+with the eagle features, but
+it's the size of little bird.
+
+01:02:26.430 --> 01:02:29.910 align:middle line:84%
+Is it great because it
+allows me to train for things
+
+01:02:29.910 --> 01:02:32.270 align:middle line:84%
+that aren't even possible,
+so maybe my testing data
+
+01:02:32.270 --> 01:02:33.150 align:middle line:90%
+will improve?
+
+01:02:33.150 --> 01:02:35.310 align:middle line:84%
+But it's so far
+away from fidelity.
+
+01:02:35.310 --> 01:02:37.630 align:middle line:84%
+Does that make this
+driven data bad?
+
+01:02:37.630 --> 01:02:38.470 align:middle line:90%
+SARA BEERY: Yeah.
+
+01:02:38.470 --> 01:02:40.820 align:middle line:84%
+So it's kind of like that
+question about the third eye
+
+01:02:40.820 --> 01:02:42.070 align:middle line:90%
+in the middle of the forehead.
+
+01:02:42.070 --> 01:02:43.903 align:middle line:84%
+If you start adding
+random eyes to your mom,
+
+01:02:43.903 --> 01:02:45.630 align:middle line:84%
+and it makes the
+model more robust
+
+01:02:45.630 --> 01:02:51.030 align:middle line:84%
+at recognizing your mom in
+real data, is that a problem?
+
+01:02:51.030 --> 01:02:53.510 align:middle line:84%
+So with relation
+to the first thing,
+
+01:02:53.510 --> 01:02:55.430 align:middle line:84%
+for example, that data
+set interfaces paper
+
+01:02:55.430 --> 01:02:58.070 align:middle line:84%
+was a mechanism that tries
+to use the fact that you can
+
+01:02:58.070 --> 01:03:01.070 align:middle line:84%
+interact with these
+systems with text
+
+01:03:01.070 --> 01:03:03.687 align:middle line:84%
+to probe biases efficiently
+without needing to explicitly
+
+01:03:03.687 --> 01:03:04.770 align:middle line:90%
+look through all the data.
+
+01:03:04.770 --> 01:03:06.562 align:middle line:84%
+So I think there's ways
+people have thought
+
+01:03:06.562 --> 01:03:08.250 align:middle line:84%
+of using generative
+models to help
+
+01:03:08.250 --> 01:03:10.330 align:middle line:90%
+you find biases efficiently.
+
+01:03:10.330 --> 01:03:12.650 align:middle line:84%
+And then with respect
+to the second one,
+
+01:03:12.650 --> 01:03:14.350 align:middle line:90%
+I think it basically depends.
+
+01:03:14.350 --> 01:03:18.410 align:middle line:90%
+
+
+01:03:18.410 --> 01:03:21.930 align:middle line:84%
+There's some work that
+tries to demonstrate
+
+01:03:21.930 --> 01:03:24.170 align:middle line:84%
+that even for really fine
+grained things like bird
+
+01:03:24.170 --> 01:03:28.290 align:middle line:84%
+species, you can learn
+to generate data that
+
+01:03:28.290 --> 01:03:30.290 align:middle line:84%
+is accurately of
+that bird species
+
+01:03:30.290 --> 01:03:37.343 align:middle line:84%
+by using a classification model
+as guidance for the generator.
+
+01:03:37.343 --> 01:03:39.010 align:middle line:84%
+But essentially, what
+that means is then
+
+01:03:39.010 --> 01:03:40.690 align:middle line:84%
+you're building a
+generator that's
+
+01:03:40.690 --> 01:03:43.275 align:middle line:84%
+optimized for a given
+classification model,
+
+01:03:43.275 --> 01:03:45.150 align:middle line:84%
+and you can take that
+to its logical extreme,
+
+01:03:45.150 --> 01:03:47.330 align:middle line:84%
+because it essentially
+means you can map out
+
+01:03:47.330 --> 01:03:50.650 align:middle line:84%
+the boundaries of that
+classification model really
+
+01:03:50.650 --> 01:03:54.270 align:middle line:84%
+explicitly moving into spaces
+that aren't super realistic.
+
+01:03:54.270 --> 01:03:57.850 align:middle line:84%
+And then you can maybe
+get better performance
+
+01:03:57.850 --> 01:04:03.290 align:middle line:84%
+for a given manifold or a
+given representation space.
+
+01:04:03.290 --> 01:04:07.350 align:middle line:84%
+But it might not always
+correspond to things you want.
+
+01:04:07.350 --> 01:04:10.710 align:middle line:84%
+So for example, you get
+better performance on crows
+
+01:04:10.710 --> 01:04:14.190 align:middle line:84%
+when you add in images where
+it's like Bigfoot with a crow
+
+01:04:14.190 --> 01:04:15.070 align:middle line:90%
+texture.
+
+01:04:15.070 --> 01:04:17.830 align:middle line:84%
+And it kind of gets to
+this weird question of,
+
+01:04:17.830 --> 01:04:20.647 align:middle line:84%
+we're getting better
+results on our test data,
+
+01:04:20.647 --> 01:04:22.230 align:middle line:84%
+but is it actually
+going to correspond
+
+01:04:22.230 --> 01:04:26.230 align:middle line:84%
+to better results in
+practice beyond this
+
+01:04:26.230 --> 01:04:28.030 align:middle line:90%
+of fixed set of test data?
+
+01:04:28.030 --> 01:04:31.210 align:middle line:84%
+And I think that gets
+kind of hard to quantify.
+
+01:04:31.210 --> 01:04:35.050 align:middle line:84%
+So we're good at optimizing
+for metrics on test data sets,
+
+01:04:35.050 --> 01:04:38.390 align:middle line:84%
+but I think it's much harder if
+you're moving to the real world.
+
+01:04:38.390 --> 01:04:41.190 align:middle line:84%
+You could imagine it might
+actually be better in some ways
+
+01:04:41.190 --> 01:04:48.470 align:middle line:84%
+to have things that aren't, I
+guess, different in ways that--
+
+01:04:48.470 --> 01:04:50.410 align:middle line:90%
+weird and not realistic.
+
+01:04:50.410 --> 01:04:52.598 align:middle line:84%
+Because maybe in
+the real world, you
+
+01:04:52.598 --> 01:04:54.390 align:middle line:84%
+might be more likely
+to encounter something
+
+01:04:54.390 --> 01:04:57.170 align:middle line:84%
+that actually does look a
+little bit like a small eagle,
+
+01:04:57.170 --> 01:04:59.430 align:middle line:84%
+but it's actually
+something else entirely.
+
+01:04:59.430 --> 01:05:02.650 align:middle line:84%
+So maybe the open
+endedness of the real world
+
+01:05:02.650 --> 01:05:06.210 align:middle line:84%
+makes the question of
+maximizing the potential
+
+01:05:06.210 --> 01:05:08.290 align:middle line:84%
+within a kind of a
+fixed, closed world
+
+01:05:08.290 --> 01:05:12.050 align:middle line:84%
+setting a little bit
+less translatable.
+
+01:05:12.050 --> 01:05:12.550 align:middle line:90%
+But yeah.
+
+01:05:12.550 --> 01:05:14.258 align:middle line:84%
+I don't know if that
+kind of makes sense.
+
+01:05:14.258 --> 01:05:15.130 align:middle line:90%
+I'm sort of ranting.
+
+01:05:15.130 --> 01:05:18.890 align:middle line:84%
+But I do think
+that what is useful
+
+01:05:18.890 --> 01:05:22.010 align:middle line:84%
+is going to be directly
+related to your task.
+
+01:05:22.010 --> 01:05:25.230 align:middle line:84%
+So for different types of
+tasks, for different goals,
+
+01:05:25.230 --> 01:05:28.450 align:middle line:90%
+useful data will be different.
+
+01:05:28.450 --> 01:05:29.650 align:middle line:90%
+Yeah.
+
+01:05:29.650 --> 01:05:31.850 align:middle line:84%
+AUDIENCE: Is image
+domain the bulk
+
+01:05:31.850 --> 01:05:34.330 align:middle line:84%
+of where the cutting
+edge research is
+
+01:05:34.330 --> 01:05:39.098 align:middle line:84%
+being done for this topic, or
+is that a pedagogical reason?
+
+01:05:39.098 --> 01:05:41.390 align:middle line:84%
+SARA BEERY: Why am I showing
+a bunch of image examples?
+
+01:05:41.390 --> 01:05:42.410 align:middle line:90%
+AUDIENCE: [INAUDIBLE].
+
+01:05:42.410 --> 01:05:45.910 align:middle line:84%
+It would probably be harder to
+do these evaluations on text
+
+01:05:45.910 --> 01:05:47.690 align:middle line:84%
+because you'd have
+to each read each one
+
+01:05:47.690 --> 01:05:49.410 align:middle line:90%
+and see the differences.
+
+01:05:49.410 --> 01:05:50.290 align:middle line:90%
+SARA BEERY: Yeah.
+
+01:05:50.290 --> 01:05:51.370 align:middle line:90%
+That's interesting.
+
+01:05:51.370 --> 01:05:54.810 align:middle line:84%
+So there definitely is
+research on generative text
+
+01:05:54.810 --> 01:05:57.330 align:middle line:84%
+as data augmentation,
+but I think
+
+01:05:57.330 --> 01:05:59.290 align:middle line:84%
+you're right that
+it's kind of harder--
+
+01:05:59.290 --> 01:06:03.910 align:middle line:84%
+class boundaries and text is
+a little bit harder to define.
+
+01:06:03.910 --> 01:06:08.730 align:middle line:84%
+And also, I could imagine if you
+think about generative songs,
+
+01:06:08.730 --> 01:06:13.590 align:middle line:84%
+for example, maybe part of it
+is just the nuanced, messy space
+
+01:06:13.590 --> 01:06:16.310 align:middle line:90%
+of what a category is.
+
+01:06:16.310 --> 01:06:19.270 align:middle line:84%
+But there definitely is
+work on both generating data
+
+01:06:19.270 --> 01:06:22.030 align:middle line:84%
+and using generative data for
+training in the tech space
+
+01:06:22.030 --> 01:06:26.470 align:middle line:84%
+and in the audio space and in
+many other modalities as well.
+
+01:06:26.470 --> 01:06:27.570 align:middle line:90%
+Lots of work.
+
+01:06:27.570 --> 01:06:29.350 align:middle line:84%
+Actually, classical
+work that used
+
+01:06:29.350 --> 01:06:32.190 align:middle line:84%
+generated data for training
+in medical imagery,
+
+01:06:32.190 --> 01:06:34.670 align:middle line:84%
+because often, we
+had so few real data
+
+01:06:34.670 --> 01:06:37.830 align:middle line:84%
+that really carefully
+handcrafted synthesizers of data
+
+01:06:37.830 --> 01:06:39.630 align:middle line:90%
+were quite effective.
+
+01:06:39.630 --> 01:06:42.830 align:middle line:84%
+There is kind of a much broader
+kind of interesting debate
+
+01:06:42.830 --> 01:06:47.030 align:middle line:84%
+currently about what's
+called model collapse
+
+01:06:47.030 --> 01:06:49.530 align:middle line:84%
+or manifold collapse
+where, essentially,
+
+01:06:49.530 --> 01:06:53.390 align:middle line:84%
+if you start training a model
+on more data that's generated
+
+01:06:53.390 --> 01:06:55.990 align:middle line:84%
+than data that's real--
+which is a very clear concern
+
+01:06:55.990 --> 01:06:58.890 align:middle line:84%
+today, because more and more
+of the text on the internet
+
+01:06:58.890 --> 01:07:01.490 align:middle line:84%
+is generated text as
+opposed to real text--
+
+01:07:01.490 --> 01:07:04.330 align:middle line:84%
+there's an entire line of
+research that essentially shows
+
+01:07:04.330 --> 01:07:10.610 align:middle line:84%
+that once you go too far
+down the ratio of more
+
+01:07:10.610 --> 01:07:13.210 align:middle line:84%
+of the data being
+generated than real,
+
+01:07:13.210 --> 01:07:14.750 align:middle line:84%
+it becomes kind of
+a vicious cycle.
+
+01:07:14.750 --> 01:07:16.930 align:middle line:84%
+And you can have these
+types of model collapse
+
+01:07:16.930 --> 01:07:19.770 align:middle line:84%
+where you start to lose
+parts of your distribution
+
+01:07:19.770 --> 01:07:22.128 align:middle line:84%
+that were captured in
+the real data because
+
+01:07:22.128 --> 01:07:24.170 align:middle line:84%
+of the kind of distribution
+of the generated data
+
+01:07:24.170 --> 01:07:25.585 align:middle line:90%
+based on the likelihood.
+
+01:07:25.585 --> 01:07:28.210 align:middle line:84%
+And there's fascinating-- it's
+a pretty active area of research
+
+01:07:28.210 --> 01:07:29.730 align:middle line:84%
+right now, this
+question of, what
+
+01:07:29.730 --> 01:07:33.970 align:middle line:84%
+does it look like to have models
+trained from generated data?
+
+01:07:33.970 --> 01:07:37.830 align:middle line:84%
+And what are the kind of failure
+modes that can result in?
+
+01:07:37.830 --> 01:07:38.330 align:middle line:90%
+Cool.
+
+01:07:38.330 --> 01:07:40.610 align:middle line:84%
+So in the last
+little bit, I'm going
+
+01:07:40.610 --> 01:07:43.810 align:middle line:84%
+to talk a little bit about
+learning to learn quickly.
+
+01:07:43.810 --> 01:07:46.953 align:middle line:84%
+So this idea of not
+just, what is a mechanism
+
+01:07:46.953 --> 01:07:47.870 align:middle line:90%
+for transfer learning?
+
+01:07:47.870 --> 01:07:50.690 align:middle line:84%
+But actually, how do
+you learn a model that
+
+01:07:50.690 --> 01:07:55.050 align:middle line:84%
+is good at transfer learning,
+a model that adapts quickly?
+
+01:07:55.050 --> 01:07:58.550 align:middle line:84%
+So here, the idea is
+that maybe instead
+
+01:07:58.550 --> 01:08:00.430 align:middle line:84%
+of just taking the
+classical approach where
+
+01:08:00.430 --> 01:08:03.030 align:middle line:84%
+you have learning, which is
+this middle part where you have
+
+01:08:03.030 --> 01:08:05.650 align:middle line:84%
+a data set, a learner,
+you get some parameters,
+
+01:08:05.650 --> 01:08:07.778 align:middle line:84%
+and then at inference time,
+you take your data set,
+
+01:08:07.778 --> 01:08:09.570 align:middle line:84%
+you run it through a
+model with parameters,
+
+01:08:09.570 --> 01:08:13.950 align:middle line:84%
+and you get predictions, you
+add this meta layer on top
+
+01:08:13.950 --> 01:08:15.890 align:middle line:84%
+of taking a bunch of
+different data sets
+
+01:08:15.890 --> 01:08:17.590 align:middle line:84%
+and training some
+of meta learner
+
+01:08:17.590 --> 01:08:19.910 align:middle line:84%
+that has a different
+set of hyperparameters
+
+01:08:19.910 --> 01:08:25.390 align:middle line:84%
+that then you transfer to any
+given learner and data set.
+
+01:08:25.390 --> 01:08:28.069 align:middle line:84%
+And so one of the seminal
+works in this space
+
+01:08:28.069 --> 01:08:30.990 align:middle line:84%
+was this work called
+MAML by Chelsea Finn--
+
+01:08:30.990 --> 01:08:34.710 align:middle line:84%
+stands for model-agnostic
+meta-learning.
+
+01:08:34.710 --> 01:08:36.630 align:middle line:84%
+And so far, we saw
+transfer learning as,
+
+01:08:36.630 --> 01:08:39.250 align:middle line:84%
+given some prior model
+and representation,
+
+01:08:39.250 --> 01:08:41.510 align:middle line:90%
+how can we quickly adapt it?
+
+01:08:41.510 --> 01:08:44.010 align:middle line:84%
+And this was the first
+work that tried to ask,
+
+01:08:44.010 --> 01:08:47.710 align:middle line:84%
+could we learn to do transfer
+learning effectively?
+
+01:08:47.710 --> 01:08:50.149 align:middle line:84%
+So now, consider you're
+doing fine tuning.
+
+01:08:50.149 --> 01:08:53.710 align:middle line:84%
+Given some initialization
+we, update it with SGD.
+
+01:08:53.710 --> 01:08:56.930 align:middle line:84%
+MAML tries to learn
+an initialization such
+
+01:08:56.930 --> 01:08:59.689 align:middle line:84%
+that it's easily adaptable
+with just a few steps
+
+01:08:59.689 --> 01:09:02.090 align:middle line:90%
+of stochastic gradient descent.
+
+01:09:02.090 --> 01:09:04.890 align:middle line:84%
+And so if you look at
+this algorithmically,
+
+01:09:04.890 --> 01:09:09.890 align:middle line:84%
+essentially, you now are
+doing like a double loop
+
+01:09:09.890 --> 01:09:11.490 align:middle line:90%
+in your optimization.
+
+01:09:11.490 --> 01:09:14.090 align:middle line:84%
+So starting with
+your initialization,
+
+01:09:14.090 --> 01:09:18.870 align:middle line:84%
+for any given data set that
+you're going to train over,
+
+01:09:18.870 --> 01:09:21.569 align:middle line:84%
+you now run a few steps of
+SGD and then compute loss
+
+01:09:21.569 --> 01:09:23.130 align:middle line:90%
+after those steps.
+
+01:09:23.130 --> 01:09:26.010 align:middle line:84%
+And then you backprop
+through that back
+
+01:09:26.010 --> 01:09:30.850 align:middle line:84%
+to your initial meta-learning
+initial set of parameters.
+
+01:09:30.850 --> 01:09:32.930 align:middle line:84%
+So how do you actually
+backprop through something
+
+01:09:32.930 --> 01:09:38.130 align:middle line:84%
+that's now like an inner
+loop within your larger loop?
+
+01:09:38.130 --> 01:09:41.689 align:middle line:84%
+So if you're doing one step of
+stochastic gradient descent,
+
+01:09:41.689 --> 01:09:45.770 align:middle line:84%
+you essentially can consider
+that a forwards pass
+
+01:09:45.770 --> 01:09:49.450 align:middle line:84%
+over x plus the backwards of
+the forwards of x and theta
+
+01:09:49.450 --> 01:09:50.130 align:middle line:90%
+plus theta.
+
+01:09:50.130 --> 01:09:54.530 align:middle line:84%
+Essentially, remember when we
+took a single part of a model,
+
+01:09:54.530 --> 01:09:57.090 align:middle line:84%
+and then we showed that if you
+wanted to do back propagation,
+
+01:09:57.090 --> 01:09:59.910 align:middle line:84%
+you could basically unfold
+it, and it was essentially
+
+01:09:59.910 --> 01:10:03.430 align:middle line:84%
+one big forward pass of
+going through forward
+
+01:10:03.430 --> 01:10:06.270 align:middle line:90%
+and then backward of a model?
+
+01:10:06.270 --> 01:10:09.630 align:middle line:84%
+So now if you want to do two
+steps of stochastic gradient
+
+01:10:09.630 --> 01:10:12.830 align:middle line:84%
+descent, again, you're
+kind of nesting this.
+
+01:10:12.830 --> 01:10:15.630 align:middle line:84%
+And so essentially,
+this is saying that you
+
+01:10:15.630 --> 01:10:19.910 align:middle line:90%
+can backprop through backward.
+
+01:10:19.910 --> 01:10:21.667 align:middle line:84%
+So if you're going
+forward and backward
+
+01:10:21.667 --> 01:10:22.750 align:middle line:90%
+through a simple network--
+
+01:10:22.750 --> 01:10:24.910 align:middle line:84%
+I don't know if you
+guys remember this.
+
+01:10:24.910 --> 01:10:27.513 align:middle line:90%
+So here's that forward pass.
+
+01:10:27.513 --> 01:10:28.930 align:middle line:84%
+Then, you have
+your backward pass.
+
+01:10:28.930 --> 01:10:31.290 align:middle line:84%
+And then here, this is
+where we kind of unfold it.
+
+01:10:31.290 --> 01:10:36.350 align:middle line:84%
+And so now, you can show that
+doing forward and backward
+
+01:10:36.350 --> 01:10:38.870 align:middle line:84%
+through a simple network
+is just one forward pass.
+
+01:10:38.870 --> 01:10:44.030 align:middle line:84%
+And then you can do this meta
+backward through everything.
+
+01:10:44.030 --> 01:10:46.430 align:middle line:90%
+So it's possible.
+
+01:10:46.430 --> 01:10:48.630 align:middle line:84%
+It's just expensive,
+essentially,
+
+01:10:48.630 --> 01:10:51.170 align:middle line:84%
+is the main point here,
+because you're basically
+
+01:10:51.170 --> 01:10:55.038 align:middle line:84%
+taking those nested loops
+of forward and backward,
+
+01:10:55.038 --> 01:10:56.830 align:middle line:84%
+and you're just stretching
+all of them out.
+
+01:10:56.830 --> 01:11:00.890 align:middle line:84%
+And you're now getting what
+is a very, very deep network
+
+01:11:00.890 --> 01:11:04.130 align:middle line:84%
+that you're going
+to optimize through.
+
+01:11:04.130 --> 01:11:08.570 align:middle line:84%
+Now, this type of
+computational complexity
+
+01:11:08.570 --> 01:11:10.730 align:middle line:84%
+often means that
+the relative benefit
+
+01:11:10.730 --> 01:11:13.610 align:middle line:84%
+of these types of meta-learning
+models-- though nice in theory,
+
+01:11:13.610 --> 01:11:16.712 align:middle line:84%
+and you get really nice gains
+on maybe simple problems--
+
+01:11:16.712 --> 01:11:18.170 align:middle line:84%
+it's often just
+too computationally
+
+01:11:18.170 --> 01:11:21.770 align:middle line:90%
+expensive to really deploy.
+
+01:11:21.770 --> 01:11:26.770 align:middle line:84%
+But there are a few examples
+of how people have actually
+
+01:11:26.770 --> 01:11:29.170 align:middle line:84%
+used these types
+of meta-learning
+
+01:11:29.170 --> 01:11:31.490 align:middle line:90%
+for real world applications.
+
+01:11:31.490 --> 01:11:33.462 align:middle line:84%
+So in this case,
+in practice, I was
+
+01:11:33.462 --> 01:11:35.170 align:middle line:84%
+saying the gains of
+the method, something
+
+01:11:35.170 --> 01:11:36.590 align:middle line:84%
+like model-agnostic
+meta-learning,
+
+01:11:36.590 --> 01:11:38.530 align:middle line:84%
+are often not worth the
+additional computational cost
+
+01:11:38.530 --> 01:11:40.210 align:middle line:84%
+at training time,
+and sometimes can
+
+01:11:40.210 --> 01:11:43.370 align:middle line:84%
+be worse than just like
+pretraining on all of those
+
+01:11:43.370 --> 01:11:46.530 align:middle line:84%
+different data sets
+and then fine tuning.
+
+01:11:46.530 --> 01:11:51.170 align:middle line:84%
+But Gabi Tseng introduced
+this geospatial embedding,
+
+01:11:51.170 --> 01:11:55.190 align:middle line:84%
+essentially like a bit of
+a task-specific tokenizer,
+
+01:11:55.190 --> 01:11:57.630 align:middle line:84%
+within that
+meta-learning objective
+
+01:11:57.630 --> 01:12:00.890 align:middle line:84%
+that encoded some kind
+of task-specific context.
+
+01:12:00.890 --> 01:12:04.470 align:middle line:84%
+And they showed that giving
+this task specificity
+
+01:12:04.470 --> 01:12:06.590 align:middle line:84%
+within that meta-learning
+loop did give them
+
+01:12:06.590 --> 01:12:09.910 align:middle line:84%
+some really nice gains
+when they were looking
+
+01:12:09.910 --> 01:12:12.270 align:middle line:84%
+at crop type
+categorization for corn
+
+01:12:12.270 --> 01:12:14.110 align:middle line:84%
+and a bunch of
+different countries.
+
+01:12:14.110 --> 01:12:16.510 align:middle line:84%
+So here, these are a
+comparison of a bunch
+
+01:12:16.510 --> 01:12:17.890 align:middle line:90%
+of different types of methods.
+
+01:12:17.890 --> 01:12:19.710 align:middle line:84%
+But you can see
+at the top is kind
+
+01:12:19.710 --> 01:12:24.570 align:middle line:84%
+of versus meta-learning or just
+pretraining a model, there,
+
+01:12:24.570 --> 01:12:25.970 align:middle line:90%
+it's about the same.
+
+01:12:25.970 --> 01:12:29.150 align:middle line:84%
+But this task conditioning that
+gives your model the ability
+
+01:12:29.150 --> 01:12:31.910 align:middle line:84%
+to specialize effectively,
+maybe to a given country or part
+
+01:12:31.910 --> 01:12:34.847 align:middle line:84%
+of the world, ends up
+being pretty effective.
+
+01:12:34.847 --> 01:12:36.930 align:middle line:84%
+This is maybe-- I don't
+know if you guys remember,
+
+01:12:36.930 --> 01:12:38.710 align:middle line:84%
+but we talked a
+bit about this idea
+
+01:12:38.710 --> 01:12:40.670 align:middle line:84%
+of maybe learning a prior
+when we were talking
+
+01:12:40.670 --> 01:12:42.430 align:middle line:90%
+about distribution shift.
+
+01:12:42.430 --> 01:12:44.070 align:middle line:84%
+This is maybe a
+different mechanism
+
+01:12:44.070 --> 01:12:46.750 align:middle line:84%
+of trying to learn something
+like a geospatial prior
+
+01:12:46.750 --> 01:12:49.730 align:middle line:84%
+or some of useful
+contextualization
+
+01:12:49.730 --> 01:12:53.890 align:middle line:84%
+so that your model can actually
+build some knowledge about how
+
+01:12:53.890 --> 01:12:56.210 align:middle line:84%
+it should adapt for
+specific types of problems
+
+01:12:56.210 --> 01:12:59.290 align:middle line:90%
+or types of tasks.
+
+01:12:59.290 --> 01:13:00.890 align:middle line:84%
+And so there's
+also this question
+
+01:13:00.890 --> 01:13:03.810 align:middle line:84%
+of meta-learning by
+sequence modeling.
+
+01:13:03.810 --> 01:13:06.290 align:middle line:90%
+So definition of learning.
+
+01:13:06.290 --> 01:13:09.810 align:middle line:84%
+Maybe we have a
+sequence of input
+
+01:13:09.810 --> 01:13:12.170 align:middle line:84%
+and ground truth,
+input and ground truth
+
+01:13:12.170 --> 01:13:13.610 align:middle line:90%
+for a bunch of things.
+
+01:13:13.610 --> 01:13:16.050 align:middle line:84%
+And then you output
+some function such
+
+01:13:16.050 --> 01:13:18.610 align:middle line:84%
+that if you give it
+a new input, it'll
+
+01:13:18.610 --> 01:13:20.980 align:middle line:90%
+give you a new ground truth.
+
+01:13:20.980 --> 01:13:22.730 align:middle line:84%
+So maybe this is kind
+of like that example
+
+01:13:22.730 --> 01:13:23.930 align:middle line:84%
+we talked about
+when we were talking
+
+01:13:23.930 --> 01:13:26.410 align:middle line:84%
+about autoregressive modeling
+for large language models
+
+01:13:26.410 --> 01:13:28.010 align:middle line:90%
+where we could say, OK.
+
+01:13:28.010 --> 01:13:30.050 align:middle line:84%
+We're going to show you
+an example of English
+
+01:13:30.050 --> 01:13:31.770 align:middle line:90%
+and the translation in Spanish.
+
+01:13:31.770 --> 01:13:33.230 align:middle line:84%
+I'm going to show you
+another example in English,
+
+01:13:33.230 --> 01:13:34.830 align:middle line:84%
+another example of the
+translation in Spanish.
+
+01:13:34.830 --> 01:13:36.497 align:middle line:84%
+Now, if I show you
+something in English,
+
+01:13:36.497 --> 01:13:38.650 align:middle line:84%
+the model would
+automatically generate
+
+01:13:38.650 --> 01:13:40.510 align:middle line:90%
+the translation in Spanish.
+
+01:13:40.510 --> 01:13:44.650 align:middle line:84%
+This idea of sequence
+based in-context learning.
+
+01:13:44.650 --> 01:13:46.710 align:middle line:84%
+And so here, if
+you have something
+
+01:13:46.710 --> 01:13:48.830 align:middle line:84%
+like a recurrent neural
+network, the state
+
+01:13:48.830 --> 01:13:51.900 align:middle line:84%
+plus the parameters of that
+recurrent neural network,
+
+01:13:51.900 --> 01:13:53.650 align:middle line:84%
+or something like an
+autoregressive model,
+
+01:13:53.650 --> 01:13:58.050 align:middle line:84%
+like predicting the next word,
+is f, that current state.
+
+01:13:58.050 --> 01:14:00.370 align:middle line:84%
+And then you apply that
+f to your new input.
+
+01:14:00.370 --> 01:14:03.430 align:middle line:84%
+You're basically saying,
+predict the next thing.
+
+01:14:03.430 --> 01:14:05.710 align:middle line:84%
+And so then the hidden
+state of that RNN
+
+01:14:05.710 --> 01:14:09.670 align:middle line:84%
+or that recurrent neural
+network is a model that arguably
+
+01:14:09.670 --> 01:14:11.230 align:middle line:90%
+learns to learn, right?
+
+01:14:11.230 --> 01:14:13.590 align:middle line:84%
+It takes some statistics
+of the sequence in general
+
+01:14:13.590 --> 01:14:17.070 align:middle line:84%
+that enable it to predict
+what should come next.
+
+01:14:17.070 --> 01:14:19.270 align:middle line:84%
+And this really
+is, I think, what
+
+01:14:19.270 --> 01:14:23.470 align:middle line:84%
+GPT and a lot of these modern
+autoregressive models are doing.
+
+01:14:23.470 --> 01:14:25.770 align:middle line:84%
+It's kind of a version of
+meta-learning at large scale.
+
+01:14:25.770 --> 01:14:27.603 align:middle line:84%
+And you could argue
+that in-context learning
+
+01:14:27.603 --> 01:14:30.950 align:middle line:84%
+is kind of just another
+mechanism of meta-learning.
+
+01:14:30.950 --> 01:14:33.410 align:middle line:84%
+Because when these
+models are being trained,
+
+01:14:33.410 --> 01:14:36.470 align:middle line:84%
+you're showing them a lot
+of different possible tasks
+
+01:14:36.470 --> 01:14:38.710 align:middle line:84%
+or sequences and
+then asking them
+
+01:14:38.710 --> 01:14:43.330 align:middle line:84%
+to learn how to really quickly
+and efficiently generate
+
+01:14:43.330 --> 01:14:44.610 align:middle line:90%
+answers.
+
+01:14:44.610 --> 01:14:47.090 align:middle line:84%
+What comes next
+for new sequences?
+
+01:14:47.090 --> 01:14:52.850 align:middle line:84%
+So you could argue that there's
+a pretty similar motivation
+
+01:14:52.850 --> 01:14:57.010 align:middle line:84%
+and potentially a much better
+actual output when you think
+
+01:14:57.010 --> 01:15:00.655 align:middle line:84%
+about meta-learning
+through sequence modeling
+
+01:15:00.655 --> 01:15:02.530 align:middle line:84%
+as opposed to meta-learning
+through this kind
+
+01:15:02.530 --> 01:15:05.870 align:middle line:84%
+of inner and outer
+loop of training.
+
+01:15:05.870 --> 01:15:06.370 align:middle line:90%
+Cool.
+
+01:15:06.370 --> 01:15:09.610 align:middle line:84%
+So it's the end of the
+lecture I had for today.
+
+01:15:09.610 --> 01:15:12.250 align:middle line:84%
+We learned today about
+generative models as data
+
+01:15:12.250 --> 01:15:14.030 align:middle line:84%
+and some of the pros
+and cons of that,
+
+01:15:14.030 --> 01:15:15.970 align:middle line:84%
+and we also talked
+about learning to learn,
+
+01:15:15.970 --> 01:15:17.810 align:middle line:90%
+or meta-learning.
+
+01:15:17.810 --> 01:15:21.550 align:middle line:84%
+And like I said, it's my last
+lecture of the course today.
+
+01:15:21.550 --> 01:15:24.130 align:middle line:84%
+So it's been really fun teaching
+you all, and hopefully--
+
+01:15:24.130 --> 01:15:25.450 align:middle line:90%
+I mean, I'll be around.
+
+01:15:25.450 --> 01:15:28.200 align:middle line:90%
+[APPLAUSE]
+
+01:15:28.200 --> 01:15:43.000 align:middle line:90%

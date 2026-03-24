@@ -1,0 +1,5324 @@
+WEBVTT
+
+00:00:00.000 --> 00:00:00.992 align:middle line:90%
+
+
+00:00:00.992 --> 00:00:02.468 align:middle line:90%
+[SQUEAKING]
+
+00:00:02.468 --> 00:00:03.944 align:middle line:90%
+[RUSTLING]
+
+00:00:03.944 --> 00:00:05.420 align:middle line:90%
+[CLICKING]
+
+00:00:05.420 --> 00:00:13.590 align:middle line:90%
+
+
+00:00:13.590 --> 00:00:15.340 align:middle line:84%
+JEREMY BERNSTEIN: OK,
+thank you, everyone,
+
+00:00:15.340 --> 00:00:19.160 align:middle line:90%
+for coming to the lecture.
+
+00:00:19.160 --> 00:00:24.480 align:middle line:90%
+So this was the example.
+
+00:00:24.480 --> 00:00:28.000 align:middle line:84%
+Do people remember
+this from the homework?
+
+00:00:28.000 --> 00:00:28.700 align:middle line:90%
+You remember?
+
+00:00:28.700 --> 00:00:29.600 align:middle line:90%
+That's good.
+
+00:00:29.600 --> 00:00:30.120 align:middle line:90%
+OK.
+
+00:00:30.120 --> 00:00:31.340 align:middle line:90%
+AUDIENCE: [INAUDIBLE]
+
+00:00:31.340 --> 00:00:32.439 align:middle line:90%
+[LAUGHTER]
+
+00:00:32.439 --> 00:00:33.940 align:middle line:84%
+JEREMY BERNSTEIN:
+It's a tricky one.
+
+00:00:33.940 --> 00:00:36.960 align:middle line:90%
+
+
+00:00:36.960 --> 00:00:46.680 align:middle line:84%
+Wait, OK, so if I just
+tell you, if I write,
+
+00:00:46.680 --> 00:00:51.080 align:middle line:84%
+if I say that this is
+the gradient matrix.
+
+00:00:51.080 --> 00:00:56.020 align:middle line:84%
+And it has what we
+call a reduced SVD.
+
+00:00:56.020 --> 00:01:03.880 align:middle line:90%
+
+
+00:01:03.880 --> 00:01:05.459 align:middle line:84%
+Do you remember
+what the answer was?
+
+00:01:05.459 --> 00:01:10.378 align:middle line:90%
+
+
+00:01:10.378 --> 00:01:13.760 align:middle line:84%
+AUDIENCE: I think
+it's G G-transpose
+
+00:01:13.760 --> 00:01:16.760 align:middle line:90%
+to get the sigma squared.
+
+00:01:16.760 --> 00:01:19.120 align:middle line:90%
+JEREMY BERNSTEIN: Oh.
+
+00:01:19.120 --> 00:01:21.880 align:middle line:90%
+Yeah, something like that.
+
+00:01:21.880 --> 00:01:26.023 align:middle line:84%
+OK, I'll just write it, or
+one version of the answer.
+
+00:01:26.023 --> 00:01:29.264 align:middle line:90%
+[INTERPOSING VOICES]
+
+00:01:29.264 --> 00:01:39.155 align:middle line:90%
+
+
+00:01:39.155 --> 00:01:40.780 align:middle line:84%
+There's other ways
+to write the answer,
+
+00:01:40.780 --> 00:01:45.980 align:middle line:84%
+but this is a simple
+way to write the answer.
+
+00:01:45.980 --> 00:01:53.280 align:middle line:84%
+So you can think of
+this conceptually as,
+
+00:01:53.280 --> 00:02:01.737 align:middle line:84%
+let's see, taking the
+SVD of the gradient.
+
+00:02:01.737 --> 00:02:04.070 align:middle line:84%
+And you can think about this
+as setting all the singular
+
+00:02:04.070 --> 00:02:05.910 align:middle line:90%
+values to 1.
+
+00:02:05.910 --> 00:02:10.630 align:middle line:84%
+And we call this a
+semiorthogonal matrix,
+
+00:02:10.630 --> 00:02:11.690 align:middle line:90%
+because it's rectangular.
+
+00:02:11.690 --> 00:02:15.430 align:middle line:84%
+It's not quite an
+orthogonal matrix.
+
+00:02:15.430 --> 00:02:17.950 align:middle line:84%
+But I wanted to show
+you that there's
+
+00:02:17.950 --> 00:02:23.110 align:middle line:84%
+someone on Twitter
+called kellerjordan0 who
+
+00:02:23.110 --> 00:02:25.230 align:middle line:90%
+calls himself a speedrunner.
+
+00:02:25.230 --> 00:02:28.310 align:middle line:84%
+So he wants to train
+the neural network
+
+00:02:28.310 --> 00:02:31.390 align:middle line:90%
+as fast as he possibly can.
+
+00:02:31.390 --> 00:02:36.430 align:middle line:84%
+And he took like a
+variant of this method
+
+00:02:36.430 --> 00:02:39.210 align:middle line:84%
+and then adds some tricks
+to it, like momentum.
+
+00:02:39.210 --> 00:02:44.070 align:middle line:90%
+
+
+00:02:44.070 --> 00:02:45.730 align:middle line:90%
+It makes it low precision.
+
+00:02:45.730 --> 00:02:51.030 align:middle line:90%
+
+
+00:02:51.030 --> 00:02:54.510 align:middle line:84%
+And then in order
+to compute, it's
+
+00:02:54.510 --> 00:02:57.110 align:middle line:84%
+not really obvious how
+to compute this thing
+
+00:02:57.110 --> 00:02:58.127 align:middle line:90%
+without doing an SVD.
+
+00:02:58.127 --> 00:02:59.710 align:middle line:84%
+And you don't really
+want to do an SVD
+
+00:02:59.710 --> 00:03:01.793 align:middle line:84%
+when you're training a
+neural network because it's
+
+00:03:01.793 --> 00:03:04.070 align:middle line:90%
+kind of slow.
+
+00:03:04.070 --> 00:03:05.930 align:middle line:90%
+So he uses this iteration.
+
+00:03:05.930 --> 00:03:08.550 align:middle line:90%
+
+
+00:03:08.550 --> 00:03:17.590 align:middle line:84%
+So it's a way to compute this
+term without actually doing SVD.
+
+00:03:17.590 --> 00:03:22.990 align:middle line:84%
+So it's just an iterative
+method to compute that thing.
+
+00:03:22.990 --> 00:03:28.150 align:middle line:84%
+And it throws away this
+learning rate, basically.
+
+00:03:28.150 --> 00:03:30.270 align:middle line:90%
+It's a slight variant.
+
+00:03:30.270 --> 00:03:35.070 align:middle line:84%
+But basically this is
+the result he's getting.
+
+00:03:35.070 --> 00:03:37.510 align:middle line:84%
+So this blue curve
+is something called
+
+00:03:37.510 --> 00:03:44.030 align:middle line:84%
+LLM.C, which Andrej
+Karpathy has a very fast C
+
+00:03:44.030 --> 00:03:50.790 align:middle line:84%
+implementation of training
+transformer, which
+
+00:03:50.790 --> 00:03:53.330 align:middle line:84%
+is supposed to be the fastest
+way to train a transformer.
+
+00:03:53.330 --> 00:03:55.870 align:middle line:84%
+But this guy Keller can
+train it in a fraction
+
+00:03:55.870 --> 00:03:59.630 align:middle line:84%
+of the time using this special
+spectral gradient descent
+
+00:03:59.630 --> 00:04:00.170 align:middle line:90%
+method.
+
+00:04:00.170 --> 00:04:04.010 align:middle line:84%
+So the full disclosure is,
+I'm collaborating with Keller.
+
+00:04:04.010 --> 00:04:06.370 align:middle line:84%
+So you take everything
+with a grain of salt.
+
+00:04:06.370 --> 00:04:10.530 align:middle line:84%
+But it seems to be actually
+much faster to use this method.
+
+00:04:10.530 --> 00:04:12.850 align:middle line:84%
+And this all happened in
+the last couple of weeks,
+
+00:04:12.850 --> 00:04:15.230 align:middle line:84%
+so actually after we
+wrote the homework.
+
+00:04:15.230 --> 00:04:21.870 align:middle line:84%
+So just to say, we're trying
+to teach you some things that
+
+00:04:21.870 --> 00:04:25.350 align:middle line:90%
+potentially matter in practice.
+
+00:04:25.350 --> 00:04:27.510 align:middle line:84%
+But anyway, the thing
+that we wanted to say
+
+00:04:27.510 --> 00:04:31.530 align:middle line:84%
+is if anyone wants to look
+at this for a final project,
+
+00:04:31.530 --> 00:04:34.830 align:middle line:84%
+it's an interesting
+problem of thinking
+
+00:04:34.830 --> 00:04:37.110 align:middle line:84%
+about the math of
+optimization to actually make
+
+00:04:37.110 --> 00:04:39.150 align:middle line:90%
+the optimization go faster.
+
+00:04:39.150 --> 00:04:43.050 align:middle line:84%
+But anyway, that was just
+to tell you about that.
+
+00:04:43.050 --> 00:04:44.970 align:middle line:84%
+That's not the main
+point of this lecture.
+
+00:04:44.970 --> 00:04:49.590 align:middle line:90%
+
+
+00:04:49.590 --> 00:04:58.710 align:middle line:84%
+So last time, I think that you
+were learning about some aspects
+
+00:04:58.710 --> 00:05:01.550 align:middle line:90%
+of representation learning.
+
+00:05:01.550 --> 00:05:06.370 align:middle line:84%
+And there was this idea
+of developing techniques,
+
+00:05:06.370 --> 00:05:09.870 align:middle line:84%
+contrastive learning
+techniques where
+
+00:05:09.870 --> 00:05:12.270 align:middle line:84%
+you try to learn
+embeddings of your data.
+
+00:05:12.270 --> 00:05:18.830 align:middle line:84%
+And you specifically want to
+take basically similar data
+
+00:05:18.830 --> 00:05:23.527 align:middle line:84%
+points and map them
+to nearby embeddings.
+
+00:05:23.527 --> 00:05:25.110 align:middle line:84%
+And then you want
+to take a data point
+
+00:05:25.110 --> 00:05:27.990 align:middle line:84%
+from a very different
+class and map it
+
+00:05:27.990 --> 00:05:30.010 align:middle line:90%
+to an embedding that's far away.
+
+00:05:30.010 --> 00:05:32.790 align:middle line:90%
+
+
+00:05:32.790 --> 00:05:36.110 align:middle line:84%
+And we call these contrastive
+learning algorithms.
+
+00:05:36.110 --> 00:05:39.190 align:middle line:84%
+And they're good ways to
+learn representations.
+
+00:05:39.190 --> 00:05:46.738 align:middle line:90%
+
+
+00:05:46.738 --> 00:05:49.030 align:middle line:84%
+Sometimes we think of them
+as somehow unsupervised ways
+
+00:05:49.030 --> 00:05:50.210 align:middle line:90%
+to learn representations.
+
+00:05:50.210 --> 00:05:51.810 align:middle line:84%
+But anyway, that
+was last lecture.
+
+00:05:51.810 --> 00:05:55.020 align:middle line:90%
+
+
+00:05:55.020 --> 00:05:59.260 align:middle line:84%
+And then I also
+wanted to remind you
+
+00:05:59.260 --> 00:06:01.840 align:middle line:84%
+that in even the
+earlier lectures,
+
+00:06:01.840 --> 00:06:03.883 align:middle line:84%
+we were thinking about
+different perspectives
+
+00:06:03.883 --> 00:06:05.300 align:middle line:84%
+on thinking about
+what's happening
+
+00:06:05.300 --> 00:06:08.220 align:middle line:90%
+inside a neural network.
+
+00:06:08.220 --> 00:06:12.060 align:middle line:84%
+And there was the idea
+of neural perspective,
+
+00:06:12.060 --> 00:06:13.900 align:middle line:84%
+thinking about tensors,
+and then thinking
+
+00:06:13.900 --> 00:06:17.880 align:middle line:84%
+about spectral
+properties of tensors.
+
+00:06:17.880 --> 00:06:21.260 align:middle line:90%
+
+
+00:06:21.260 --> 00:06:25.900 align:middle line:84%
+So this is just recapping
+some different things.
+
+00:06:25.900 --> 00:06:32.220 align:middle line:84%
+But in this lecture,
+not really using that,
+
+00:06:32.220 --> 00:06:36.240 align:middle line:84%
+and just thinking more
+abstractly of a neural network
+
+00:06:36.240 --> 00:06:42.000 align:middle line:84%
+as being a map from a
+sequence of vector spaces.
+
+00:06:42.000 --> 00:06:43.580 align:middle line:84%
+So every layer of
+the neural network,
+
+00:06:43.580 --> 00:06:45.600 align:middle line:84%
+you can think of it
+as a vector space.
+
+00:06:45.600 --> 00:06:48.500 align:middle line:90%
+
+
+00:06:48.500 --> 00:06:53.540 align:middle line:84%
+And one possible goal
+of doing deep learning
+
+00:06:53.540 --> 00:06:57.260 align:middle line:84%
+is to learn a really good
+representation of your data
+
+00:06:57.260 --> 00:06:58.260 align:middle line:90%
+points.
+
+00:06:58.260 --> 00:07:05.700 align:middle line:84%
+And I'm just visualizing that
+here as the idea of the input
+
+00:07:05.700 --> 00:07:09.420 align:middle line:84%
+space, maybe all the different
+data points of unrelated things
+
+00:07:09.420 --> 00:07:12.620 align:middle line:84%
+are all mixed up
+together and not really
+
+00:07:12.620 --> 00:07:14.860 align:middle line:90%
+separated or disentangled.
+
+00:07:14.860 --> 00:07:16.880 align:middle line:84%
+And then when we
+do deep learning,
+
+00:07:16.880 --> 00:07:20.340 align:middle line:84%
+we're hoping that as we
+move through the network,
+
+00:07:20.340 --> 00:07:23.380 align:middle line:84%
+we get to the
+representation at the end
+
+00:07:23.380 --> 00:07:25.740 align:middle line:84%
+where the data points
+from different classes
+
+00:07:25.740 --> 00:07:28.020 align:middle line:84%
+or semantically
+different data points are
+
+00:07:28.020 --> 00:07:29.660 align:middle line:90%
+separated from each other.
+
+00:07:29.660 --> 00:07:32.920 align:middle line:90%
+And then we did a good job.
+
+00:07:32.920 --> 00:07:35.717 align:middle line:90%
+
+
+00:07:35.717 --> 00:07:37.300 align:middle line:84%
+So that's what this
+is saying, that we
+
+00:07:37.300 --> 00:07:39.743 align:middle line:84%
+want a representation
+of our data
+
+00:07:39.743 --> 00:07:41.660 align:middle line:84%
+which is perhaps linearly
+separable at the end
+
+00:07:41.660 --> 00:07:42.400 align:middle line:90%
+of the network.
+
+00:07:42.400 --> 00:07:43.360 align:middle line:90%
+That would be nice.
+
+00:07:43.360 --> 00:07:47.980 align:middle line:90%
+
+
+00:07:47.980 --> 00:07:49.980 align:middle line:84%
+So what I want to talk
+about in this lecture
+
+00:07:49.980 --> 00:07:55.220 align:middle line:84%
+is the idea that when you
+pick what your neural network
+
+00:07:55.220 --> 00:08:01.180 align:middle line:84%
+architecture is, it already
+has an opinion about which data
+
+00:08:01.180 --> 00:08:04.680 align:middle line:84%
+points are similar to each other
+and which ones are dissimilar,
+
+00:08:04.680 --> 00:08:08.780 align:middle line:84%
+even without doing
+contrastive learning.
+
+00:08:08.780 --> 00:08:12.960 align:middle line:84%
+So I want to just introduce some
+tools for thinking about this.
+
+00:08:12.960 --> 00:08:17.460 align:middle line:90%
+
+
+00:08:17.460 --> 00:08:23.060 align:middle line:84%
+And that's all this is saying,
+is that the neural architecture
+
+00:08:23.060 --> 00:08:24.980 align:middle line:84%
+already expresses
+some kind of opinion
+
+00:08:24.980 --> 00:08:27.660 align:middle line:84%
+about how similar
+two data points are,
+
+00:08:27.660 --> 00:08:30.340 align:middle line:90%
+even before you train it.
+
+00:08:30.340 --> 00:08:34.080 align:middle line:84%
+And we'll think about some
+tools to capture that idea.
+
+00:08:34.080 --> 00:08:38.659 align:middle line:90%
+
+
+00:08:38.659 --> 00:08:41.820 align:middle line:84%
+By the way, as ever,
+please just interrupt me
+
+00:08:41.820 --> 00:08:43.120 align:middle line:90%
+if you have questions.
+
+00:08:43.120 --> 00:08:51.540 align:middle line:90%
+
+
+00:08:51.540 --> 00:09:01.540 align:middle line:84%
+So the idea here is, I
+just give you some data.
+
+00:09:01.540 --> 00:09:04.100 align:middle line:84%
+And I just want
+you to think about,
+
+00:09:04.100 --> 00:09:07.460 align:middle line:84%
+just from first principles,
+ignoring everything you've ever
+
+00:09:07.460 --> 00:09:10.740 align:middle line:84%
+learned in machine learning,
+about how you would actually
+
+00:09:10.740 --> 00:09:14.780 align:middle line:84%
+fit it if you wanted to
+fit a model to this data.
+
+00:09:14.780 --> 00:09:16.440 align:middle line:90%
+Does anyone have ideas?
+
+00:09:16.440 --> 00:09:20.300 align:middle line:90%
+
+
+00:09:20.300 --> 00:09:24.220 align:middle line:84%
+AUDIENCE: Do a line, and
+then line curves down.
+
+00:09:24.220 --> 00:09:27.520 align:middle line:84%
+JEREMY BERNSTEIN: So I could
+somehow just interpolate maybe.
+
+00:09:27.520 --> 00:09:30.220 align:middle line:90%
+AUDIENCE: [INAUDIBLE]
+
+00:09:30.220 --> 00:09:33.020 align:middle line:84%
+JEREMY BERNSTEIN: That
+would kind of do that.
+
+00:09:33.020 --> 00:09:37.000 align:middle line:84%
+Yeah, that's one idea,
+just linear interpolation.
+
+00:09:37.000 --> 00:09:47.890 align:middle line:90%
+
+
+00:09:47.890 --> 00:09:49.510 align:middle line:90%
+Yeah, I feel like--
+
+00:09:49.510 --> 00:09:50.270 align:middle line:90%
+Yeah, go ahead.
+
+00:09:50.270 --> 00:09:52.810 align:middle line:84%
+AUDIENCE: [INAUDIBLE]
+interpolation.
+
+00:09:52.810 --> 00:09:54.770 align:middle line:84%
+JEREMY BERNSTEIN:
+Polynomial interpolation,
+
+00:09:54.770 --> 00:09:57.170 align:middle line:84%
+which is maybe harder to
+draw, but maybe I could fit
+
+00:09:57.170 --> 00:09:59.270 align:middle line:90%
+some kind of quadratic to this.
+
+00:09:59.270 --> 00:10:02.210 align:middle line:90%
+
+
+00:10:02.210 --> 00:10:03.050 align:middle line:90%
+Potentially.
+
+00:10:03.050 --> 00:10:07.435 align:middle line:90%
+
+
+00:10:07.435 --> 00:10:08.810 align:middle line:84%
+If you just think
+about this, you
+
+00:10:08.810 --> 00:10:11.210 align:middle line:84%
+can invent a lot of
+different function classes
+
+00:10:11.210 --> 00:10:13.010 align:middle line:84%
+and just think
+about what it would
+
+00:10:13.010 --> 00:10:17.270 align:middle line:84%
+mean to do machine learning
+with different function classes.
+
+00:10:17.270 --> 00:10:21.997 align:middle line:84%
+And it's kind of a big jump to
+get to doing neural networks,
+
+00:10:21.997 --> 00:10:23.830 align:middle line:84%
+if you just think about
+things from scratch.
+
+00:10:23.830 --> 00:10:29.290 align:middle line:90%
+But that's kind of where we are.
+
+00:10:29.290 --> 00:10:34.570 align:middle line:84%
+So basically, there are a lot
+of classic approaches to doing
+
+00:10:34.570 --> 00:10:36.730 align:middle line:84%
+machine learning,
+where people did just
+
+00:10:36.730 --> 00:10:38.950 align:middle line:84%
+invent their favorite
+function class and say, hey,
+
+00:10:38.950 --> 00:10:41.367 align:middle line:84%
+we're just going to do machine
+learning with this function
+
+00:10:41.367 --> 00:10:42.970 align:middle line:90%
+class.
+
+00:10:42.970 --> 00:10:48.870 align:middle line:84%
+So a really classic example
+is called kernel methods.
+
+00:10:48.870 --> 00:10:50.850 align:middle line:84%
+And actually it's
+quite related to what
+
+00:10:50.850 --> 00:10:53.790 align:middle line:84%
+we talked about in the
+approximation theory lecture,
+
+00:10:53.790 --> 00:10:57.090 align:middle line:90%
+which was maybe lecture two.
+
+00:10:57.090 --> 00:10:58.930 align:middle line:84%
+But kernel method
+says we're going
+
+00:10:58.930 --> 00:11:02.370 align:middle line:84%
+to take a kernel,
+which is basically,
+
+00:11:02.370 --> 00:11:04.510 align:middle line:84%
+you could also think of
+it as a bump function.
+
+00:11:04.510 --> 00:11:08.130 align:middle line:90%
+
+
+00:11:08.130 --> 00:11:11.970 align:middle line:84%
+And it could just look
+like a little Gaussian
+
+00:11:11.970 --> 00:11:14.210 align:middle line:90%
+or a little curvy.
+
+00:11:14.210 --> 00:11:19.730 align:middle line:84%
+And I'm going to
+place one kernel
+
+00:11:19.730 --> 00:11:28.010 align:middle line:84%
+on the location of each
+input, if this makes sense.
+
+00:11:28.010 --> 00:11:32.830 align:middle line:84%
+So if I've got four inputs, I'll
+put four little bump functions.
+
+00:11:32.830 --> 00:11:35.787 align:middle line:84%
+And intuitively, if I've
+got four data points
+
+00:11:35.787 --> 00:11:37.370 align:middle line:84%
+and I have four bump
+functions, then I
+
+00:11:37.370 --> 00:11:40.390 align:middle line:84%
+have enough degrees of
+freedom to fit the data.
+
+00:11:40.390 --> 00:11:43.670 align:middle line:90%
+So that seems to make sense.
+
+00:11:43.670 --> 00:11:47.930 align:middle line:84%
+And then I'm just
+going to rescale them
+
+00:11:47.930 --> 00:11:56.190 align:middle line:84%
+with scalar coefficients just so
+that they interpolate the data.
+
+00:11:56.190 --> 00:11:59.330 align:middle line:84%
+So it's four bump functions,
+four scalar coefficients,
+
+00:11:59.330 --> 00:12:00.430 align:middle line:90%
+four data points.
+
+00:12:00.430 --> 00:12:01.630 align:middle line:90%
+Everything checks out.
+
+00:12:01.630 --> 00:12:06.010 align:middle line:90%
+
+
+00:12:06.010 --> 00:12:10.890 align:middle line:90%
+And I wrote that down here.
+
+00:12:10.890 --> 00:12:16.330 align:middle line:84%
+So I construct my function,
+f of x, if I've got n data
+
+00:12:16.330 --> 00:12:19.730 align:middle line:84%
+points, I need to sum
+over n bump functions.
+
+00:12:19.730 --> 00:12:24.950 align:middle line:84%
+And I denote each bump
+function using this notation k.
+
+00:12:24.950 --> 00:12:28.150 align:middle line:90%
+
+
+00:12:28.150 --> 00:12:30.710 align:middle line:84%
+And then there's
+also a scalar alpha,
+
+00:12:30.710 --> 00:12:33.670 align:middle line:84%
+which allows me to reweight the
+heights of the different bumps.
+
+00:12:33.670 --> 00:12:37.370 align:middle line:84%
+And then if I have n
+bumps and n data points,
+
+00:12:37.370 --> 00:12:39.210 align:middle line:90%
+I can definitely fit my data.
+
+00:12:39.210 --> 00:12:41.530 align:middle line:84%
+So it's kind of a
+natural way just
+
+00:12:41.530 --> 00:12:49.330 align:middle line:84%
+to explain a little bit about
+what k of x and xi means.
+
+00:12:49.330 --> 00:13:01.370 align:middle line:84%
+Roughly, looking at this,
+this would be k of x, 0.
+
+00:13:01.370 --> 00:13:04.530 align:middle line:84%
+And then you should
+think about this xi
+
+00:13:04.530 --> 00:13:08.250 align:middle line:84%
+as allowing me to translate
+this bump along the x-axis
+
+00:13:08.250 --> 00:13:11.790 align:middle line:84%
+to be centered on
+that i-th data point.
+
+00:13:11.790 --> 00:13:20.650 align:middle line:90%
+
+
+00:13:20.650 --> 00:13:22.690 align:middle line:90%
+That's just what this bit says.
+
+00:13:22.690 --> 00:13:27.330 align:middle line:84%
+And then I can define a function
+space, let's call it big F,
+
+00:13:27.330 --> 00:13:30.410 align:middle line:84%
+to be the set of
+functions f that
+
+00:13:30.410 --> 00:13:33.390 align:middle line:90%
+can be decomposed in that form.
+
+00:13:33.390 --> 00:13:40.850 align:middle line:90%
+
+
+00:13:40.850 --> 00:13:45.560 align:middle line:84%
+And if I let the number
+of bump functions
+
+00:13:45.560 --> 00:13:51.400 align:middle line:84%
+actually go to infinity, so I
+consider all possible locations
+
+00:13:51.400 --> 00:13:53.160 align:middle line:84%
+of where I put the
+bumps, and then
+
+00:13:53.160 --> 00:13:57.120 align:middle line:84%
+I actually allow myself
+to have infinite bumps.
+
+00:13:57.120 --> 00:14:01.720 align:middle line:84%
+Then, this is what
+is known as, they
+
+00:14:01.720 --> 00:14:04.360 align:middle line:84%
+call this function space a
+reproducing kernel Hilbert
+
+00:14:04.360 --> 00:14:05.020 align:middle line:90%
+space.
+
+00:14:05.020 --> 00:14:09.480 align:middle line:90%
+
+
+00:14:09.480 --> 00:14:12.640 align:middle line:84%
+And this was all the
+rage before deep learning
+
+00:14:12.640 --> 00:14:17.720 align:middle line:84%
+or before the recent,
+let's say the last 13 years
+
+00:14:17.720 --> 00:14:19.440 align:middle line:90%
+of deep learning.
+
+00:14:19.440 --> 00:14:21.860 align:middle line:84%
+Before that, everyone
+was doing kernel methods,
+
+00:14:21.860 --> 00:14:24.800 align:middle line:84%
+and they were considering
+spaces of functions like this.
+
+00:14:24.800 --> 00:14:26.900 align:middle line:84%
+Instead of choosing your
+neural architecture,
+
+00:14:26.900 --> 00:14:30.320 align:middle line:84%
+the whole thing was like,
+you pick a kernel function.
+
+00:14:30.320 --> 00:14:32.240 align:middle line:84%
+You choose a good
+kernel or a good bump
+
+00:14:32.240 --> 00:14:37.240 align:middle line:84%
+function that somehow captures
+the structure in your data.
+
+00:14:37.240 --> 00:14:40.460 align:middle line:84%
+And all the machine learning--
+sorry, slight exaggeration,
+
+00:14:40.460 --> 00:14:44.760 align:middle line:84%
+but there were a lot of
+machine learning papers focused
+
+00:14:44.760 --> 00:14:46.020 align:middle line:90%
+on kernel methods.
+
+00:14:46.020 --> 00:14:49.280 align:middle line:90%
+
+
+00:14:49.280 --> 00:14:55.480 align:middle line:84%
+So that's just a little
+introduction to kernel methods.
+
+00:14:55.480 --> 00:14:59.000 align:middle line:84%
+And if you just think about
+it, it's not so obvious
+
+00:14:59.000 --> 00:15:01.000 align:middle line:90%
+why do we use neural networks.
+
+00:15:01.000 --> 00:15:04.560 align:middle line:84%
+Why didn't we go back
+to kernel methods?
+
+00:15:04.560 --> 00:15:07.460 align:middle line:84%
+You need to think about it
+or it may not be obvious.
+
+00:15:07.460 --> 00:15:11.160 align:middle line:90%
+
+
+00:15:11.160 --> 00:15:14.000 align:middle line:84%
+There's a second way,
+second classic way
+
+00:15:14.000 --> 00:15:23.040 align:middle line:84%
+of constructing function spaces
+or doing machine learning, where
+
+00:15:23.040 --> 00:15:29.300 align:middle line:84%
+actually this time, you think
+about sampling random functions.
+
+00:15:29.300 --> 00:15:35.940 align:middle line:84%
+So you come up with some way of
+just sampling random functions.
+
+00:15:35.940 --> 00:15:38.680 align:middle line:84%
+We would call this some
+kind of stochastic process.
+
+00:15:38.680 --> 00:15:43.560 align:middle line:84%
+And imagine you just keep
+sampling random functions
+
+00:15:43.560 --> 00:15:45.840 align:middle line:90%
+from your stochastic process.
+
+00:15:45.840 --> 00:15:50.520 align:middle line:84%
+And if it doesn't fit the
+data, you just throw it away.
+
+00:15:50.520 --> 00:15:53.080 align:middle line:84%
+But if it fits the data,
+you actually keep it.
+
+00:15:53.080 --> 00:15:55.160 align:middle line:84%
+And you're going
+to somehow end up
+
+00:15:55.160 --> 00:16:04.480 align:middle line:84%
+with this distribution of
+functions that actually goes
+
+00:16:04.480 --> 00:16:05.940 align:middle line:90%
+through your training data.
+
+00:16:05.940 --> 00:16:09.020 align:middle line:84%
+So if you actually
+use this method,
+
+00:16:09.020 --> 00:16:10.760 align:middle line:84%
+you wouldn't actually
+do that procedure
+
+00:16:10.760 --> 00:16:12.460 align:middle line:90%
+of sampling lots of functions.
+
+00:16:12.460 --> 00:16:14.360 align:middle line:84%
+You would actually
+do something called
+
+00:16:14.360 --> 00:16:17.800 align:middle line:84%
+conditioning the distribution of
+functions on the training data
+
+00:16:17.800 --> 00:16:21.080 align:middle line:84%
+and getting what we
+would call the posterior
+
+00:16:21.080 --> 00:16:24.480 align:middle line:90%
+distribution of functions.
+
+00:16:24.480 --> 00:16:27.380 align:middle line:84%
+But intuitively, this is what's
+going on with this technique.
+
+00:16:27.380 --> 00:16:30.480 align:middle line:90%
+
+
+00:16:30.480 --> 00:16:32.520 align:middle line:84%
+And there's a
+special way to make
+
+00:16:32.520 --> 00:16:34.480 align:middle line:90%
+this computationally tractable.
+
+00:16:34.480 --> 00:16:36.960 align:middle line:84%
+And it basically amounts
+to making the way
+
+00:16:36.960 --> 00:16:40.720 align:middle line:84%
+that you generate the functions
+like a Gaussian thing.
+
+00:16:40.720 --> 00:16:44.000 align:middle line:84%
+And then all the
+computations that you
+
+00:16:44.000 --> 00:16:48.020 align:middle line:84%
+need to do this procedure
+become straightforward.
+
+00:16:48.020 --> 00:16:50.690 align:middle line:90%
+
+
+00:16:50.690 --> 00:16:51.560 align:middle line:90%
+AUDIENCE: Question.
+
+00:16:51.560 --> 00:16:52.518 align:middle line:90%
+JEREMY BERNSTEIN: Yeah?
+
+00:16:52.518 --> 00:16:53.935 align:middle line:84%
+AUDIENCE: If I
+remember correctly,
+
+00:16:53.935 --> 00:16:55.720 align:middle line:84%
+I think the optimal
+thing is roughly
+
+00:16:55.720 --> 00:16:57.920 align:middle line:90%
+like a kernel method itself.
+
+00:16:57.920 --> 00:16:59.480 align:middle line:90%
+How similar are they?
+
+00:16:59.480 --> 00:17:03.160 align:middle line:84%
+JEREMY BERNSTEIN: Yeah,
+that's a really good question.
+
+00:17:03.160 --> 00:17:04.300 align:middle line:90%
+I have a slide.
+
+00:17:04.300 --> 00:17:07.000 align:middle line:90%
+
+
+00:17:07.000 --> 00:17:08.839 align:middle line:84%
+Actually, it turns
+out, as it happens,
+
+00:17:08.839 --> 00:17:12.352 align:middle line:84%
+there's a close connection
+between this procedure
+
+00:17:12.352 --> 00:17:14.560 align:middle line:84%
+and the thing on the previous
+slide with all the bump
+
+00:17:14.560 --> 00:17:15.720 align:middle line:90%
+functions.
+
+00:17:15.720 --> 00:17:17.680 align:middle line:90%
+And that's kind of interesting.
+
+00:17:17.680 --> 00:17:29.880 align:middle line:90%
+
+
+00:17:29.880 --> 00:17:33.340 align:middle line:84%
+We've not discussed yet how to
+sample these random functions,
+
+00:17:33.340 --> 00:17:35.220 align:middle line:90%
+but we're going to discuss them.
+
+00:17:35.220 --> 00:17:39.150 align:middle line:84%
+But let's just say that
+we've discussed it already.
+
+00:17:39.150 --> 00:17:41.550 align:middle line:84%
+And the point is
+that if you sample
+
+00:17:41.550 --> 00:17:43.350 align:middle line:84%
+all of these random
+functions that
+
+00:17:43.350 --> 00:17:45.990 align:middle line:84%
+are consistent with the
+data and then compute
+
+00:17:45.990 --> 00:17:48.270 align:middle line:84%
+the mean of that
+distribution, you
+
+00:17:48.270 --> 00:17:51.670 align:middle line:84%
+get a single, quite
+smooth function, which
+
+00:17:51.670 --> 00:17:55.390 align:middle line:84%
+is the mean of that distribution
+over consistent functions.
+
+00:17:55.390 --> 00:18:04.870 align:middle line:84%
+And that turns out to be
+equivalent to the kernel
+
+00:18:04.870 --> 00:18:08.590 align:middle line:84%
+interpolator of
+minimum kernel norm,
+
+00:18:08.590 --> 00:18:13.790 align:middle line:84%
+for some definition
+of the RKHS norm.
+
+00:18:13.790 --> 00:18:16.490 align:middle line:84%
+So yeah, there's a
+really close connection.
+
+00:18:16.490 --> 00:18:20.330 align:middle line:84%
+But that should not
+make sense to everyone,
+
+00:18:20.330 --> 00:18:23.130 align:middle line:84%
+because we haven't defined
+any of those things.
+
+00:18:23.130 --> 00:18:28.590 align:middle line:90%
+
+
+00:18:28.590 --> 00:18:29.230 align:middle line:90%
+Oh, yeah.
+
+00:18:29.230 --> 00:18:31.270 align:middle line:90%
+OK, here was the slide.
+
+00:18:31.270 --> 00:18:37.790 align:middle line:84%
+So there's three ways
+now that we're going
+
+00:18:37.790 --> 00:18:42.710 align:middle line:90%
+to think about function spaces.
+
+00:18:42.710 --> 00:18:45.390 align:middle line:84%
+So first of all, this
+one is the one we just
+
+00:18:45.390 --> 00:18:48.628 align:middle line:84%
+talked about where you sample
+lots of random functions,
+
+00:18:48.628 --> 00:18:51.170 align:middle line:84%
+and then you throw away all the
+ones that don't fit the data,
+
+00:18:51.170 --> 00:18:53.590 align:middle line:84%
+and you just keep the
+ones that fit the data.
+
+00:18:53.590 --> 00:18:57.910 align:middle line:84%
+And this will be something
+called a Gaussian process.
+
+00:18:57.910 --> 00:19:00.510 align:middle line:84%
+Kernel methods are the ones
+with the bump functions, where
+
+00:19:00.510 --> 00:19:04.030 align:middle line:84%
+we pick our favorite
+little bump and arrange
+
+00:19:04.030 --> 00:19:06.870 align:middle line:90%
+them to fit the data.
+
+00:19:06.870 --> 00:19:12.110 align:middle line:84%
+And then neural networks are
+what the class is mainly about.
+
+00:19:12.110 --> 00:19:15.030 align:middle line:84%
+And the cool thing, the
+really interesting thing
+
+00:19:15.030 --> 00:19:18.470 align:middle line:84%
+is that there's all
+these correspondences.
+
+00:19:18.470 --> 00:19:21.470 align:middle line:84%
+There's sort of a way to get a
+kernel method from a Gaussian
+
+00:19:21.470 --> 00:19:22.430 align:middle line:90%
+process.
+
+00:19:22.430 --> 00:19:27.870 align:middle line:84%
+There's kind of a way to
+get a Gaussian process--
+
+00:19:27.870 --> 00:19:29.143 align:middle line:90%
+they're related to each other.
+
+00:19:29.143 --> 00:19:30.810 align:middle line:84%
+And the relation
+somehow goes both ways.
+
+00:19:30.810 --> 00:19:32.830 align:middle line:90%
+That's all I want to say.
+
+00:19:32.830 --> 00:19:35.790 align:middle line:84%
+But interestingly, there's a
+way to get a Gaussian process
+
+00:19:35.790 --> 00:19:38.210 align:middle line:90%
+from a neural network.
+
+00:19:38.210 --> 00:19:41.330 align:middle line:90%
+
+
+00:19:41.330 --> 00:19:44.810 align:middle line:84%
+Well, there's actually maybe
+a couple ways to do it.
+
+00:19:44.810 --> 00:19:47.590 align:middle line:84%
+But the one that we're
+going to think about,
+
+00:19:47.590 --> 00:19:52.230 align:middle line:84%
+there's a correspondence
+where a neural network
+
+00:19:52.230 --> 00:19:54.390 align:middle line:84%
+in a particular limit is
+equivalent to a Gaussian
+
+00:19:54.390 --> 00:19:55.550 align:middle line:90%
+process.
+
+00:19:55.550 --> 00:19:59.750 align:middle line:84%
+And it's basically when the
+network is infinitely wide.
+
+00:19:59.750 --> 00:20:01.910 align:middle line:84%
+So you take the width
+of all the hidden layers
+
+00:20:01.910 --> 00:20:03.870 align:middle line:84%
+and you make them
+infinitely wide.
+
+00:20:03.870 --> 00:20:07.730 align:middle line:84%
+And then you randomly
+sample the weights.
+
+00:20:07.730 --> 00:20:10.670 align:middle line:90%
+
+
+00:20:10.670 --> 00:20:13.690 align:middle line:84%
+So you could think about
+that as you repeatedly,
+
+00:20:13.690 --> 00:20:15.690 align:middle line:84%
+you just keep
+re-initializing your network.
+
+00:20:15.690 --> 00:20:17.430 align:middle line:84%
+And it keeps giving
+you random functions.
+
+00:20:17.430 --> 00:20:19.590 align:middle line:84%
+If the network is
+infinitely wide,
+
+00:20:19.590 --> 00:20:21.230 align:middle line:84%
+it turns out that
+this distribution
+
+00:20:21.230 --> 00:20:25.750 align:middle line:84%
+is equivalent to something
+called a Gaussian process.
+
+00:20:25.750 --> 00:20:27.630 align:middle line:84%
+So these connections,
+if you want
+
+00:20:27.630 --> 00:20:30.990 align:middle line:84%
+to understand more theoretically
+about deep learning,
+
+00:20:30.990 --> 00:20:34.030 align:middle line:84%
+it's interesting to explore
+these connections because you
+
+00:20:34.030 --> 00:20:38.310 align:middle line:84%
+can relate neural networks to
+these classical machine learning
+
+00:20:38.310 --> 00:20:40.610 align:middle line:84%
+methods that people
+really cared a lot about.
+
+00:20:40.610 --> 00:20:44.270 align:middle line:90%
+
+
+00:20:44.270 --> 00:20:46.030 align:middle line:84%
+Then, you can ask
+things like, how useful
+
+00:20:46.030 --> 00:20:47.510 align:middle line:90%
+are these correspondences?
+
+00:20:47.510 --> 00:20:50.070 align:middle line:84%
+Do the correspondences
+actually amount to things
+
+00:20:50.070 --> 00:20:51.490 align:middle line:90%
+which happen in practice?
+
+00:20:51.490 --> 00:20:54.250 align:middle line:84%
+And that's something else
+you've got to think about.
+
+00:20:54.250 --> 00:20:56.550 align:middle line:84%
+But I'm just going to tell
+you a little bit about one
+
+00:20:56.550 --> 00:20:59.730 align:middle line:90%
+of the correspondences.
+
+00:20:59.730 --> 00:21:00.230 align:middle line:90%
+Yeah?
+
+00:21:00.230 --> 00:21:02.610 align:middle line:84%
+AUDIENCE: These are all
+equally expressive, right?
+
+00:21:02.610 --> 00:21:04.350 align:middle line:84%
+Or is there some
+sense in which one is
+
+00:21:04.350 --> 00:21:07.662 align:middle line:90%
+more expressive than the other?
+
+00:21:07.662 --> 00:21:09.370 align:middle line:84%
+JEREMY BERNSTEIN:
+That's a good question.
+
+00:21:09.370 --> 00:21:11.372 align:middle line:84%
+So the question was,
+is there a sense
+
+00:21:11.372 --> 00:21:13.330 align:middle line:84%
+in which one is more
+expressive than the other?
+
+00:21:13.330 --> 00:21:16.550 align:middle line:84%
+Or all the different function
+spaces equally expressive?
+
+00:21:16.550 --> 00:21:19.950 align:middle line:84%
+I think they may just be
+different in some sense.
+
+00:21:19.950 --> 00:21:22.630 align:middle line:84%
+You can look up and you'll
+find some literature
+
+00:21:22.630 --> 00:21:24.710 align:middle line:90%
+that discusses this.
+
+00:21:24.710 --> 00:21:27.880 align:middle line:84%
+And it's things like the
+smoothness properties
+
+00:21:27.880 --> 00:21:29.630 align:middle line:84%
+of the functions in
+the different function
+
+00:21:29.630 --> 00:21:31.470 align:middle line:90%
+spaces may just be different.
+
+00:21:31.470 --> 00:21:33.100 align:middle line:84%
+Like the kernel
+thing, because it's
+
+00:21:33.100 --> 00:21:35.140 align:middle line:84%
+built out of bump functions,
+even though there's
+
+00:21:35.140 --> 00:21:36.890 align:middle line:84%
+an infinite number of
+them, they may still
+
+00:21:36.890 --> 00:21:39.200 align:middle line:90%
+be reasonably smooth functions.
+
+00:21:39.200 --> 00:21:40.980 align:middle line:84%
+But I think for a
+Gaussian process,
+
+00:21:40.980 --> 00:21:42.680 align:middle line:84%
+depending on the
+covariate structure,
+
+00:21:42.680 --> 00:21:44.980 align:middle line:84%
+you can have really
+horrendous functions.
+
+00:21:44.980 --> 00:21:47.200 align:middle line:84%
+But interestingly,
+with that said,
+
+00:21:47.200 --> 00:21:49.980 align:middle line:84%
+if you take the mean of the
+posterior of the Gaussian
+
+00:21:49.980 --> 00:21:52.920 align:middle line:84%
+process, it's actually
+a nice, smooth function.
+
+00:21:52.920 --> 00:21:54.640 align:middle line:90%
+So it's just different.
+
+00:21:54.640 --> 00:21:57.460 align:middle line:84%
+I don't know which one
+is more expressive.
+
+00:21:57.460 --> 00:21:59.400 align:middle line:84%
+But it's an interesting
+thing to think about.
+
+00:21:59.400 --> 00:22:06.700 align:middle line:90%
+
+
+00:22:06.700 --> 00:22:08.820 align:middle line:90%
+OK, let's see.
+
+00:22:08.820 --> 00:22:12.740 align:middle line:84%
+OK, so now I'm going to
+introduce slightly more formally
+
+00:22:12.740 --> 00:22:14.680 align:middle line:84%
+what a Gaussian
+process actually is.
+
+00:22:14.680 --> 00:22:21.180 align:middle line:90%
+
+
+00:22:21.180 --> 00:22:24.200 align:middle line:84%
+So this is just a recap of
+what we just talked about.
+
+00:22:24.200 --> 00:22:34.020 align:middle line:84%
+But basically, if
+we have some data,
+
+00:22:34.020 --> 00:22:38.780 align:middle line:84%
+we can think about sampling lots
+of, lots of random functions
+
+00:22:38.780 --> 00:22:42.060 align:middle line:84%
+that are the ones that are
+consistent with the data.
+
+00:22:42.060 --> 00:22:45.140 align:middle line:84%
+And we can get
+this distribution.
+
+00:22:45.140 --> 00:22:46.740 align:middle line:84%
+And just notice that
+all the functions
+
+00:22:46.740 --> 00:22:50.860 align:middle line:84%
+are going through the
+data, but they're random
+
+00:22:50.860 --> 00:22:52.040 align:middle line:90%
+away from the data.
+
+00:22:52.040 --> 00:22:55.380 align:middle line:90%
+
+
+00:22:55.380 --> 00:22:57.540 align:middle line:84%
+And then given that
+random function,
+
+00:22:57.540 --> 00:23:00.140 align:middle line:84%
+you can ask a
+couple of questions.
+
+00:23:00.140 --> 00:23:03.020 align:middle line:84%
+One is, what does
+the mean look like?
+
+00:23:03.020 --> 00:23:05.580 align:middle line:84%
+And it's reasonable
+that the mean
+
+00:23:05.580 --> 00:23:11.140 align:middle line:84%
+might be a lot smoother than all
+the random squiggly functions.
+
+00:23:11.140 --> 00:23:13.660 align:middle line:84%
+And then you could ask, what
+is the standard deviation
+
+00:23:13.660 --> 00:23:16.500 align:middle line:90%
+around the mean?
+
+00:23:16.500 --> 00:23:18.100 align:middle line:84%
+And it's reasonable
+that it should
+
+00:23:18.100 --> 00:23:23.760 align:middle line:84%
+grow as you move
+away from the data,
+
+00:23:23.760 --> 00:23:27.120 align:middle line:84%
+and then shrink
+to 0 on the data.
+
+00:23:27.120 --> 00:23:29.120 align:middle line:90%
+So that's one way it could look.
+
+00:23:29.120 --> 00:23:34.340 align:middle line:90%
+
+
+00:23:34.340 --> 00:23:35.900 align:middle line:84%
+So the point of a
+Gaussian process
+
+00:23:35.900 --> 00:23:40.500 align:middle line:84%
+is it gives you a formula,
+just a simple thing that you
+
+00:23:40.500 --> 00:23:41.840 align:middle line:90%
+can easily code up.
+
+00:23:41.840 --> 00:23:44.820 align:middle line:84%
+It just involves some matrices
+and some linear algebra.
+
+00:23:44.820 --> 00:23:51.040 align:middle line:84%
+But it gives you a formula,
+both for the mean function
+
+00:23:51.040 --> 00:23:54.220 align:middle line:90%
+and the standard deviation.
+
+00:23:54.220 --> 00:24:00.700 align:middle line:84%
+In other words, given a set of
+data, you've got these inputs,
+
+00:24:00.700 --> 00:24:04.060 align:middle line:84%
+you can pick a new
+point on the x-axis.
+
+00:24:04.060 --> 00:24:07.580 align:middle line:84%
+You say, I really care about
+this point on the x-axis.
+
+00:24:07.580 --> 00:24:10.980 align:middle line:84%
+There's a formula that tells
+you the value of the mean
+
+00:24:10.980 --> 00:24:15.560 align:middle line:84%
+and what the standard
+deviation is at that point.
+
+00:24:15.560 --> 00:24:18.600 align:middle line:84%
+And then you can of sweep
+that point along the x-axis.
+
+00:24:18.600 --> 00:24:21.340 align:middle line:84%
+And you can get this
+mean and you can
+
+00:24:21.340 --> 00:24:23.500 align:middle line:90%
+get this standard deviation.
+
+00:24:23.500 --> 00:24:25.860 align:middle line:84%
+So it basically
+gives you a formula
+
+00:24:25.860 --> 00:24:27.460 align:middle line:90%
+for drawing this picture.
+
+00:24:27.460 --> 00:24:29.740 align:middle line:84%
+That's one way to
+think simply about what
+
+00:24:29.740 --> 00:24:31.740 align:middle line:90%
+a Gaussian process is.
+
+00:24:31.740 --> 00:24:38.200 align:middle line:84%
+And basically, the shape of
+these standard deviations
+
+00:24:38.200 --> 00:24:42.580 align:middle line:84%
+and what this picture looks
+like depends upon something
+
+00:24:42.580 --> 00:24:45.020 align:middle line:84%
+that we call the covariance
+structure of the Gaussian
+
+00:24:45.020 --> 00:24:45.520 align:middle line:90%
+process.
+
+00:24:45.520 --> 00:24:50.300 align:middle line:84%
+And that's what we get to pick
+as machine learning people
+
+00:24:50.300 --> 00:24:51.900 align:middle line:84%
+using Gaussian
+processes, is we get
+
+00:24:51.900 --> 00:24:55.860 align:middle line:84%
+to pick the
+covariance structure.
+
+00:24:55.860 --> 00:24:59.220 align:middle line:90%
+So that's the picture.
+
+00:24:59.220 --> 00:25:05.420 align:middle line:84%
+Informally, I think this is
+probably the most useful--
+
+00:25:05.420 --> 00:25:06.895 align:middle line:84%
+if you just want
+a quick takeaway,
+
+00:25:06.895 --> 00:25:08.520 align:middle line:84%
+you don't want to go
+into all the math,
+
+00:25:08.520 --> 00:25:11.820 align:middle line:84%
+this is quite
+useful understanding
+
+00:25:11.820 --> 00:25:13.500 align:middle line:90%
+of what a Gaussian Process is.
+
+00:25:13.500 --> 00:25:15.820 align:middle line:84%
+Just pretend that
+you don't know what
+
+00:25:15.820 --> 00:25:17.280 align:middle line:90%
+a stochastic process is like.
+
+00:25:17.280 --> 00:25:18.780 align:middle line:90%
+Most people honestly don't.
+
+00:25:18.780 --> 00:25:21.140 align:middle line:84%
+But you do know what
+a random vector is.
+
+00:25:21.140 --> 00:25:24.820 align:middle line:84%
+So let's just think
+about random vectors.
+
+00:25:24.820 --> 00:25:29.490 align:middle line:84%
+So this is supposed to
+represent a vector, which I just
+
+00:25:29.490 --> 00:25:33.290 align:middle line:84%
+turned horizontally so
+it would fit on the page.
+
+00:25:33.290 --> 00:25:37.090 align:middle line:84%
+And imagine that I have a
+multivariate normal random
+
+00:25:37.090 --> 00:25:41.930 align:middle line:84%
+vector with some covariance
+matrix and some mean,
+
+00:25:41.930 --> 00:25:45.490 align:middle line:90%
+which is actually 0.
+
+00:25:45.490 --> 00:25:50.330 align:middle line:84%
+Then I could plot
+each coordinate.
+
+00:25:50.330 --> 00:25:52.930 align:middle line:84%
+I get one sample of
+this random vector,
+
+00:25:52.930 --> 00:25:54.990 align:middle line:90%
+and I just plot it on an axis.
+
+00:25:54.990 --> 00:26:00.090 align:middle line:90%
+So I just plot each entry.
+
+00:26:00.090 --> 00:26:03.210 align:middle line:84%
+So this one corresponds to
+this one, this one corresponds
+
+00:26:03.210 --> 00:26:04.510 align:middle line:90%
+to this one.
+
+00:26:04.510 --> 00:26:09.130 align:middle line:84%
+And I could do that, and then
+I could just connect the dots.
+
+00:26:09.130 --> 00:26:14.010 align:middle line:84%
+And I could call
+this somehow building
+
+00:26:14.010 --> 00:26:19.210 align:middle line:84%
+a function from a random vector
+just by connecting the dots.
+
+00:26:19.210 --> 00:26:21.210 align:middle line:84%
+So I could do that
+if I wanted to.
+
+00:26:21.210 --> 00:26:26.190 align:middle line:84%
+Then I could say,
+in this picture,
+
+00:26:26.190 --> 00:26:32.490 align:middle line:84%
+it's not that great because
+neighboring points on the x-axis
+
+00:26:32.490 --> 00:26:35.730 align:middle line:84%
+are not correlated
+with each other.
+
+00:26:35.730 --> 00:26:37.910 align:middle line:84%
+And usually if I
+have a nice function,
+
+00:26:37.910 --> 00:26:41.050 align:middle line:84%
+I want nearby points to
+be similar to each other.
+
+00:26:41.050 --> 00:26:43.090 align:middle line:84%
+So then you say,
+OK, hey, I'm just
+
+00:26:43.090 --> 00:26:48.030 align:middle line:84%
+going to choose a covariance
+matrix with a special structure
+
+00:26:48.030 --> 00:26:51.970 align:middle line:84%
+so that the covariance
+of neighboring
+
+00:26:51.970 --> 00:26:57.870 align:middle line:84%
+entries in the vector are very
+correlated with each other.
+
+00:26:57.870 --> 00:26:59.610 align:middle line:84%
+So I just pick the
+covariance such
+
+00:26:59.610 --> 00:27:03.378 align:middle line:84%
+that neighboring entries in
+my vector are very correlated.
+
+00:27:03.378 --> 00:27:05.670 align:middle line:84%
+Obviously, if I permuted all
+the entries in the vector,
+
+00:27:05.670 --> 00:27:06.510 align:middle line:90%
+it would break that.
+
+00:27:06.510 --> 00:27:07.990 align:middle line:90%
+But I'm not going to do that.
+
+00:27:07.990 --> 00:27:11.090 align:middle line:84%
+So I'm basically going to pick
+a covariance structure such
+
+00:27:11.090 --> 00:27:14.190 align:middle line:84%
+that neighboring
+entries are related.
+
+00:27:14.190 --> 00:27:16.150 align:middle line:84%
+And then I would get a
+picture more like this,
+
+00:27:16.150 --> 00:27:24.490 align:middle line:84%
+where when I connect
+the dots, the function,
+
+00:27:24.490 --> 00:27:28.370 align:middle line:84%
+it looks more like a nice
+function that I like.
+
+00:27:28.370 --> 00:27:29.930 align:middle line:84%
+And then basically
+a Gaussian process
+
+00:27:29.930 --> 00:27:31.850 align:middle line:84%
+is exactly this
+construction, but then you
+
+00:27:31.850 --> 00:27:36.070 align:middle line:84%
+let the number of grid
+cells in your vector,
+
+00:27:36.070 --> 00:27:38.490 align:middle line:84%
+you let the dimension of
+your vector go to infinity.
+
+00:27:38.490 --> 00:27:43.450 align:middle line:84%
+And basically, you pack
+these sample points
+
+00:27:43.450 --> 00:27:45.710 align:middle line:84%
+more and more closely
+together, if that makes sense.
+
+00:27:45.710 --> 00:27:49.210 align:middle line:90%
+
+
+00:27:49.210 --> 00:27:51.810 align:middle line:84%
+Does the construction
+make sense?
+
+00:27:51.810 --> 00:27:54.950 align:middle line:84%
+You're saying if you
+have a random vector,
+
+00:27:54.950 --> 00:27:56.430 align:middle line:90%
+you can plot its coordinates.
+
+00:27:56.430 --> 00:28:00.230 align:middle line:84%
+And then you can let the number
+of coordinates go to infinity,
+
+00:28:00.230 --> 00:28:05.890 align:middle line:84%
+and it will just
+limit to something
+
+00:28:05.890 --> 00:28:10.810 align:middle line:84%
+that's more like a continuous
+function available.
+
+00:28:10.810 --> 00:28:11.890 align:middle line:90%
+Does that make sense?
+
+00:28:11.890 --> 00:28:13.590 align:middle line:84%
+I've not really
+proved anything here.
+
+00:28:13.590 --> 00:28:15.950 align:middle line:84%
+I've just given you an
+intuitive description.
+
+00:28:15.950 --> 00:28:18.810 align:middle line:90%
+
+
+00:28:18.810 --> 00:28:22.350 align:middle line:84%
+So if you forget everything
+else from the lecture,
+
+00:28:22.350 --> 00:28:26.240 align:middle line:84%
+that's basically what
+a Gaussian process is.
+
+00:28:26.240 --> 00:28:31.160 align:middle line:84%
+So now I want to give
+you a formal definition.
+
+00:28:31.160 --> 00:28:33.760 align:middle line:84%
+So now we say that we
+have some input space
+
+00:28:33.760 --> 00:28:42.080 align:middle line:84%
+X, which that was our x-axis
+in the previous slide.
+
+00:28:42.080 --> 00:28:48.520 align:middle line:84%
+And then for every point
+in this input space,
+
+00:28:48.520 --> 00:28:53.340 align:middle line:84%
+for infinitely many points, we
+let f of x be a random variable.
+
+00:28:53.340 --> 00:28:56.680 align:middle line:90%
+
+
+00:28:56.680 --> 00:29:01.920 align:middle line:84%
+So you think about the function
+f indexed by its argument x
+
+00:29:01.920 --> 00:29:05.500 align:middle line:84%
+as being the continuous
+generalization
+
+00:29:05.500 --> 00:29:13.840 align:middle line:84%
+of a random vector, where x is
+the index about which coordinate
+
+00:29:13.840 --> 00:29:15.560 align:middle line:90%
+you are on on the vector.
+
+00:29:15.560 --> 00:29:18.700 align:middle line:84%
+But that's just an
+informal thought.
+
+00:29:18.700 --> 00:29:21.240 align:middle line:90%
+
+
+00:29:21.240 --> 00:29:24.960 align:middle line:84%
+And then what we say is that
+because it's difficult to think
+
+00:29:24.960 --> 00:29:28.120 align:middle line:84%
+about infinite
+dimensional objects,
+
+00:29:28.120 --> 00:29:33.400 align:middle line:84%
+we say that if we choose a
+finite number of input points
+
+00:29:33.400 --> 00:29:39.480 align:middle line:84%
+and inspect what the random
+object f looks like on any
+
+00:29:39.480 --> 00:29:44.920 align:middle line:84%
+finite set of inputs-- so on any
+collection of inputs x1 to xn,
+
+00:29:44.920 --> 00:29:47.950 align:middle line:90%
+where n is finite--
+
+00:29:47.950 --> 00:29:50.900 align:middle line:84%
+we can consider that
+to be a random vector.
+
+00:29:50.900 --> 00:29:52.360 align:middle line:84%
+Legitimately, it
+is a random vector
+
+00:29:52.360 --> 00:29:54.600 align:middle line:84%
+because we're
+inspecting the function
+
+00:29:54.600 --> 00:29:56.800 align:middle line:90%
+on a finite set of inputs.
+
+00:29:56.800 --> 00:30:01.120 align:middle line:84%
+And if this random
+vector is Gaussian
+
+00:30:01.120 --> 00:30:03.760 align:middle line:84%
+for any finite
+collection of inputs,
+
+00:30:03.760 --> 00:30:06.440 align:middle line:84%
+then we would say that
+f is a Gaussian process.
+
+00:30:06.440 --> 00:30:09.868 align:middle line:84%
+So this is the formal definition
+of the Gaussian process.
+
+00:30:09.868 --> 00:30:12.160 align:middle line:84%
+It's kind of like an infinite
+dimensional object, where
+
+00:30:12.160 --> 00:30:15.340 align:middle line:84%
+if you take any finite
+inspection of that object,
+
+00:30:15.340 --> 00:30:17.960 align:middle line:84%
+it's a Gaussian vector,
+which is somehow
+
+00:30:17.960 --> 00:30:20.580 align:middle line:84%
+related to what we were talking
+about on the previous slide.
+
+00:30:20.580 --> 00:30:25.060 align:middle line:90%
+
+
+00:30:25.060 --> 00:30:25.560 align:middle line:90%
+Yeah.
+
+00:30:25.560 --> 00:30:26.060 align:middle line:90%
+Oh, yeah.
+
+00:30:26.060 --> 00:30:26.760 align:middle line:90%
+Go ahead.
+
+00:30:26.760 --> 00:30:31.560 align:middle line:84%
+AUDIENCE: Given a random
+vector, how would you verify
+
+00:30:31.560 --> 00:30:34.960 align:middle line:90%
+whether or not it is Gaussian?
+
+00:30:34.960 --> 00:30:37.960 align:middle line:84%
+JEREMY BERNSTEIN:
+It's more analytical.
+
+00:30:37.960 --> 00:30:39.840 align:middle line:84%
+When we use this tool,
+it's more like you
+
+00:30:39.840 --> 00:30:42.092 align:middle line:84%
+produce something which
+analytically, you know
+
+00:30:42.092 --> 00:30:44.300 align:middle line:90%
+it satisfies this definition.
+
+00:30:44.300 --> 00:30:46.080 align:middle line:84%
+You're very rarely
+in a situation
+
+00:30:46.080 --> 00:30:52.700 align:middle line:84%
+where you would want to test
+empirically if it's a Gaussian.
+
+00:30:52.700 --> 00:31:00.060 align:middle line:84%
+So you would have to verify
+it analytically in most cases.
+
+00:31:00.060 --> 00:31:02.980 align:middle line:84%
+And I'm blanking on how
+exactly you would do that.
+
+00:31:02.980 --> 00:31:06.440 align:middle line:90%
+But there are ways to do that.
+
+00:31:06.440 --> 00:31:09.640 align:middle line:84%
+AUDIENCE: So you can define
+in the construction what
+
+00:31:09.640 --> 00:31:11.860 align:middle line:90%
+the random variables are?
+
+00:31:11.860 --> 00:31:15.443 align:middle line:84%
+What each function
+[INAUDIBLE], right?
+
+00:31:15.443 --> 00:31:16.360 align:middle line:90%
+JEREMY BERNSTEIN: Yes.
+
+00:31:16.360 --> 00:31:18.760 align:middle line:84%
+So if you're going to
+use Gaussian processes,
+
+00:31:18.760 --> 00:31:21.860 align:middle line:84%
+you will build something which
+satisfies this definition.
+
+00:31:21.860 --> 00:31:23.000 align:middle line:90%
+AUDIENCE: OK.
+
+00:31:23.000 --> 00:31:25.280 align:middle line:84%
+JEREMY BERNSTEIN: And the
+thing is, what's difficult
+
+00:31:25.280 --> 00:31:27.640 align:middle line:84%
+about this definition is it's
+not obvious that anything
+
+00:31:27.640 --> 00:31:29.840 align:middle line:90%
+should satisfy this definition.
+
+00:31:29.840 --> 00:31:33.160 align:middle line:84%
+And there's a theorem
+that most people who use
+
+00:31:33.160 --> 00:31:36.700 align:middle line:90%
+Gaussian processes don't know.
+
+00:31:36.700 --> 00:31:39.448 align:middle line:84%
+But I think it's called
+Kolmogorov extension
+
+00:31:39.448 --> 00:31:40.740 align:middle line:90%
+theorem or something like this.
+
+00:31:40.740 --> 00:31:42.800 align:middle line:84%
+And there's this
+area of math which
+
+00:31:42.800 --> 00:31:46.440 align:middle line:84%
+is about proving that
+these things exist.
+
+00:31:46.440 --> 00:31:48.000 align:middle line:84%
+But it turns out
+you actually don't
+
+00:31:48.000 --> 00:31:52.253 align:middle line:84%
+need to know that area of math
+to actually use this stuff.
+
+00:31:52.253 --> 00:31:53.920 align:middle line:84%
+AUDIENCE: And then I
+was just wondering,
+
+00:31:53.920 --> 00:31:56.840 align:middle line:84%
+precisely what is the
+definition of a Gaussian vector?
+
+00:31:56.840 --> 00:31:57.523 align:middle line:90%
+I can see from--
+
+00:31:57.523 --> 00:31:58.440 align:middle line:90%
+JEREMY BERNSTEIN: Ooh!
+
+00:31:58.440 --> 00:32:01.760 align:middle line:84%
+AUDIENCE: --the slide how you're
+just sampling from a Gaussian
+
+00:32:01.760 --> 00:32:02.580 align:middle line:90%
+to construct it.
+
+00:32:02.580 --> 00:32:03.420 align:middle line:90%
+But [INAUDIBLE].
+
+00:32:03.420 --> 00:32:04.337 align:middle line:90%
+JEREMY BERNSTEIN: Yes.
+
+00:32:04.337 --> 00:32:06.443 align:middle line:84%
+AUDIENCE: --want to
+know what it means.
+
+00:32:06.443 --> 00:32:08.360 align:middle line:84%
+JEREMY BERNSTEIN: The
+simplest Gaussian vector
+
+00:32:08.360 --> 00:32:11.980 align:middle line:84%
+is a Gaussian vector where
+the coordinates are iid.
+
+00:32:11.980 --> 00:32:13.467 align:middle line:84%
+And then just for
+each coordinate,
+
+00:32:13.467 --> 00:32:14.800 align:middle line:90%
+you sample a different Gaussian.
+
+00:32:14.800 --> 00:32:16.860 align:middle line:84%
+And they're not
+related to each other.
+
+00:32:16.860 --> 00:32:19.550 align:middle line:90%
+That's a simple one.
+
+00:32:19.550 --> 00:32:23.550 align:middle line:84%
+And then a general one
+is defined with respect
+
+00:32:23.550 --> 00:32:26.790 align:middle line:90%
+to a covariance matrix.
+
+00:32:26.790 --> 00:32:30.750 align:middle line:84%
+And I'm probably
+going to butcher
+
+00:32:30.750 --> 00:32:32.130 align:middle line:90%
+any explanation I give now.
+
+00:32:32.130 --> 00:32:35.970 align:middle line:84%
+But I would just go on
+Wikipedia after the class.
+
+00:32:35.970 --> 00:32:39.790 align:middle line:90%
+
+
+00:32:39.790 --> 00:32:42.630 align:middle line:84%
+Another way to think about a
+general multivariate Gaussian
+
+00:32:42.630 --> 00:32:46.870 align:middle line:84%
+is to do the iid coordinates
+and then rotate the space.
+
+00:32:46.870 --> 00:32:48.890 align:middle line:84%
+And it turns out
+that's equivalent.
+
+00:32:48.890 --> 00:32:52.110 align:middle line:84%
+I'm pretty sure that's basically
+equivalent to a general one,
+
+00:32:52.110 --> 00:32:55.190 align:middle line:84%
+with rescaling the
+coordinates as well.
+
+00:32:55.190 --> 00:32:56.550 align:middle line:90%
+Yeah?
+
+00:32:56.550 --> 00:32:58.830 align:middle line:84%
+AUDIENCE: Is this just a
+fault of the dimensionality?
+
+00:32:58.830 --> 00:33:01.030 align:middle line:84%
+Or if it's spaced within
+[INAUDIBLE] Gaussian lives
+
+00:33:01.030 --> 00:33:03.870 align:middle line:84%
+would be the number
+of data points, right?
+
+00:33:03.870 --> 00:33:05.630 align:middle line:90%
+[INAUDIBLE]?
+
+00:33:05.630 --> 00:33:07.650 align:middle line:84%
+JEREMY BERNSTEIN: Yeah,
+but for this definition,
+
+00:33:07.650 --> 00:33:12.090 align:middle line:84%
+in this case, that would
+be if I had a finite thing.
+
+00:33:12.090 --> 00:33:17.670 align:middle line:84%
+But this definition is for
+any collection of n for any n.
+
+00:33:17.670 --> 00:33:21.730 align:middle line:84%
+So it has to hold for all
+possible collections of inputs.
+
+00:33:21.730 --> 00:33:23.970 align:middle line:84%
+It's quite a
+technical definition.
+
+00:33:23.970 --> 00:33:27.750 align:middle line:90%
+
+
+00:33:27.750 --> 00:33:30.830 align:middle line:90%
+Sorry, is that clear?
+
+00:33:30.830 --> 00:33:32.670 align:middle line:84%
+AUDIENCE: Yeah, I guess
+just initially when
+
+00:33:32.670 --> 00:33:35.995 align:middle line:84%
+I first thought Gaussian, I just
+imagined the Gaussian curves.
+
+00:33:35.995 --> 00:33:37.370 align:middle line:84%
+So I imagine that
+being Gaussian.
+
+00:33:37.370 --> 00:33:39.750 align:middle line:84%
+But obviously that's
+not what this is.
+
+00:33:39.750 --> 00:33:41.730 align:middle line:84%
+And then I thought
+maybe [INAUDIBLE].
+
+00:33:41.730 --> 00:33:43.030 align:middle line:90%
+But it looks like--
+
+00:33:43.030 --> 00:33:43.870 align:middle line:90%
+yeah.
+
+00:33:43.870 --> 00:33:45.443 align:middle line:90%
+I understand better now.
+
+00:33:45.443 --> 00:33:47.110 align:middle line:84%
+JEREMY BERNSTEIN:
+Yeah, it's conditioned
+
+00:33:47.110 --> 00:33:48.678 align:middle line:90%
+on having a set of inputs.
+
+00:33:48.678 --> 00:33:50.470 align:middle line:84%
+AUDIENCE: I'm thinking
+of a neural network,
+
+00:33:50.470 --> 00:33:53.830 align:middle line:84%
+and it's defined on
+some data points.
+
+00:33:53.830 --> 00:33:59.270 align:middle line:84%
+That's Gaussian in the sense
+that the function that it's
+
+00:33:59.270 --> 00:34:02.910 align:middle line:84%
+applying on the data points
+in the dimension of the space,
+
+00:34:02.910 --> 00:34:06.310 align:middle line:84%
+the dimensionality of the
+data points for, I guess,
+
+00:34:06.310 --> 00:34:08.870 align:middle line:90%
+larger is Gaussian.
+
+00:34:08.870 --> 00:34:11.030 align:middle line:84%
+I guess I'm just trying
+to reconcile this
+
+00:34:11.030 --> 00:34:12.832 align:middle line:84%
+with the neural
+network not being--
+
+00:34:12.832 --> 00:34:13.790 align:middle line:90%
+JEREMY BERNSTEIN: Yeah.
+
+00:34:13.790 --> 00:34:15.030 align:middle line:90%
+AUDIENCE: [INAUDIBLE]
+
+00:34:15.030 --> 00:34:15.909 align:middle line:90%
+JEREMY BERNSTEIN: OK.
+
+00:34:15.909 --> 00:34:19.350 align:middle line:84%
+AUDIENCE: I'm thinking I'm
+close, but [INAUDIBLE].
+
+00:34:19.350 --> 00:34:22.070 align:middle line:84%
+JEREMY BERNSTEIN: I
+have a concrete example.
+
+00:34:22.070 --> 00:34:25.790 align:middle line:84%
+I'm just not sure how much
+further into the lecture
+
+00:34:25.790 --> 00:34:28.230 align:middle line:90%
+it is going to be.
+
+00:34:28.230 --> 00:34:30.969 align:middle line:84%
+But I think it's going
+to resolve this question.
+
+00:34:30.969 --> 00:34:36.259 align:middle line:84%
+So let me just plow on,
+but keep the question.
+
+00:34:36.259 --> 00:34:39.730 align:middle line:84%
+But I just have a few more
+high-level things to say.
+
+00:34:39.730 --> 00:34:42.610 align:middle line:84%
+And then, oh, yeah, I
+have a picture as well.
+
+00:34:42.610 --> 00:34:45.097 align:middle line:90%
+So let me just go on.
+
+00:34:45.097 --> 00:34:46.889 align:middle line:84%
+I think I'm going to
+resolve your question.
+
+00:34:46.889 --> 00:34:50.429 align:middle line:90%
+
+
+00:34:50.429 --> 00:34:54.190 align:middle line:84%
+So I should have defined
+what a standard multivariate
+
+00:34:54.190 --> 00:34:55.010 align:middle line:90%
+Gaussian is.
+
+00:34:55.010 --> 00:34:59.550 align:middle line:90%
+And I'll add that for next time.
+
+00:34:59.550 --> 00:35:02.750 align:middle line:84%
+So this is just to say
+that a Gaussian process is
+
+00:35:02.750 --> 00:35:05.470 align:middle line:84%
+the thing that generalizes a
+finite-dimensional Gaussian
+
+00:35:05.470 --> 00:35:12.310 align:middle line:84%
+vector to somehow an
+infinite-dimensional random
+
+00:35:12.310 --> 00:35:13.210 align:middle line:90%
+function.
+
+00:35:13.210 --> 00:35:17.590 align:middle line:90%
+
+
+00:35:17.590 --> 00:35:21.270 align:middle line:84%
+And if a Gaussian random
+vector is described
+
+00:35:21.270 --> 00:35:24.990 align:middle line:84%
+by a covariance matrix,
+well, actually this thing
+
+00:35:24.990 --> 00:35:28.390 align:middle line:84%
+that we call a
+Gaussian process is
+
+00:35:28.390 --> 00:35:29.870 align:middle line:84%
+going to be described
+by something
+
+00:35:29.870 --> 00:35:35.020 align:middle line:84%
+that we call the covariance
+function, which tells us--
+
+00:35:35.020 --> 00:35:38.710 align:middle line:84%
+at two different inputs,
+what is the covariance
+
+00:35:38.710 --> 00:35:41.190 align:middle line:84%
+between the function
+at those inputs.
+
+00:35:41.190 --> 00:35:47.270 align:middle line:84%
+So that's how the covariance
+matrix gets generalized.
+
+00:35:47.270 --> 00:35:54.330 align:middle line:84%
+And an example, if
+in the finite case,
+
+00:35:54.330 --> 00:36:02.310 align:middle line:84%
+the covariance was e to
+the i minus j squared, then
+
+00:36:02.310 --> 00:36:06.390 align:middle line:84%
+here in the continuous case,
+it would be something like e
+
+00:36:06.390 --> 00:36:11.090 align:middle line:90%
+to the x minus x prime squared.
+
+00:36:11.090 --> 00:36:13.360 align:middle line:84%
+So that's how that
+would generalize.
+
+00:36:13.360 --> 00:36:17.940 align:middle line:90%
+
+
+00:36:17.940 --> 00:36:24.500 align:middle line:84%
+So hopefully this slide will
+help build some more intuition
+
+00:36:24.500 --> 00:36:26.200 align:middle line:90%
+for what we're talking about.
+
+00:36:26.200 --> 00:36:27.000 align:middle line:90%
+OK, go ahead.
+
+00:36:27.000 --> 00:36:29.380 align:middle line:84%
+AUDIENCE: [INAUDIBLE]
+dimensional function,
+
+00:36:29.380 --> 00:36:31.300 align:middle line:84%
+you just need a
+function that accepts
+
+00:36:31.300 --> 00:36:32.697 align:middle line:90%
+an infinite number of inputs?
+
+00:36:32.697 --> 00:36:33.780 align:middle line:90%
+JEREMY BERNSTEIN: Exactly.
+
+00:36:33.780 --> 00:36:34.917 align:middle line:90%
+AUDIENCE: OK.
+
+00:36:34.917 --> 00:36:36.000 align:middle line:90%
+JEREMY BERNSTEIN: Exactly.
+
+00:36:36.000 --> 00:36:45.460 align:middle line:90%
+
+
+00:36:45.460 --> 00:36:47.020 align:middle line:84%
+Let me just say
+again that, yeah,
+
+00:36:47.020 --> 00:36:52.340 align:middle line:84%
+exactly, we've got the
+x-axis or the real line
+
+00:36:52.340 --> 00:36:53.400 align:middle line:90%
+as our input space.
+
+00:36:53.400 --> 00:36:55.660 align:middle line:84%
+So there's an infinite
+number of things on it.
+
+00:36:55.660 --> 00:37:00.700 align:middle line:84%
+And here we're going to consider
+two examples, x very close to x
+
+00:37:00.700 --> 00:37:05.780 align:middle line:90%
+prime, which is this picture.
+
+00:37:05.780 --> 00:37:13.220 align:middle line:84%
+And basically, we're going to
+choose the covariance function
+
+00:37:13.220 --> 00:37:15.680 align:middle line:84%
+almost always in our
+Gaussian process,
+
+00:37:15.680 --> 00:37:20.540 align:middle line:84%
+such that if I sample
+the random functions
+
+00:37:20.540 --> 00:37:22.960 align:middle line:90%
+and I plot a scatter plot--
+
+00:37:22.960 --> 00:37:26.940 align:middle line:84%
+so I sample one random
+function and I get this point
+
+00:37:26.940 --> 00:37:28.923 align:middle line:90%
+for f of x and f of x prime.
+
+00:37:28.923 --> 00:37:30.840 align:middle line:84%
+And then I sample a
+different random function,
+
+00:37:30.840 --> 00:37:32.100 align:middle line:90%
+and I get this point.
+
+00:37:32.100 --> 00:37:34.020 align:middle line:90%
+And I sample a different one.
+
+00:37:34.020 --> 00:37:37.380 align:middle line:84%
+But because we're imagining
+that x and x prime are close
+
+00:37:37.380 --> 00:37:43.620 align:middle line:84%
+together, the scatter plot that
+I get is highly correlated.
+
+00:37:43.620 --> 00:37:46.560 align:middle line:84%
+And as x and x prime get
+closer and closer together,
+
+00:37:46.560 --> 00:37:51.660 align:middle line:84%
+it should concentrate on
+the samples being the same.
+
+00:37:51.660 --> 00:37:57.500 align:middle line:84%
+But then as I move the
+point x prime further away,
+
+00:37:57.500 --> 00:38:02.220 align:middle line:84%
+now I move x prime over here so
+x and x prime are kind of far
+
+00:38:02.220 --> 00:38:05.940 align:middle line:84%
+apart, the function
+values that I
+
+00:38:05.940 --> 00:38:09.420 align:middle line:84%
+get from sampling the
+functions are now uncorrelated
+
+00:38:09.420 --> 00:38:15.620 align:middle line:84%
+with each other, if it's a
+Gaussian process with this kind
+
+00:38:15.620 --> 00:38:18.200 align:middle line:84%
+of covariate structure, which
+is usually what you have.
+
+00:38:18.200 --> 00:38:22.980 align:middle line:90%
+
+
+00:38:22.980 --> 00:38:24.940 align:middle line:84%
+And basically, it's
+the choice of what
+
+00:38:24.940 --> 00:38:26.980 align:middle line:84%
+we call the covariance
+function that actually
+
+00:38:26.980 --> 00:38:30.860 align:middle line:90%
+encodes what we mean by nearby.
+
+00:38:30.860 --> 00:38:33.160 align:middle line:84%
+And for different choices
+of covariance function,
+
+00:38:33.160 --> 00:38:36.340 align:middle line:90%
+that could mean something else.
+
+00:38:36.340 --> 00:38:38.300 align:middle line:84%
+And just to give you
+some common examples
+
+00:38:38.300 --> 00:38:40.940 align:middle line:84%
+of covariance
+functions, one would
+
+00:38:40.940 --> 00:38:47.220 align:middle line:84%
+be to take e to the negative
+squared distance between the two
+
+00:38:47.220 --> 00:38:49.180 align:middle line:90%
+inputs.
+
+00:38:49.180 --> 00:38:51.560 align:middle line:84%
+And another, if we have
+a multivariate case,
+
+00:38:51.560 --> 00:38:55.700 align:middle line:84%
+it could be to take some kind of
+dot product between the inputs.
+
+00:38:55.700 --> 00:38:58.700 align:middle line:84%
+Basically, the
+covariance structure
+
+00:38:58.700 --> 00:39:01.640 align:middle line:84%
+is some kind of measure of
+similarity between the inputs.
+
+00:39:01.640 --> 00:39:06.420 align:middle line:84%
+And we use that to induce what
+the correlation structure looks
+
+00:39:06.420 --> 00:39:08.040 align:middle line:90%
+like between different inputs.
+
+00:39:08.040 --> 00:39:15.500 align:middle line:90%
+
+
+00:39:15.500 --> 00:39:16.500 align:middle line:90%
+Yeah, go ahead.
+
+00:39:16.500 --> 00:39:18.540 align:middle line:84%
+AUDIENCE: Does this work
+with language modeling
+
+00:39:18.540 --> 00:39:20.740 align:middle line:84%
+when you're learning
+an embedding?
+
+00:39:20.740 --> 00:39:23.788 align:middle line:84%
+Because I guess the words
+are not continuous, right?
+
+00:39:23.788 --> 00:39:25.080 align:middle line:90%
+You can't take the dot product.
+
+00:39:25.080 --> 00:39:27.143 align:middle line:84%
+But we have an embedding
+that's learned.
+
+00:39:27.143 --> 00:39:28.060 align:middle line:90%
+JEREMY BERNSTEIN: Yes.
+
+00:39:28.060 --> 00:39:31.580 align:middle line:84%
+Interestingly, the
+covariance function--
+
+00:39:31.580 --> 00:39:34.020 align:middle line:84%
+yeah, if you have
+discrete inputs--
+
+00:39:34.020 --> 00:39:36.860 align:middle line:90%
+
+
+00:39:36.860 --> 00:39:39.460 align:middle line:84%
+there are ways to define
+covariance functions,
+
+00:39:39.460 --> 00:39:42.380 align:middle line:90%
+even on weird spaces.
+
+00:39:42.380 --> 00:39:45.180 align:middle line:84%
+The inputs don't have
+to be the real line.
+
+00:39:45.180 --> 00:39:46.980 align:middle line:84%
+The inputs to the
+covariance function
+
+00:39:46.980 --> 00:39:51.300 align:middle line:90%
+can be any inputs that--
+
+00:39:51.300 --> 00:39:53.700 align:middle line:84%
+so you can extend
+this construction
+
+00:39:53.700 --> 00:39:56.272 align:middle line:90%
+to weird input spaces.
+
+00:39:56.272 --> 00:39:57.980 align:middle line:84%
+That was one of the
+reasons people really
+
+00:39:57.980 --> 00:40:00.860 align:middle line:84%
+like kernel methods
+as well, because they
+
+00:40:00.860 --> 00:40:02.380 align:middle line:90%
+have that same property.
+
+00:40:02.380 --> 00:40:05.980 align:middle line:84%
+In some sense, a
+downside of neural nets
+
+00:40:05.980 --> 00:40:12.732 align:middle line:84%
+is it's not obvious how to
+apply it to language, let's say.
+
+00:40:12.732 --> 00:40:14.190 align:middle line:84%
+OK, we came up with
+a way to do it.
+
+00:40:14.190 --> 00:40:17.310 align:middle line:84%
+We just embed all the inputs
+and then learn the embeddings.
+
+00:40:17.310 --> 00:40:19.050 align:middle line:84%
+But it wasn't
+obvious that that was
+
+00:40:19.050 --> 00:40:21.270 align:middle line:84%
+going to work before people
+showed that it worked.
+
+00:40:21.270 --> 00:40:23.330 align:middle line:84%
+So people came up
+with alternatives.
+
+00:40:23.330 --> 00:40:28.210 align:middle line:84%
+And this is compatible with
+different input spaces,
+
+00:40:28.210 --> 00:40:29.475 align:middle line:90%
+basically.
+
+00:40:29.475 --> 00:40:30.850 align:middle line:84%
+AUDIENCE: But I
+guess, if we were
+
+00:40:30.850 --> 00:40:36.290 align:middle line:84%
+to say that an LLM was a
+Gaussian process or something,
+
+00:40:36.290 --> 00:40:40.010 align:middle line:84%
+it would mean that whatever
+the solutions it finds
+
+00:40:40.010 --> 00:40:43.550 align:middle line:84%
+are both a Gaussian process
+in terms of embeddings,
+
+00:40:43.550 --> 00:40:46.250 align:middle line:84%
+and that it's also figuring
+out the right embeddings
+
+00:40:46.250 --> 00:40:48.650 align:middle line:84%
+for the solutions of
+the Gaussian process.
+
+00:40:48.650 --> 00:40:51.450 align:middle line:84%
+Because the embeddings
+are [INAUDIBLE].
+
+00:40:51.450 --> 00:40:54.843 align:middle line:84%
+JEREMY BERNSTEIN: So I haven't
+got to what I precisely
+
+00:40:54.843 --> 00:40:57.010 align:middle line:84%
+mean when I say that we can
+think of neural networks
+
+00:40:57.010 --> 00:40:58.030 align:middle line:90%
+as Gaussian processes.
+
+00:40:58.030 --> 00:41:01.870 align:middle line:84%
+So let's wait to get there and
+then discuss this a bit more.
+
+00:41:01.870 --> 00:41:12.990 align:middle line:90%
+
+
+00:41:12.990 --> 00:41:15.152 align:middle line:90%
+This is the last abstract slide.
+
+00:41:15.152 --> 00:41:16.610 align:middle line:84%
+And then I'm going
+to start talking
+
+00:41:16.610 --> 00:41:19.590 align:middle line:84%
+about a more concrete
+example for a neural network.
+
+00:41:19.590 --> 00:41:25.817 align:middle line:84%
+So I hope that will make
+things a little clearer.
+
+00:41:25.817 --> 00:41:27.650 align:middle line:84%
+But the last thing that
+I want to talk about
+
+00:41:27.650 --> 00:41:31.330 align:middle line:84%
+is how, if you're doing machine
+learning with a Gaussian
+
+00:41:31.330 --> 00:41:34.850 align:middle line:84%
+process, how you actually make
+predictions-- or some people
+
+00:41:34.850 --> 00:41:40.230 align:middle line:84%
+would say, how you do inference,
+in machine learning speak.
+
+00:41:40.230 --> 00:41:44.210 align:middle line:84%
+But basically, if you've
+got training data or you've
+
+00:41:44.210 --> 00:41:47.770 align:middle line:84%
+got inputs and you want to
+make a prediction at a point
+
+00:41:47.770 --> 00:41:50.510 align:middle line:84%
+that you haven't seen, how
+do you actually do that?
+
+00:41:50.510 --> 00:41:54.170 align:middle line:90%
+
+
+00:41:54.170 --> 00:42:01.210 align:middle line:84%
+And roughly, the idea is that
+if you're given inputs x1 to xn
+
+00:42:01.210 --> 00:42:06.670 align:middle line:84%
+and you know the function
+values f of x1 up to f of xn--
+
+00:42:06.670 --> 00:42:09.930 align:middle line:84%
+so that's your input data, is
+the inputs and the function
+
+00:42:09.930 --> 00:42:11.610 align:middle line:90%
+values.
+
+00:42:11.610 --> 00:42:15.730 align:middle line:84%
+We want to predict f of x-star,
+where x-star is a new test
+
+00:42:15.730 --> 00:42:17.270 align:middle line:90%
+point, a new test input.
+
+00:42:17.270 --> 00:42:20.450 align:middle line:90%
+That's what we want to predict.
+
+00:42:20.450 --> 00:42:30.890 align:middle line:84%
+You just think about stacking
+all of the things you know
+
+00:42:30.890 --> 00:42:36.410 align:middle line:84%
+and the thing that you don't
+know into one big vector.
+
+00:42:36.410 --> 00:42:38.090 align:middle line:84%
+Because it's a
+Gaussian process, we
+
+00:42:38.090 --> 00:42:42.050 align:middle line:84%
+know that the joint
+distribution of this quantity
+
+00:42:42.050 --> 00:42:46.510 align:middle line:84%
+is Gaussian, because that's
+the definition of a Gaussian
+
+00:42:46.510 --> 00:42:47.010 align:middle line:90%
+process.
+
+00:42:47.010 --> 00:42:52.650 align:middle line:84%
+For any collection of
+inputs, that includes the n
+
+00:42:52.650 --> 00:42:55.565 align:middle line:84%
+inputs that I was given and the
+one that I want to predict on,
+
+00:42:55.565 --> 00:42:57.690 align:middle line:84%
+we know that the joint
+distribution of those things
+
+00:42:57.690 --> 00:43:00.050 align:middle line:84%
+is a multivariate Gaussian
+just by the definition
+
+00:43:00.050 --> 00:43:01.550 align:middle line:90%
+of the Gaussian process.
+
+00:43:01.550 --> 00:43:03.050 align:middle line:84%
+And then you can
+say that, hey, if I
+
+00:43:03.050 --> 00:43:05.490 align:middle line:84%
+have a multivariate
+Gaussian vector
+
+00:43:05.490 --> 00:43:08.730 align:middle line:84%
+and I know its distribution, one
+of the standard things that that
+
+00:43:08.730 --> 00:43:12.290 align:middle line:84%
+tells you how to do is, given
+the first n coordinates,
+
+00:43:12.290 --> 00:43:13.890 align:middle line:84%
+what is the conditional
+distribution
+
+00:43:13.890 --> 00:43:15.190 align:middle line:90%
+of the last coordinate?
+
+00:43:15.190 --> 00:43:17.530 align:middle line:84%
+So that's a standard
+manipulation
+
+00:43:17.530 --> 00:43:20.570 align:middle line:84%
+that you can do with
+Gaussian vectors is just,
+
+00:43:20.570 --> 00:43:22.130 align:middle line:84%
+what is the conditional
+distribution
+
+00:43:22.130 --> 00:43:26.250 align:middle line:84%
+of the last coordinate
+on all the previous ones?
+
+00:43:26.250 --> 00:43:27.950 align:middle line:84%
+So there's just a
+formula for that.
+
+00:43:27.950 --> 00:43:31.370 align:middle line:84%
+It's just called conditioning
+with Gaussian vectors
+
+00:43:31.370 --> 00:43:32.650 align:middle line:90%
+or something like that.
+
+00:43:32.650 --> 00:43:36.890 align:middle line:84%
+And that is precisely
+the formula that
+
+00:43:36.890 --> 00:43:38.930 align:middle line:90%
+gives you this kind of picture.
+
+00:43:38.930 --> 00:43:41.010 align:middle line:84%
+Because basically, you
+take this point x-star
+
+00:43:41.010 --> 00:43:43.850 align:middle line:84%
+and you sweep it
+along this x-axis.
+
+00:43:43.850 --> 00:43:51.290 align:middle line:84%
+And the formula tells you both
+what the mean of this coordinate
+
+00:43:51.290 --> 00:43:53.270 align:middle line:90%
+is conditioned on these ones.
+
+00:43:53.270 --> 00:43:55.810 align:middle line:84%
+And it also tells you what
+the standard deviation is.
+
+00:43:55.810 --> 00:43:59.390 align:middle line:84%
+And interestingly, because
+Gaussians are so well-behaved,
+
+00:43:59.390 --> 00:44:02.440 align:middle line:84%
+the conditional distribution of
+the last coordinate conditioned
+
+00:44:02.440 --> 00:44:06.180 align:middle line:84%
+on all the early ones is
+itself a Gaussian distribution.
+
+00:44:06.180 --> 00:44:11.720 align:middle line:84%
+So if you take a Gaussian vector
+and you condition on the first n
+
+00:44:11.720 --> 00:44:16.640 align:middle line:84%
+coordinates, the distribution
+of the last one is Gaussian.
+
+00:44:16.640 --> 00:44:19.340 align:middle line:84%
+So in particular, there's
+just a formula for this mean.
+
+00:44:19.340 --> 00:44:21.820 align:middle line:84%
+And there's a formula for
+this standard deviation.
+
+00:44:21.820 --> 00:44:25.000 align:middle line:84%
+And that's a closed-form
+expression just involving
+
+00:44:25.000 --> 00:44:28.840 align:middle line:84%
+evaluating the covariance
+matrix, basically, on the input
+
+00:44:28.840 --> 00:44:30.840 align:middle line:90%
+points.
+
+00:44:30.840 --> 00:44:33.720 align:middle line:84%
+So I realized I'm not really
+telling you explicitly what
+
+00:44:33.720 --> 00:44:35.600 align:middle line:84%
+these formulae are,
+but there are things
+
+00:44:35.600 --> 00:44:37.000 align:middle line:90%
+that you can just look at.
+
+00:44:37.000 --> 00:44:38.993 align:middle line:84%
+And I honestly think if
+you haven't seen this
+
+00:44:38.993 --> 00:44:41.160 align:middle line:84%
+before, it's maybe easier
+just to have the intuitive
+
+00:44:41.160 --> 00:44:41.720 align:middle line:90%
+explanation.
+
+00:44:41.720 --> 00:44:44.320 align:middle line:84%
+And then you can just
+look up what the formulae
+
+00:44:44.320 --> 00:44:45.660 align:middle line:90%
+are if you're interested.
+
+00:44:45.660 --> 00:44:56.280 align:middle line:90%
+
+
+00:44:56.280 --> 00:44:59.040 align:middle line:84%
+Now I want to tell
+you what this has
+
+00:44:59.040 --> 00:45:02.160 align:middle line:84%
+to do with neural
+networks, which
+
+00:45:02.160 --> 00:45:04.740 align:middle line:84%
+was kind of the point of
+introducing this stuff.
+
+00:45:04.740 --> 00:45:07.920 align:middle line:90%
+
+
+00:45:07.920 --> 00:45:11.240 align:middle line:84%
+And that's a result called the
+Neural Network Gaussian Process
+
+00:45:11.240 --> 00:45:14.160 align:middle line:84%
+Correspondence, which is
+something that a lot of people
+
+00:45:14.160 --> 00:45:16.380 align:middle line:84%
+have been really excited
+about over the years.
+
+00:45:16.380 --> 00:45:20.360 align:middle line:90%
+
+
+00:45:20.360 --> 00:45:24.640 align:middle line:84%
+So now forget everything we
+just talked about and just think
+
+00:45:24.640 --> 00:45:26.080 align:middle line:90%
+about a neural network.
+
+00:45:26.080 --> 00:45:30.840 align:middle line:84%
+And we just think the
+simplest case is arguably just
+
+00:45:30.840 --> 00:45:32.560 align:middle line:90%
+multilayer perceptron.
+
+00:45:32.560 --> 00:45:41.760 align:middle line:84%
+So we've got weight matrices,
+W1, W2, W3, up to WL.
+
+00:45:41.760 --> 00:45:47.880 align:middle line:84%
+And what we can do is we can
+just sample the weight matrices
+
+00:45:47.880 --> 00:45:48.780 align:middle line:90%
+randomly.
+
+00:45:48.780 --> 00:45:50.100 align:middle line:90%
+And it gives me the function.
+
+00:45:50.100 --> 00:45:52.320 align:middle line:84%
+The neural network
+gives me a function.
+
+00:45:52.320 --> 00:45:54.120 align:middle line:90%
+I write that function down.
+
+00:45:54.120 --> 00:45:56.580 align:middle line:84%
+And then I resample
+the weight matrices.
+
+00:45:56.580 --> 00:45:58.380 align:middle line:90%
+And I get a new random function.
+
+00:45:58.380 --> 00:46:00.020 align:middle line:90%
+And I write that function down.
+
+00:46:00.020 --> 00:46:02.720 align:middle line:84%
+And I just keep sampling the
+weight matrices over and over
+
+00:46:02.720 --> 00:46:03.220 align:middle line:90%
+again.
+
+00:46:03.220 --> 00:46:05.740 align:middle line:84%
+And it's going to give me a
+distribution over functions.
+
+00:46:05.740 --> 00:46:08.260 align:middle line:84%
+And I can ask, what
+is that distribution?
+
+00:46:08.260 --> 00:46:09.740 align:middle line:90%
+What properties does it have?
+
+00:46:09.740 --> 00:46:15.920 align:middle line:90%
+
+
+00:46:15.920 --> 00:46:24.240 align:middle line:84%
+So let's pretend that we
+did that, and we generated,
+
+00:46:24.240 --> 00:46:30.000 align:middle line:84%
+in this case, 1,000 random
+functions by sampling 1,000 set
+
+00:46:30.000 --> 00:46:33.120 align:middle line:90%
+of weights for my neural net.
+
+00:46:33.120 --> 00:46:36.400 align:middle line:84%
+So I re-initialize my
+neural network 1,000 times.
+
+00:46:36.400 --> 00:46:38.760 align:middle line:84%
+And I want to inspect
+the functions.
+
+00:46:38.760 --> 00:46:41.040 align:middle line:84%
+So the way I decide
+to do that is I'm
+
+00:46:41.040 --> 00:46:44.880 align:middle line:84%
+going to pick two
+inputs, x and x-prime.
+
+00:46:44.880 --> 00:46:49.280 align:middle line:84%
+And in general, x could
+be a picture of a cat
+
+00:46:49.280 --> 00:46:51.520 align:middle line:84%
+and x-prime could be
+a picture of a dog.
+
+00:46:51.520 --> 00:46:53.940 align:middle line:90%
+But it's just two inputs.
+
+00:46:53.940 --> 00:46:55.680 align:middle line:90%
+And I fixed them.
+
+00:46:55.680 --> 00:47:08.400 align:middle line:84%
+And then I get my 1,000
+functions, f1 up to f1000.
+
+00:47:08.400 --> 00:47:15.280 align:middle line:84%
+And for those two
+inputs, I just stack
+
+00:47:15.280 --> 00:47:16.465 align:middle line:90%
+the outputs of the network.
+
+00:47:16.465 --> 00:47:18.840 align:middle line:84%
+So let's just imagine that
+the output is one dimensional,
+
+00:47:18.840 --> 00:47:20.160 align:middle line:90%
+for simplicity.
+
+00:47:20.160 --> 00:47:28.680 align:middle line:84%
+And I just build a 2 by 1,000
+matrix of all the outputs
+
+00:47:28.680 --> 00:47:30.880 align:middle line:90%
+of my random networks.
+
+00:47:30.880 --> 00:47:32.980 align:middle line:84%
+And I'm just going to plot
+them on a scatter plot
+
+00:47:32.980 --> 00:47:35.640 align:middle line:90%
+and just see what it looks like.
+
+00:47:35.640 --> 00:47:41.600 align:middle line:84%
+And I actually did this,
+but I did it two years ago.
+
+00:47:41.600 --> 00:47:43.320 align:middle line:90%
+But I did it.
+
+00:47:43.320 --> 00:47:49.280 align:middle line:84%
+This is a truck that's
+in the CIFAR-10 dataset.
+
+00:47:49.280 --> 00:47:51.340 align:middle line:90%
+And this was a three-layer MLP.
+
+00:47:51.340 --> 00:47:54.200 align:middle line:84%
+And the width of the network,
+the width of the hidden layer
+
+00:47:54.200 --> 00:47:57.470 align:middle line:90%
+was 1,000.
+
+00:47:57.470 --> 00:48:05.710 align:middle line:84%
+And I did it for two pairs of
+inputs, so input 1 and input 2.
+
+00:48:05.710 --> 00:48:08.510 align:middle line:84%
+So input first of all,
+and then second, I
+
+00:48:08.510 --> 00:48:10.370 align:middle line:90%
+did it for input 1 and input 3.
+
+00:48:10.370 --> 00:48:14.210 align:middle line:90%
+
+
+00:48:14.210 --> 00:48:16.930 align:middle line:84%
+So input 2 is
+actually just input 1.
+
+00:48:16.930 --> 00:48:18.830 align:middle line:84%
+It's the same truck,
+but with a little bit
+
+00:48:18.830 --> 00:48:20.310 align:middle line:90%
+of jitter in the pixels.
+
+00:48:20.310 --> 00:48:22.990 align:middle line:84%
+I just added a little bit
+of noise to the pixels.
+
+00:48:22.990 --> 00:48:25.130 align:middle line:84%
+And then input 3,
+it's the same truck,
+
+00:48:25.130 --> 00:48:29.590 align:middle line:84%
+but I just added a lot
+more noise to the pixels,
+
+00:48:29.590 --> 00:48:33.110 align:middle line:90%
+just to show the difference.
+
+00:48:33.110 --> 00:48:37.950 align:middle line:84%
+And then for my 1,000
+random networks,
+
+00:48:37.950 --> 00:48:43.910 align:middle line:84%
+this is what the network outputs
+look like for the first pair.
+
+00:48:43.910 --> 00:48:46.830 align:middle line:84%
+And then this is what they
+look like for the second pair.
+
+00:48:46.830 --> 00:48:54.470 align:middle line:84%
+So the interesting thing is,
+it kind of looks like the thing
+
+00:48:54.470 --> 00:48:57.750 align:middle line:84%
+that we were talking about,
+the Gaussian process thing,
+
+00:48:57.750 --> 00:49:01.330 align:middle line:84%
+where the two inputs, which are
+kind of similar to each other,
+
+00:49:01.330 --> 00:49:04.990 align:middle line:84%
+seem to have more
+correlated random outputs,
+
+00:49:04.990 --> 00:49:08.550 align:middle line:84%
+whereas the two inputs
+that are a bit less
+
+00:49:08.550 --> 00:49:10.270 align:middle line:84%
+similar to each
+other, the outputs
+
+00:49:10.270 --> 00:49:12.090 align:middle line:90%
+are slightly less correlated.
+
+00:49:12.090 --> 00:49:17.950 align:middle line:90%
+
+
+00:49:17.950 --> 00:49:23.590 align:middle line:84%
+And then this is displaying
+it for pairs of inputs.
+
+00:49:23.590 --> 00:49:25.950 align:middle line:84%
+But instead of
+having two inputs,
+
+00:49:25.950 --> 00:49:31.390 align:middle line:84%
+I could make this same table,
+but I could put five inputs
+
+00:49:31.390 --> 00:49:34.310 align:middle line:84%
+and then sample 1,000
+networks and then plot that
+
+00:49:34.310 --> 00:49:36.270 align:middle line:90%
+five-dimensional scatter plot.
+
+00:49:36.270 --> 00:49:39.830 align:middle line:84%
+And then I could ask, does
+that thing look Gaussian?
+
+00:49:39.830 --> 00:49:43.990 align:middle line:84%
+And my claim is it will because
+of this Neural Network Gaussian
+
+00:49:43.990 --> 00:49:46.150 align:middle line:90%
+Process Correspondence.
+
+00:49:46.150 --> 00:49:48.090 align:middle line:84%
+For a sufficiently
+wide neural network,
+
+00:49:48.090 --> 00:49:50.850 align:middle line:84%
+these scatter plots
+actually are Gaussian.
+
+00:49:50.850 --> 00:49:55.650 align:middle line:84%
+And we would actually have
+to do what Zach was saying.
+
+00:49:55.650 --> 00:49:58.790 align:middle line:84%
+It's like, how do we actually
+know these are Gaussian?
+
+00:49:58.790 --> 00:50:00.390 align:middle line:90%
+That's a good question.
+
+00:50:00.390 --> 00:50:01.130 align:middle line:90%
+I don't know.
+
+00:50:01.130 --> 00:50:03.390 align:middle line:84%
+There's tests for
+Gaussianity that if you
+
+00:50:03.390 --> 00:50:06.330 align:middle line:84%
+wanted to run on this scatter
+plot and you could do that test.
+
+00:50:06.330 --> 00:50:08.250 align:middle line:90%
+But I don't know how to do that.
+
+00:50:08.250 --> 00:50:10.530 align:middle line:84%
+But my claim is that
+really they are Gaussian.
+
+00:50:10.530 --> 00:50:14.830 align:middle line:84%
+And it's because the neural
+network is a wide network
+
+00:50:14.830 --> 00:50:17.330 align:middle line:90%
+that it has to be the case.
+
+00:50:17.330 --> 00:50:25.870 align:middle line:90%
+
+
+00:50:25.870 --> 00:50:32.630 align:middle line:84%
+So what is the formal claim
+of the correspondence?
+
+00:50:32.630 --> 00:50:38.710 align:middle line:84%
+It's something like this, that
+if we take a neural network
+
+00:50:38.710 --> 00:50:42.030 align:middle line:84%
+and we randomly sample
+the weights, then
+
+00:50:42.030 --> 00:50:45.330 align:middle line:84%
+so long as the network was
+very, very, very wide--
+
+00:50:45.330 --> 00:50:49.630 align:middle line:90%
+
+
+00:50:49.630 --> 00:50:55.420 align:middle line:84%
+if I pick any finite
+collection of inputs--
+
+00:50:55.420 --> 00:50:58.540 align:middle line:84%
+basically for any finite
+collection of inputs,
+
+00:50:58.540 --> 00:51:00.900 align:middle line:84%
+the distribution of
+outputs is actually
+
+00:51:00.900 --> 00:51:08.620 align:middle line:84%
+a multivariate Gaussian, which
+is the definition of a Gaussian
+
+00:51:08.620 --> 00:51:09.160 align:middle line:90%
+process.
+
+00:51:09.160 --> 00:51:10.240 align:middle line:90%
+That was the definition.
+
+00:51:10.240 --> 00:51:13.080 align:middle line:84%
+If you have that for any
+finite collection of inputs,
+
+00:51:13.080 --> 00:51:14.960 align:middle line:84%
+the distribution of
+outputs is Gaussian,
+
+00:51:14.960 --> 00:51:18.220 align:middle line:84%
+then that's satisfying the
+definition of being a Gaussian
+
+00:51:18.220 --> 00:51:19.340 align:middle line:90%
+process.
+
+00:51:19.340 --> 00:51:21.720 align:middle line:84%
+And it also would
+explain these pictures.
+
+00:51:21.720 --> 00:51:24.900 align:middle line:90%
+
+
+00:51:24.900 --> 00:51:29.180 align:middle line:84%
+And importantly, what the
+covariance function is
+
+00:51:29.180 --> 00:51:33.180 align:middle line:84%
+depends on things like what the
+architecture of the network is
+
+00:51:33.180 --> 00:51:36.140 align:middle line:90%
+and what the nonlinearity is.
+
+00:51:36.140 --> 00:51:39.780 align:middle line:84%
+So it's an interesting
+result where,
+
+00:51:39.780 --> 00:51:43.440 align:middle line:84%
+given a particular
+network architecture,
+
+00:51:43.440 --> 00:51:47.180 align:middle line:84%
+you can expand its
+width and there
+
+00:51:47.180 --> 00:51:50.900 align:middle line:84%
+will be a corresponding
+covariance kernel or covariance
+
+00:51:50.900 --> 00:51:58.220 align:middle line:84%
+function that is basically a
+function of what the network
+
+00:51:58.220 --> 00:51:59.360 align:middle line:90%
+architecture is.
+
+00:51:59.360 --> 00:52:02.820 align:middle line:90%
+
+
+00:52:02.820 --> 00:52:04.820 align:middle line:84%
+And that's what I
+meant at the beginning
+
+00:52:04.820 --> 00:52:08.980 align:middle line:84%
+when I said that actually
+the architecture somehow
+
+00:52:08.980 --> 00:52:12.260 align:middle line:84%
+has an opinion built into
+the choice of architecture
+
+00:52:12.260 --> 00:52:14.520 align:middle line:84%
+about what data points
+are similar to each other,
+
+00:52:14.520 --> 00:52:16.880 align:middle line:84%
+and which data points are
+dissimilar to each other.
+
+00:52:16.880 --> 00:52:19.380 align:middle line:84%
+And one way to extract
+that information
+
+00:52:19.380 --> 00:52:22.320 align:middle line:84%
+is to take the architecture
+to be really, really wide.
+
+00:52:22.320 --> 00:52:24.140 align:middle line:84%
+And you extract
+this kernel function
+
+00:52:24.140 --> 00:52:31.540 align:middle line:84%
+or this covariance function, so
+this function of the form sigma;
+
+00:52:31.540 --> 00:52:33.300 align:middle line:90%
+x, x-prime.
+
+00:52:33.300 --> 00:52:34.723 align:middle line:84%
+And maybe sigma
+depends on things
+
+00:52:34.723 --> 00:52:36.140 align:middle line:84%
+like what the depth
+of the network
+
+00:52:36.140 --> 00:52:38.480 align:middle line:84%
+is, what the nonlinearity
+is, and so on.
+
+00:52:38.480 --> 00:52:48.500 align:middle line:90%
+
+
+00:52:48.500 --> 00:52:51.007 align:middle line:84%
+AUDIENCE: So I guess in
+terms of practicality,
+
+00:52:51.007 --> 00:52:52.840 align:middle line:84%
+because we're making
+it really, really wide,
+
+00:52:52.840 --> 00:52:55.843 align:middle line:84%
+we're really giving it a
+good opportunity to overfit.
+
+00:52:55.843 --> 00:52:58.260 align:middle line:84%
+But I guess the idea is because
+we're taking a random look
+
+00:52:58.260 --> 00:53:01.540 align:middle line:90%
+at overfitting, that's fine?
+
+00:53:01.540 --> 00:53:03.260 align:middle line:90%
+That's OK?
+
+00:53:03.260 --> 00:53:06.860 align:middle line:84%
+JEREMY BERNSTEIN: Yeah, that's
+a really interesting question.
+
+00:53:06.860 --> 00:53:08.900 align:middle line:90%
+Let me make some space.
+
+00:53:08.900 --> 00:53:11.525 align:middle line:84%
+Also, I think this lecture
+is on the shorter side.
+
+00:53:11.525 --> 00:53:12.900 align:middle line:84%
+So the more
+interesting questions
+
+00:53:12.900 --> 00:53:18.060 align:middle line:84%
+you ask, then the more learning
+there can be or something.
+
+00:53:18.060 --> 00:53:23.620 align:middle line:90%
+
+
+00:53:23.620 --> 00:53:27.020 align:middle line:84%
+So the question is, if the
+neural network is really, really
+
+00:53:27.020 --> 00:53:29.060 align:middle line:84%
+wide, then intuitively
+I would think
+
+00:53:29.060 --> 00:53:31.180 align:middle line:84%
+that it's going to somehow
+overfit because it has
+
+00:53:31.180 --> 00:53:34.760 align:middle line:90%
+too much capacity for my data.
+
+00:53:34.760 --> 00:53:38.020 align:middle line:90%
+
+
+00:53:38.020 --> 00:53:42.940 align:middle line:84%
+But the interesting thing about
+the Gaussian process picture
+
+00:53:42.940 --> 00:53:47.540 align:middle line:84%
+is that, let's say
+that we have some data
+
+00:53:47.540 --> 00:53:50.540 align:middle line:84%
+and we get this
+distribution of functions.
+
+00:53:50.540 --> 00:53:55.160 align:middle line:84%
+One interesting function
+could be the mean function.
+
+00:53:55.160 --> 00:53:57.640 align:middle line:84%
+So remember that not
+only is there the mean,
+
+00:53:57.640 --> 00:54:01.320 align:middle line:84%
+but these functions are
+going through the data.
+
+00:54:01.320 --> 00:54:05.900 align:middle line:90%
+
+
+00:54:05.900 --> 00:54:09.980 align:middle line:84%
+And because it's random
+and because it's Gaussian,
+
+00:54:09.980 --> 00:54:12.580 align:middle line:84%
+there's some probability of
+getting a really horrible
+
+00:54:12.580 --> 00:54:15.300 align:middle line:90%
+function, really bizarre.
+
+00:54:15.300 --> 00:54:20.120 align:middle line:84%
+One function could
+actually do something like,
+
+00:54:20.120 --> 00:54:22.620 align:middle line:84%
+it goes through this data point
+and then it goes all the way
+
+00:54:22.620 --> 00:54:24.640 align:middle line:84%
+up here, and then it comes
+all the way back down,
+
+00:54:24.640 --> 00:54:25.960 align:middle line:84%
+and then it goes
+all the way back up.
+
+00:54:25.960 --> 00:54:28.320 align:middle line:84%
+And there's some probability
+of getting that function.
+
+00:54:28.320 --> 00:54:31.940 align:middle line:84%
+But interestingly,
+it's a very, very small
+
+00:54:31.940 --> 00:54:36.500 align:middle line:84%
+because things can't
+deviate too much
+
+00:54:36.500 --> 00:54:40.340 align:middle line:84%
+from the mean with very
+significant probability
+
+00:54:40.340 --> 00:54:41.780 align:middle line:90%
+basically.
+
+00:54:41.780 --> 00:54:44.720 align:middle line:84%
+And even if they do deviate
+a lot from the mean--
+
+00:54:44.720 --> 00:54:46.440 align:middle line:84%
+let's say the variance
+is really high--
+
+00:54:46.440 --> 00:54:50.210 align:middle line:90%
+
+
+00:54:50.210 --> 00:54:51.730 align:middle line:84%
+well, I can always
+try to extract
+
+00:54:51.730 --> 00:54:53.772 align:middle line:84%
+what the mean is, because
+I know that the mean is
+
+00:54:53.772 --> 00:54:54.950 align:middle line:90%
+a nice, smooth function.
+
+00:54:54.950 --> 00:54:57.230 align:middle line:84%
+So in the context of
+this correspondence,
+
+00:54:57.230 --> 00:54:58.790 align:middle line:84%
+it's an interesting
+question to ask--
+
+00:54:58.790 --> 00:55:03.010 align:middle line:90%
+
+
+00:55:03.010 --> 00:55:04.930 align:middle line:84%
+how can I get the
+distribution of functions
+
+00:55:04.930 --> 00:55:07.250 align:middle line:84%
+to actually concentrate
+on the mean?
+
+00:55:07.250 --> 00:55:10.010 align:middle line:84%
+In other words, what do I need
+to do to the neural network
+
+00:55:10.010 --> 00:55:13.880 align:middle line:84%
+to get this standard
+deviation to go to 0,
+
+00:55:13.880 --> 00:55:15.630 align:middle line:84%
+relative to the mean,
+if that makes sense?
+
+00:55:15.630 --> 00:55:16.870 align:middle line:90%
+Is there something I can do?
+
+00:55:16.870 --> 00:55:18.453 align:middle line:84%
+And I thought about
+that at one point.
+
+00:55:18.453 --> 00:55:23.770 align:middle line:84%
+And the argument is that if
+you make the standard deviation
+
+00:55:23.770 --> 00:55:26.770 align:middle line:84%
+that you sample the weights
+from very, very small, then
+
+00:55:26.770 --> 00:55:29.090 align:middle line:84%
+it actually causes
+the distribution
+
+00:55:29.090 --> 00:55:30.830 align:middle line:90%
+to collapse onto the mean.
+
+00:55:30.830 --> 00:55:33.470 align:middle line:84%
+And then with very
+high probability,
+
+00:55:33.470 --> 00:55:36.810 align:middle line:84%
+all the samples are
+very close to the mean.
+
+00:55:36.810 --> 00:55:39.610 align:middle line:90%
+But I didn't want to dwell.
+
+00:55:39.610 --> 00:55:42.068 align:middle line:84%
+Yeah, it's something
+to think about.
+
+00:55:42.068 --> 00:55:42.610 align:middle line:90%
+AUDIENCE: OK.
+
+00:55:42.610 --> 00:55:46.952 align:middle line:90%
+
+
+00:55:46.952 --> 00:55:48.410 align:middle line:84%
+JEREMY BERNSTEIN:
+Oh, yeah, there's
+
+00:55:48.410 --> 00:55:53.250 align:middle line:84%
+another answer to that question,
+which is it's basically like--
+
+00:55:53.250 --> 00:55:55.250 align:middle line:84%
+I'm not sure if Phillip
+talked about that
+
+00:55:55.250 --> 00:55:58.330 align:middle line:84%
+in one of his lectures-- but
+the idea of neural networks
+
+00:55:58.330 --> 00:56:00.190 align:middle line:84%
+being very, very
+overparameterized,
+
+00:56:00.190 --> 00:56:04.390 align:middle line:84%
+but they can still represent
+lots of nice, simple functions.
+
+00:56:04.390 --> 00:56:06.970 align:middle line:84%
+So the fact that the
+network is very, very wide
+
+00:56:06.970 --> 00:56:09.830 align:middle line:84%
+does not imply that
+you're going to overfit.
+
+00:56:09.830 --> 00:56:12.270 align:middle line:84%
+It just implies that
+it's possible to overfit.
+
+00:56:12.270 --> 00:56:18.520 align:middle line:90%
+
+
+00:56:18.520 --> 00:56:19.810 align:middle line:90%
+Yeah, go ahead.
+
+00:56:19.810 --> 00:56:21.930 align:middle line:84%
+AUDIENCE: Why does
+that require you
+
+00:56:21.930 --> 00:56:24.930 align:middle line:84%
+to have standard weights
+for the neural network?
+
+00:56:24.930 --> 00:56:31.850 align:middle line:84%
+Also, for example, if you
+sample 1,000 random network
+
+00:56:31.850 --> 00:56:38.610 align:middle line:84%
+and initially the network is
+a random Gaussian distribution
+
+00:56:38.610 --> 00:56:39.810 align:middle line:90%
+by sampling it.
+
+00:56:39.810 --> 00:56:43.030 align:middle line:84%
+And [INAUDIBLE]
+you draw the plot.
+
+00:56:43.030 --> 00:56:47.170 align:middle line:84%
+But the output, you still can't
+say it follows the Gaussian
+
+00:56:47.170 --> 00:56:48.030 align:middle line:90%
+distribution.
+
+00:56:48.030 --> 00:56:50.690 align:middle line:84%
+So I'm just wondering,
+it seems like you
+
+00:56:50.690 --> 00:56:56.690 align:middle line:84%
+can do the same thing in your
+network for the kernel methods.
+
+00:56:56.690 --> 00:57:00.690 align:middle line:84%
+You can learn the sufficient
+statistic, like the mean value
+
+00:57:00.690 --> 00:57:05.970 align:middle line:84%
+and sigma value, without a
+large hyperparameter tuning
+
+00:57:05.970 --> 00:57:08.650 align:middle line:84%
+or without large
+tuning, how can you
+
+00:57:08.650 --> 00:57:12.170 align:middle line:90%
+learn a sufficient statistic?
+
+00:57:12.170 --> 00:57:13.930 align:middle line:84%
+JEREMY BERNSTEIN:
+OK, so let me try
+
+00:57:13.930 --> 00:57:15.910 align:middle line:84%
+to repeat what I think
+the questions were.
+
+00:57:15.910 --> 00:57:18.090 align:middle line:84%
+So the first one was,
+in this construction
+
+00:57:18.090 --> 00:57:20.290 align:middle line:84%
+of this correspondence,
+why does the network
+
+00:57:20.290 --> 00:57:22.050 align:middle line:90%
+need to be infinitely wide?
+
+00:57:22.050 --> 00:57:25.730 align:middle line:84%
+And then I think
+the second question,
+
+00:57:25.730 --> 00:57:29.098 align:middle line:84%
+if there is this correspondence,
+why do we actually do deep
+
+00:57:29.098 --> 00:57:30.390 align:middle line:90%
+learning the way that we do it?
+
+00:57:30.390 --> 00:57:32.598 align:middle line:84%
+Why don't we just extract
+what the kernel is and then
+
+00:57:32.598 --> 00:57:35.370 align:middle line:84%
+just do Gaussian
+process regression
+
+00:57:35.370 --> 00:57:37.650 align:middle line:90%
+or do some kernel method?
+
+00:57:37.650 --> 00:57:39.550 align:middle line:84%
+So they're both
+really good questions.
+
+00:57:39.550 --> 00:57:42.330 align:middle line:84%
+So on the first
+question, I'm going
+
+00:57:42.330 --> 00:57:45.370 align:middle line:84%
+to talk a little bit about that
+on the next couple of slides.
+
+00:57:45.370 --> 00:57:47.370 align:middle line:84%
+It's because the
+construction relies
+
+00:57:47.370 --> 00:57:50.710 align:middle line:84%
+on a central limit theorem
+over the width of the network.
+
+00:57:50.710 --> 00:57:51.790 align:middle line:90%
+That's the short answer.
+
+00:57:51.790 --> 00:57:55.950 align:middle line:84%
+So for things to converge to
+this Gaussian distribution,
+
+00:57:55.950 --> 00:57:57.630 align:middle line:84%
+it's because of a
+central limit theorem.
+
+00:57:57.630 --> 00:57:59.350 align:middle line:84%
+And that requires
+something being large.
+
+00:57:59.350 --> 00:58:02.730 align:middle line:90%
+And it turns out it's the width.
+
+00:58:02.730 --> 00:58:06.100 align:middle line:84%
+The second question, yeah,
+that's a great question.
+
+00:58:06.100 --> 00:58:07.850 align:middle line:84%
+Because some people
+really thought that we
+
+00:58:07.850 --> 00:58:09.770 align:middle line:90%
+should do kernel methods.
+
+00:58:09.770 --> 00:58:14.250 align:middle line:84%
+But it just seems to be
+not the case from the way
+
+00:58:14.250 --> 00:58:16.730 align:middle line:90%
+that we see things right.
+
+00:58:16.730 --> 00:58:18.770 align:middle line:84%
+It seems that even if
+you have an equivalent
+
+00:58:18.770 --> 00:58:22.430 align:middle line:84%
+kernel to your neural net, maybe
+for several different reasons,
+
+00:58:22.430 --> 00:58:24.930 align:middle line:84%
+you would actually rather just
+train the neural net and just
+
+00:58:24.930 --> 00:58:32.010 align:middle line:84%
+tune the hyperparameters rather
+than do the kernel method
+
+00:58:32.010 --> 00:58:33.750 align:middle line:84%
+or do the Gaussian
+process regression.
+
+00:58:33.750 --> 00:58:37.170 align:middle line:84%
+I think there's probably a few
+different potential reasons why
+
+00:58:37.170 --> 00:58:39.810 align:middle line:90%
+that's the case.
+
+00:58:39.810 --> 00:58:44.875 align:middle line:84%
+One is, well, first of
+all, the kernel method,
+
+00:58:44.875 --> 00:58:47.000 align:middle line:84%
+the Gaussian process ends
+up having hyperparameters
+
+00:58:47.000 --> 00:58:49.280 align:middle line:84%
+as well, because somehow the
+architecture of the network
+
+00:58:49.280 --> 00:58:50.863 align:middle line:84%
+is going to affect
+what the kernel is.
+
+00:58:50.863 --> 00:58:53.820 align:middle line:84%
+So it's not like it's
+really a tuning-free thing.
+
+00:58:53.820 --> 00:58:56.360 align:middle line:90%
+
+
+00:58:56.360 --> 00:58:59.400 align:middle line:84%
+And then another thing is
+the kernel method scales
+
+00:58:59.400 --> 00:59:02.260 align:middle line:84%
+much worse with the size of your
+dataset than neural nets do.
+
+00:59:02.260 --> 00:59:04.160 align:middle line:84%
+I think it's the cost
+of all the methods
+
+00:59:04.160 --> 00:59:07.100 align:middle line:84%
+is cubic in the size
+of the training set,
+
+00:59:07.100 --> 00:59:12.640 align:middle line:84%
+whereas somehow neural
+nets scale linearly
+
+00:59:12.640 --> 00:59:15.000 align:middle line:84%
+with the size of
+your training data.
+
+00:59:15.000 --> 00:59:17.920 align:middle line:84%
+I'm not sure if, if
+you train an LLM,
+
+00:59:17.920 --> 00:59:20.440 align:middle line:84%
+you just train it
+once on the data.
+
+00:59:20.440 --> 00:59:22.400 align:middle line:84%
+And the computational
+cost is the cost
+
+00:59:22.400 --> 00:59:24.520 align:middle line:84%
+of a forward pass and a
+backward pass multiplied
+
+00:59:24.520 --> 00:59:26.020 align:middle line:84%
+by the size of
+your training set.
+
+00:59:26.020 --> 00:59:27.840 align:middle line:84%
+So it's definitely
+not a cubic dependence
+
+00:59:27.840 --> 00:59:29.340 align:middle line:84%
+on the number of
+training points.
+
+00:59:29.340 --> 00:59:31.180 align:middle line:90%
+So that's another thing.
+
+00:59:31.180 --> 00:59:32.060 align:middle line:90%
+But I don't know.
+
+00:59:32.060 --> 00:59:33.435 align:middle line:84%
+It's a super
+interesting question
+
+00:59:33.435 --> 00:59:35.740 align:middle line:84%
+why people use neural nets
+rather than kernel methods.
+
+00:59:35.740 --> 00:59:42.752 align:middle line:84%
+I think it may still be
+a somewhat open problem.
+
+00:59:42.752 --> 00:59:43.600 align:middle line:90%
+Yes, Zach?
+
+00:59:43.600 --> 00:59:45.180 align:middle line:90%
+AUDIENCE: I had two questions.
+
+00:59:45.180 --> 00:59:49.360 align:middle line:84%
+So the first is, here we're
+saying as the width approaches
+
+00:59:49.360 --> 00:59:51.880 align:middle line:84%
+infinity, the neural network
+is approaching the Gaussian
+
+00:59:51.880 --> 00:59:52.460 align:middle line:90%
+process.
+
+00:59:52.460 --> 00:59:53.377 align:middle line:90%
+JEREMY BERNSTEIN: Yes.
+
+00:59:53.377 --> 00:59:56.400 align:middle line:84%
+AUDIENCE: Have people
+been able to quantify
+
+00:59:56.400 --> 00:59:59.440 align:middle line:84%
+how close a network gets
+to a Gaussian process
+
+00:59:59.440 --> 01:00:01.465 align:middle line:90%
+if the width is finite?
+
+01:00:01.465 --> 01:00:02.840 align:middle line:84%
+JEREMY BERNSTEIN:
+So the question
+
+01:00:02.840 --> 01:00:07.560 align:middle line:84%
+was, if this is a limiting
+result that only holds
+
+01:00:07.560 --> 01:00:10.340 align:middle line:84%
+at infinite width, if you
+have a finite-width network,
+
+01:00:10.340 --> 01:00:13.560 align:middle line:84%
+do we know what the deviations
+are from the limiting result?
+
+01:00:13.560 --> 01:00:17.140 align:middle line:84%
+I think there are
+papers on this question.
+
+01:00:17.140 --> 01:00:22.260 align:middle line:90%
+
+
+01:00:22.260 --> 01:00:25.760 align:middle line:84%
+One answer is, even in the
+classic central limit theorem,
+
+01:00:25.760 --> 01:00:28.680 align:middle line:84%
+there's a result called the
+Berry-Esseen theorem, which
+
+01:00:28.680 --> 01:00:34.000 align:middle line:84%
+tells you about the
+deviations from normality
+
+01:00:34.000 --> 01:00:37.180 align:middle line:84%
+of a large sum of independent
+random variables and so on.
+
+01:00:37.180 --> 01:00:40.760 align:middle line:84%
+So you could just say, I'm going
+to take the Berry-Esseen theorem
+
+01:00:40.760 --> 01:00:43.580 align:middle line:84%
+and turn the handle
+and figure it out.
+
+01:00:43.580 --> 01:00:45.420 align:middle line:84%
+I don't quite know if
+that actually works.
+
+01:00:45.420 --> 01:00:47.188 align:middle line:84%
+AUDIENCE: What's the
+name of that theorem?
+
+01:00:47.188 --> 01:00:48.480 align:middle line:90%
+JEREMY BERNSTEIN: Like, Berry--
+
+01:00:48.480 --> 01:00:52.120 align:middle line:84%
+I'm probably not getting the
+name quite right, but Berry,
+
+01:00:52.120 --> 01:00:54.520 align:middle line:84%
+and then I think
+it's like Esseen.
+
+01:00:54.520 --> 01:00:55.435 align:middle line:90%
+AUDIENCE: OK.
+
+01:00:55.435 --> 01:00:57.560 align:middle line:84%
+JEREMY BERNSTEIN: I'm not
+sure how to pronounce it.
+
+01:00:57.560 --> 01:00:59.883 align:middle line:84%
+AUDIENCE: And then
+the other question
+
+01:00:59.883 --> 01:01:01.300 align:middle line:84%
+I had is-- earlier
+in the lecture,
+
+01:01:01.300 --> 01:01:02.967 align:middle line:84%
+you said that people
+were really, really
+
+01:01:02.967 --> 01:01:04.680 align:middle line:84%
+excited about this
+result-- and I'm
+
+01:01:04.680 --> 01:01:08.280 align:middle line:84%
+wondering what the larger
+effect on the research community
+
+01:01:08.280 --> 01:01:10.440 align:middle line:84%
+has been, how that's
+influencing how people
+
+01:01:10.440 --> 01:01:12.422 align:middle line:90%
+think about intelligent models?
+
+01:01:12.422 --> 01:01:14.380 align:middle line:84%
+JEREMY BERNSTEIN: Yes,
+that's a great question.
+
+01:01:14.380 --> 01:01:17.040 align:middle line:84%
+I think the short
+answer is that it's
+
+01:01:17.040 --> 01:01:20.880 align:middle line:84%
+had actually very little
+impact on what people actually
+
+01:01:20.880 --> 01:01:23.960 align:middle line:84%
+do in deep learning,
+realistically.
+
+01:01:23.960 --> 01:01:27.440 align:middle line:84%
+It may not be the case,
+but it seems that way.
+
+01:01:27.440 --> 01:01:30.000 align:middle line:84%
+Maybe at the end,
+I can talk a bit
+
+01:01:30.000 --> 01:01:33.840 align:middle line:84%
+about some of the potential
+limitations of the result.
+
+01:01:33.840 --> 01:01:38.840 align:middle line:84%
+But it's like, there could have
+been a version of deep learning
+
+01:01:38.840 --> 01:01:43.480 align:middle line:84%
+where you're like, ooh, OK, I
+need to solve this deep learning
+
+01:01:43.480 --> 01:01:44.400 align:middle line:90%
+problem.
+
+01:01:44.400 --> 01:01:47.063 align:middle line:84%
+Let me write down what my
+architecture is, take the limit,
+
+01:01:47.063 --> 01:01:48.480 align:middle line:84%
+work out what the
+kernel is, study
+
+01:01:48.480 --> 01:01:50.000 align:middle line:90%
+the properties of this kernel.
+
+01:01:50.000 --> 01:01:52.080 align:middle line:90%
+And, OK, now I'm ready to go.
+
+01:01:52.080 --> 01:01:53.400 align:middle line:90%
+But that's just not what it is.
+
+01:01:53.400 --> 01:01:56.080 align:middle line:84%
+It's more like, OK, just
+get an architecture that
+
+01:01:56.080 --> 01:01:59.080 align:middle line:84%
+seems reasonable and
+we'll just try it.
+
+01:01:59.080 --> 01:02:02.080 align:middle line:84%
+And I think there's
+a lesson, which
+
+01:02:02.080 --> 01:02:04.400 align:middle line:84%
+is that anything that's too
+convoluted of a procedure
+
+01:02:04.400 --> 01:02:07.000 align:middle line:84%
+is actually unlikely
+to be really capturing
+
+01:02:07.000 --> 01:02:07.860 align:middle line:90%
+what's going on.
+
+01:02:07.860 --> 01:02:11.520 align:middle line:84%
+And one thing is,
+you just don't need
+
+01:02:11.520 --> 01:02:13.880 align:middle line:84%
+to do that because you can
+just train the neural net
+
+01:02:13.880 --> 01:02:15.280 align:middle line:90%
+and you just see.
+
+01:02:15.280 --> 01:02:17.720 align:middle line:84%
+But I think there
+are also limitations
+
+01:02:17.720 --> 01:02:20.560 align:middle line:84%
+of this result that
+mean it's possibly also
+
+01:02:20.560 --> 01:02:22.100 align:middle line:90%
+potentially not that useful.
+
+01:02:22.100 --> 01:02:26.262 align:middle line:90%
+
+
+01:02:26.262 --> 01:02:27.720 align:middle line:84%
+So the point of
+this lecture is not
+
+01:02:27.720 --> 01:02:31.200 align:middle line:84%
+to tell you this is something
+for your practical toolkit
+
+01:02:31.200 --> 01:02:32.620 align:middle line:90%
+for going out into the wild.
+
+01:02:32.620 --> 01:02:34.720 align:middle line:84%
+It's more like, if you're
+interested to really get
+
+01:02:34.720 --> 01:02:38.393 align:middle line:84%
+into the technical details
+of deep learning theory
+
+01:02:38.393 --> 01:02:40.310 align:middle line:84%
+and you want to think
+about the different ways
+
+01:02:40.310 --> 01:02:42.852 align:middle line:84%
+that people have come up with
+to think about neural networks,
+
+01:02:42.852 --> 01:02:44.170 align:middle line:90%
+here's one of them.
+
+01:02:44.170 --> 01:02:47.750 align:middle line:90%
+
+
+01:02:47.750 --> 01:02:49.750 align:middle line:90%
+OK.
+
+01:02:49.750 --> 01:02:50.710 align:middle line:90%
+Yeah?
+
+01:02:50.710 --> 01:02:52.510 align:middle line:84%
+AUDIENCE: How many
+parameters do we
+
+01:02:52.510 --> 01:02:55.710 align:middle line:84%
+need to optimize in
+Gaussian process?
+
+01:02:55.710 --> 01:02:58.790 align:middle line:84%
+JEREMY BERNSTEIN:
+Well, generally,
+
+01:02:58.790 --> 01:03:01.750 align:middle line:84%
+the kernel, the
+covariance function
+
+01:03:01.750 --> 01:03:05.470 align:middle line:84%
+could have an arbitrary
+number of hyperparameters.
+
+01:03:05.470 --> 01:03:09.110 align:middle line:84%
+So if you're doing just
+straight-up Gaussian process
+
+01:03:09.110 --> 01:03:12.090 align:middle line:84%
+regression, you're going
+to pick a kernel function.
+
+01:03:12.090 --> 01:03:14.030 align:middle line:84%
+You get to design it and
+you get to choose how
+
+01:03:14.030 --> 01:03:15.950 align:middle line:90%
+many hyperparameters it has.
+
+01:03:15.950 --> 01:03:19.190 align:middle line:84%
+AUDIENCE: So what's the
+most critical kernel
+
+01:03:19.190 --> 01:03:20.190 align:middle line:90%
+function we choose?
+
+01:03:20.190 --> 01:03:23.990 align:middle line:84%
+And what is the correspondence
+to the neural network
+
+01:03:23.990 --> 01:03:25.825 align:middle line:90%
+architecture?
+
+01:03:25.825 --> 01:03:27.950 align:middle line:84%
+JEREMY BERNSTEIN: Yeah, I
+have an example coming up
+
+01:03:27.950 --> 01:03:33.070 align:middle line:84%
+for correspondence to
+the network architecture.
+
+01:03:33.070 --> 01:03:36.470 align:middle line:84%
+So the question was, is there
+an example of a typical kernel
+
+01:03:36.470 --> 01:03:40.390 align:middle line:84%
+that people use in
+Gaussian processes?
+
+01:03:40.390 --> 01:03:42.390 align:middle line:84%
+The first one that
+most people introduce
+
+01:03:42.390 --> 01:03:44.630 align:middle line:84%
+is just the squared
+exponential kernel,
+
+01:03:44.630 --> 01:03:49.870 align:middle line:84%
+which is e to the negative
+x minus x-prime squared.
+
+01:03:49.870 --> 01:03:51.950 align:middle line:84%
+And then you might
+introduce a hyperparameter,
+
+01:03:51.950 --> 01:03:54.190 align:middle line:84%
+like dividing by
+2 sigma squared,
+
+01:03:54.190 --> 01:03:56.130 align:middle line:90%
+where sigma is a hyperparameter.
+
+01:03:56.130 --> 01:03:59.750 align:middle line:84%
+And it controls the length
+scale of the correlations
+
+01:03:59.750 --> 01:04:03.650 align:middle line:84%
+that the kernel-- and this is a
+kernel with one hyperparameter.
+
+01:04:03.650 --> 01:04:05.710 align:middle line:84%
+But then you could
+say, oh, what if x
+
+01:04:05.710 --> 01:04:07.630 align:middle line:90%
+is a multidimensional input.
+
+01:04:07.630 --> 01:04:09.830 align:middle line:84%
+Then something you could
+say is, what if I have
+
+01:04:09.830 --> 01:04:12.750 align:middle line:90%
+one sigma per input coordinate?
+
+01:04:12.750 --> 01:04:15.430 align:middle line:84%
+That would be a way to
+introduce more hyperparameters.
+
+01:04:15.430 --> 01:04:17.610 align:middle line:84%
+Or you could have a
+different functional form.
+
+01:04:17.610 --> 01:04:19.490 align:middle line:84%
+You could add something
+to this kernel.
+
+01:04:19.490 --> 01:04:22.510 align:middle line:90%
+
+
+01:04:22.510 --> 01:04:24.990 align:middle line:84%
+That's the modeling
+decisions that people incur.
+
+01:04:24.990 --> 01:04:26.350 align:middle line:90%
+And you can read up papers.
+
+01:04:26.350 --> 01:04:29.470 align:middle line:84%
+And there'll be a table
+of 10 different kernels.
+
+01:04:29.470 --> 01:04:32.370 align:middle line:84%
+And they'll say, if your
+problem has this structure,
+
+01:04:32.370 --> 01:04:36.830 align:middle line:84%
+try kernel x; if it has this
+other structure, try kernel y.
+
+01:04:36.830 --> 01:04:40.670 align:middle line:84%
+It's similar to, oh,
+use a ConvNet for images
+
+01:04:40.670 --> 01:04:42.530 align:middle line:90%
+and use a transformer for this.
+
+01:04:42.530 --> 01:04:45.170 align:middle line:84%
+And it's just
+modeling decisions.
+
+01:04:45.170 --> 01:04:47.890 align:middle line:90%
+AUDIENCE: OK, thanks.
+
+01:04:47.890 --> 01:04:50.390 align:middle line:84%
+JEREMY BERNSTEIN: OK, I'm going
+to keep going, because now I
+
+01:04:50.390 --> 01:04:52.330 align:middle line:90%
+think we may run out of time.
+
+01:04:52.330 --> 01:04:53.510 align:middle line:90%
+I'm not sure.
+
+01:04:53.510 --> 01:04:54.970 align:middle line:90%
+So I didn't actually prove it.
+
+01:04:54.970 --> 01:04:56.490 align:middle line:90%
+I just wrote down a sketch.
+
+01:04:56.490 --> 01:04:58.510 align:middle line:84%
+And I think I'm
+just going to post
+
+01:04:58.510 --> 01:05:02.710 align:middle line:84%
+a reading about how to actually
+prove this correspondence.
+
+01:05:02.710 --> 01:05:07.550 align:middle line:84%
+But I'm just going to give you
+something high level about how
+
+01:05:07.550 --> 01:05:10.450 align:middle line:84%
+to prove that this
+correspondence happens.
+
+01:05:10.450 --> 01:05:11.950 align:middle line:84%
+So remember, the
+correspondence is
+
+01:05:11.950 --> 01:05:14.710 align:middle line:84%
+an infinitely wide neural
+network with random weights
+
+01:05:14.710 --> 01:05:17.510 align:middle line:90%
+induces the Gaussian processes--
+
+01:05:17.510 --> 01:05:20.230 align:middle line:84%
+the random functions you get
+are equivalent to a Gaussian
+
+01:05:20.230 --> 01:05:23.470 align:middle line:90%
+process.
+
+01:05:23.470 --> 01:05:25.070 align:middle line:84%
+And the main tool
+is something called
+
+01:05:25.070 --> 01:05:28.430 align:middle line:84%
+the multivariate central limit
+theorem, where mainly you
+
+01:05:28.430 --> 01:05:29.830 align:middle line:84%
+just hear about
+the central limit
+
+01:05:29.830 --> 01:05:34.150 align:middle line:84%
+theorem for a Gaussian random
+variable with one coordinate.
+
+01:05:34.150 --> 01:05:35.910 align:middle line:84%
+But it turns out
+there's a generalization
+
+01:05:35.910 --> 01:05:38.670 align:middle line:84%
+of the central limit
+theorem to Gaussian vectors.
+
+01:05:38.670 --> 01:05:41.270 align:middle line:84%
+And then proving
+this result is just
+
+01:05:41.270 --> 01:05:44.670 align:middle line:84%
+applying that theorem
+a couple of times
+
+01:05:44.670 --> 01:05:48.830 align:middle line:84%
+and doing the right induction
+over depth of the network.
+
+01:05:48.830 --> 01:05:51.730 align:middle line:84%
+And honestly, it's been a while
+since I thought about this,
+
+01:05:51.730 --> 01:05:55.830 align:middle line:90%
+but I think there's two steps.
+
+01:05:55.830 --> 01:05:57.450 align:middle line:90%
+There's two main steps.
+
+01:05:57.450 --> 01:06:01.470 align:middle line:84%
+One is, you pick a single
+input to the network,
+
+01:06:01.470 --> 01:06:05.350 align:middle line:84%
+and you inspect the network
+at a particular layer.
+
+01:06:05.350 --> 01:06:07.510 align:middle line:84%
+And you show that
+the activations
+
+01:06:07.510 --> 01:06:12.510 align:middle line:84%
+for that individual input are
+iid random variables, which
+
+01:06:12.510 --> 01:06:14.910 align:middle line:84%
+is kind of intuitive
+that they should be.
+
+01:06:14.910 --> 01:06:16.890 align:middle line:84%
+If you're randomly
+initializing the network,
+
+01:06:16.890 --> 01:06:21.030 align:middle line:84%
+the different activations
+of a particular layer
+
+01:06:21.030 --> 01:06:24.970 align:middle line:84%
+on the same input should
+somehow be iid random variables.
+
+01:06:24.970 --> 01:06:27.710 align:middle line:90%
+But you have to show that.
+
+01:06:27.710 --> 01:06:31.960 align:middle line:84%
+And then once you've shown that,
+you then consider that a layer,
+
+01:06:31.960 --> 01:06:33.820 align:middle line:84%
+and you consider
+batching the activations
+
+01:06:33.820 --> 01:06:35.520 align:middle line:90%
+over the multiple inputs.
+
+01:06:35.520 --> 01:06:39.900 align:middle line:84%
+And you think about each
+activation coordinate,
+
+01:06:39.900 --> 01:06:42.240 align:middle line:84%
+the batch of examples as
+being a random vector.
+
+01:06:42.240 --> 01:06:44.362 align:middle line:84%
+And then you apply the
+multivariate, essentially.
+
+01:06:44.362 --> 01:06:45.820 align:middle line:84%
+Then you think
+about the next layer
+
+01:06:45.820 --> 01:06:49.380 align:middle line:84%
+as summing over those
+random vectors somehow.
+
+01:06:49.380 --> 01:06:52.080 align:middle line:84%
+And you do this multivariate
+central limit theorem.
+
+01:06:52.080 --> 01:06:53.960 align:middle line:84%
+And anyway, I'm not
+really explaining it.
+
+01:06:53.960 --> 01:06:58.580 align:middle line:84%
+So the short answer is, there's
+a central limit theorem.
+
+01:06:58.580 --> 01:07:01.660 align:middle line:84%
+And I'll post a reading
+if someone wants
+
+01:07:01.660 --> 01:07:03.260 align:middle line:90%
+to go through the details.
+
+01:07:03.260 --> 01:07:04.240 align:middle line:90%
+Yeah, go ahead.
+
+01:07:04.240 --> 01:07:07.420 align:middle line:90%
+
+
+01:07:07.420 --> 01:07:10.540 align:middle line:84%
+AUDIENCE: The first question
+is, as the weight goes
+
+01:07:10.540 --> 01:07:12.660 align:middle line:84%
+to infinity, you
+might be rescaling
+
+01:07:12.660 --> 01:07:15.180 align:middle line:84%
+the weights in some way,
+right, when you're sampling?
+
+01:07:15.180 --> 01:07:16.840 align:middle line:90%
+JEREMY BERNSTEIN: Yes, exactly.
+
+01:07:16.840 --> 01:07:18.420 align:middle line:90%
+AUDIENCE: [INAUDIBLE].
+
+01:07:18.420 --> 01:07:23.660 align:middle line:84%
+And the second question is,
+could you talk a little bit more
+
+01:07:23.660 --> 01:07:28.660 align:middle line:84%
+about why they're going to be
+independent random variables
+
+01:07:28.660 --> 01:07:31.260 align:middle line:84%
+when you have the
+complex dependencies
+
+01:07:31.260 --> 01:07:33.165 align:middle line:90%
+in the previous layers?
+
+01:07:33.165 --> 01:07:34.040 align:middle line:90%
+JEREMY BERNSTEIN: OK.
+
+01:07:34.040 --> 01:07:36.760 align:middle line:84%
+So maybe it's not obvious
+that they are independent.
+
+01:07:36.760 --> 01:07:39.560 align:middle line:84%
+And I think I maybe
+should not have said that.
+
+01:07:39.560 --> 01:07:41.740 align:middle line:84%
+So I think that's something
+you've got to show.
+
+01:07:41.740 --> 01:07:44.020 align:middle line:84%
+And I'm not going to go
+into it, but it's basically
+
+01:07:44.020 --> 01:07:45.860 align:middle line:84%
+because of the
+network being so wide
+
+01:07:45.860 --> 01:07:49.220 align:middle line:84%
+at every layer that you have a
+central limit theorem happening
+
+01:07:49.220 --> 01:07:50.320 align:middle line:90%
+at each layer.
+
+01:07:50.320 --> 01:07:52.120 align:middle line:84%
+And that's going to
+cause the independence.
+
+01:07:52.120 --> 01:07:55.640 align:middle line:84%
+But I'm not giving
+you a mechanism,
+
+01:07:55.640 --> 01:07:58.560 align:middle line:84%
+I'm just giving you a
+hand-wavy justification.
+
+01:07:58.560 --> 01:08:01.100 align:middle line:90%
+I'm going to post the reading.
+
+01:08:01.100 --> 01:08:03.780 align:middle line:84%
+So the other question
+was, what precisely
+
+01:08:03.780 --> 01:08:05.200 align:middle line:90%
+is the weight initialization?
+
+01:08:05.200 --> 01:08:07.460 align:middle line:84%
+How does it scale
+with the width?
+
+01:08:07.460 --> 01:08:10.740 align:middle line:84%
+So I think I have
+a concrete example
+
+01:08:10.740 --> 01:08:13.340 align:middle line:84%
+of this result in
+action, so let's just
+
+01:08:13.340 --> 01:08:16.180 align:middle line:90%
+go through it briefly.
+
+01:08:16.180 --> 01:08:18.340 align:middle line:84%
+So I think this is
+the instantiation
+
+01:08:18.340 --> 01:08:22.520 align:middle line:84%
+of the result for an MLP
+with a ReLU non-linearity.
+
+01:08:22.520 --> 01:08:25.140 align:middle line:90%
+
+
+01:08:25.140 --> 01:08:27.300 align:middle line:84%
+And it turns out that
+all of the calculations,
+
+01:08:27.300 --> 01:08:30.500 align:middle line:84%
+you can solve them
+exactly for this model.
+
+01:08:30.500 --> 01:08:34.979 align:middle line:84%
+And actually, one of the
+papers in the reading
+
+01:08:34.979 --> 01:08:38.640 align:middle line:84%
+actually solves this kernel
+for this architecture.
+
+01:08:38.640 --> 01:08:41.580 align:middle line:84%
+But it's quite an old paper and
+it may not be that easy to read.
+
+01:08:41.580 --> 01:08:43.819 align:middle line:84%
+So I wonder if I can
+post something better
+
+01:08:43.819 --> 01:08:45.500 align:middle line:90%
+on Piazza, perhaps.
+
+01:08:45.500 --> 01:08:50.340 align:middle line:84%
+But basically, we set the
+nonlinearity to square root
+
+01:08:50.340 --> 01:08:58.979 align:middle line:84%
+2 times ReLU, and we sample
+the weights with variance 1
+
+01:08:58.979 --> 01:09:00.040 align:middle line:90%
+over fan-in.
+
+01:09:00.040 --> 01:09:04.700 align:middle line:84%
+So that's what we
+would call somehow
+
+01:09:04.700 --> 01:09:09.439 align:middle line:84%
+the standard parameterization in
+PyTorch, is doing 1 over fan-in.
+
+01:09:09.439 --> 01:09:10.973 align:middle line:84%
+It may actually not
+be the best way.
+
+01:09:10.973 --> 01:09:13.140 align:middle line:84%
+I actually think it's not
+the best way to initialize
+
+01:09:13.140 --> 01:09:14.160 align:middle line:90%
+the weights in practice.
+
+01:09:14.160 --> 01:09:17.260 align:middle line:84%
+But for this statement
+to hold, that's
+
+01:09:17.260 --> 01:09:21.399 align:middle line:84%
+the initialization you've got to
+use, so 1 over fan-in variance.
+
+01:09:21.399 --> 01:09:24.420 align:middle line:90%
+
+
+01:09:24.420 --> 01:09:28.220 align:middle line:84%
+And then what you can prove
+is that the expectation
+
+01:09:28.220 --> 01:09:30.220 align:middle line:90%
+of the network output is 0.
+
+01:09:30.220 --> 01:09:33.220 align:middle line:84%
+This is a network with no
+nonlinearity on the output.
+
+01:09:33.220 --> 01:09:35.979 align:middle line:84%
+So it makes sense
+that it means 0.
+
+01:09:35.979 --> 01:09:39.700 align:middle line:90%
+
+
+01:09:39.700 --> 01:09:41.520 align:middle line:84%
+Because the last layer
+is a linear layer,
+
+01:09:41.520 --> 01:09:43.260 align:middle line:90%
+the mean should be 0.
+
+01:09:43.260 --> 01:09:47.340 align:middle line:84%
+And then the
+covariance structure,
+
+01:09:47.340 --> 01:09:53.020 align:middle line:84%
+so the expectation of f of x
+multiplied with f of x prime
+
+01:09:53.020 --> 01:09:58.780 align:middle line:84%
+takes something called the
+compositional arccosine kernel.
+
+01:09:58.780 --> 01:10:01.700 align:middle line:84%
+So we take the dot product
+between the inputs.
+
+01:10:01.700 --> 01:10:04.340 align:middle line:84%
+And then we iteratively
+apply this function h.
+
+01:10:04.340 --> 01:10:07.180 align:middle line:90%
+
+
+01:10:07.180 --> 01:10:11.420 align:middle line:84%
+We apply h L minus 1 times,
+where L minus 1 is the depth.
+
+01:10:11.420 --> 01:10:13.647 align:middle line:84%
+So it's called the
+compositional arccosine kernel.
+
+01:10:13.647 --> 01:10:15.480 align:middle line:84%
+It's just a particular
+mathematical function
+
+01:10:15.480 --> 01:10:17.860 align:middle line:84%
+which happens to correspond
+to this architecture.
+
+01:10:17.860 --> 01:10:20.580 align:middle line:90%
+Somebody proved it.
+
+01:10:20.580 --> 01:10:25.690 align:middle line:84%
+So this is an example
+of the result.
+
+01:10:25.690 --> 01:10:27.450 align:middle line:84%
+AUDIENCE: Actually,
+just a clarification.
+
+01:10:27.450 --> 01:10:30.090 align:middle line:84%
+The whole Gaussian
+process thing, this
+
+01:10:30.090 --> 01:10:32.453 align:middle line:84%
+is for untrained
+neural networks, right?
+
+01:10:32.453 --> 01:10:33.370 align:middle line:90%
+JEREMY BERNSTEIN: Yes.
+
+01:10:33.370 --> 01:10:33.690 align:middle line:90%
+AUDIENCE: OK.
+
+01:10:33.690 --> 01:10:36.090 align:middle line:84%
+JEREMY BERNSTEIN: The thing
+that I told you about, yes.
+
+01:10:36.090 --> 01:10:39.630 align:middle line:84%
+There is another thing,
+the neural tangent kernel,
+
+01:10:39.630 --> 01:10:43.250 align:middle line:84%
+which is supposed to
+be a Gaussian process
+
+01:10:43.250 --> 01:10:45.030 align:middle line:84%
+characterization of
+trained networks.
+
+01:10:45.030 --> 01:10:48.030 align:middle line:84%
+But it also holds
+under some assumptions.
+
+01:10:48.030 --> 01:10:51.170 align:middle line:84%
+And people have moved away
+from thinking too much
+
+01:10:51.170 --> 01:10:52.930 align:middle line:90%
+about that at the moment.
+
+01:10:52.930 --> 01:10:55.592 align:middle line:84%
+But, yeah, there's
+an analogous result,
+
+01:10:55.592 --> 01:10:57.550 align:middle line:84%
+which is supposed to hold
+for trained networks.
+
+01:10:57.550 --> 01:10:58.910 align:middle line:90%
+But I didn't talk about that.
+
+01:10:58.910 --> 01:11:08.370 align:middle line:90%
+
+
+01:11:08.370 --> 01:11:12.330 align:middle line:84%
+OK, I think there's
+one slide, and then I
+
+01:11:12.330 --> 01:11:16.350 align:middle line:84%
+can take some questions if
+anyone has more questions.
+
+01:11:16.350 --> 01:11:21.150 align:middle line:84%
+But basically, if you really buy
+into this picture-- you're like,
+
+01:11:21.150 --> 01:11:27.650 align:middle line:84%
+yes, I believe in the Gaussian
+process correspondence and I
+
+01:11:27.650 --> 01:11:29.770 align:middle line:84%
+want to see how far
+I can take this--
+
+01:11:29.770 --> 01:11:31.850 align:middle line:84%
+you might have questions
+along the lines
+
+01:11:31.850 --> 01:11:36.530 align:middle line:84%
+of, how does the
+covariance kernel
+
+01:11:36.530 --> 01:11:39.490 align:middle line:84%
+or the covariance structure
+depend upon my choice of network
+
+01:11:39.490 --> 01:11:40.850 align:middle line:90%
+architecture?
+
+01:11:40.850 --> 01:11:45.130 align:middle line:84%
+How does it depend on the
+way I initialize the weights?
+
+01:11:45.130 --> 01:11:48.090 align:middle line:84%
+And could you actually
+use these considerations
+
+01:11:48.090 --> 01:11:51.650 align:middle line:84%
+to give you a
+theoretical way to inform
+
+01:11:51.650 --> 01:11:57.583 align:middle line:84%
+how we pick our architecture
+and how we regularize
+
+01:11:57.583 --> 01:11:58.750 align:middle line:90%
+the weights during training?
+
+01:11:58.750 --> 01:12:01.970 align:middle line:84%
+Or can this connection
+actually inform the way
+
+01:12:01.970 --> 01:12:03.710 align:middle line:90%
+that we do deep learning?
+
+01:12:03.710 --> 01:12:06.790 align:middle line:84%
+So that was the hope
+for this type of result.
+
+01:12:06.790 --> 01:12:09.570 align:middle line:84%
+And it seems to have
+just not really happened.
+
+01:12:09.570 --> 01:12:12.050 align:middle line:90%
+Instead, we just do transformer.
+
+01:12:12.050 --> 01:12:14.530 align:middle line:84%
+Or there's a list
+of architectures,
+
+01:12:14.530 --> 01:12:16.890 align:middle line:84%
+and you just pick
+one from that list.
+
+01:12:16.890 --> 01:12:22.850 align:middle line:84%
+And so it was a hope of having
+a formal, analytical way to do
+
+01:12:22.850 --> 01:12:25.910 align:middle line:84%
+design, principle
+design in deep learning.
+
+01:12:25.910 --> 01:12:29.990 align:middle line:84%
+But it doesn't seem
+that we actually use it.
+
+01:12:29.990 --> 01:12:33.050 align:middle line:90%
+
+
+01:12:33.050 --> 01:12:35.675 align:middle line:84%
+So I had one thing,
+I have a blank slide,
+
+01:12:35.675 --> 01:12:37.050 align:middle line:84%
+there was one
+thing that I wanted
+
+01:12:37.050 --> 01:12:41.010 align:middle line:84%
+to talk about at the
+end, which was basically
+
+01:12:41.010 --> 01:12:44.090 align:middle line:84%
+this question of the
+weight initialization
+
+01:12:44.090 --> 01:12:46.130 align:middle line:90%
+that we talked about.
+
+01:12:46.130 --> 01:12:54.010 align:middle line:84%
+So that result held if we have
+a layer with a certain fan-in
+
+01:12:54.010 --> 01:13:02.170 align:middle line:84%
+and a certain fan-out, and
+we use this initialization 1
+
+01:13:02.170 --> 01:13:06.170 align:middle line:84%
+over fan-in, which is
+actually the PyTorch standard.
+
+01:13:06.170 --> 01:13:10.290 align:middle line:84%
+People call this
+Xavier initialization.
+
+01:13:10.290 --> 01:13:14.230 align:middle line:84%
+But it's not obviously
+actually the best thing to do,
+
+01:13:14.230 --> 01:13:16.870 align:middle line:84%
+although it is the thing
+that's built into PyTorch.
+
+01:13:16.870 --> 01:13:19.530 align:middle line:90%
+
+
+01:13:19.530 --> 01:13:23.110 align:middle line:84%
+And I'm just going to give you
+one quick piece of intuition.
+
+01:13:23.110 --> 01:13:30.090 align:middle line:90%
+
+
+01:13:30.090 --> 01:13:32.370 align:middle line:84%
+Wait, first of
+all, why do people
+
+01:13:32.370 --> 01:13:34.027 align:middle line:90%
+believe in this initialization?
+
+01:13:34.027 --> 01:13:36.110 align:middle line:84%
+Why did people come up
+with it in the first place?
+
+01:13:36.110 --> 01:13:38.402 align:middle line:84%
+And it's basically because
+it's the initialization that
+
+01:13:38.402 --> 01:13:40.770 align:middle line:90%
+is good at initialization.
+
+01:13:40.770 --> 01:13:45.352 align:middle line:84%
+And that's the same reason that
+we use it in the Neural Network
+
+01:13:45.352 --> 01:13:47.810 align:middle line:84%
+Gaussian Process Correspondence,
+because the correspondence
+
+01:13:47.810 --> 01:13:51.210 align:middle line:84%
+is about how networks behave
+at random initialization.
+
+01:13:51.210 --> 01:13:54.090 align:middle line:84%
+And basically, this is
+the way to initialize.
+
+01:13:54.090 --> 01:13:57.770 align:middle line:84%
+If you want to preserve
+activation magnitudes
+
+01:13:57.770 --> 01:14:01.450 align:middle line:84%
+at initialization, you
+should initialize this way.
+
+01:14:01.450 --> 01:14:08.970 align:middle line:84%
+But it ignores a fact of
+linear algebra that if you have
+
+01:14:08.970 --> 01:14:18.010 align:middle line:84%
+a matrix where the fan-in is
+much larger than the fan-out--
+
+01:14:18.010 --> 01:14:20.250 align:middle line:84%
+so the input
+dimension, the fan-in,
+
+01:14:20.250 --> 01:14:22.880 align:middle line:84%
+is much larger
+than the fan-out--
+
+01:14:22.880 --> 01:14:24.920 align:middle line:84%
+then the special fact
+about this matrix
+
+01:14:24.920 --> 01:14:28.360 align:middle line:84%
+is it has a huge null space,
+meaning that a lot of the inputs
+
+01:14:28.360 --> 01:14:30.320 align:middle line:90%
+are going to get mapped to 0.
+
+01:14:30.320 --> 01:14:33.880 align:middle line:84%
+And if you set up things
+such that at initialization,
+
+01:14:33.880 --> 01:14:38.420 align:middle line:84%
+the activation magnitudes
+get preserved-- well,
+
+01:14:38.420 --> 01:14:41.337 align:middle line:84%
+at initialization the vectors
+are hitting the null space,
+
+01:14:41.337 --> 01:14:43.920 align:middle line:84%
+and you're kind of scaling up
+all the part of the vector which
+
+01:14:43.920 --> 01:14:46.360 align:middle line:90%
+is not hitting the null space.
+
+01:14:46.360 --> 01:14:48.565 align:middle line:84%
+But actually, once you
+get further into training,
+
+01:14:48.565 --> 01:14:50.440 align:middle line:84%
+actually the inputs to
+the layer will kind of
+
+01:14:50.440 --> 01:14:52.440 align:middle line:90%
+align with the non-null space.
+
+01:14:52.440 --> 01:14:54.440 align:middle line:84%
+And then this principle
+is kind of bad
+
+01:14:54.440 --> 01:14:56.820 align:middle line:84%
+because then things
+are much too large.
+
+01:14:56.820 --> 01:14:58.560 align:middle line:84%
+Anyway, this is
+related to something
+
+01:14:58.560 --> 01:15:01.840 align:middle line:84%
+that people call maximal update
+parameterization or MUP, which
+
+01:15:01.840 --> 01:15:05.300 align:middle line:84%
+is something that if you're
+trying to train giant networks,
+
+01:15:05.300 --> 01:15:07.600 align:middle line:90%
+people care about this a lot.
+
+01:15:07.600 --> 01:15:09.420 align:middle line:90%
+Anyway, that's the end.
+
+01:15:09.420 --> 01:15:11.420 align:middle line:84%
+So if anyone has questions,
+I'll stick around.
+
+01:15:11.420 --> 01:15:14.170 align:middle line:90%
+But thank you for listening.
+
+01:15:14.170 --> 01:15:20.000 align:middle line:90%

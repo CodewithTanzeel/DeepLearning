@@ -1,0 +1,6978 @@
+WEBVTT
+
+00:00:00.000 --> 00:00:02.450 align:middle line:90%
+
+
+00:00:02.450 --> 00:00:02.950 align:middle line:90%
+[SQUEAKING]
+
+00:00:02.950 --> 00:00:03.930 align:middle line:90%
+[RUSTLING]
+
+00:00:03.930 --> 00:00:05.400 align:middle line:90%
+[CLICKING]
+
+00:00:05.400 --> 00:00:12.370 align:middle line:90%
+
+
+00:00:12.370 --> 00:00:13.120 align:middle line:90%
+PHILLIP ISOLA: OK.
+
+00:00:13.120 --> 00:00:14.480 align:middle line:90%
+Hi, everyone.
+
+00:00:14.480 --> 00:00:15.940 align:middle line:90%
+So we're going to get started.
+
+00:00:15.940 --> 00:00:18.840 align:middle line:90%
+
+
+00:00:18.840 --> 00:00:21.540 align:middle line:84%
+I'm the third instructor
+for this course,
+
+00:00:21.540 --> 00:00:24.160 align:middle line:84%
+so I'll just quickly
+introduce myself.
+
+00:00:24.160 --> 00:00:25.200 align:middle line:90%
+I'm Phillip Isola.
+
+00:00:25.200 --> 00:00:28.820 align:middle line:84%
+I also go by Phil, so feel free
+to call me by my first name.
+
+00:00:28.820 --> 00:00:30.720 align:middle line:90%
+Just Phil is fine.
+
+00:00:30.720 --> 00:00:35.000 align:middle line:90%
+And I am a professor in EECS.
+
+00:00:35.000 --> 00:00:36.500 align:middle line:90%
+Just-- I love deep learning.
+
+00:00:36.500 --> 00:00:40.960 align:middle line:84%
+Deep learning is, for me,
+the most beautiful kind
+
+00:00:40.960 --> 00:00:44.920 align:middle line:84%
+of math and intelligence
+that I could imagine.
+
+00:00:44.920 --> 00:00:48.500 align:middle line:84%
+I think that it's a very
+popular subject, obviously,
+
+00:00:48.500 --> 00:00:52.200 align:middle line:84%
+but sometimes deep learning
+gets a little bit of flack
+
+00:00:52.200 --> 00:00:56.252 align:middle line:84%
+because maybe it's too
+hyped or because people feel
+
+00:00:56.252 --> 00:00:57.460 align:middle line:90%
+like too much money is in it.
+
+00:00:57.460 --> 00:00:59.752 align:middle line:84%
+So there's always this weird
+pushback to deep learning.
+
+00:00:59.752 --> 00:01:01.400 align:middle line:84%
+And I just want to
+say, I just love it.
+
+00:01:01.400 --> 00:01:02.002 align:middle line:90%
+It's so cool.
+
+00:01:02.002 --> 00:01:02.960 align:middle line:90%
+And it's OK to love it.
+
+00:01:02.960 --> 00:01:05.440 align:middle line:84%
+We're going to try to
+convey why it's so cool.
+
+00:01:05.440 --> 00:01:08.220 align:middle line:84%
+So deep learning to
+me is just the most--
+
+00:01:08.220 --> 00:01:10.300 align:middle line:84%
+my favorite subject
+of all, and it's
+
+00:01:10.300 --> 00:01:13.220 align:middle line:84%
+great to get to
+teach you about it.
+
+00:01:13.220 --> 00:01:14.940 align:middle line:84%
+OK, so there's a lot
+of beautiful things
+
+00:01:14.940 --> 00:01:16.020 align:middle line:90%
+about deep learning.
+
+00:01:16.020 --> 00:01:17.440 align:middle line:84%
+You've already
+heard some of them.
+
+00:01:17.440 --> 00:01:19.315 align:middle line:84%
+And today we're going
+to hear one more, which
+
+00:01:19.315 --> 00:01:21.220 align:middle line:90%
+is graph neural networks.
+
+00:01:21.220 --> 00:01:23.300 align:middle line:84%
+This is a continuation
+of the sequence
+
+00:01:23.300 --> 00:01:26.260 align:middle line:84%
+that we have going
+on architectures.
+
+00:01:26.260 --> 00:01:27.440 align:middle line:90%
+So we have four lectures.
+
+00:01:27.440 --> 00:01:29.820 align:middle line:84%
+We have the one that
+Sarah gave on Tuesday
+
+00:01:29.820 --> 00:01:31.040 align:middle line:90%
+on convolutional networks.
+
+00:01:31.040 --> 00:01:32.623 align:middle line:84%
+Now we're going to
+see graph nets that
+
+00:01:32.623 --> 00:01:35.682 align:middle line:84%
+are a generalization of
+ConvNets, along with a lot
+
+00:01:35.682 --> 00:01:36.640 align:middle line:90%
+of other architectures.
+
+00:01:36.640 --> 00:01:38.223 align:middle line:84%
+And then we'll see
+transformers, which
+
+00:01:38.223 --> 00:01:40.220 align:middle line:84%
+are a special kind of
+graph net and we'll
+
+00:01:40.220 --> 00:01:42.820 align:middle line:84%
+see recurrent networks and
+memory-based architectures
+
+00:01:42.820 --> 00:01:45.800 align:middle line:90%
+as well over the next few weeks.
+
+00:01:45.800 --> 00:01:48.780 align:middle line:90%
+
+
+00:01:48.780 --> 00:01:52.100 align:middle line:84%
+So the outline of this
+talk is going to be,
+
+00:01:52.100 --> 00:01:54.740 align:middle line:84%
+first, talking about
+what types of problems
+
+00:01:54.740 --> 00:01:57.920 align:middle line:84%
+are appropriate to
+use graph nets on.
+
+00:01:57.920 --> 00:02:02.700 align:middle line:84%
+And then we'll talk about the
+main way that graph nets work.
+
+00:02:02.700 --> 00:02:05.380 align:middle line:84%
+We'll present that as a
+message-passing algorithm,
+
+00:02:05.380 --> 00:02:08.960 align:middle line:84%
+but you'll see that it turns
+out to be very familiar.
+
+00:02:08.960 --> 00:02:10.759 align:middle line:84%
+It's just another
+neural network that
+
+00:02:10.759 --> 00:02:14.320 align:middle line:84%
+has a forward pass
+and a backwards pass.
+
+00:02:14.320 --> 00:02:16.320 align:middle line:84%
+And then the last
+section of this lecture
+
+00:02:16.320 --> 00:02:17.820 align:middle line:90%
+will be on approximation power.
+
+00:02:17.820 --> 00:02:20.880 align:middle line:84%
+So this will be continuing on
+from the approximation lecture
+
+00:02:20.880 --> 00:02:23.600 align:middle line:84%
+that Jeremy gave, looking
+at, what types of functions
+
+00:02:23.600 --> 00:02:26.120 align:middle line:90%
+can graph nets approximate?
+
+00:02:26.120 --> 00:02:27.540 align:middle line:84%
+To what degree are
+they universal?
+
+00:02:27.540 --> 00:02:29.960 align:middle line:84%
+What is their
+capacity to represent
+
+00:02:29.960 --> 00:02:32.480 align:middle line:90%
+different types of functions?
+
+00:02:32.480 --> 00:02:34.720 align:middle line:84%
+And one of the
+interesting things
+
+00:02:34.720 --> 00:02:36.360 align:middle line:84%
+I want to point out
+here at the start
+
+00:02:36.360 --> 00:02:40.280 align:middle line:84%
+is that graph nets are not
+universal in the same way
+
+00:02:40.280 --> 00:02:42.102 align:middle line:90%
+that MLPs are.
+
+00:02:42.102 --> 00:02:44.060 align:middle line:84%
+And in fact, that's where
+the power comes from.
+
+00:02:44.060 --> 00:02:47.040 align:middle line:84%
+And that's what Sarah mentioned
+at the beginning of last lecture
+
+00:02:47.040 --> 00:02:51.280 align:middle line:84%
+as well, that the idea
+of architecture design
+
+00:02:51.280 --> 00:02:54.320 align:middle line:84%
+is to make systems
+that are maybe
+
+00:02:54.320 --> 00:02:57.528 align:middle line:84%
+better to run on hardware,
+on GPUs, to make systems that
+
+00:02:57.528 --> 00:02:59.070 align:middle line:84%
+are easy to parallelize
+and so forth.
+
+00:02:59.070 --> 00:03:01.290 align:middle line:84%
+But another big part
+of architecture design
+
+00:03:01.290 --> 00:03:03.650 align:middle line:90%
+is adding constraints.
+
+00:03:03.650 --> 00:03:06.130 align:middle line:84%
+So making a function
+approximator
+
+00:03:06.130 --> 00:03:09.690 align:middle line:84%
+that actually can't fit certain
+types of functions because we
+
+00:03:09.690 --> 00:03:13.730 align:middle line:84%
+want to rule those
+types of functions out.
+
+00:03:13.730 --> 00:03:15.930 align:middle line:84%
+Graph nets and
+graphs are a language
+
+00:03:15.930 --> 00:03:19.930 align:middle line:84%
+for introducing constraints that
+limit your system from doing
+
+00:03:19.930 --> 00:03:21.352 align:middle line:90%
+things you don't want it to do.
+
+00:03:21.352 --> 00:03:22.810 align:middle line:84%
+And this is one of
+the perspectives
+
+00:03:22.810 --> 00:03:26.290 align:middle line:84%
+on architecture design that
+we'll keep on coming back to.
+
+00:03:26.290 --> 00:03:27.888 align:middle line:84%
+We want to be able
+to fit the data,
+
+00:03:27.888 --> 00:03:29.930 align:middle line:84%
+but we want to constrain
+ourselves to fit it only
+
+00:03:29.930 --> 00:03:31.130 align:middle line:90%
+in the right ways.
+
+00:03:31.130 --> 00:03:33.850 align:middle line:84%
+So universality is
+actually not what we're
+
+00:03:33.850 --> 00:03:37.290 align:middle line:90%
+after in architecture design.
+
+00:03:37.290 --> 00:03:40.150 align:middle line:84%
+But within the family of
+functions that we do care about,
+
+00:03:40.150 --> 00:03:43.430 align:middle line:84%
+we do want the architecture
+to build approximate them,
+
+00:03:43.430 --> 00:03:48.370 align:middle line:84%
+and we'll see what family
+graph nets can approximate.
+
+00:03:48.370 --> 00:03:52.330 align:middle line:84%
+Quick reminder on logistics
+is that problem sets are due
+
+00:03:52.330 --> 00:03:53.490 align:middle line:90%
+next Tuesday.
+
+00:03:53.490 --> 00:03:55.870 align:middle line:84%
+So hopefully, you're
+making good progress.
+
+00:03:55.870 --> 00:03:58.003 align:middle line:84%
+But if you haven't
+started, start now.
+
+00:03:58.003 --> 00:03:59.170 align:middle line:90%
+It's a two-week problem set.
+
+00:03:59.170 --> 00:04:00.503 align:middle line:90%
+There's a lot of stuff in there.
+
+00:04:00.503 --> 00:04:03.470 align:middle line:90%
+
+
+00:04:03.470 --> 00:04:06.070 align:middle line:84%
+OK, so let's talk about
+what types of problems
+
+00:04:06.070 --> 00:04:07.830 align:middle line:90%
+graph nets are amenable to.
+
+00:04:07.830 --> 00:04:12.030 align:middle line:84%
+And maybe before I tell you some
+examples that I have in mind,
+
+00:04:12.030 --> 00:04:13.370 align:middle line:90%
+I could just ask the audience.
+
+00:04:13.370 --> 00:04:17.750 align:middle line:84%
+So graph nets are going to be
+appropriate for problems that
+
+00:04:17.750 --> 00:04:21.350 align:middle line:84%
+naturally can be specified
+with a graph or data
+
+00:04:21.350 --> 00:04:23.110 align:middle line:90%
+types that exist on a graph.
+
+00:04:23.110 --> 00:04:26.750 align:middle line:84%
+So in your work and your
+fields that you're coming from,
+
+00:04:26.750 --> 00:04:28.310 align:middle line:84%
+what are some
+problems that you can
+
+00:04:28.310 --> 00:04:32.650 align:middle line:84%
+think of that are well-stated
+as graph problems?
+
+00:04:32.650 --> 00:04:33.150 align:middle line:90%
+OK.
+
+00:04:33.150 --> 00:04:34.147 align:middle line:90%
+Yeah, let's go up here.
+
+00:04:34.147 --> 00:04:35.230 align:middle line:90%
+AUDIENCE: Social networks?
+
+00:04:35.230 --> 00:04:36.980 align:middle line:84%
+PHILLIP ISOLA: So one
+are social networks.
+
+00:04:36.980 --> 00:04:40.270 align:middle line:84%
+Social networks are graphs,
+people and their friends
+
+00:04:40.270 --> 00:04:41.450 align:middle line:90%
+or their connections.
+
+00:04:41.450 --> 00:04:42.203 align:middle line:90%
+OK, another one?
+
+00:04:42.203 --> 00:04:44.370 align:middle line:84%
+AUDIENCE: Hidden Markov
+models or time-variant data?
+
+00:04:44.370 --> 00:04:46.078 align:middle line:84%
+PHILLIP ISOLA: Yeah,
+hidden Markov models
+
+00:04:46.078 --> 00:04:48.690 align:middle line:84%
+are one kind of probabilistic
+graphical model,
+
+00:04:48.690 --> 00:04:51.430 align:middle line:84%
+and this idea of graphical
+models for representing
+
+00:04:51.430 --> 00:04:54.520 align:middle line:84%
+probability distributions
+is a classical idea,
+
+00:04:54.520 --> 00:04:56.770 align:middle line:84%
+and graph nets are appropriate
+for representing things
+
+00:04:56.770 --> 00:04:57.530 align:middle line:90%
+like this.
+
+00:04:57.530 --> 00:04:58.730 align:middle line:90%
+OK, back here.
+
+00:04:58.730 --> 00:05:00.170 align:middle line:90%
+AUDIENCE: Gene interactions.
+
+00:05:00.170 --> 00:05:01.270 align:middle line:84%
+PHILLIP ISOLA:
+Gene interactions.
+
+00:05:01.270 --> 00:05:01.770 align:middle line:90%
+Yes.
+
+00:05:01.770 --> 00:05:03.530 align:middle line:90%
+I'll have some examples on that.
+
+00:05:03.530 --> 00:05:06.810 align:middle line:84%
+So whenever I have
+different genes that
+
+00:05:06.810 --> 00:05:11.450 align:middle line:84%
+are interacting with each
+other or with proteins that
+
+00:05:11.450 --> 00:05:14.050 align:middle line:84%
+get transcribed
+from those genes,
+
+00:05:14.050 --> 00:05:16.930 align:middle line:84%
+then these could be thought
+of as nodes and edges that
+
+00:05:16.930 --> 00:05:18.030 align:middle line:90%
+represent relationships.
+
+00:05:18.030 --> 00:05:19.627 align:middle line:90%
+Let's do just one more.
+
+00:05:19.627 --> 00:05:21.710 align:middle line:84%
+AUDIENCE: Cross referencing
+of different websites.
+
+00:05:21.710 --> 00:05:23.877 align:middle line:84%
+PHILLIP ISOLA: Cross
+referencing different websites.
+
+00:05:23.877 --> 00:05:26.930 align:middle line:84%
+So things like PageRank,
+hyperlinks between different web
+
+00:05:26.930 --> 00:05:27.430 align:middle line:90%
+pages.
+
+00:05:27.430 --> 00:05:30.550 align:middle line:84%
+Like, Google started as a graph
+search company, essentially.
+
+00:05:30.550 --> 00:05:32.590 align:middle line:84%
+They represent the web
+as a graph of hyperlinks,
+
+00:05:32.590 --> 00:05:36.370 align:middle line:84%
+and then they try to evaluate
+where the important nodes are
+
+00:05:36.370 --> 00:05:37.810 align:middle line:90%
+in that graph.
+
+00:05:37.810 --> 00:05:42.570 align:middle line:84%
+So whatever problem
+you have, if you
+
+00:05:42.570 --> 00:05:45.590 align:middle line:84%
+have studied physics or
+chemistry or computer science,
+
+00:05:45.590 --> 00:05:47.505 align:middle line:84%
+I'm sure that you have
+seen a million graphs.
+
+00:05:47.505 --> 00:05:49.130 align:middle line:84%
+That's one of the
+basic data structures
+
+00:05:49.130 --> 00:05:53.350 align:middle line:84%
+we use for representing the
+interesting types of data
+
+00:05:53.350 --> 00:05:55.510 align:middle line:90%
+in the world.
+
+00:05:55.510 --> 00:05:59.190 align:middle line:84%
+So graph nets are an appropriate
+technology for problems
+
+00:05:59.190 --> 00:06:00.610 align:middle line:90%
+that naturally exist on graphs.
+
+00:06:00.610 --> 00:06:02.027 align:middle line:84%
+And there's a few
+different things
+
+00:06:02.027 --> 00:06:04.330 align:middle line:84%
+we might want to
+ask about a graph.
+
+00:06:04.330 --> 00:06:07.910 align:middle line:84%
+So one thing is you might want
+to take a node in a graph.
+
+00:06:07.910 --> 00:06:09.530 align:middle line:84%
+Maybe this is a
+social network graph.
+
+00:06:09.530 --> 00:06:11.380 align:middle line:84%
+This is a user in
+that social network.
+
+00:06:11.380 --> 00:06:13.130 align:middle line:84%
+You want to classify
+something about them.
+
+00:06:13.130 --> 00:06:17.430 align:middle line:84%
+You want to say, is
+this person somebody
+
+00:06:17.430 --> 00:06:20.210 align:middle line:90%
+who likes jazz music or not?
+
+00:06:20.210 --> 00:06:22.190 align:middle line:84%
+Maybe that's the
+prediction problem
+
+00:06:22.190 --> 00:06:25.343 align:middle line:84%
+that your social media
+company wants to make.
+
+00:06:25.343 --> 00:06:27.010 align:middle line:84%
+So that's a node
+classification problem.
+
+00:06:27.010 --> 00:06:29.797 align:middle line:84%
+We can ask a question
+about a node.
+
+00:06:29.797 --> 00:06:31.630 align:middle line:84%
+Other times you might
+want to ask a question
+
+00:06:31.630 --> 00:06:32.690 align:middle line:90%
+about the entire graph.
+
+00:06:32.690 --> 00:06:35.830 align:middle line:84%
+What is the average number
+of friends that people have
+
+00:06:35.830 --> 00:06:37.010 align:middle line:90%
+within this social network?
+
+00:06:37.010 --> 00:06:38.450 align:middle line:84%
+Maybe that's a property
+that I care about.
+
+00:06:38.450 --> 00:06:39.950 align:middle line:84%
+So we can ask
+questions about nodes,
+
+00:06:39.950 --> 00:06:42.673 align:middle line:84%
+about edges, relationships,
+about the entire graph.
+
+00:06:42.673 --> 00:06:44.590 align:middle line:84%
+I'm going to give you a
+few different examples
+
+00:06:44.590 --> 00:06:48.510 align:middle line:84%
+just to motivate why
+graphs are so important.
+
+00:06:48.510 --> 00:06:50.710 align:middle line:90%
+So another one might be this--
+
+00:06:50.710 --> 00:06:53.600 align:middle line:90%
+I think this is from Pinterest.
+
+00:06:53.600 --> 00:06:57.540 align:middle line:84%
+So it's users and the boards
+that they're interested in.
+
+00:06:57.540 --> 00:07:00.500 align:middle line:84%
+So these topic areas that
+they're interested in.
+
+00:07:00.500 --> 00:07:02.600 align:middle line:84%
+So assigning you to,
+what are the topics
+
+00:07:02.600 --> 00:07:06.320 align:middle line:84%
+that you're interested
+in on this website that
+
+00:07:06.320 --> 00:07:08.920 align:middle line:84%
+allows you to see content
+under these topics?
+
+00:07:08.920 --> 00:07:12.100 align:middle line:84%
+So this is a graph between
+people and their interest.
+
+00:07:12.100 --> 00:07:14.970 align:middle line:90%
+
+
+00:07:14.970 --> 00:07:17.620 align:middle line:84%
+These types of graphs are often
+used in recommender systems.
+
+00:07:17.620 --> 00:07:19.703 align:middle line:84%
+I want to recommend what
+you might be interested--
+
+00:07:19.703 --> 00:07:22.160 align:middle line:84%
+what next video on YouTube
+would you want to watch?
+
+00:07:22.160 --> 00:07:24.000 align:middle line:84%
+So it's like a bipartite
+graph between users
+
+00:07:24.000 --> 00:07:27.080 align:middle line:84%
+and their interests
+or users and content.
+
+00:07:27.080 --> 00:07:33.080 align:middle line:84%
+So I think we had the gene
+expression idea previously.
+
+00:07:33.080 --> 00:07:37.400 align:middle line:84%
+But in general, for biology
+and especially chemistry,
+
+00:07:37.400 --> 00:07:41.660 align:middle line:84%
+molecular biology, we have
+graphs which are molecules.
+
+00:07:41.660 --> 00:07:44.420 align:middle line:84%
+Molecules are
+well-represented as graphs.
+
+00:07:44.420 --> 00:07:47.040 align:middle line:84%
+There are atoms and
+bonds between the atoms.
+
+00:07:47.040 --> 00:07:51.500 align:middle line:84%
+And if we want to do
+things like predict which--
+
+00:07:51.500 --> 00:07:55.300 align:middle line:84%
+where would the binding site be
+on that molecule for some drug,
+
+00:07:55.300 --> 00:07:58.960 align:middle line:84%
+or would this molecule
+be toxic to a human,
+
+00:07:58.960 --> 00:08:00.460 align:middle line:84%
+these are graph
+prediction problems.
+
+00:08:00.460 --> 00:08:03.180 align:middle line:84%
+I'm trying to ask a question
+about that graph, which
+
+00:08:03.180 --> 00:08:04.560 align:middle line:90%
+is the molecule structure.
+
+00:08:04.560 --> 00:08:08.075 align:middle line:90%
+
+
+00:08:08.075 --> 00:08:13.140 align:middle line:84%
+So in biology and chemistry,
+graph nets are used extensively.
+
+00:08:13.140 --> 00:08:17.900 align:middle line:84%
+Here's another example where we
+have the graph of interactions
+
+00:08:17.900 --> 00:08:22.300 align:middle line:84%
+between different drugs and
+the drug's effect on the human
+
+00:08:22.300 --> 00:08:24.020 align:middle line:90%
+for some kind of medication.
+
+00:08:24.020 --> 00:08:26.840 align:middle line:84%
+So we might have,
+in this example,
+
+00:08:26.840 --> 00:08:31.340 align:middle line:84%
+two different drugs that can
+have a positive effect on you.
+
+00:08:31.340 --> 00:08:33.260 align:middle line:84%
+But if you combine
+them, they're negative.
+
+00:08:33.260 --> 00:08:36.283 align:middle line:84%
+Interactions between
+drugs that can be bad.
+
+00:08:36.283 --> 00:08:37.700 align:middle line:84%
+You always have
+to read the bottle
+
+00:08:37.700 --> 00:08:39.037 align:middle line:90%
+on the pills you're taking.
+
+00:08:39.037 --> 00:08:41.120 align:middle line:84%
+Like, don't take this if
+you have this other drug.
+
+00:08:41.120 --> 00:08:45.560 align:middle line:84%
+So that can be represented
+as a more complicated graph.
+
+00:08:45.560 --> 00:08:48.180 align:middle line:84%
+Now, in this graph,
+we have edges
+
+00:08:48.180 --> 00:08:50.797 align:middle line:84%
+between pharmaceutical
+interventions,
+
+00:08:50.797 --> 00:08:52.880 align:middle line:84%
+like the drugs that you're
+going to take, and also
+
+00:08:52.880 --> 00:08:55.500 align:middle line:84%
+edges between the drugs and
+the proteins that they affect.
+
+00:08:55.500 --> 00:08:58.000 align:middle line:84%
+And so different types of edges
+and different types of nodes
+
+00:08:58.000 --> 00:09:00.040 align:middle line:84%
+can exist in a graph,
+and we are going
+
+00:09:00.040 --> 00:09:03.400 align:middle line:84%
+to be wanting to
+learn properties
+
+00:09:03.400 --> 00:09:06.120 align:middle line:84%
+of these edges and these nodes
+so that we can make predictions
+
+00:09:06.120 --> 00:09:08.820 align:middle line:84%
+about what combination
+of drugs might be toxic.
+
+00:09:08.820 --> 00:09:12.996 align:middle line:90%
+
+
+00:09:12.996 --> 00:09:16.480 align:middle line:84%
+So graphs also come up in just
+classical computer science
+
+00:09:16.480 --> 00:09:17.300 align:middle line:90%
+algorithms.
+
+00:09:17.300 --> 00:09:21.600 align:middle line:84%
+So in shortest path
+algorithms, in graph search
+
+00:09:21.600 --> 00:09:24.700 align:middle line:84%
+of various forms, tree
+search algorithms,
+
+00:09:24.700 --> 00:09:28.840 align:middle line:84%
+we often represent classical,
+discrete optimization problems
+
+00:09:28.840 --> 00:09:31.540 align:middle line:84%
+as some kind of
+search of a graph.
+
+00:09:31.540 --> 00:09:32.620 align:middle line:90%
+So here's one example.
+
+00:09:32.620 --> 00:09:35.160 align:middle line:90%
+This is from Google Maps.
+
+00:09:35.160 --> 00:09:39.080 align:middle line:84%
+And they're trying to find
+the shortest path, the fastest
+
+00:09:39.080 --> 00:09:42.920 align:middle line:84%
+driving route between your
+house and where you want to go.
+
+00:09:42.920 --> 00:09:45.385 align:middle line:84%
+So you probably use Google
+Maps to do this all the time.
+
+00:09:45.385 --> 00:09:46.260 align:middle line:90%
+So how do they do it?
+
+00:09:46.260 --> 00:09:48.720 align:middle line:84%
+Well, this is a
+huge, huge graph.
+
+00:09:48.720 --> 00:09:50.620 align:middle line:90%
+It's a whole world of roads.
+
+00:09:50.620 --> 00:09:53.340 align:middle line:84%
+So it's slow to use
+classical algorithms
+
+00:09:53.340 --> 00:09:55.317 align:middle line:90%
+like Dijkstra's algorithm.
+
+00:09:55.317 --> 00:09:56.900 align:middle line:84%
+And additionally,
+there might be a lot
+
+00:09:56.900 --> 00:10:01.900 align:middle line:84%
+of constraints beyond just
+searching over the edge
+
+00:10:01.900 --> 00:10:03.900 align:middle line:90%
+lengths of that road network.
+
+00:10:03.900 --> 00:10:07.400 align:middle line:84%
+It might try to optimize
+for other properties,
+
+00:10:07.400 --> 00:10:10.892 align:middle line:84%
+like how safe or scenic is
+the road, or avoid highways,
+
+00:10:10.892 --> 00:10:13.600 align:middle line:84%
+or there's different constraints
+that you can add on top of this.
+
+00:10:13.600 --> 00:10:15.980 align:middle line:84%
+So it becomes a very
+difficult graph search problem
+
+00:10:15.980 --> 00:10:17.360 align:middle line:90%
+to solve with classical methods.
+
+00:10:17.360 --> 00:10:19.780 align:middle line:90%
+It might be too slow.
+
+00:10:19.780 --> 00:10:21.900 align:middle line:84%
+And so one use of
+graph neural networks
+
+00:10:21.900 --> 00:10:25.100 align:middle line:84%
+is to find heuristics and
+approximate graph search
+
+00:10:25.100 --> 00:10:27.880 align:middle line:84%
+algorithms that can solve
+these problems more quickly.
+
+00:10:27.880 --> 00:10:33.700 align:middle line:84%
+So Google, in this example, is
+using a graph neural network
+
+00:10:33.700 --> 00:10:37.740 align:middle line:84%
+to do faster search than
+classical algorithms,
+
+00:10:37.740 --> 00:10:41.260 align:middle line:84%
+and we'll talk a little bit
+more about that as well,
+
+00:10:41.260 --> 00:10:43.310 align:middle line:90%
+by learning heuristics
+
+00:10:43.310 --> 00:10:45.560 align:middle line:84%
+Another one-- I don't think
+anybody mentioned physics,
+
+00:10:45.560 --> 00:10:48.970 align:middle line:84%
+but that's another place where
+graphs come up all the time.
+
+00:10:48.970 --> 00:10:53.590 align:middle line:84%
+So one of the popular ways to
+simulate fluids or particles
+
+00:10:53.590 --> 00:10:57.870 align:middle line:84%
+or atoms is by thinking
+of them as a set of nodes
+
+00:10:57.870 --> 00:11:00.230 align:middle line:84%
+with edges between
+the nodes that are
+
+00:11:00.230 --> 00:11:02.430 align:middle line:90%
+indicating the physical forces.
+
+00:11:02.430 --> 00:11:04.250 align:middle line:84%
+So two particles
+might have an edge,
+
+00:11:04.250 --> 00:11:06.910 align:middle line:84%
+and that edge is describing
+the repelling force
+
+00:11:06.910 --> 00:11:09.310 align:middle line:84%
+between those two
+particles because we
+
+00:11:09.310 --> 00:11:11.770 align:middle line:84%
+know that two atoms can't
+occupy the same space,
+
+00:11:11.770 --> 00:11:14.590 align:middle line:84%
+and they might have electrical
+forces that push them apart.
+
+00:11:14.590 --> 00:11:17.470 align:middle line:84%
+So in this example, it's
+a particle system that
+
+00:11:17.470 --> 00:11:19.950 align:middle line:84%
+simulates fluid
+dynamics, and this
+
+00:11:19.950 --> 00:11:22.110 align:middle line:84%
+is represented as a
+graph neural net that
+
+00:11:22.110 --> 00:11:25.530 align:middle line:84%
+takes in the graph of all
+of these water particles,
+
+00:11:25.530 --> 00:11:27.750 align:middle line:84%
+and the edges between
+them are going
+
+00:11:27.750 --> 00:11:30.610 align:middle line:84%
+to learn to push apart
+those nodes, essentially.
+
+00:11:30.610 --> 00:11:33.770 align:middle line:90%
+
+
+00:11:33.770 --> 00:11:35.397 align:middle line:84%
+So just more
+examples, and there's
+
+00:11:35.397 --> 00:11:37.230 align:middle line:84%
+some paper references
+if you want to read up
+
+00:11:37.230 --> 00:11:40.350 align:middle line:90%
+on these in more detail.
+
+00:11:40.350 --> 00:11:46.030 align:middle line:84%
+And then most abstractly, just
+a lot of optimization problems,
+
+00:11:46.030 --> 00:11:47.510 align:middle line:84%
+especially discrete
+optimization,
+
+00:11:47.510 --> 00:11:52.370 align:middle line:84%
+combinatorial optimization,
+take the form of a graph problem
+
+00:11:52.370 --> 00:11:56.908 align:middle line:84%
+where we might have a
+set of decision variables
+
+00:11:56.908 --> 00:11:57.950 align:middle line:90%
+we're trying to optimize.
+
+00:11:57.950 --> 00:12:01.090 align:middle line:84%
+We're trying to find, what is
+the setting of these xs that
+
+00:12:01.090 --> 00:12:04.030 align:middle line:84%
+will satisfy a system
+of constraints?
+
+00:12:04.030 --> 00:12:07.090 align:middle line:84%
+So on the right-hand side
+here, we have a linear program.
+
+00:12:07.090 --> 00:12:09.650 align:middle line:84%
+We're trying to minimize
+this linear cost function
+
+00:12:09.650 --> 00:12:11.290 align:middle line:90%
+subject to some constraints.
+
+00:12:11.290 --> 00:12:15.370 align:middle line:84%
+And that can be set up as
+a graph of constraints that
+
+00:12:15.370 --> 00:12:18.330 align:middle line:84%
+will penalize a certain kind of
+interaction between the decision
+
+00:12:18.330 --> 00:12:19.195 align:middle line:90%
+variables, x.
+
+00:12:19.195 --> 00:12:21.570 align:middle line:84%
+And we want to find the setting
+of the decision variables
+
+00:12:21.570 --> 00:12:23.370 align:middle line:90%
+that satisfy those constraints.
+
+00:12:23.370 --> 00:12:26.072 align:middle line:84%
+And so we can phrase this
+in the language of graphs,
+
+00:12:26.072 --> 00:12:27.530 align:middle line:84%
+and there are graph
+neural networks
+
+00:12:27.530 --> 00:12:29.850 align:middle line:84%
+that can help us solve
+these types of problems
+
+00:12:29.850 --> 00:12:30.947 align:middle line:90%
+more efficiently.
+
+00:12:30.947 --> 00:12:32.530 align:middle line:84%
+And something I want
+to point out here
+
+00:12:32.530 --> 00:12:35.610 align:middle line:84%
+is that, again, just like
+in the shortest path example
+
+00:12:35.610 --> 00:12:38.290 align:middle line:84%
+I gave, we do, often
+for these problems,
+
+00:12:38.290 --> 00:12:43.410 align:middle line:84%
+have classical algorithms that
+we know will find the solution.
+
+00:12:43.410 --> 00:12:45.190 align:middle line:84%
+And so one question
+you might have in mind
+
+00:12:45.190 --> 00:12:47.130 align:middle line:84%
+is, why would we bother
+with a learning algorithm?
+
+00:12:47.130 --> 00:12:49.110 align:middle line:84%
+Why would we bother with
+a neural network that's
+
+00:12:49.110 --> 00:12:50.652 align:middle line:84%
+going to do something
+that we already
+
+00:12:50.652 --> 00:12:52.890 align:middle line:84%
+have the optimal
+classical algorithm for?
+
+00:12:52.890 --> 00:12:56.753 align:middle line:84%
+We know exactly how to solve
+a linear program on the right.
+
+00:12:56.753 --> 00:12:58.670 align:middle line:84%
+We know exactly how to
+solve for shortest path
+
+00:12:58.670 --> 00:13:01.190 align:middle line:90%
+in a graph on the left.
+
+00:13:01.190 --> 00:13:05.430 align:middle line:84%
+And the reason is, essentially,
+that these classical algorithms
+
+00:13:05.430 --> 00:13:07.030 align:middle line:90%
+can be slow.
+
+00:13:07.030 --> 00:13:11.570 align:middle line:84%
+And if we want to use a
+learning-based system,
+
+00:13:11.570 --> 00:13:13.790 align:middle line:84%
+we can potentially
+learn a faster way
+
+00:13:13.790 --> 00:13:16.470 align:middle line:84%
+of finding an
+approximate solution.
+
+00:13:16.470 --> 00:13:18.830 align:middle line:84%
+And the trade-off is that
+the classical algorithm
+
+00:13:18.830 --> 00:13:20.750 align:middle line:84%
+will find-- will be
+guaranteed to converge
+
+00:13:20.750 --> 00:13:24.430 align:middle line:90%
+to the true solution.
+
+00:13:24.430 --> 00:13:25.510 align:middle line:90%
+But it might be slow.
+
+00:13:25.510 --> 00:13:27.370 align:middle line:84%
+And the neural
+net, the graph net,
+
+00:13:27.370 --> 00:13:30.430 align:middle line:84%
+might be able to
+use heuristics that
+
+00:13:30.430 --> 00:13:33.430 align:middle line:84%
+work really well on the data
+distribution we train it on.
+
+00:13:33.430 --> 00:13:36.150 align:middle line:84%
+And so it will solve the
+problem more quickly on the data
+
+00:13:36.150 --> 00:13:38.610 align:middle line:84%
+distribution that
+we're training on,
+
+00:13:38.610 --> 00:13:40.870 align:middle line:84%
+but it won't be guaranteed
+to find the right answer
+
+00:13:40.870 --> 00:13:42.650 align:middle line:90%
+on other data distributions.
+
+00:13:42.650 --> 00:13:44.090 align:middle line:84%
+So you're learning
+something that
+
+00:13:44.090 --> 00:13:46.770 align:middle line:84%
+is more specialized to
+that data distribution.
+
+00:13:46.770 --> 00:13:48.030 align:middle line:90%
+OK, cool.
+
+00:13:48.030 --> 00:13:50.730 align:middle line:90%
+
+
+00:13:50.730 --> 00:13:55.490 align:middle line:84%
+So now let's get into the
+technical content of how
+
+00:13:55.490 --> 00:13:59.050 align:middle line:84%
+these graph nets work, how
+do they represent data.
+
+00:13:59.050 --> 00:14:02.950 align:middle line:84%
+And this is how we'll represent
+graphs for this lecture.
+
+00:14:02.950 --> 00:14:05.950 align:middle line:84%
+We'll say that a graph
+is a set of nodes.
+
+00:14:05.950 --> 00:14:09.790 align:middle line:84%
+Every node is going to come
+with a attribute vector.
+
+00:14:09.790 --> 00:14:15.730 align:middle line:84%
+So this is going to be our
+input to our graph processing
+
+00:14:15.730 --> 00:14:16.890 align:middle line:90%
+algorithm.
+
+00:14:16.890 --> 00:14:19.650 align:middle line:84%
+We will have a attribute
+vector for each node.
+
+00:14:19.650 --> 00:14:21.770 align:middle line:84%
+If these are molecules,
+that attribute vector
+
+00:14:21.770 --> 00:14:23.350 align:middle line:90%
+might tell us what is the atom.
+
+00:14:23.350 --> 00:14:24.750 align:middle line:90%
+Is this carbon?
+
+00:14:24.750 --> 00:14:26.090 align:middle line:90%
+Is this hydrogen?
+
+00:14:26.090 --> 00:14:28.810 align:middle line:84%
+So in gray, we have
+this vector, which
+
+00:14:28.810 --> 00:14:31.130 align:middle line:84%
+is the initial data,
+our observation
+
+00:14:31.130 --> 00:14:34.310 align:middle line:90%
+about that node in the graph.
+
+00:14:34.310 --> 00:14:36.690 align:middle line:84%
+And what we're going
+to try to learn
+
+00:14:36.690 --> 00:14:40.610 align:middle line:84%
+is a mapping from
+our graph nodes
+
+00:14:40.610 --> 00:14:43.422 align:middle line:84%
+to representations
+of the nodes that
+
+00:14:43.422 --> 00:14:45.630 align:middle line:84%
+are going to be more
+informative about the properties
+
+00:14:45.630 --> 00:14:48.350 align:middle line:90%
+that we care to predict.
+
+00:14:48.350 --> 00:14:50.830 align:middle line:84%
+Just like we can do
+take an image patch
+
+00:14:50.830 --> 00:14:53.803 align:middle line:84%
+and embed it into a vector, we
+can also take a node in a graph
+
+00:14:53.803 --> 00:14:55.470 align:middle line:84%
+and embed it into a
+vector that tells us
+
+00:14:55.470 --> 00:14:57.430 align:middle line:84%
+something important
+about that node,
+
+00:14:57.430 --> 00:15:03.350 align:middle line:84%
+maybe classifies is it a binding
+site for the drug of interest?
+
+00:15:03.350 --> 00:15:07.110 align:middle line:84%
+Additionally, we will represent
+the edges between the graph
+
+00:15:07.110 --> 00:15:09.310 align:middle line:84%
+with an adjacency
+matrix, and this
+
+00:15:09.310 --> 00:15:11.810 align:middle line:84%
+will be an additional input
+to our graph neural network.
+
+00:15:11.810 --> 00:15:13.990 align:middle line:84%
+So we'll have a
+set of nodes which
+
+00:15:13.990 --> 00:15:16.730 align:middle line:84%
+are represented by
+vectors of observed data
+
+00:15:16.730 --> 00:15:17.853 align:middle line:90%
+and an adjacency matrix.
+
+00:15:17.853 --> 00:15:19.270 align:middle line:84%
+And then we'll do
+some computation
+
+00:15:19.270 --> 00:15:22.270 align:middle line:84%
+on that to make a
+prediction about the nodes.
+
+00:15:22.270 --> 00:15:25.093 align:middle line:84%
+We can also make a prediction
+about the entire graph itself,
+
+00:15:25.093 --> 00:15:27.010 align:middle line:84%
+and that's sometimes
+called a graph embedding.
+
+00:15:27.010 --> 00:15:29.350 align:middle line:90%
+So this is graph to vec right.
+
+00:15:29.350 --> 00:15:30.970 align:middle line:84%
+On the left side,
+we have node to vec.
+
+00:15:30.970 --> 00:15:33.470 align:middle line:84%
+Every node gets embedded
+into some feature
+
+00:15:33.470 --> 00:15:36.090 align:middle line:84%
+vector that tells us something
+of interest about it.
+
+00:15:36.090 --> 00:15:38.470 align:middle line:84%
+On the right, we're going to
+just embed the entire graph
+
+00:15:38.470 --> 00:15:41.160 align:middle line:84%
+into a feature vector that
+tells something of interest
+
+00:15:41.160 --> 00:15:42.520 align:middle line:90%
+about the entire graph.
+
+00:15:42.520 --> 00:15:45.620 align:middle line:84%
+For example, is this
+molecule toxic or not?
+
+00:15:45.620 --> 00:15:47.680 align:middle line:84%
+So we can ask questions
+about nodes in a graph
+
+00:15:47.680 --> 00:15:49.380 align:middle line:84%
+or about the entire
+graph itself.
+
+00:15:49.380 --> 00:15:53.370 align:middle line:90%
+
+
+00:15:53.370 --> 00:15:57.400 align:middle line:84%
+So GNNs-- graph neural
+networks are GNNs.
+
+00:15:57.400 --> 00:16:02.280 align:middle line:84%
+They learn a function from these
+adjacency matrices that tell us
+
+00:16:02.280 --> 00:16:05.200 align:middle line:84%
+the edge structure and
+the set of graph node
+
+00:16:05.200 --> 00:16:09.500 align:middle line:84%
+attributes that are observed
+to a set of embedding vectors
+
+00:16:09.500 --> 00:16:12.900 align:middle line:84%
+or predictions about the nodes
+or the entire graph itself.
+
+00:16:12.900 --> 00:16:15.880 align:middle line:90%
+
+
+00:16:15.880 --> 00:16:17.610 align:middle line:90%
+Do I see a question in the--
+
+00:16:17.610 --> 00:16:18.860 align:middle line:90%
+I think I see a question here.
+
+00:16:18.860 --> 00:16:19.660 align:middle line:90%
+Yeah.
+
+00:16:19.660 --> 00:16:22.520 align:middle line:90%
+AUDIENCE: [INAUDIBLE].
+
+00:16:22.520 --> 00:16:24.240 align:middle line:90%
+Graph embeddings.
+
+00:16:24.240 --> 00:16:26.600 align:middle line:90%
+Do they do the same model?
+
+00:16:26.600 --> 00:16:27.887 align:middle line:90%
+PHILLIP ISOLA: Yeah.
+
+00:16:27.887 --> 00:16:29.720 align:middle line:84%
+So the question is,
+what is the relationship
+
+00:16:29.720 --> 00:16:31.740 align:middle line:84%
+between node embeddings
+and graph embeddings.
+
+00:16:31.740 --> 00:16:33.480 align:middle line:84%
+And we'll see more
+details on this.
+
+00:16:33.480 --> 00:16:38.360 align:middle line:84%
+But the node embedding is going
+to be a vector that we learn
+
+00:16:38.360 --> 00:16:40.460 align:middle line:84%
+for each node in a graph,
+and the graph embedding
+
+00:16:40.460 --> 00:16:42.960 align:middle line:84%
+is going to be one vector
+for the entire graph.
+
+00:16:42.960 --> 00:16:44.700 align:middle line:90%
+We'll see examples of this.
+
+00:16:44.700 --> 00:16:46.600 align:middle line:84%
+And then I saw one
+other question.
+
+00:16:46.600 --> 00:16:47.180 align:middle line:90%
+Good?
+
+00:16:47.180 --> 00:16:48.140 align:middle line:90%
+OK.
+
+00:16:48.140 --> 00:16:49.280 align:middle line:90%
+In the back?
+
+00:16:49.280 --> 00:16:51.100 align:middle line:84%
+AUDIENCE: For tasks,
+are you learning
+
+00:16:51.100 --> 00:16:53.320 align:middle line:84%
+either the node embedding
+or the graph embedding,
+
+00:16:53.320 --> 00:16:56.060 align:middle line:84%
+or do you typically
+join [INAUDIBLE]?
+
+00:16:56.060 --> 00:16:58.823 align:middle line:84%
+PHILLIP ISOLA: So are we going
+to learn either node embedding
+
+00:16:58.823 --> 00:17:01.240 align:middle line:84%
+or graph embedding, or are we
+going to jointly learn them?
+
+00:17:01.240 --> 00:17:02.240 align:middle line:90%
+You could do either one.
+
+00:17:02.240 --> 00:17:03.040 align:middle line:90%
+You could do both.
+
+00:17:03.040 --> 00:17:05.780 align:middle line:90%
+
+
+00:17:05.780 --> 00:17:08.940 align:middle line:84%
+Well, in general, we might
+learn a set of node embeddings
+
+00:17:08.940 --> 00:17:11.839 align:middle line:84%
+and then sum them up at the
+end to get a graph embedding.
+
+00:17:11.839 --> 00:17:13.863 align:middle line:84%
+That would be one way
+of combining the two.
+
+00:17:13.863 --> 00:17:14.780 align:middle line:90%
+OK, one more question.
+
+00:17:14.780 --> 00:17:15.859 align:middle line:90%
+Then I'll move on.
+
+00:17:15.859 --> 00:17:18.845 align:middle line:90%
+Yeah, over here.
+
+00:17:18.845 --> 00:17:19.720 align:middle line:90%
+Sorry, in the middle.
+
+00:17:19.720 --> 00:17:22.140 align:middle line:90%
+Yeah.
+
+00:17:22.140 --> 00:17:24.099 align:middle line:84%
+AUDIENCE: How much do
+we care about the size
+
+00:17:24.099 --> 00:17:26.940 align:middle line:84%
+of the adjacency matrix
+and [INAUDIBLE] number
+
+00:17:26.940 --> 00:17:29.460 align:middle line:84%
+of nodes [INAUDIBLE]
+dimensionality
+
+00:17:29.460 --> 00:17:31.980 align:middle line:84%
+of the [INAUDIBLE]
+those are constrained
+
+00:17:31.980 --> 00:17:35.715 align:middle line:90%
+not at all [INAUDIBLE]
+
+00:17:35.715 --> 00:17:37.340 align:middle line:84%
+PHILLIP ISOLA: I
+think, if I understood
+
+00:17:37.340 --> 00:17:41.760 align:middle line:84%
+the question- how much do we
+care about the dimensionality
+
+00:17:41.760 --> 00:17:44.520 align:middle line:90%
+of the adjacency matrix?
+
+00:17:44.520 --> 00:17:47.180 align:middle line:84%
+If we have a really big graph
+with a lot of connections,
+
+00:17:47.180 --> 00:17:48.420 align:middle line:90%
+does this become intractable?
+
+00:17:48.420 --> 00:17:51.720 align:middle line:84%
+And I would say that's
+more-- that's not really
+
+00:17:51.720 --> 00:17:53.180 align:middle line:90%
+our choice as modelers.
+
+00:17:53.180 --> 00:17:55.780 align:middle line:84%
+That's going to be the
+property of the data
+
+00:17:55.780 --> 00:17:56.780 align:middle line:90%
+that we're working with.
+
+00:17:56.780 --> 00:17:59.720 align:middle line:84%
+So yes, if we have a graph-- if
+our data type that we're working
+
+00:17:59.720 --> 00:18:01.860 align:middle line:84%
+with are molecules are just
+very densely connected,
+
+00:18:01.860 --> 00:18:03.902 align:middle line:84%
+then this will be something
+we have to deal with,
+
+00:18:03.902 --> 00:18:07.400 align:middle line:84%
+and that will be computationally
+more expensive to deal with.
+
+00:18:07.400 --> 00:18:11.487 align:middle line:84%
+But that's-- we don't usually
+try to simplify the input graph.
+
+00:18:11.487 --> 00:18:13.320 align:middle line:84%
+We're going to take the
+input graph as given
+
+00:18:13.320 --> 00:18:15.320 align:middle line:90%
+and ask a question about it.
+
+00:18:15.320 --> 00:18:17.920 align:middle line:90%
+Yeah.
+
+00:18:17.920 --> 00:18:23.240 align:middle line:84%
+So before we get to how
+graph nets work, let's
+
+00:18:23.240 --> 00:18:25.960 align:middle line:84%
+first ask, what
+if we just wanted
+
+00:18:25.960 --> 00:18:29.160 align:middle line:84%
+to make a prediction about
+graph-structured data
+
+00:18:29.160 --> 00:18:30.060 align:middle line:90%
+with an MLP?
+
+00:18:30.060 --> 00:18:31.960 align:middle line:90%
+We've already seen MLPs.
+
+00:18:31.960 --> 00:18:37.340 align:middle line:84%
+So MLP's another name for that
+fully connected neural network.
+
+00:18:37.340 --> 00:18:40.420 align:middle line:84%
+What if we just use this fully
+connected neural network?
+
+00:18:40.420 --> 00:18:44.220 align:middle line:84%
+How would we take as input
+the properties of the graph?
+
+00:18:44.220 --> 00:18:45.860 align:middle line:84%
+So one thing that
+we need as input
+
+00:18:45.860 --> 00:18:47.620 align:middle line:84%
+is the adjacency
+matrix that tells
+
+00:18:47.620 --> 00:18:51.300 align:middle line:84%
+us which nodes in the graph
+are connected to which nodes.
+
+00:18:51.300 --> 00:18:56.200 align:middle line:84%
+And just to quickly show
+you what that looks like--
+
+00:18:56.200 --> 00:18:56.700 align:middle line:90%
+let's see.
+
+00:18:56.700 --> 00:18:59.060 align:middle line:90%
+What happened to my mouse?
+
+00:18:59.060 --> 00:19:00.340 align:middle line:90%
+How do I find my mouse?
+
+00:19:00.340 --> 00:19:01.140 align:middle line:90%
+OK.
+
+00:19:01.140 --> 00:19:04.060 align:middle line:84%
+Well, anyway, you can see
+the adjacency matrix up here
+
+00:19:04.060 --> 00:19:07.980 align:middle line:84%
+on the left, and this
+is just telling us
+
+00:19:07.980 --> 00:19:10.233 align:middle line:84%
+which nodes in the graph
+up at the top right
+
+00:19:10.233 --> 00:19:11.400 align:middle line:90%
+are connected to each other.
+
+00:19:11.400 --> 00:19:14.940 align:middle line:84%
+So 1 means there's an edge
+between the node index i
+
+00:19:14.940 --> 00:19:16.840 align:middle line:84%
+and the node index
+j in that matrix.
+
+00:19:16.840 --> 00:19:19.100 align:middle line:90%
+And a 0 means there's no edge.
+
+00:19:19.100 --> 00:19:22.880 align:middle line:84%
+So what is the fourth row
+of that adjacency matrix?
+
+00:19:22.880 --> 00:19:25.920 align:middle line:84%
+Which node in the graph at the
+top right does that refer to?
+
+00:19:25.920 --> 00:19:29.040 align:middle line:90%
+
+
+00:19:29.040 --> 00:19:29.540 align:middle line:90%
+Blue?
+
+00:19:29.540 --> 00:19:30.200 align:middle line:90%
+OK, I heard it.
+
+00:19:30.200 --> 00:19:30.340 align:middle line:90%
+Yeah.
+
+00:19:30.340 --> 00:19:31.040 align:middle line:90%
+So blue, right?
+
+00:19:31.040 --> 00:19:35.150 align:middle line:84%
+So there's three 1s, and that's
+the only node in that graph that
+
+00:19:35.150 --> 00:19:37.350 align:middle line:84%
+has three edges, so that's
+how you would know that
+
+00:19:37.350 --> 00:19:39.230 align:middle line:90%
+that's the relationship.
+
+00:19:39.230 --> 00:19:43.750 align:middle line:84%
+So the adjacency matrix tells us
+the connectivity of the graph.
+
+00:19:43.750 --> 00:19:46.710 align:middle line:84%
+And we additionally would have
+a set of attribute vectors
+
+00:19:46.710 --> 00:19:50.590 align:middle line:84%
+for every single node, the
+observed vector for that node.
+
+00:19:50.590 --> 00:19:54.110 align:middle line:84%
+And we could just
+put these into an MLP
+
+00:19:54.110 --> 00:19:58.630 align:middle line:84%
+by simply creating
+a serialization
+
+00:19:58.630 --> 00:20:01.670 align:middle line:84%
+of our adjacency
+matrix and all the node
+
+00:20:01.670 --> 00:20:03.850 align:middle line:84%
+attribute vectors and
+just one really big vector
+
+00:20:03.850 --> 00:20:05.970 align:middle line:84%
+and just put that into a
+multi-layer perceptron.
+
+00:20:05.970 --> 00:20:12.330 align:middle line:84%
+So can anyone think of why that
+might not be the best strategy?
+
+00:20:12.330 --> 00:20:14.870 align:middle line:84%
+What might be an
+undesirable property
+
+00:20:14.870 --> 00:20:18.070 align:middle line:84%
+of just serializing
+our adjacency matrix
+
+00:20:18.070 --> 00:20:20.670 align:middle line:90%
+and our node attributes?
+
+00:20:20.670 --> 00:20:22.190 align:middle line:90%
+Let's go over here.
+
+00:20:22.190 --> 00:20:25.030 align:middle line:84%
+AUDIENCE: So adjacency matrices
+can only consist of 1s and 0s,
+
+00:20:25.030 --> 00:20:27.750 align:middle line:84%
+whereas MLPs can
+take in real numbers.
+
+00:20:27.750 --> 00:20:28.750 align:middle line:90%
+PHILLIP ISOLA: OK, yeah.
+
+00:20:28.750 --> 00:20:31.435 align:middle line:84%
+So adjacency matrices
+only consist of 1s and 0s.
+
+00:20:31.435 --> 00:20:33.810 align:middle line:84%
+Maybe we're not making use of
+the full capacity of an MLP
+
+00:20:33.810 --> 00:20:34.950 align:middle line:90%
+to take in real numbers.
+
+00:20:34.950 --> 00:20:37.030 align:middle line:90%
+That's a good idea.
+
+00:20:37.030 --> 00:20:39.750 align:middle line:84%
+AUDIENCE: It depends on the
+index you put on the nodes.
+
+00:20:39.750 --> 00:20:44.010 align:middle line:84%
+So if you permute,
+it's not going to work.
+
+00:20:44.010 --> 00:20:44.930 align:middle line:90%
+PHILLIP ISOLA: Yeah.
+
+00:20:44.930 --> 00:20:47.810 align:middle line:84%
+So the answer-- and this is
+the answer that I always had in
+
+00:20:47.810 --> 00:20:54.530 align:middle line:84%
+mind myself, is the adjacency
+matrix, represented as a vector,
+
+00:20:54.530 --> 00:20:59.330 align:middle line:84%
+is going to depend on how we
+assigned indices to the nodes
+
+00:20:59.330 --> 00:21:00.330 align:middle line:90%
+in the graph.
+
+00:21:00.330 --> 00:21:03.410 align:middle line:90%
+And that decision was arbitrary.
+
+00:21:03.410 --> 00:21:06.270 align:middle line:84%
+We decided that the fourth
+row of the adjacency matrix--
+
+00:21:06.270 --> 00:21:08.110 align:middle line:90%
+the index 4 is the blue node.
+
+00:21:08.110 --> 00:21:11.410 align:middle line:84%
+But why didn't I say that
+index 3 is the blue node.
+
+00:21:11.410 --> 00:21:14.590 align:middle line:84%
+So generally, for
+graph-structured data,
+
+00:21:14.590 --> 00:21:19.290 align:middle line:84%
+we want to be processing it in a
+way that is invariant to how we
+
+00:21:19.290 --> 00:21:21.622 align:middle line:90%
+chose to index into the nodes.
+
+00:21:21.622 --> 00:21:23.330 align:middle line:84%
+The structure of the
+graph, the structure
+
+00:21:23.330 --> 00:21:26.730 align:middle line:84%
+of a model-- of a molecule
+in many types of graph data
+
+00:21:26.730 --> 00:21:31.570 align:middle line:84%
+don't really depend on
+the ordering of the nodes.
+
+00:21:31.570 --> 00:21:33.390 align:middle line:84%
+So in math terms,
+we would say that we
+
+00:21:33.390 --> 00:21:36.750 align:middle line:84%
+want a function which
+is permutation-invariant
+
+00:21:36.750 --> 00:21:41.710 align:middle line:84%
+to permuting the indices
+of the adjacency matrix
+
+00:21:41.710 --> 00:21:45.310 align:middle line:84%
+and permuting the ordering
+of the node attribute
+
+00:21:45.310 --> 00:21:47.910 align:middle line:84%
+vectors that we put
+into our system.
+
+00:21:47.910 --> 00:21:52.510 align:middle line:84%
+So here is a
+permutation matrix, P,
+
+00:21:52.510 --> 00:21:56.430 align:middle line:84%
+applied to the rows and the
+columns of our adjacency matrix.
+
+00:21:56.430 --> 00:22:02.230 align:middle line:84%
+And the graph that is
+described by this permutation
+
+00:22:02.230 --> 00:22:04.150 align:middle line:84%
+is the same,
+structurally, as the graph
+
+00:22:04.150 --> 00:22:07.290 align:middle line:84%
+that's described by the
+original adjacency matrix.
+
+00:22:07.290 --> 00:22:10.910 align:middle line:84%
+We've just chosen a different
+ordering of the indexes
+
+00:22:10.910 --> 00:22:12.270 align:middle line:90%
+to label the nodes.
+
+00:22:12.270 --> 00:22:16.110 align:middle line:84%
+So the first matrix,
+P, permutes the rows,
+
+00:22:16.110 --> 00:22:19.990 align:middle line:84%
+and the P transpose
+permute the columns.
+
+00:22:19.990 --> 00:22:24.490 align:middle line:84%
+Additionally, if we have a
+matrix of node attributes--
+
+00:22:24.490 --> 00:22:28.990 align:middle line:84%
+so we have four nodes, and so
+we'll have a 4-by-D-dimensional
+
+00:22:28.990 --> 00:22:31.010 align:middle line:84%
+matrix, X, of the
+node attributes.
+
+00:22:31.010 --> 00:22:34.730 align:middle line:84%
+This is the observed
+data at each node.
+
+00:22:34.730 --> 00:22:38.930 align:middle line:84%
+We can permute that with
+our permutation matrix, P.
+
+00:22:38.930 --> 00:22:42.530 align:middle line:84%
+And in order for the graph
+net, f, or the function,
+
+00:22:42.530 --> 00:22:45.810 align:middle line:84%
+f, to be invariant to
+these types of reindexing
+
+00:22:45.810 --> 00:22:49.810 align:middle line:84%
+of our graph, we would want that
+permuting the adjacency matrix
+
+00:22:49.810 --> 00:22:52.370 align:middle line:84%
+and permuting the nodes--
+the node attributes
+
+00:22:52.370 --> 00:22:57.290 align:middle line:84%
+will result in the same answer
+as any other permutation.
+
+00:22:57.290 --> 00:23:00.170 align:middle line:84%
+So this property's called
+permutation invariance.
+
+00:23:00.170 --> 00:23:03.850 align:middle line:84%
+Very related to what we
+heard about on Tuesday.
+
+00:23:03.850 --> 00:23:07.810 align:middle line:84%
+Where convolutional networks
+are invariant or equivariant
+
+00:23:07.810 --> 00:23:10.210 align:middle line:84%
+to translation,
+graph nets are going
+
+00:23:10.210 --> 00:23:16.930 align:middle line:84%
+to be invariant or equivariant
+to permutations of the inputs.
+
+00:23:16.930 --> 00:23:20.550 align:middle line:84%
+So permutation equivariance
+is almost the same thing.
+
+00:23:20.550 --> 00:23:24.090 align:middle line:84%
+It just says that if you
+permute the way that you
+
+00:23:24.090 --> 00:23:28.350 align:middle line:84%
+have indexed into the data, then
+you should permute your outputs.
+
+00:23:28.350 --> 00:23:32.790 align:middle line:84%
+So if I shuffle my nodes,
+then I should end up
+
+00:23:32.790 --> 00:23:35.670 align:middle line:90%
+shuffling my predictions.
+
+00:23:35.670 --> 00:23:38.610 align:middle line:84%
+So same idea as translation
+invariance versus equivariance.
+
+00:23:38.610 --> 00:23:41.470 align:middle line:84%
+I would want to be
+permutation-invariant
+
+00:23:41.470 --> 00:23:44.910 align:middle line:84%
+if I'm trying to, let's
+say, predict something
+
+00:23:44.910 --> 00:23:47.070 align:middle line:90%
+about the entire graph.
+
+00:23:47.070 --> 00:23:49.410 align:middle line:84%
+So no matter how I
+index those nodes,
+
+00:23:49.410 --> 00:23:52.050 align:middle line:84%
+then the prediction about
+the graph will be the same.
+
+00:23:52.050 --> 00:23:54.710 align:middle line:84%
+And if I want to predict
+something about every node,
+
+00:23:54.710 --> 00:23:56.330 align:middle line:84%
+like I want to output
+node embeddings,
+
+00:23:56.330 --> 00:23:58.870 align:middle line:84%
+then I would want to be
+permutation-equivariant so
+
+00:23:58.870 --> 00:24:01.510 align:middle line:84%
+that if I shuffle the nodes,
+my predictions about the nodes
+
+00:24:01.510 --> 00:24:04.230 align:middle line:84%
+get shuffled in
+the same way, just
+
+00:24:04.230 --> 00:24:06.790 align:middle line:84%
+like I want translation
+equivariance if I want
+
+00:24:06.790 --> 00:24:10.710 align:middle line:84%
+to have the output of
+my convolutional network
+
+00:24:10.710 --> 00:24:13.790 align:middle line:84%
+have the property that if I
+shuffle or translate the input
+
+00:24:13.790 --> 00:24:17.710 align:middle line:84%
+image, I will translate the
+dense set of predictions
+
+00:24:17.710 --> 00:24:18.650 align:middle line:90%
+in the output.
+
+00:24:18.650 --> 00:24:20.890 align:middle line:84%
+I'll translate the feature
+map that comes out.
+
+00:24:20.890 --> 00:24:23.510 align:middle line:90%
+
+
+00:24:23.510 --> 00:24:25.430 align:middle line:84%
+So this is the kind of
+fundamental symmetry
+
+00:24:25.430 --> 00:24:28.720 align:middle line:84%
+that we're going to be
+exploiting with graph neural
+
+00:24:28.720 --> 00:24:29.560 align:middle line:90%
+networks.
+
+00:24:29.560 --> 00:24:33.480 align:middle line:84%
+They'll be appropriate for
+processing data for which
+
+00:24:33.480 --> 00:24:35.160 align:middle line:84%
+the problem of
+interest is actually
+
+00:24:35.160 --> 00:24:38.640 align:middle line:84%
+permutation-equivariant
+or invariant.
+
+00:24:38.640 --> 00:24:40.863 align:middle line:90%
+Yeah, question.
+
+00:24:40.863 --> 00:24:42.280 align:middle line:84%
+AUDIENCE: I think
+I understand why
+
+00:24:42.280 --> 00:24:46.280 align:middle line:84%
+we need to make it invariant,
+but is that under the assumption
+
+00:24:46.280 --> 00:24:51.840 align:middle line:84%
+that all graphs could be made
+into this invariant form?
+
+00:24:51.840 --> 00:24:56.000 align:middle line:84%
+What are some problems
+where the nodes are just not
+
+00:24:56.000 --> 00:24:58.680 align:middle line:90%
+able to become invariant?
+
+00:24:58.680 --> 00:25:00.520 align:middle line:84%
+PHILLIP ISOLA: Yeah,
+we'll see, at the end
+
+00:25:00.520 --> 00:25:02.312 align:middle line:84%
+of the class, some
+cases where you wouldn't
+
+00:25:02.312 --> 00:25:05.040 align:middle line:90%
+want permutation invariance.
+
+00:25:05.040 --> 00:25:11.240 align:middle line:84%
+But if, for example, you live in
+a world where molecules always
+
+00:25:11.240 --> 00:25:14.440 align:middle line:84%
+come in some orientation,
+like the heavier--
+
+00:25:14.440 --> 00:25:17.240 align:middle line:84%
+the blue is a heavier
+atom and it always
+
+00:25:17.240 --> 00:25:20.502 align:middle line:84%
+lives on-- it has a position, a
+canonical position, that you're
+
+00:25:20.502 --> 00:25:21.960 align:middle line:84%
+always going to
+observe, then you'd
+
+00:25:21.960 --> 00:25:23.460 align:middle line:90%
+want to use that information.
+
+00:25:23.460 --> 00:25:24.700 align:middle line:90%
+But in our world--
+
+00:25:24.700 --> 00:25:29.060 align:middle line:90%
+
+
+00:25:29.060 --> 00:25:31.230 align:middle line:90%
+yeah, .
+
+00:25:31.230 --> 00:25:32.980 align:middle line:84%
+Yeah, I'll have to
+think a little bit more
+
+00:25:32.980 --> 00:25:34.980 align:middle line:84%
+about a good example, but
+we're going to see one
+
+00:25:34.980 --> 00:25:37.890 align:middle line:90%
+at the end of the class.
+
+00:25:37.890 --> 00:25:38.640 align:middle line:90%
+One more question.
+
+00:25:38.640 --> 00:25:39.140 align:middle line:90%
+Yeah?
+
+00:25:39.140 --> 00:25:40.820 align:middle line:84%
+AUDIENCE: [INAUDIBLE]
+invariance, why
+
+00:25:40.820 --> 00:25:43.420 align:middle line:90%
+is the output a single vector?
+
+00:25:43.420 --> 00:25:45.060 align:middle line:84%
+Does that [INAUDIBLE]
+have anything
+
+00:25:45.060 --> 00:25:46.680 align:middle line:84%
+to do with the
+entire graph itself,
+
+00:25:46.680 --> 00:25:49.820 align:middle line:84%
+or is there a reason why that
+output's a single vector?
+
+00:25:49.820 --> 00:25:53.972 align:middle line:84%
+PHILLIP ISOLA: Yeah, for
+permutation invariance,
+
+00:25:53.972 --> 00:25:55.680 align:middle line:84%
+the output could be
+more than one vector.
+
+00:25:55.680 --> 00:25:56.972 align:middle line:90%
+It could be any dimensionality.
+
+00:25:56.972 --> 00:25:58.900 align:middle line:84%
+It just means that if
+I permute the inputs,
+
+00:25:58.900 --> 00:26:01.700 align:middle line:84%
+then I get the same
+output no matter what.
+
+00:26:01.700 --> 00:26:03.740 align:middle line:84%
+And that's going to be
+most appropriate if I'm
+
+00:26:03.740 --> 00:26:06.760 align:middle line:84%
+making some prediction
+about the entire graph.
+
+00:26:06.760 --> 00:26:09.240 align:middle line:84%
+If I'm making predictions about
+a single node in the graph,
+
+00:26:09.240 --> 00:26:13.940 align:middle line:84%
+I want my prediction for
+the nth node in the graph
+
+00:26:13.940 --> 00:26:19.160 align:middle line:84%
+to always be in the nth
+output row of my output matrix
+
+00:26:19.160 --> 00:26:24.300 align:middle line:84%
+if I'm predicting a matrix as
+output or a set of vectors--
+
+00:26:24.300 --> 00:26:26.100 align:middle line:84%
+vector embeddings
+per node as output.
+
+00:26:26.100 --> 00:26:28.780 align:middle line:90%
+
+
+00:26:28.780 --> 00:26:31.920 align:middle line:84%
+So let's, again, make the
+connection to graph neural
+
+00:26:31.920 --> 00:26:34.460 align:middle line:84%
+networks-- sorry, to
+convolutional neural networks.
+
+00:26:34.460 --> 00:26:39.000 align:middle line:84%
+So ConvNets are graph
+nets applied on a grid.
+
+00:26:39.000 --> 00:26:40.760 align:middle line:84%
+We said that ConvNets
+are appropriate
+
+00:26:40.760 --> 00:26:42.880 align:middle line:90%
+for grid-structured data.
+
+00:26:42.880 --> 00:26:45.680 align:middle line:84%
+And if we're processing
+an image, which
+
+00:26:45.680 --> 00:26:48.480 align:middle line:84%
+is one of the main applications
+of convolutional networks,
+
+00:26:48.480 --> 00:26:52.640 align:middle line:84%
+then we'll have a grid
+of pixels or patches.
+
+00:26:52.640 --> 00:26:55.220 align:middle line:84%
+And we can think of that
+as just a graph of nodes,
+
+00:26:55.220 --> 00:26:58.640 align:middle line:84%
+and the edges between
+the nodes are the weights
+
+00:26:58.640 --> 00:27:00.660 align:middle line:90%
+of the convolutional filter.
+
+00:27:00.660 --> 00:27:05.540 align:middle line:84%
+And in a graph net,
+it's just the same idea,
+
+00:27:05.540 --> 00:27:08.160 align:middle line:84%
+except generalized to
+non-grid topologies.
+
+00:27:08.160 --> 00:27:10.720 align:middle line:84%
+So if I want to
+process something
+
+00:27:10.720 --> 00:27:12.940 align:middle line:84%
+about the node in the
+center of that green region,
+
+00:27:12.940 --> 00:27:14.520 align:middle line:84%
+I'm going to look
+at all my neighbors
+
+00:27:14.520 --> 00:27:17.142 align:middle line:84%
+and aggregate information
+from all of them,
+
+00:27:17.142 --> 00:27:18.600 align:middle line:84%
+just like in a
+ConvNet, we're going
+
+00:27:18.600 --> 00:27:21.183 align:middle line:84%
+to run a filter that's going to
+look at all my local neighbors
+
+00:27:21.183 --> 00:27:25.540 align:middle line:84%
+in a patch around a pixel, or
+around a node on a grid graph,
+
+00:27:25.540 --> 00:27:28.220 align:middle line:84%
+and aggregate information
+to make a new representation
+
+00:27:28.220 --> 00:27:32.240 align:middle line:90%
+of that location in the image.
+
+00:27:32.240 --> 00:27:35.020 align:middle line:90%
+
+
+00:27:35.020 --> 00:27:36.040 align:middle line:90%
+So one question for you.
+
+00:27:36.040 --> 00:27:38.760 align:middle line:84%
+So graph nets look
+a lot like ConvNets,
+
+00:27:38.760 --> 00:27:40.340 align:middle line:84%
+but now they're on
+arbitrary graphs,
+
+00:27:40.340 --> 00:27:42.862 align:middle line:90%
+as opposed to just on a grid.
+
+00:27:42.862 --> 00:27:44.820 align:middle line:84%
+So what are some of the
+interesting differences
+
+00:27:44.820 --> 00:27:47.020 align:middle line:84%
+between a ConvNet
+and a graph net?
+
+00:27:47.020 --> 00:27:49.740 align:middle line:90%
+
+
+00:27:49.740 --> 00:27:52.220 align:middle line:84%
+What is the new problem you
+might encounter with a graph
+
+00:27:52.220 --> 00:27:53.887 align:middle line:84%
+that you won't encounter
+with a ConvNet?
+
+00:27:53.887 --> 00:27:54.460 align:middle line:90%
+Yeah.
+
+00:27:54.460 --> 00:27:56.043 align:middle line:84%
+AUDIENCE: The
+neighborhood of a vertex
+
+00:27:56.043 --> 00:27:57.987 align:middle line:84%
+is not the same
+shape all the time?
+
+00:27:57.987 --> 00:27:58.820 align:middle line:90%
+PHILLIP ISOLA: Yeah.
+
+00:27:58.820 --> 00:28:01.058 align:middle line:84%
+So the neighborhood of a
+vertex is not the same shape
+
+00:28:01.058 --> 00:28:01.600 align:middle line:90%
+all the time.
+
+00:28:01.600 --> 00:28:05.060 align:middle line:84%
+So you need a architecture
+that can handle having
+
+00:28:05.060 --> 00:28:06.808 align:middle line:90%
+variable numbers of neighbors.
+
+00:28:06.808 --> 00:28:09.100 align:middle line:84%
+It's not going to be something
+that's always, like, a 3
+
+00:28:09.100 --> 00:28:10.160 align:middle line:90%
+by 3 patch.
+
+00:28:10.160 --> 00:28:12.452 align:middle line:84%
+And this is going to have
+hardware implications, right?
+
+00:28:12.452 --> 00:28:15.940 align:middle line:84%
+It's going to mean that I can't
+just have baked onto my hardware
+
+00:28:15.940 --> 00:28:19.100 align:middle line:84%
+that I'm going to look
+at, a 3 by 3 grid.
+
+00:28:19.100 --> 00:28:23.190 align:middle line:84%
+I'm going to have to make that
+flexible enough that if the node
+
+00:28:23.190 --> 00:28:25.230 align:middle line:84%
+has a lot of edge
+neighbors, then
+
+00:28:25.230 --> 00:28:28.590 align:middle line:84%
+I will be able to aggregate
+over a bigger set.
+
+00:28:28.590 --> 00:28:29.130 align:middle line:90%
+Any others?
+
+00:28:29.130 --> 00:28:29.942 align:middle line:90%
+Yeah.
+
+00:28:29.942 --> 00:28:32.150 align:middle line:84%
+AUDIENCE: There is no
+structure in the neighborhoods.
+
+00:28:32.150 --> 00:28:33.730 align:middle line:84%
+All these should
+be treated equally.
+
+00:28:33.730 --> 00:28:34.890 align:middle line:90%
+PHILLIP ISOLA: Yes, excellent.
+
+00:28:34.890 --> 00:28:36.050 align:middle line:84%
+There's no structure
+in the neighborhood.
+
+00:28:36.050 --> 00:28:37.300 align:middle line:90%
+All should be treated equally.
+
+00:28:37.300 --> 00:28:41.310 align:middle line:84%
+So in a convolutional
+network, there
+
+00:28:41.310 --> 00:28:44.090 align:middle line:84%
+is this kind of spatial
+dimensionality to it,
+
+00:28:44.090 --> 00:28:46.550 align:middle line:84%
+where left and right have
+a different meaning than up
+
+00:28:46.550 --> 00:28:48.510 align:middle line:84%
+and down, and I might want to
+treat left and right differently
+
+00:28:48.510 --> 00:28:49.550 align:middle line:90%
+than up and down.
+
+00:28:49.550 --> 00:28:52.670 align:middle line:84%
+And in a graph net,
+we actually are
+
+00:28:52.670 --> 00:28:57.550 align:middle line:84%
+going to represent
+the operation that
+
+00:28:57.550 --> 00:29:00.750 align:middle line:84%
+updates the node representation
+given the neighbors
+
+00:29:00.750 --> 00:29:03.750 align:middle line:90%
+in a way that is--
+
+00:29:03.750 --> 00:29:07.590 align:middle line:84%
+doesn't depend on, spatially,
+where those nodes land.
+
+00:29:07.590 --> 00:29:09.070 align:middle line:84%
+So the structures
+are more abstract
+
+00:29:09.070 --> 00:29:11.790 align:middle line:84%
+than the spatial
+structure of a ConvNet.
+
+00:29:11.790 --> 00:29:14.863 align:middle line:84%
+So there are a few
+important differences,
+
+00:29:14.863 --> 00:29:16.530 align:middle line:84%
+but there's also a
+lot of commonalities.
+
+00:29:16.530 --> 00:29:18.510 align:middle line:84%
+So here's a few of
+the commonalities.
+
+00:29:18.510 --> 00:29:20.670 align:middle line:84%
+One is that both of
+these architectures
+
+00:29:20.670 --> 00:29:22.770 align:middle line:90%
+are based on local operations.
+
+00:29:22.770 --> 00:29:25.490 align:middle line:84%
+So we run local
+convolutional filters
+
+00:29:25.490 --> 00:29:28.630 align:middle line:84%
+to update our representation
+of the data at that location.
+
+00:29:28.630 --> 00:29:33.170 align:middle line:84%
+And we graph local computations
+where every node in the graph
+
+00:29:33.170 --> 00:29:36.507 align:middle line:84%
+is going to get input
+from just its neighbors.
+
+00:29:36.507 --> 00:29:38.090 align:middle line:84%
+And the way you make
+a global decision
+
+00:29:38.090 --> 00:29:40.257 align:middle line:84%
+or you propagate information
+across the entire graph
+
+00:29:40.257 --> 00:29:43.650 align:middle line:84%
+or the entire image is just by
+stacking those local operations.
+
+00:29:43.650 --> 00:29:46.772 align:middle line:84%
+So you can filter an
+image over and over again,
+
+00:29:46.772 --> 00:29:49.230 align:middle line:84%
+and the receptive fields gets
+bigger and bigger and bigger.
+
+00:29:49.230 --> 00:29:51.530 align:middle line:84%
+And that location in the
+image aggregates information
+
+00:29:51.530 --> 00:29:52.780 align:middle line:90%
+from farther and farther away.
+
+00:29:52.780 --> 00:29:54.410 align:middle line:84%
+It's the exact same
+in a graph net.
+
+00:29:54.410 --> 00:29:57.770 align:middle line:84%
+If I update a node
+based on its neighbors,
+
+00:29:57.770 --> 00:30:01.310 align:middle line:84%
+then if I repeat that operation,
+I will-- every time I repeat it,
+
+00:30:01.310 --> 00:30:03.297 align:middle line:84%
+I will hop one
+more neighbor away,
+
+00:30:03.297 --> 00:30:05.130 align:middle line:84%
+and eventually, I'll
+cover the entire graph,
+
+00:30:05.130 --> 00:30:06.732 align:middle line:90%
+and I'll globalize.
+
+00:30:06.732 --> 00:30:08.690 align:middle line:84%
+Another idea that's shared
+between these things
+
+00:30:08.690 --> 00:30:10.810 align:middle line:84%
+is that just like a
+ConvNet is chopping up
+
+00:30:10.810 --> 00:30:13.330 align:middle line:84%
+the image into patches and
+operating on each patch
+
+00:30:13.330 --> 00:30:16.030 align:middle line:84%
+independently and identically
+with the same parameters,
+
+00:30:16.030 --> 00:30:18.930 align:middle line:84%
+a graph net will also chop up
+graphs into little local regions
+
+00:30:18.930 --> 00:30:23.030 align:middle line:84%
+and operate on each local region
+independently and identically.
+
+00:30:23.030 --> 00:30:27.630 align:middle line:84%
+And it's going to share the
+same parameters to update
+
+00:30:27.630 --> 00:30:30.812 align:middle line:84%
+each region that-- each
+region of that graph.
+
+00:30:30.812 --> 00:30:32.270 align:middle line:84%
+And another
+interesting property is
+
+00:30:32.270 --> 00:30:34.630 align:middle line:84%
+that ConvNets can
+operate functionally
+
+00:30:34.630 --> 00:30:36.010 align:middle line:90%
+on any size input image.
+
+00:30:36.010 --> 00:30:38.790 align:middle line:84%
+They just slide that filter
+over as much as they need to go.
+
+00:30:38.790 --> 00:30:41.410 align:middle line:84%
+And a graph that can
+operate on any size graph.
+
+00:30:41.410 --> 00:30:43.830 align:middle line:84%
+You just continue running
+that local operation
+
+00:30:43.830 --> 00:30:45.590 align:middle line:90%
+at every node in the graph.
+
+00:30:45.590 --> 00:30:48.310 align:middle line:84%
+So that's a big difference
+from MLPs, which require
+
+00:30:48.310 --> 00:30:49.710 align:middle line:90%
+a fixed dimensional input.
+
+00:30:49.710 --> 00:30:50.650 align:middle line:90%
+OK, one question.
+
+00:30:50.650 --> 00:30:52.150 align:middle line:84%
+AUDIENCE: Are we
+sharing the weights
+
+00:30:52.150 --> 00:30:54.332 align:middle line:84%
+across different depths
+or only on [INAUDIBLE]?
+
+00:30:54.332 --> 00:30:55.790 align:middle line:84%
+PHILLIP ISOLA:
+Yeah, so we're going
+
+00:30:55.790 --> 00:30:56.890 align:middle line:90%
+to get into that in a minute.
+
+00:30:56.890 --> 00:30:58.670 align:middle line:84%
+So are we sharing the
+weights across depth?
+
+00:30:58.670 --> 00:31:00.170 align:middle line:84%
+And the answer is,
+that's an option.
+
+00:31:00.170 --> 00:31:01.670 align:middle line:90%
+You can, or you don't have to.
+
+00:31:01.670 --> 00:31:04.390 align:middle line:84%
+But we'll see that
+in just a second.
+
+00:31:04.390 --> 00:31:06.710 align:middle line:84%
+So here's one more,
+just pointing out
+
+00:31:06.710 --> 00:31:08.690 align:middle line:84%
+the exact relationship
+between a graph.
+
+00:31:08.690 --> 00:31:10.430 align:middle line:90%
+Net and a convolutional network.
+
+00:31:10.430 --> 00:31:16.510 align:middle line:84%
+So this is a CNN visualized
+like a graph net,
+
+00:31:16.510 --> 00:31:18.710 align:middle line:84%
+so every single
+node in the graph
+
+00:31:18.710 --> 00:31:21.250 align:middle line:84%
+is going to be connected
+to its neighbors,
+
+00:31:21.250 --> 00:31:25.050 align:middle line:84%
+and every node will
+have this gray--
+
+00:31:25.050 --> 00:31:27.210 align:middle line:90%
+let me try to get my mouse back.
+
+00:31:27.210 --> 00:31:30.757 align:middle line:90%
+OK, there we go.
+
+00:31:30.757 --> 00:31:32.590 align:middle line:84%
+I don't know why my
+mouse is not showing up.
+
+00:31:32.590 --> 00:31:35.210 align:middle line:90%
+
+
+00:31:35.210 --> 00:31:36.990 align:middle line:90%
+Anyway, It's fine.
+
+00:31:36.990 --> 00:31:40.990 align:middle line:84%
+So the gray columns are meant to
+be the node attribute vectors.
+
+00:31:40.990 --> 00:31:42.930 align:middle line:84%
+But what would the name
+of those gray columns
+
+00:31:42.930 --> 00:31:47.078 align:middle line:84%
+be if we were
+working with a CNN?
+
+00:31:47.078 --> 00:31:47.870 align:middle line:90%
+Anyone want to say?
+
+00:31:47.870 --> 00:31:48.830 align:middle line:90%
+I think it's on the slide.
+
+00:31:48.830 --> 00:31:50.250 align:middle line:84%
+AUDIENCE: Embeddings
+[INAUDIBLE].
+
+00:31:50.250 --> 00:31:52.083 align:middle line:84%
+PHILLIP ISOLA: Embeddings
+or channels, yeah.
+
+00:31:52.083 --> 00:31:54.610 align:middle line:84%
+So in a CNN, every
+point in the grid
+
+00:31:54.610 --> 00:31:56.990 align:middle line:84%
+has this column of
+channels underneath it,
+
+00:31:56.990 --> 00:32:00.210 align:middle line:84%
+and that's equivalent to the
+node vectors in a graph neural
+
+00:32:00.210 --> 00:32:01.130 align:middle line:90%
+network.
+
+00:32:01.130 --> 00:32:04.770 align:middle line:84%
+So maybe some CNN review
+questions very quickly.
+
+00:32:04.770 --> 00:32:09.755 align:middle line:84%
+In this convolutional network,
+what is the kernel size?
+
+00:32:09.755 --> 00:32:10.513 align:middle line:90%
+AUDIENCE: 3 by 3.
+
+00:32:10.513 --> 00:32:11.430 align:middle line:90%
+PHILLIP ISOLA: 3 by 3.
+
+00:32:11.430 --> 00:32:12.610 align:middle line:90%
+OK, great.
+
+00:32:12.610 --> 00:32:13.950 align:middle line:90%
+And what is the stride?
+
+00:32:13.950 --> 00:32:17.210 align:middle line:90%
+
+
+00:32:17.210 --> 00:32:18.280 align:middle line:90%
+The stride is 3.
+
+00:32:18.280 --> 00:32:19.780 align:middle line:90%
+So why is stride 3?
+
+00:32:19.780 --> 00:32:23.040 align:middle line:84%
+Because I didn't
+draw edges between--
+
+00:32:23.040 --> 00:32:28.260 align:middle line:90%
+
+
+00:32:28.260 --> 00:32:30.038 align:middle line:84%
+if you look at the
+pattern of edges,
+
+00:32:30.038 --> 00:32:32.080 align:middle line:84%
+it's like I'm taking that
+pattern, that template,
+
+00:32:32.080 --> 00:32:38.220 align:middle line:84%
+and moving it over by 3 to get
+the next filter's application.
+
+00:32:38.220 --> 00:32:40.080 align:middle line:90%
+OK, cool.
+
+00:32:40.080 --> 00:32:43.220 align:middle line:90%
+So CNNs are GNNs.
+
+00:32:43.220 --> 00:32:45.100 align:middle line:84%
+But now let's look at
+GNNs more generally
+
+00:32:45.100 --> 00:32:48.340 align:middle line:84%
+and get into the exact
+equations of how they operate.
+
+00:32:48.340 --> 00:32:53.660 align:middle line:84%
+So the way I'm going to present
+this is that there's two steps.
+
+00:32:53.660 --> 00:32:59.900 align:middle line:84%
+One step is we're
+going to pass messages
+
+00:32:59.900 --> 00:33:02.380 align:middle line:90%
+from each node to its neighbors.
+
+00:33:02.380 --> 00:33:04.380 align:middle line:84%
+And the next step is
+we're going to aggregate
+
+00:33:04.380 --> 00:33:08.460 align:middle line:84%
+all of those messages to update
+the representation of each node.
+
+00:33:08.460 --> 00:33:11.440 align:middle line:84%
+So every node has a
+vector associated with it,
+
+00:33:11.440 --> 00:33:15.180 align:middle line:84%
+and that vector's going
+to be modified layer
+
+00:33:15.180 --> 00:33:17.157 align:middle line:84%
+by layer through my
+graph net in order
+
+00:33:17.157 --> 00:33:19.240 align:middle line:84%
+to come up with a better
+embedding that then makes
+
+00:33:19.240 --> 00:33:20.740 align:middle line:84%
+a prediction at the
+very end of the day,
+
+00:33:20.740 --> 00:33:22.365 align:middle line:84%
+just like in a ConvNet,
+how every layer
+
+00:33:22.365 --> 00:33:24.000 align:middle line:84%
+modifies the set of
+channels underneath
+
+00:33:24.000 --> 00:33:25.300 align:middle line:90%
+every spatial location.
+
+00:33:25.300 --> 00:33:28.280 align:middle line:90%
+
+
+00:33:28.280 --> 00:33:32.220 align:middle line:84%
+So here's the general form of
+one layer application of a graph
+
+00:33:32.220 --> 00:33:33.065 align:middle line:90%
+net.
+
+00:33:33.065 --> 00:33:34.940 align:middle line:84%
+So going to look at a
+really tiny graph here.
+
+00:33:34.940 --> 00:33:37.280 align:middle line:84%
+I'm going to highlight
+that middle node
+
+00:33:37.280 --> 00:33:40.280 align:middle line:84%
+and ask, how does that
+middle nodes node vector get
+
+00:33:40.280 --> 00:33:44.080 align:middle line:90%
+updated after one application--
+
+00:33:44.080 --> 00:33:45.460 align:middle line:90%
+one layer of processing?
+
+00:33:45.460 --> 00:33:48.160 align:middle line:84%
+So what does one layer of
+processing-- so we call this--
+
+00:33:48.160 --> 00:33:51.660 align:middle line:84%
+in each round k, in each layer
+k, we're going to do two things.
+
+00:33:51.660 --> 00:33:53.680 align:middle line:84%
+We're going to aggregate
+and then update.
+
+00:33:53.680 --> 00:33:55.920 align:middle line:84%
+So the aggregate
+function is going
+
+00:33:55.920 --> 00:33:59.560 align:middle line:84%
+to be a function that takes
+the node vectors denoted
+
+00:33:59.560 --> 00:34:02.120 align:middle line:84%
+as h of all of my
+neighbors, and it's
+
+00:34:02.120 --> 00:34:08.420 align:middle line:84%
+going to produce a
+message, m, from that set.
+
+00:34:08.420 --> 00:34:09.880 align:middle line:84%
+And importantly,
+aggregate is going
+
+00:34:09.880 --> 00:34:13.679 align:middle line:84%
+to be a function that is
+permutation-invariant.
+
+00:34:13.679 --> 00:34:17.600 align:middle line:84%
+So if I reindex
+into my neighbors,
+
+00:34:17.600 --> 00:34:20.940 align:middle line:84%
+then I shouldn't get any
+different output message, m.
+
+00:34:20.940 --> 00:34:24.739 align:middle line:84%
+OK, so the italic n is
+the set of neighbors
+
+00:34:24.739 --> 00:34:30.020 align:middle line:84%
+of a vector of a
+node v. And I'm going
+
+00:34:30.020 --> 00:34:34.580 align:middle line:84%
+to take the attribute vectors,
+h, from all my neighbors
+
+00:34:34.580 --> 00:34:35.860 align:middle line:90%
+in that set.
+
+00:34:35.860 --> 00:34:38.942 align:middle line:84%
+And I'm going to then
+somehow aggregate them.
+
+00:34:38.942 --> 00:34:40.400 align:middle line:84%
+Now, once I've
+gotten that message,
+
+00:34:40.400 --> 00:34:43.080 align:middle line:84%
+which is now just a vector--
+it's a D-dimensional vector,
+
+00:34:43.080 --> 00:34:44.380 align:middle line:90%
+let's say.
+
+00:34:44.380 --> 00:34:49.739 align:middle line:84%
+Then I will update the
+red node, node vector,
+
+00:34:49.739 --> 00:34:52.007 align:middle line:84%
+using another function
+called Update.
+
+00:34:52.007 --> 00:34:53.840 align:middle line:84%
+So I'll take the messages
+from my neighbors.
+
+00:34:53.840 --> 00:34:55.548 align:middle line:84%
+My neighbors told me
+something about what
+
+00:34:55.548 --> 00:34:57.860 align:middle line:84%
+they know about the graph
+and about the world.
+
+00:34:57.860 --> 00:34:59.300 align:middle line:84%
+And I'll combine
+that information
+
+00:34:59.300 --> 00:35:02.700 align:middle line:84%
+with what I know about myself
+to update my own representation.
+
+00:35:02.700 --> 00:35:05.500 align:middle line:84%
+And now I can repeat
+this process k times.
+
+00:35:05.500 --> 00:35:08.500 align:middle line:84%
+And as k gets larger,
+it's like going in depth
+
+00:35:08.500 --> 00:35:11.217 align:middle line:84%
+in a neural network where I'm
+just updating my representation
+
+00:35:11.217 --> 00:35:13.300 align:middle line:84%
+to be better and better
+and better, until finally,
+
+00:35:13.300 --> 00:35:14.740 align:middle line:90%
+at the end, I make a prediction.
+
+00:35:14.740 --> 00:35:18.704 align:middle line:90%
+
+
+00:35:18.704 --> 00:35:23.120 align:middle line:84%
+So every application
+of those two steps
+
+00:35:23.120 --> 00:35:26.680 align:middle line:84%
+is going to essentially increase
+my receptive field by one.
+
+00:35:26.680 --> 00:35:29.200 align:middle line:84%
+So that red node is
+going to get information
+
+00:35:29.200 --> 00:35:32.353 align:middle line:84%
+about the green nodes if I
+run this algorithm twice.
+
+00:35:32.353 --> 00:35:34.520 align:middle line:84%
+So I get a message that's
+passed from the green node
+
+00:35:34.520 --> 00:35:37.260 align:middle line:84%
+to the blue node, now to the
+red node on the second round.
+
+00:35:37.260 --> 00:35:39.920 align:middle line:90%
+
+
+00:35:39.920 --> 00:35:42.200 align:middle line:84%
+So some of you will be
+familiar with message
+
+00:35:42.200 --> 00:35:47.200 align:middle line:84%
+passing algorithms and hidden
+Markov chains and so forth.
+
+00:35:47.200 --> 00:35:49.180 align:middle line:84%
+And that's one
+perspective on this.
+
+00:35:49.180 --> 00:35:52.400 align:middle line:84%
+But I'll try to give a few
+different perspectives.
+
+00:35:52.400 --> 00:35:56.400 align:middle line:84%
+So what is the aggregate
+function, and what
+
+00:35:56.400 --> 00:35:58.480 align:middle line:90%
+is the update function?
+
+00:35:58.480 --> 00:36:00.400 align:middle line:84%
+OK, let's make it a
+little bit more precise.
+
+00:36:00.400 --> 00:36:05.100 align:middle line:84%
+So the aggregate function is
+going to be any set function.
+
+00:36:05.100 --> 00:36:07.600 align:middle line:84%
+That means it takes as
+input a set of items where
+
+00:36:07.600 --> 00:36:08.940 align:middle line:90%
+the ordering doesn't matter.
+
+00:36:08.940 --> 00:36:11.480 align:middle line:84%
+So it's permutation-invariant
+to the ordering.
+
+00:36:11.480 --> 00:36:14.540 align:middle line:84%
+And it produces
+an output vector.
+
+00:36:14.540 --> 00:36:16.340 align:middle line:84%
+Now, technically,
+we would call this
+
+00:36:16.340 --> 00:36:21.580 align:middle line:84%
+a multiset function because
+the set of inputs, which
+
+00:36:21.580 --> 00:36:26.477 align:middle line:84%
+are the node vectors, h, could
+potentially have duplicates.
+
+00:36:26.477 --> 00:36:28.060 align:middle line:84%
+So multiset is just
+the technical name
+
+00:36:28.060 --> 00:36:31.148 align:middle line:84%
+for a set that can potentially
+have duplicate items.
+
+00:36:31.148 --> 00:36:33.440 align:middle line:84%
+So if you come across this
+in the reading and so forth,
+
+00:36:33.440 --> 00:36:35.000 align:middle line:84%
+they'll call it a
+multiset function.
+
+00:36:35.000 --> 00:36:37.240 align:middle line:84%
+But unless you're
+deep into set theory,
+
+00:36:37.240 --> 00:36:40.340 align:middle line:84%
+then it's just a function from
+a set of items to a vector.
+
+00:36:40.340 --> 00:36:44.420 align:middle line:84%
+The set of items
+can have duplicates.
+
+00:36:44.420 --> 00:36:47.920 align:middle line:84%
+So let's look at some examples
+of aggregate functions.
+
+00:36:47.920 --> 00:36:50.140 align:middle line:84%
+So one example
+would be summation.
+
+00:36:50.140 --> 00:36:53.260 align:middle line:84%
+A summation takes a
+set of any length,
+
+00:36:53.260 --> 00:36:55.660 align:middle line:90%
+and it produces a vector.
+
+00:36:55.660 --> 00:36:58.160 align:middle line:84%
+So summation-- and also
+is permutation-invariant.
+
+00:36:58.160 --> 00:37:00.460 align:middle line:84%
+It doesn't matter how you
+order the items in that set.
+
+00:37:00.460 --> 00:37:03.580 align:middle line:84%
+So summation is a
+multiset function that
+
+00:37:03.580 --> 00:37:08.380 align:middle line:90%
+produces a vector m as output.
+
+00:37:08.380 --> 00:37:12.550 align:middle line:84%
+And that will be the message
+that is passed to the red node.
+
+00:37:12.550 --> 00:37:14.290 align:middle line:84%
+And another one
+could be average.
+
+00:37:14.290 --> 00:37:16.810 align:middle line:84%
+So on the left here,
+I have summation.
+
+00:37:16.810 --> 00:37:19.670 align:middle line:84%
+But then in gray, I'm dividing
+by the number of neighbors, So.
+
+00:37:19.670 --> 00:37:21.590 align:middle line:84%
+Would be the average,
+as opposed to the sum.
+
+00:37:21.590 --> 00:37:23.257 align:middle line:84%
+It has interesting
+different properties.
+
+00:37:23.257 --> 00:37:24.630 align:middle line:90%
+We'll get into that in a bit.
+
+00:37:24.630 --> 00:37:28.090 align:middle line:84%
+And on the right is just another
+popular aggregation function,
+
+00:37:28.090 --> 00:37:32.390 align:middle line:84%
+which is normalizing by
+the number of neighbors
+
+00:37:32.390 --> 00:37:36.470 align:middle line:84%
+that both you and what are
+the messages coming from have.
+
+00:37:36.470 --> 00:37:40.590 align:middle line:84%
+So just another variation
+on the same thing.
+
+00:37:40.590 --> 00:37:43.430 align:middle line:84%
+So the key property is
+that aggregate is not
+
+00:37:43.430 --> 00:37:45.970 align:middle line:84%
+a universal function, and it
+can't represent everything.
+
+00:37:45.970 --> 00:37:47.130 align:middle line:90%
+Aggregate is constrained.
+
+00:37:47.130 --> 00:37:51.890 align:middle line:84%
+Aggregate is a multiset function
+that's permutation-invariant.
+
+00:37:51.890 --> 00:37:55.870 align:middle line:84%
+It maps a set of
+items to a vector,
+
+00:37:55.870 --> 00:37:59.910 align:middle line:84%
+and the ordering of
+the set doesn't matter.
+
+00:37:59.910 --> 00:38:02.510 align:middle line:84%
+Another interesting
+aggregate function
+
+00:38:02.510 --> 00:38:06.130 align:middle line:84%
+that satisfies those
+rules is max or min.
+
+00:38:06.130 --> 00:38:08.270 align:middle line:84%
+This is a lot like
+the pooling operations
+
+00:38:08.270 --> 00:38:10.370 align:middle line:90%
+in convolutional networks.
+
+00:38:10.370 --> 00:38:16.170 align:middle line:84%
+So max will just take the
+largest item in the set.
+
+00:38:16.170 --> 00:38:19.893 align:middle line:84%
+It produces a
+fixed-length vector
+
+00:38:19.893 --> 00:38:21.310 align:middle line:84%
+regardless of the
+size of the set.
+
+00:38:21.310 --> 00:38:23.450 align:middle line:90%
+So it's a multiset function.
+
+00:38:23.450 --> 00:38:26.032 align:middle line:90%
+Min, same property.
+
+00:38:26.032 --> 00:38:27.490 align:middle line:84%
+And there's some
+interesting things
+
+00:38:27.490 --> 00:38:28.865 align:middle line:84%
+you can do when
+you start to look
+
+00:38:28.865 --> 00:38:30.790 align:middle line:84%
+at different
+aggregate functions.
+
+00:38:30.790 --> 00:38:34.170 align:middle line:84%
+So here's a graph algorithm
+that can be implemented
+
+00:38:34.170 --> 00:38:36.330 align:middle line:90%
+with min aggregation.
+
+00:38:36.330 --> 00:38:40.490 align:middle line:84%
+And this is the shortest-path
+Bellman-Ford algorithm.
+
+00:38:40.490 --> 00:38:43.550 align:middle line:84%
+So a lot of you will have seen
+this in Intro to Algorithms.
+
+00:38:43.550 --> 00:38:46.650 align:middle line:84%
+But in case you don't
+remember, to find the shortest
+
+00:38:46.650 --> 00:38:48.410 align:middle line:84%
+path with Bellman-Ford,
+what you do
+
+00:38:48.410 --> 00:38:51.490 align:middle line:84%
+is you assign to every
+node in your graph
+
+00:38:51.490 --> 00:38:53.730 align:middle line:84%
+an attribute vector,
+which is just
+
+00:38:53.730 --> 00:38:57.152 align:middle line:84%
+going to be the distance
+to the target node
+
+00:38:57.152 --> 00:38:58.110 align:middle line:90%
+you're trying to reach.
+
+00:38:58.110 --> 00:38:59.870 align:middle line:84%
+So I'm trying to find the
+shortest path to the target.
+
+00:38:59.870 --> 00:39:01.472 align:middle line:84%
+So every node will
+have an attribute,
+
+00:39:01.472 --> 00:39:02.430 align:middle line:90%
+which is just a scalar.
+
+00:39:02.430 --> 00:39:03.970 align:middle line:90%
+It's just the distance--
+
+00:39:03.970 --> 00:39:07.050 align:middle line:84%
+my estimate of the shortest
+distance or the cost
+
+00:39:07.050 --> 00:39:10.270 align:middle line:84%
+of the shortest path
+to get to the target,
+
+00:39:10.270 --> 00:39:15.590 align:middle line:84%
+and I'll initialize those
+vectors, d, with infinity.
+
+00:39:15.590 --> 00:39:20.190 align:middle line:84%
+And then I will run this
+recurrence over and over
+
+00:39:20.190 --> 00:39:22.070 align:middle line:84%
+again until I
+converge, where I'm
+
+00:39:22.070 --> 00:39:25.830 align:middle line:84%
+trying to say- I will
+say that the attribute
+
+00:39:25.830 --> 00:39:31.190 align:middle line:84%
+vector for the target node is 0,
+and everything else is infinity.
+
+00:39:31.190 --> 00:39:34.110 align:middle line:84%
+And then as I run this, I'll
+look at all of my neighbors,
+
+00:39:34.110 --> 00:39:41.790 align:middle line:84%
+and I will see if the distance
+between myself and the neighbor,
+
+00:39:41.790 --> 00:39:43.790 align:middle line:84%
+plus the estimate
+that the neighbor has
+
+00:39:43.790 --> 00:39:45.152 align:middle line:90%
+of the distance to the target--
+
+00:39:45.152 --> 00:39:47.610 align:middle line:84%
+I'll see what that is, and I'll
+take the minimum over that.
+
+00:39:47.610 --> 00:39:49.277 align:middle line:84%
+And that will give
+me the shortest path.
+
+00:39:49.277 --> 00:39:52.950 align:middle line:84%
+If I kind of propagate
+out, now, from that target,
+
+00:39:52.950 --> 00:39:54.670 align:middle line:84%
+these distances
+initially it will be 0,
+
+00:39:54.670 --> 00:39:56.003 align:middle line:90%
+and everything will be infinity.
+
+00:39:56.003 --> 00:39:58.030 align:middle line:84%
+And then all the
+neighbors of that target
+
+00:39:58.030 --> 00:40:01.948 align:middle line:84%
+will be 1, if the cost is 1
+to go one hop in the graph.
+
+00:40:01.948 --> 00:40:03.490 align:middle line:84%
+And then this will
+propagate outward,
+
+00:40:03.490 --> 00:40:05.070 align:middle line:84%
+and this will tell
+me the shortest--
+
+00:40:05.070 --> 00:40:07.210 align:middle line:84%
+the cost of the shortest
+path to that target.
+
+00:40:07.210 --> 00:40:08.330 align:middle line:90%
+Yeah.
+
+00:40:08.330 --> 00:40:10.410 align:middle line:84%
+AUDIENCE: So because
+the aggregate function
+
+00:40:10.410 --> 00:40:12.250 align:middle line:90%
+is constrained, how--
+
+00:40:12.250 --> 00:40:14.970 align:middle line:84%
+I guess this is more of a
+question of designing a problem
+
+00:40:14.970 --> 00:40:16.510 align:middle line:90%
+to then use a graph--
+
+00:40:16.510 --> 00:40:17.930 align:middle line:90%
+a graph network.
+
+00:40:17.930 --> 00:40:21.170 align:middle line:84%
+How do you know that
+your information needs
+
+00:40:21.170 --> 00:40:22.590 align:middle line:90%
+to be permutation-invariant?
+
+00:40:22.590 --> 00:40:24.310 align:middle line:84%
+Or how do you classify
+a set of problems
+
+00:40:24.310 --> 00:40:27.425 align:middle line:84%
+to where you say, OK, I
+need to just aggregate
+
+00:40:27.425 --> 00:40:29.050 align:middle line:84%
+my information
+together, and it doesn't
+
+00:40:29.050 --> 00:40:31.370 align:middle line:90%
+matter what order they come in?
+
+00:40:31.370 --> 00:40:33.790 align:middle line:84%
+How do when to classify
+a problem like that?
+
+00:40:33.790 --> 00:40:35.290 align:middle line:84%
+PHILLIP ISOLA: Yeah,
+so the question
+
+00:40:35.290 --> 00:40:38.810 align:middle line:84%
+is, how do when you want
+permutation invariance?
+
+00:40:38.810 --> 00:40:40.310 align:middle line:84%
+And I think that's
+a good question.
+
+00:40:40.310 --> 00:40:42.510 align:middle line:84%
+It's going to depend
+a lot on the domain.
+
+00:40:42.510 --> 00:40:45.690 align:middle line:90%
+
+
+00:40:45.690 --> 00:40:51.730 align:middle line:84%
+But yeah, so any problem
+where the ordering of inputs
+
+00:40:51.730 --> 00:40:54.513 align:middle line:84%
+doesn't change the optimal
+thing you want to do,
+
+00:40:54.513 --> 00:40:55.930 align:middle line:84%
+the prediction you
+want to make is
+
+00:40:55.930 --> 00:40:57.610 align:middle line:84%
+going to be something
+you want to apply
+
+00:40:57.610 --> 00:41:00.410 align:middle line:84%
+this constraint to being
+permutation-invariant to.
+
+00:41:00.410 --> 00:41:02.210 align:middle line:84%
+And we're seeing
+a lot of examples
+
+00:41:02.210 --> 00:41:04.510 align:middle line:84%
+where, structurally, that
+actually does make sense.
+
+00:41:04.510 --> 00:41:08.900 align:middle line:84%
+Like, the shortest path in
+the graph has that property.
+
+00:41:08.900 --> 00:41:12.900 align:middle line:84%
+I think that maybe a clearer
+example of a case where
+
+00:41:12.900 --> 00:41:15.220 align:middle line:84%
+you wouldn't want
+permutation invariance
+
+00:41:15.220 --> 00:41:17.860 align:middle line:84%
+is if I'm doing
+image processing,
+
+00:41:17.860 --> 00:41:19.940 align:middle line:84%
+and I know that the
+top of the image
+
+00:41:19.940 --> 00:41:23.020 align:middle line:84%
+is more likely to be sky
+than the bottom of the image.
+
+00:41:23.020 --> 00:41:26.740 align:middle line:84%
+If I have a graph which
+has these local patches
+
+00:41:26.740 --> 00:41:29.740 align:middle line:84%
+that I'm processing, I want to
+know where I am in the image.
+
+00:41:29.740 --> 00:41:32.860 align:middle line:84%
+And I think Sarah talked about
+adding positional encoding
+
+00:41:32.860 --> 00:41:35.220 align:middle line:84%
+to tell you where
+you are in an image
+
+00:41:35.220 --> 00:41:38.160 align:middle line:84%
+if you don't want this
+translation invariance.
+
+00:41:38.160 --> 00:41:41.360 align:middle line:84%
+So translation invariance is one
+type of permutation invariance,
+
+00:41:41.360 --> 00:41:45.380 align:middle line:84%
+but permutation invariance is
+a more general version of that.
+
+00:41:45.380 --> 00:41:46.100 align:middle line:90%
+OK.
+
+00:41:46.100 --> 00:41:46.725 align:middle line:90%
+Yeah, question.
+
+00:41:46.725 --> 00:41:48.475 align:middle line:84%
+AUDIENCE: Yeah, quick
+clarifying question.
+
+00:41:48.475 --> 00:41:51.180 align:middle line:84%
+You mentioned the output of the
+aggregate function is a vector.
+
+00:41:51.180 --> 00:41:54.780 align:middle line:84%
+Can you just quickly just
+say what the dimensions
+
+00:41:54.780 --> 00:41:55.860 align:middle line:90%
+of that vector are?
+
+00:41:55.860 --> 00:41:58.360 align:middle line:84%
+PHILLIP ISOLA: Yeah, so the
+output of the aggregate function
+
+00:41:58.360 --> 00:42:00.280 align:middle line:84%
+is a D-dimensional
+column vector.
+
+00:42:00.280 --> 00:42:04.840 align:middle line:90%
+
+
+00:42:04.840 --> 00:42:06.520 align:middle line:84%
+So yeah, on your
+problem set, you'll
+
+00:42:06.520 --> 00:42:09.220 align:middle line:84%
+have some questions about this
+shortest-path computation.
+
+00:42:09.220 --> 00:42:11.220 align:middle line:84%
+So you'll get a little
+bit more intuition of it.
+
+00:42:11.220 --> 00:42:13.760 align:middle line:84%
+But it's just a
+construction to demonstrate
+
+00:42:13.760 --> 00:42:18.720 align:middle line:84%
+that you can represent classical
+graph problems, like graph
+
+00:42:18.720 --> 00:42:21.800 align:middle line:84%
+search and shortest path
+problems, with these aggregate
+
+00:42:21.800 --> 00:42:23.180 align:middle line:90%
+and update operations.
+
+00:42:23.180 --> 00:42:25.360 align:middle line:84%
+In this particular
+case, Bellman-Ford
+
+00:42:25.360 --> 00:42:28.380 align:middle line:84%
+can be implemented just as a
+GNN that only does aggregate,
+
+00:42:28.380 --> 00:42:30.840 align:middle line:84%
+and the update is
+trivial in this case.
+
+00:42:30.840 --> 00:42:33.793 align:middle line:84%
+So Bellman-Ford is on the left,
+and the equivalent graph net
+
+00:42:33.793 --> 00:42:34.460 align:middle line:90%
+is on the right.
+
+00:42:34.460 --> 00:42:37.160 align:middle line:84%
+The graph net-- the
+aggregate is going
+
+00:42:37.160 --> 00:42:40.840 align:middle line:84%
+to be a min for Bellman-Ford
+rather than the sum.
+
+00:42:40.840 --> 00:42:47.020 align:middle line:84%
+And the computation of-- the
+node embedding of your neighbor
+
+00:42:47.020 --> 00:42:49.500 align:middle line:84%
+plus this cost could be
+represented as an MLP,
+
+00:42:49.500 --> 00:42:50.938 align:middle line:90%
+which just adds 1--
+
+00:42:50.938 --> 00:42:52.480 align:middle line:84%
+adds the cost of 1,
+if we're assuming
+
+00:42:52.480 --> 00:42:56.040 align:middle line:84%
+that every edge in the
+graph has length 1.
+
+00:42:56.040 --> 00:42:58.640 align:middle line:84%
+So you'll work through that a
+little bit more in your problem
+
+00:42:58.640 --> 00:43:00.680 align:middle line:90%
+set.
+
+00:43:00.680 --> 00:43:04.800 align:middle line:84%
+So one question you
+might have is, well,
+
+00:43:04.800 --> 00:43:06.960 align:middle line:84%
+sum seems like a fine
+aggregation function.
+
+00:43:06.960 --> 00:43:08.780 align:middle line:90%
+Min seems like a fine one.
+
+00:43:08.780 --> 00:43:11.100 align:middle line:84%
+Is there a family of
+aggregation functions
+
+00:43:11.100 --> 00:43:14.980 align:middle line:84%
+that are universal in the sense
+that any multiset permutation
+
+00:43:14.980 --> 00:43:20.100 align:middle line:84%
+invariant mapping can be
+represented in that family?
+
+00:43:20.100 --> 00:43:23.940 align:middle line:84%
+And the answer is
+that, yes, this family
+
+00:43:23.940 --> 00:43:27.660 align:middle line:84%
+of aggregation functions
+is universal in that sense.
+
+00:43:27.660 --> 00:43:36.020 align:middle line:84%
+So take my neighbor's node
+embedding or my neighbor's
+
+00:43:36.020 --> 00:43:38.540 align:middle line:84%
+node vector, and take
+my own node vector,
+
+00:43:38.540 --> 00:43:40.740 align:middle line:84%
+pass those through
+an MLP, then sum up
+
+00:43:40.740 --> 00:43:43.600 align:middle line:84%
+over- sum of that operation
+over all of my neighbors,
+
+00:43:43.600 --> 00:43:45.860 align:middle line:84%
+and then pass the output
+through another MLP.
+
+00:43:45.860 --> 00:43:48.700 align:middle line:84%
+This is a universal
+approximator of the family
+
+00:43:48.700 --> 00:43:52.220 align:middle line:90%
+of multiset functions.
+
+00:43:52.220 --> 00:43:54.840 align:middle line:84%
+And one question you might
+have is, wait a second.
+
+00:43:54.840 --> 00:43:57.740 align:middle line:84%
+Didn't we say that MLPs on their
+own are universal approximators?
+
+00:43:57.740 --> 00:44:02.320 align:middle line:84%
+And they are if I increase
+the width to infinity.
+
+00:44:02.320 --> 00:44:05.820 align:middle line:84%
+But here we're, not trying
+to approximate all functions.
+
+00:44:05.820 --> 00:44:07.680 align:middle line:84%
+We're trying to only
+approximate-- we
+
+00:44:07.680 --> 00:44:10.640 align:middle line:84%
+want to have an approximator
+that can't fit functions that
+
+00:44:10.640 --> 00:44:13.640 align:middle line:90%
+are not multiset functions.
+
+00:44:13.640 --> 00:44:15.693 align:middle line:84%
+So the sum is the
+thing that makes it
+
+00:44:15.693 --> 00:44:17.360 align:middle line:84%
+so it's one of these
+multiset functions,
+
+00:44:17.360 --> 00:44:20.658 align:middle line:84%
+that the ordering of
+the edges-- sorry,
+
+00:44:20.658 --> 00:44:22.200 align:middle line:84%
+the ordering of the
+neighbors doesn't
+
+00:44:22.200 --> 00:44:25.720 align:middle line:84%
+matter because we're just
+going to summate over them.
+
+00:44:25.720 --> 00:44:30.200 align:middle line:84%
+So this has the property that
+it is a universal approximator
+
+00:44:30.200 --> 00:44:32.100 align:middle line:84%
+to the family of
+multiset functions,
+
+00:44:32.100 --> 00:44:37.120 align:middle line:84%
+but it can't represent
+other functions.
+
+00:44:37.120 --> 00:44:37.980 align:middle line:90%
+So that's good.
+
+00:44:37.980 --> 00:44:41.000 align:middle line:90%
+It's a constrained family.
+
+00:44:41.000 --> 00:44:45.180 align:middle line:84%
+The other thing that we need is
+what we call an update function,
+
+00:44:45.180 --> 00:44:47.600 align:middle line:84%
+and the update function
+will take our messages
+
+00:44:47.600 --> 00:44:51.320 align:middle line:84%
+from our neighbors and combine
+them with our current node
+
+00:44:51.320 --> 00:44:53.320 align:middle line:84%
+vector and update
+that node vector
+
+00:44:53.320 --> 00:44:56.640 align:middle line:84%
+to be a better
+representation of the graph,
+
+00:44:56.640 --> 00:44:59.080 align:middle line:84%
+of the information that
+we're trying to process.
+
+00:44:59.080 --> 00:45:02.070 align:middle line:84%
+And for this one, we're
+just going to use a very--
+
+00:45:02.070 --> 00:45:05.850 align:middle line:84%
+a simple update, which is
+going to be an MLP, just
+
+00:45:05.850 --> 00:45:07.830 align:middle line:90%
+a tiny, one-layer MLP.
+
+00:45:07.830 --> 00:45:12.598 align:middle line:84%
+It goes linear transformation
+of my each of my neighbors.
+
+00:45:12.598 --> 00:45:14.390 align:middle line:84%
+Oh, sorry, linear
+transformation of myself,
+
+00:45:14.390 --> 00:45:16.650 align:middle line:84%
+plus linear transformation
+of the message coming
+
+00:45:16.650 --> 00:45:18.807 align:middle line:84%
+from my neighbors,
+plus a bias, pass
+
+00:45:18.807 --> 00:45:21.390 align:middle line:84%
+through sigma, which is going
+to be a pointwise non-linearity.
+
+00:45:21.390 --> 00:45:22.770 align:middle line:90%
+That could be a ReLU.
+
+00:45:22.770 --> 00:45:26.130 align:middle line:84%
+That's a canonical
+update function.
+
+00:45:26.130 --> 00:45:29.070 align:middle line:84%
+So once we have
+those two things,
+
+00:45:29.070 --> 00:45:30.130 align:middle line:90%
+then we have a graph net.
+
+00:45:30.130 --> 00:45:36.610 align:middle line:90%
+
+
+00:45:36.610 --> 00:45:39.143 align:middle line:84%
+That will give me
+updated node embeddings,
+
+00:45:39.143 --> 00:45:40.810 align:middle line:84%
+and I can apply that
+over and over again
+
+00:45:40.810 --> 00:45:45.050 align:middle line:84%
+to get my node embeddings into
+a better and better state.
+
+00:45:45.050 --> 00:45:46.550 align:middle line:84%
+And then at the
+very end of the day,
+
+00:45:46.550 --> 00:45:48.175 align:middle line:84%
+I could just take
+those node embeddings
+
+00:45:48.175 --> 00:45:50.270 align:middle line:84%
+as my prediction about
+properties of the nodes.
+
+00:45:50.270 --> 00:45:52.330 align:middle line:84%
+But if I want to instead
+predict something
+
+00:45:52.330 --> 00:45:55.070 align:middle line:84%
+about the entire graph,
+I just do one more step,
+
+00:45:55.070 --> 00:45:58.170 align:middle line:84%
+which is very simple, which is
+I aggregate the node embeddings
+
+00:45:58.170 --> 00:46:00.570 align:middle line:90%
+into a final prediction.
+
+00:46:00.570 --> 00:46:04.050 align:middle line:84%
+So here is my mapping from
+a graph to an embedding,
+
+00:46:04.050 --> 00:46:07.770 align:middle line:84%
+and it requires this final
+step, which we call readout.
+
+00:46:07.770 --> 00:46:09.270 align:middle line:84%
+There's other ways
+that you could've
+
+00:46:09.270 --> 00:46:11.827 align:middle line:84%
+decided on the conventions
+of how to break down
+
+00:46:11.827 --> 00:46:12.910 align:middle line:90%
+the pieces of a graph net.
+
+00:46:12.910 --> 00:46:14.430 align:middle line:84%
+I'm just giving
+you one that makes
+
+00:46:14.430 --> 00:46:17.350 align:middle line:84%
+some of the analysis
+simple and clean.
+
+00:46:17.350 --> 00:46:19.270 align:middle line:84%
+But we're going to
+define this extra layer
+
+00:46:19.270 --> 00:46:22.313 align:middle line:84%
+at the end, which is going to
+take all of my node embeddings.
+
+00:46:22.313 --> 00:46:24.230 align:middle line:84%
+So it's going to be a
+multiset function again.
+
+00:46:24.230 --> 00:46:26.210 align:middle line:84%
+It's going to take a
+set of node embeddings,
+
+00:46:26.210 --> 00:46:29.590 align:middle line:84%
+possibly with duplicates, and
+it's going to output a vector.
+
+00:46:29.590 --> 00:46:31.270 align:middle line:84%
+And this will be
+how I get a vector
+
+00:46:31.270 --> 00:46:34.110 align:middle line:90%
+embedding of an entire graph.
+
+00:46:34.110 --> 00:46:35.730 align:middle line:84%
+It's just another
+aggregate operator.
+
+00:46:35.730 --> 00:46:37.610 align:middle line:84%
+It has exactly the
+same form as aggregate,
+
+00:46:37.610 --> 00:46:38.910 align:middle line:84%
+but it's over all
+nodes in the graph,
+
+00:46:38.910 --> 00:46:40.530 align:middle line:84%
+as opposed to the
+neighbors of a node.
+
+00:46:40.530 --> 00:46:45.330 align:middle line:90%
+
+
+00:46:45.330 --> 00:46:49.570 align:middle line:84%
+So this is the
+message-passing view of graph.
+
+00:46:49.570 --> 00:46:53.190 align:middle line:84%
+Net that connects to classical
+theory of message-passing
+
+00:46:53.190 --> 00:46:54.733 align:middle line:90%
+algorithms in graphs.
+
+00:46:54.733 --> 00:46:57.150 align:middle line:84%
+But I actually think that
+there's a better and simpler way
+
+00:46:57.150 --> 00:47:00.570 align:middle line:84%
+of understanding
+all of this, which
+
+00:47:00.570 --> 00:47:03.230 align:middle line:84%
+will connect very intimately
+to what we'll see soon,
+
+00:47:03.230 --> 00:47:06.410 align:middle line:90%
+which is transformers.
+
+00:47:06.410 --> 00:47:07.990 align:middle line:84%
+So here's how I
+like to think of it.
+
+00:47:07.990 --> 00:47:15.590 align:middle line:84%
+So if I unroll those message
+passing iterations for k steps,
+
+00:47:15.590 --> 00:47:22.210 align:middle line:84%
+I can just think of every step
+as taking a set of node vectors
+
+00:47:22.210 --> 00:47:24.490 align:middle line:90%
+and updating them.
+
+00:47:24.490 --> 00:47:27.030 align:middle line:84%
+And here's my set of node
+vectors at the input.
+
+00:47:27.030 --> 00:47:30.530 align:middle line:84%
+That's my input data, the
+observed data about the nodes
+
+00:47:30.530 --> 00:47:31.610 align:middle line:90%
+in the graph.
+
+00:47:31.610 --> 00:47:36.030 align:middle line:84%
+Again, if they're drugs, it
+might be the name of the drug.
+
+00:47:36.030 --> 00:47:39.450 align:middle line:84%
+If the graph is a molecule
+it might be the atom,
+
+00:47:39.450 --> 00:47:42.130 align:middle line:84%
+like is it carbon
+or is it hydrogen.
+
+00:47:42.130 --> 00:47:44.250 align:middle line:84%
+If it's a social network,
+then the input could
+
+00:47:44.250 --> 00:47:47.170 align:middle line:84%
+be a description
+of the user profile
+
+00:47:47.170 --> 00:47:49.810 align:middle line:90%
+for every person in that graph.
+
+00:47:49.810 --> 00:47:53.970 align:middle line:84%
+OK, I take that set
+of node vectors,
+
+00:47:53.970 --> 00:47:55.255 align:middle line:90%
+and now I will do aggregate.
+
+00:47:55.255 --> 00:47:56.630 align:middle line:84%
+So what is aggregate
+going to do?
+
+00:47:56.630 --> 00:47:59.790 align:middle line:90%
+
+
+00:47:59.790 --> 00:48:06.430 align:middle line:84%
+I'm trying to make it so that
+the vertical aligned nodes are
+
+00:48:06.430 --> 00:48:07.650 align:middle line:90%
+corresponding to each other.
+
+00:48:07.650 --> 00:48:12.430 align:middle line:84%
+So my message that's going to
+be passed to the red node--
+
+00:48:12.430 --> 00:48:19.390 align:middle line:84%
+it's going to be that black
+vector, which is the second one.
+
+00:48:19.390 --> 00:48:22.750 align:middle line:84%
+And as you can see, the
+red node in the graph
+
+00:48:22.750 --> 00:48:26.510 align:middle line:84%
+gets input from the teal, the
+blue, and the yellow node.
+
+00:48:26.510 --> 00:48:28.870 align:middle line:84%
+So the message is going
+to be coming from them.
+
+00:48:28.870 --> 00:48:35.070 align:middle line:84%
+And aggregate is going to
+take all the node vectors
+
+00:48:35.070 --> 00:48:37.390 align:middle line:84%
+from those three
+neighbors and combine them
+
+00:48:37.390 --> 00:48:39.210 align:middle line:84%
+into a single
+D-dimensional vector.
+
+00:48:39.210 --> 00:48:42.810 align:middle line:84%
+And that's my message that
+will be used to update
+
+00:48:42.810 --> 00:48:45.350 align:middle line:90%
+the red nodes' node embedding.
+
+00:48:45.350 --> 00:48:47.245 align:middle line:84%
+And then I will
+run Update, which
+
+00:48:47.245 --> 00:48:49.870 align:middle line:84%
+is going to take the red nodes'
+node embedding plus the message
+
+00:48:49.870 --> 00:48:53.590 align:middle line:84%
+from those neighbors
+and provide an updated
+
+00:48:53.590 --> 00:48:55.630 align:middle line:90%
+representation of the red node.
+
+00:48:55.630 --> 00:48:56.990 align:middle line:90%
+So what does this look like?
+
+00:48:56.990 --> 00:49:01.035 align:middle line:84%
+This now looks a lot like
+a neural network MLP.
+
+00:49:01.035 --> 00:49:02.410 align:middle line:84%
+Just like we saw
+before, we would
+
+00:49:02.410 --> 00:49:04.850 align:middle line:84%
+have a set of neurons
+as input, and then we
+
+00:49:04.850 --> 00:49:07.690 align:middle line:84%
+would take a linear combination,
+some aggregation of them.
+
+00:49:07.690 --> 00:49:09.710 align:middle line:84%
+And then we would do a
+pointwise nonlinearity.
+
+00:49:09.710 --> 00:49:13.290 align:middle line:84%
+Now we have a set
+of vectors as input.
+
+00:49:13.290 --> 00:49:15.730 align:middle line:84%
+For every output
+vector, we're going
+
+00:49:15.730 --> 00:49:18.050 align:middle line:84%
+to aggregate information
+over the neighbors
+
+00:49:18.050 --> 00:49:19.030 align:middle line:90%
+that it connects to.
+
+00:49:19.030 --> 00:49:21.592 align:middle line:84%
+And we're going to do a
+pointwise non-linearity,
+
+00:49:21.592 --> 00:49:23.550 align:middle line:84%
+but it's going to be a
+node-wise non-linearity.
+
+00:49:23.550 --> 00:49:25.690 align:middle line:84%
+It's going to be this
+update function which
+
+00:49:25.690 --> 00:49:28.610 align:middle line:84%
+will apply the same
+vector-to-vector mapping
+
+00:49:28.610 --> 00:49:32.970 align:middle line:84%
+to every single
+node in our graph.
+
+00:49:32.970 --> 00:49:34.770 align:middle line:84%
+And then we'll repeat
+the process again
+
+00:49:34.770 --> 00:49:37.950 align:middle line:84%
+on the next step of this
+message-passing algorithm.
+
+00:49:37.950 --> 00:49:42.050 align:middle line:84%
+But if we unroll it like this,
+it just looks like an MLP.
+
+00:49:42.050 --> 00:49:47.730 align:middle line:84%
+The only difference is that
+the neurons in this MLP
+
+00:49:47.730 --> 00:49:49.510 align:middle line:90%
+are going to be vectors.
+
+00:49:49.510 --> 00:49:51.170 align:middle line:84%
+They're going to
+be node embeddings.
+
+00:49:51.170 --> 00:49:53.610 align:middle line:84%
+And that means that the
+pointwise operation will
+
+00:49:53.610 --> 00:49:55.240 align:middle line:90%
+be a vector-to-vector mapping.
+
+00:49:55.240 --> 00:49:58.820 align:middle line:84%
+The aggregate operation will
+be a vector-- a set of vectors
+
+00:49:58.820 --> 00:50:00.980 align:middle line:90%
+to a vector operation.
+
+00:50:00.980 --> 00:50:03.900 align:middle line:84%
+But topologically, it looks very
+similar to just a regular old
+
+00:50:03.900 --> 00:50:05.020 align:middle line:90%
+neural network.
+
+00:50:05.020 --> 00:50:07.200 align:middle line:90%
+OK, a few questions.
+
+00:50:07.200 --> 00:50:07.917 align:middle line:90%
+Let's go here.
+
+00:50:07.917 --> 00:50:10.500 align:middle line:84%
+AUDIENCE: How is this different
+from an attention head and how
+
+00:50:10.500 --> 00:50:11.780 align:middle line:90%
+it--
+
+00:50:11.780 --> 00:50:12.740 align:middle line:90%
+PHILLIP ISOLA: Yeah.
+
+00:50:12.740 --> 00:50:15.060 align:middle line:84%
+So how is this different
+from an attention head?
+
+00:50:15.060 --> 00:50:19.140 align:middle line:84%
+So this perspective is the
+connection between graph nets
+
+00:50:19.140 --> 00:50:19.920 align:middle line:90%
+and transformers.
+
+00:50:19.920 --> 00:50:21.700 align:middle line:84%
+And transformers are a
+special kind of graph net,
+
+00:50:21.700 --> 00:50:23.360 align:middle line:84%
+so we're going to talk a lot
+more in detail about that,
+
+00:50:23.360 --> 00:50:24.860 align:middle line:90%
+and we'll get to attention then.
+
+00:50:24.860 --> 00:50:27.720 align:middle line:84%
+Attention is just a special
+aggregation operator.
+
+00:50:27.720 --> 00:50:30.600 align:middle line:84%
+It's a particular kind
+of aggregation operator.
+
+00:50:30.600 --> 00:50:34.323 align:middle line:84%
+AUDIENCE: Is update
+always nonlinear, and why?
+
+00:50:34.323 --> 00:50:35.740 align:middle line:84%
+PHILLIP ISOLA: So
+you need to have
+
+00:50:35.740 --> 00:50:37.320 align:middle line:90%
+some nonlinearities in here.
+
+00:50:37.320 --> 00:50:39.900 align:middle line:84%
+And in graph nets, you
+can have nonlinearities
+
+00:50:39.900 --> 00:50:42.100 align:middle line:84%
+in the aggregate
+and/or the update.
+
+00:50:42.100 --> 00:50:45.260 align:middle line:84%
+And I think typically,
+they'll both be nonlinear.
+
+00:50:45.260 --> 00:50:47.460 align:middle line:84%
+But theoretically,
+you probably can
+
+00:50:47.460 --> 00:50:50.425 align:middle line:84%
+prove universal approximation
+even if only one is nonlinear.
+
+00:50:50.425 --> 00:50:52.300 align:middle line:84%
+I have to think about
+that a little bit more.
+
+00:50:52.300 --> 00:50:54.600 align:middle line:90%
+Yeah.
+
+00:50:54.600 --> 00:50:57.960 align:middle line:84%
+AUDIENCE: So [INAUDIBLE] the
+optimal number of iterations
+
+00:50:57.960 --> 00:50:59.560 align:middle line:90%
+per k, which is [INAUDIBLE] k?
+
+00:50:59.560 --> 00:51:01.893 align:middle line:84%
+PHILLIP ISOLA: So is the
+question, how should you set k?
+
+00:51:01.893 --> 00:51:03.080 align:middle line:90%
+What is the optimal k?
+
+00:51:03.080 --> 00:51:06.080 align:middle line:90%
+Yeah, so typically we will--
+
+00:51:06.080 --> 00:51:07.440 align:middle line:90%
+k is like your depth.
+
+00:51:07.440 --> 00:51:09.840 align:middle line:84%
+Now, in graph nets,
+the interesting thing
+
+00:51:09.840 --> 00:51:13.060 align:middle line:84%
+is that we could choose
+to share parameters.
+
+00:51:13.060 --> 00:51:15.400 align:middle line:84%
+We could choose to do the
+same message-passing algorithm
+
+00:51:15.400 --> 00:51:17.000 align:middle line:90%
+at every iteration.
+
+00:51:17.000 --> 00:51:20.880 align:middle line:84%
+Or we could choose to say
+that my aggregate function has
+
+00:51:20.880 --> 00:51:23.800 align:middle line:84%
+the superscript k, so I use
+a different set of parameters
+
+00:51:23.800 --> 00:51:28.160 align:middle line:84%
+for every iteration of
+that aggregate function.
+
+00:51:28.160 --> 00:51:31.140 align:middle line:84%
+Now, aggregate is going to be
+some parametrized function, psi,
+
+00:51:31.140 --> 00:51:31.640 align:middle line:90%
+here.
+
+00:51:31.640 --> 00:51:36.760 align:middle line:84%
+We said it could be in
+this form of an MLP.
+
+00:51:36.760 --> 00:51:40.602 align:middle line:84%
+And we could choose to make it
+time-dependent, dependent on k,
+
+00:51:40.602 --> 00:51:42.060 align:middle line:84%
+and use different
+parameters per k.
+
+00:51:42.060 --> 00:51:44.000 align:middle line:90%
+Or we can choose to make it--
+
+00:51:44.000 --> 00:51:46.140 align:middle line:84%
+use the same parameters
+for every single layer.
+
+00:51:46.140 --> 00:51:48.740 align:middle line:84%
+If we choose to make
+it time-dependent,
+
+00:51:48.740 --> 00:51:52.060 align:middle line:84%
+then we'll have to
+pick a fixed depth, k,
+
+00:51:52.060 --> 00:51:54.400 align:middle line:84%
+that we're going to unroll
+to and train for that depth
+
+00:51:54.400 --> 00:51:56.420 align:middle line:84%
+because we'll have a
+different set of parameters
+
+00:51:56.420 --> 00:51:58.280 align:middle line:90%
+for each of these operations.
+
+00:51:58.280 --> 00:52:01.220 align:middle line:84%
+But if we choose to make it not
+depend on k and share parameters
+
+00:52:01.220 --> 00:52:04.700 align:middle line:84%
+across time, across
+depth, then you
+
+00:52:04.700 --> 00:52:06.880 align:middle line:84%
+can just run this
+as long as you want,
+
+00:52:06.880 --> 00:52:08.660 align:middle line:84%
+and it will keep
+doing computation.
+
+00:52:08.660 --> 00:52:10.467 align:middle line:84%
+And you might want to
+ensure that there's
+
+00:52:10.467 --> 00:52:12.800 align:middle line:84%
+good asymptotic properties,
+like, if you run it forever,
+
+00:52:12.800 --> 00:52:13.840 align:middle line:84%
+it will converge
+to a good value.
+
+00:52:13.840 --> 00:52:15.548 align:middle line:84%
+And those are two
+different settings that
+
+00:52:15.548 --> 00:52:17.740 align:middle line:90%
+can be interesting to look at.
+
+00:52:17.740 --> 00:52:20.060 align:middle line:90%
+Let's go in the back over here.
+
+00:52:20.060 --> 00:52:22.620 align:middle line:84%
+AUDIENCE: Can you explain the
+intuition behind the update
+
+00:52:22.620 --> 00:52:23.380 align:middle line:90%
+formula again?
+
+00:52:23.380 --> 00:52:25.100 align:middle line:84%
+And specifically,
+I'm curious why
+
+00:52:25.100 --> 00:52:28.300 align:middle line:84%
+we use different weight
+matrices for the self
+
+00:52:28.300 --> 00:52:29.900 align:middle line:90%
+and the neighborhoods.
+
+00:52:29.900 --> 00:52:34.020 align:middle line:84%
+PHILLIP ISOLA: So what is the
+intuition behind the update
+
+00:52:34.020 --> 00:52:35.500 align:middle line:90%
+formula?
+
+00:52:35.500 --> 00:52:37.332 align:middle line:84%
+Why do we use different
+weight matrices?
+
+00:52:37.332 --> 00:52:39.540 align:middle line:84%
+So I think what you could
+do is you could always just
+
+00:52:39.540 --> 00:52:44.900 align:middle line:84%
+concatenate h, your node
+embedding, with the message
+
+00:52:44.900 --> 00:52:48.160 align:middle line:84%
+from the neighbors, with
+m, and then have one big W.
+
+00:52:48.160 --> 00:52:52.600 align:middle line:84%
+And then it will just look like
+a linear followed by ReLU layer.
+
+00:52:52.600 --> 00:52:58.480 align:middle line:84%
+It's just separated here for
+notational clarity, I suppose.
+
+00:52:58.480 --> 00:53:00.680 align:middle line:84%
+OK, one more, and
+then I'll move on.
+
+00:53:00.680 --> 00:53:01.818 align:middle line:90%
+Yeah.
+
+00:53:01.818 --> 00:53:03.360 align:middle line:84%
+AUDIENCE: How do
+you pass information
+
+00:53:03.360 --> 00:53:06.280 align:middle line:84%
+if you have edge information,
+for example, the distances
+
+00:53:06.280 --> 00:53:07.705 align:middle line:90%
+between the nodes?
+
+00:53:07.705 --> 00:53:09.580 align:middle line:84%
+PHILLIP ISOLA: Yeah,
+that's a great question.
+
+00:53:09.580 --> 00:53:11.580 align:middle line:84%
+So what if you have
+edge information?
+
+00:53:11.580 --> 00:53:14.180 align:middle line:84%
+So I said you have
+node attributes,
+
+00:53:14.180 --> 00:53:16.920 align:middle line:84%
+and you just send
+messages based on which
+
+00:53:16.920 --> 00:53:18.755 align:middle line:90%
+edges connect to which nodes.
+
+00:53:18.755 --> 00:53:20.880 align:middle line:84%
+So the edges only tell you
+about who your neighbors
+
+00:53:20.880 --> 00:53:22.060 align:middle line:90%
+are to send messages to you.
+
+00:53:22.060 --> 00:53:25.840 align:middle line:84%
+There's no other weight on the
+edge or information on the edge.
+
+00:53:25.840 --> 00:53:28.100 align:middle line:84%
+And so I won't get
+into it in detail,
+
+00:53:28.100 --> 00:53:31.840 align:middle line:84%
+but you can also have
+edge attribute vectors
+
+00:53:31.840 --> 00:53:34.560 align:middle line:84%
+and then have a
+generalization of a GNN
+
+00:53:34.560 --> 00:53:36.895 align:middle line:84%
+that has node attributes
+and edge attributes.
+
+00:53:36.895 --> 00:53:38.520 align:middle line:84%
+And then the update
+and the aggregation
+
+00:53:38.520 --> 00:53:41.600 align:middle line:84%
+is going to also take into
+account the edge attributes.
+
+00:53:41.600 --> 00:53:42.760 align:middle line:90%
+Yeah.
+
+00:53:42.760 --> 00:53:43.260 align:middle line:90%
+OK.
+
+00:53:43.260 --> 00:53:48.640 align:middle line:90%
+
+
+00:53:48.640 --> 00:53:51.970 align:middle line:84%
+So this is the picture how
+I like to think about GNNs.
+
+00:53:51.970 --> 00:53:53.750 align:middle line:84%
+And you might be
+wondering, wait a second,
+
+00:53:53.750 --> 00:53:55.850 align:middle line:84%
+where is backprop
+coming in here?
+
+00:53:55.850 --> 00:53:57.070 align:middle line:90%
+Is this message passing?
+
+00:53:57.070 --> 00:53:58.630 align:middle line:84%
+Is that an
+optimization algorithm?
+
+00:53:58.630 --> 00:54:01.610 align:middle line:84%
+No, the message passing in this
+propagation-- that's the forward
+
+00:54:01.610 --> 00:54:02.890 align:middle line:90%
+pass through the network.
+
+00:54:02.890 --> 00:54:06.813 align:middle line:84%
+It's taking data about the graph
+and updating the representation
+
+00:54:06.813 --> 00:54:08.730 align:middle line:84%
+of the nodes over and
+over again until finally
+
+00:54:08.730 --> 00:54:11.083 align:middle line:84%
+having a readout at the end
+that makes a prediction.
+
+00:54:11.083 --> 00:54:12.250 align:middle line:90%
+So how would you train that?
+
+00:54:12.250 --> 00:54:15.210 align:middle line:84%
+You just backpropagate through
+this computation graph.
+
+00:54:15.210 --> 00:54:16.610 align:middle line:90%
+Nothing different.
+
+00:54:16.610 --> 00:54:20.092 align:middle line:84%
+So these message-passing steps
+are just a new computation graph
+
+00:54:20.092 --> 00:54:21.550 align:middle line:84%
+that looks like
+that when unrolled,
+
+00:54:21.550 --> 00:54:23.342 align:middle line:84%
+and I can backprop
+through the whole thing.
+
+00:54:23.342 --> 00:54:26.410 align:middle line:84%
+So same exact algorithm
+that we saw for training
+
+00:54:26.410 --> 00:54:28.930 align:middle line:90%
+any other neural network.
+
+00:54:28.930 --> 00:54:32.130 align:middle line:90%
+OK, cool.
+
+00:54:32.130 --> 00:54:36.450 align:middle line:84%
+OK, this might be a
+slightly tricky question.
+
+00:54:36.450 --> 00:54:39.930 align:middle line:84%
+But I said that
+convolutional networks
+
+00:54:39.930 --> 00:54:44.250 align:middle line:84%
+can be represented as a graph,
+and then you can observe--
+
+00:54:44.250 --> 00:54:46.010 align:middle line:84%
+you can just treat
+them like a graph net.
+
+00:54:46.010 --> 00:54:48.470 align:middle line:84%
+It's a graph that has
+this grid connectivity.
+
+00:54:48.470 --> 00:54:52.612 align:middle line:84%
+What is the graph
+net for an MLP?
+
+00:54:52.612 --> 00:54:53.570 align:middle line:90%
+What does it look like?
+
+00:54:53.570 --> 00:54:55.278 align:middle line:84%
+What does the graph
+look like for an MLP?
+
+00:54:55.278 --> 00:54:58.670 align:middle line:90%
+
+
+00:54:58.670 --> 00:55:00.110 align:middle line:90%
+Somebody who hasn't spoken.
+
+00:55:00.110 --> 00:55:00.693 align:middle line:90%
+Did you speak?
+
+00:55:00.693 --> 00:55:01.193 align:middle line:90%
+No.
+
+00:55:01.193 --> 00:55:01.710 align:middle line:90%
+OK.
+
+00:55:01.710 --> 00:55:03.230 align:middle line:90%
+Yeah, in the back there.
+
+00:55:03.230 --> 00:55:05.238 align:middle line:90%
+AUDIENCE: [INAUDIBLE]
+
+00:55:05.238 --> 00:55:06.030 align:middle line:90%
+PHILLIP ISOLA: Yes.
+
+00:55:06.030 --> 00:55:06.770 align:middle line:90%
+Just a chain.
+
+00:55:06.770 --> 00:55:08.770 align:middle line:84%
+So in particular, what
+does the graph look like?
+
+00:55:08.770 --> 00:55:12.650 align:middle line:84%
+It's really just a node because
+the message-passing algorithm--
+
+00:55:12.650 --> 00:55:15.910 align:middle line:84%
+so remember that an MLP takes
+a vector of neurons as input
+
+00:55:15.910 --> 00:55:18.830 align:middle line:84%
+and then does linear,
+[INAUDIBLE], nonlinear, linear.
+
+00:55:18.830 --> 00:55:21.490 align:middle line:84%
+So a node in a graph
+net comes with a vector.
+
+00:55:21.490 --> 00:55:23.830 align:middle line:84%
+So that has the generality
+of being the vector of inputs
+
+00:55:23.830 --> 00:55:25.190 align:middle line:90%
+to an MLP.
+
+00:55:25.190 --> 00:55:29.190 align:middle line:84%
+And then if we unroll the
+message-passing algorithm.
+
+00:55:29.190 --> 00:55:30.130 align:middle line:90%
+It's just this.
+
+00:55:30.130 --> 00:55:33.170 align:middle line:84%
+It's just a chain of, take
+that vector, update it.
+
+00:55:33.170 --> 00:55:35.068 align:middle line:84%
+And in this case,
+there's only one vector,
+
+00:55:35.068 --> 00:55:36.610 align:middle line:84%
+so the aggregate
+function is trivial.
+
+00:55:36.610 --> 00:55:37.870 align:middle line:90%
+It can be identity.
+
+00:55:37.870 --> 00:55:42.672 align:middle line:84%
+And the update we said is just
+W times my node vector, right?
+
+00:55:42.672 --> 00:55:44.130 align:middle line:84%
+Here's what we said
+for the update.
+
+00:55:44.130 --> 00:55:45.588 align:middle line:84%
+There's no neighbors,
+so it'll just
+
+00:55:45.588 --> 00:55:49.770 align:middle line:84%
+be W self times my node
+vector h, Pass through a ReLU
+
+00:55:49.770 --> 00:55:51.490 align:middle line:90%
+or a pointwise nonlinearity.
+
+00:55:51.490 --> 00:55:52.690 align:middle line:90%
+That's an MLP.
+
+00:55:52.690 --> 00:55:55.930 align:middle line:84%
+So an MLP is just a graph
+net that's a single node.
+
+00:55:55.930 --> 00:55:58.230 align:middle line:84%
+ConvNet is a graph
+net that is a grid.
+
+00:55:58.230 --> 00:56:01.410 align:middle line:90%
+
+
+00:56:01.410 --> 00:56:01.910 align:middle line:90%
+OK.
+
+00:56:01.910 --> 00:56:03.850 align:middle line:84%
+So throughout this
+class I'm going
+
+00:56:03.850 --> 00:56:06.470 align:middle line:84%
+to try to point out connections
+between different things
+
+00:56:06.470 --> 00:56:08.290 align:middle line:84%
+because I think
+sometimes when you first
+
+00:56:08.290 --> 00:56:11.790 align:middle line:84%
+learn about deep learning
+and just any topic,
+
+00:56:11.790 --> 00:56:13.910 align:middle line:84%
+it'll seem like
+everything is different,
+
+00:56:13.910 --> 00:56:16.390 align:middle line:84%
+but really, everything
+is the same.
+
+00:56:16.390 --> 00:56:19.990 align:middle line:84%
+Really, everything is densely
+connected to all other concepts,
+
+00:56:19.990 --> 00:56:22.170 align:middle line:84%
+and it's just
+like-- you can cast
+
+00:56:22.170 --> 00:56:25.390 align:middle line:84%
+one concept as another concept
+with small manipulations.
+
+00:56:25.390 --> 00:56:28.090 align:middle line:84%
+And I find this really helps
+me to get inside and understand
+
+00:56:28.090 --> 00:56:29.410 align:middle line:90%
+how these things work.
+
+00:56:29.410 --> 00:56:31.393 align:middle line:90%
+OK.
+
+00:56:31.393 --> 00:56:33.310 align:middle line:84%
+So there was a question
+about edge attributes,
+
+00:56:33.310 --> 00:56:35.670 align:middle line:84%
+and I'm not going to go
+into details on that.
+
+00:56:35.670 --> 00:56:38.810 align:middle line:84%
+But yes, you can add vectors
+describing the information
+
+00:56:38.810 --> 00:56:41.490 align:middle line:90%
+that an edge carries as well.
+
+00:56:41.490 --> 00:56:46.390 align:middle line:84%
+We could have not just like
+a single message-passing
+
+00:56:46.390 --> 00:56:48.230 align:middle line:90%
+algorithm, but maybe k--
+
+00:56:48.230 --> 00:56:50.150 align:middle line:84%
+or n different
+message-passing algorithms
+
+00:56:50.150 --> 00:56:52.570 align:middle line:84%
+in parallel that are passing
+different types of messages.
+
+00:56:52.570 --> 00:56:56.390 align:middle line:84%
+There's a lot of variations and
+riffs on these general themes.
+
+00:56:56.390 --> 00:56:57.950 align:middle line:84%
+One of the most
+important ones is
+
+00:56:57.950 --> 00:57:02.030 align:middle line:84%
+that we can aggregate with a
+operation which is not just
+
+00:57:02.030 --> 00:57:03.630 align:middle line:84%
+summing or averaging,
+but instead
+
+00:57:03.630 --> 00:57:07.870 align:middle line:84%
+is called attention, which
+is like a summation that's
+
+00:57:07.870 --> 00:57:10.150 align:middle line:84%
+dependent on the value
+of your node embeddings.
+
+00:57:10.150 --> 00:57:12.150 align:middle line:84%
+We're going to talk a lot
+more detail about that
+
+00:57:12.150 --> 00:57:14.525 align:middle line:84%
+because the name for that
+system is called a transformer.
+
+00:57:14.525 --> 00:57:17.230 align:middle line:84%
+So transformers are
+graph nets with attention
+
+00:57:17.230 --> 00:57:19.550 align:middle line:90%
+as the aggregation operator.
+
+00:57:19.550 --> 00:57:22.330 align:middle line:84%
+And you can read up on some of
+these other variations, too,
+
+00:57:22.330 --> 00:57:24.910 align:middle line:84%
+but I'm not going to
+go into detail on them.
+
+00:57:24.910 --> 00:57:27.790 align:middle line:84%
+The reading that we
+assigned for today
+
+00:57:27.790 --> 00:57:33.887 align:middle line:84%
+is a chapter on graph nets, but
+if you continue reading forward
+
+00:57:33.887 --> 00:57:35.470 align:middle line:84%
+from the part that
+we assigned, you'll
+
+00:57:35.470 --> 00:57:38.210 align:middle line:84%
+see that there's a lot-- a
+lot more in that document.
+
+00:57:38.210 --> 00:57:39.910 align:middle line:90%
+It's a very good--
+
+00:57:39.910 --> 00:57:41.310 align:middle line:90%
+almost a book, really--
+
+00:57:41.310 --> 00:57:44.080 align:middle line:90%
+manuscript.
+
+00:57:44.080 --> 00:57:46.980 align:middle line:84%
+So in the last section
+of this lecture,
+
+00:57:46.980 --> 00:57:49.840 align:middle line:84%
+I want to talk a little bit
+about the theoretical properties
+
+00:57:49.840 --> 00:57:52.560 align:middle line:90%
+of graph nets, what types of--
+
+00:57:52.560 --> 00:57:54.227 align:middle line:84%
+what types of problems
+can they solve,
+
+00:57:54.227 --> 00:57:56.060 align:middle line:84%
+and what types of
+problems can't they solve,
+
+00:57:56.060 --> 00:57:58.920 align:middle line:84%
+and it's going to be related
+to approximation theory.
+
+00:57:58.920 --> 00:58:01.720 align:middle line:84%
+So to set this up, I'm going to
+give one more perspective on how
+
+00:58:01.720 --> 00:58:05.000 align:middle line:84%
+graph nets are operating, and
+this is the tree perspective
+
+00:58:05.000 --> 00:58:06.920 align:middle line:90%
+of what a node will see.
+
+00:58:06.920 --> 00:58:09.800 align:middle line:84%
+So here, we have a node
+of interest, node A,
+
+00:58:09.800 --> 00:58:14.280 align:middle line:84%
+it has neighbors
+B, C, and D. And
+
+00:58:14.280 --> 00:58:16.800 align:middle line:84%
+the message-passing
+algorithm, layer by layer,
+
+00:58:16.800 --> 00:58:17.793 align:middle line:90%
+will do the following.
+
+00:58:17.793 --> 00:58:19.460 align:middle line:84%
+This gray box is the
+aggregate function.
+
+00:58:19.460 --> 00:58:21.865 align:middle line:84%
+It's going to take messages
+from all the neighbors,
+
+00:58:21.865 --> 00:58:24.240 align:middle line:84%
+combine them, aggregate them
+together, and send a message
+
+00:58:24.240 --> 00:58:28.480 align:middle line:84%
+to node A. And so node A
+only is learning something
+
+00:58:28.480 --> 00:58:30.320 align:middle line:90%
+from these neighbors.
+
+00:58:30.320 --> 00:58:33.440 align:middle line:84%
+But if we run multiple
+steps of message passing
+
+00:58:33.440 --> 00:58:37.880 align:middle line:84%
+or we unroll this
+graph net deep--
+
+00:58:37.880 --> 00:58:39.960 align:middle line:84%
+so two steps, so
+two-layer graph net,
+
+00:58:39.960 --> 00:58:44.750 align:middle line:84%
+essentially-- now we'll get
+messages not only from B, C, D,
+
+00:58:44.750 --> 00:58:50.160 align:middle line:84%
+but also from A and C,
+going into B, and so forth.
+
+00:58:50.160 --> 00:58:53.440 align:middle line:84%
+So the information flow
+from the perspective--
+
+00:58:53.440 --> 00:58:54.940 align:middle line:84%
+suppose you're
+standing on the graph
+
+00:58:54.940 --> 00:58:57.640 align:middle line:84%
+at node A. This is
+who's talking to you,
+
+00:58:57.640 --> 00:59:00.340 align:middle line:84%
+and this is the funnel of
+information coming into you.
+
+00:59:00.340 --> 00:59:02.540 align:middle line:84%
+And every iteration
+of the message passing
+
+00:59:02.540 --> 00:59:05.360 align:middle line:84%
+will increase the depth
+of this tree by 1.
+
+00:59:05.360 --> 00:59:10.460 align:middle line:90%
+
+
+00:59:10.460 --> 00:59:12.460 align:middle line:84%
+So the layer 2
+representation of A
+
+00:59:12.460 --> 00:59:14.740 align:middle line:84%
+is going to be messages
+passed from the layer 1
+
+00:59:14.740 --> 00:59:16.740 align:middle line:84%
+representation of these
+other nodes, which
+
+00:59:16.740 --> 00:59:20.900 align:middle line:84%
+is going to be messages passed
+from the input, raw layer 0
+
+00:59:20.900 --> 00:59:24.140 align:middle line:90%
+node vectors for those nodes.
+
+00:59:24.140 --> 00:59:25.060 align:middle line:90%
+Question.
+
+00:59:25.060 --> 00:59:28.780 align:middle line:84%
+AUDIENCE: How do you know- of
+I guess when you're starting
+
+00:59:28.780 --> 00:59:32.300 align:middle line:84%
+to train your graph, your
+GNN, do you start with all
+
+00:59:32.300 --> 00:59:33.920 align:middle line:84%
+the different nodes
+densely connected,
+
+00:59:33.920 --> 00:59:36.460 align:middle line:84%
+and then you set some sort
+of parameter to be connected
+
+00:59:36.460 --> 00:59:39.380 align:middle line:84%
+to the certain nodes, or does
+it start where none of the nodes
+
+00:59:39.380 --> 00:59:40.130 align:middle line:90%
+are connected or--
+
+00:59:40.130 --> 00:59:41.380 align:middle line:90%
+PHILLIP ISOLA: Great question.
+
+00:59:41.380 --> 00:59:43.100 align:middle line:84%
+So how do the
+connectivity of the graph?
+
+00:59:43.100 --> 00:59:44.940 align:middle line:84%
+Do you start with a
+fully connected graph?
+
+00:59:44.940 --> 00:59:45.900 align:middle line:90%
+Do you prune it?
+
+00:59:45.900 --> 00:59:48.600 align:middle line:90%
+
+
+00:59:48.600 --> 00:59:53.480 align:middle line:84%
+The vanilla answer
+for GNNs is the--
+
+00:59:53.480 --> 00:59:55.365 align:middle line:84%
+the data tells you
+the connectivity
+
+00:59:55.365 --> 00:59:56.740 align:middle line:84%
+that you're going
+to have to use.
+
+00:59:56.740 --> 00:59:58.400 align:middle line:84%
+Like, the molecule
+that you're going
+
+00:59:58.400 --> 01:00:00.520 align:middle line:84%
+to be making a
+prediction about-- it
+
+01:00:00.520 --> 01:00:02.960 align:middle line:84%
+has a particular
+graph structure, which
+
+01:00:02.960 --> 01:00:05.200 align:middle line:90%
+is just given by the data.
+
+01:00:05.200 --> 01:00:07.880 align:middle line:84%
+If it's some hydrocarbon,
+it will have hydrogen
+
+01:00:07.880 --> 01:00:09.140 align:middle line:90%
+connected to a few carbons.
+
+01:00:09.140 --> 01:00:10.640 align:middle line:90%
+And so forth.
+
+01:00:10.640 --> 01:00:13.260 align:middle line:84%
+And that's not something
+you're going to optimize.
+
+01:00:13.260 --> 01:00:14.595 align:middle line:90%
+That's given to you.
+
+01:00:14.595 --> 01:00:16.220 align:middle line:84%
+So the graph structure
+is given to you,
+
+01:00:16.220 --> 01:00:18.060 align:middle line:84%
+and then you try to
+process that graph.
+
+01:00:18.060 --> 01:00:19.760 align:middle line:90%
+It's like that's the data.
+
+01:00:19.760 --> 01:00:24.800 align:middle line:84%
+Now, you're alluding to, could
+I somehow take nodes and learn
+
+01:00:24.800 --> 01:00:26.610 align:middle line:84%
+the graph structure
+that makes me
+
+01:00:26.610 --> 01:00:27.860 align:middle line:90%
+able to make good predictions?
+
+01:00:27.860 --> 01:00:29.137 align:middle line:90%
+This is a meta--
+
+01:00:29.137 --> 01:00:30.720 align:middle line:84%
+this is another
+problem, but we're not
+
+01:00:30.720 --> 01:00:31.845 align:middle line:90%
+going to get to that today.
+
+01:00:31.845 --> 01:00:33.980 align:middle line:84%
+So for now, you're given
+the graph structure,
+
+01:00:33.980 --> 01:00:36.360 align:middle line:84%
+and that tells you
+how to send messages
+
+01:00:36.360 --> 01:00:41.220 align:middle line:84%
+to process information
+on that graph
+
+01:00:41.220 --> 01:00:43.820 align:middle line:84%
+So this tree structure
+is important.
+
+01:00:43.820 --> 01:00:45.580 align:middle line:84%
+Oh-- and additionally,
+we're going
+
+01:00:45.580 --> 01:00:49.420 align:middle line:84%
+to just understand that every
+single aggregate function is
+
+01:00:49.420 --> 01:00:50.120 align:middle line:90%
+the same.
+
+01:00:50.120 --> 01:00:51.360 align:middle line:90%
+So we're sharing the weights.
+
+01:00:51.360 --> 01:00:53.990 align:middle line:84%
+All those gray boxes
+are the same function.
+
+01:00:53.990 --> 01:00:56.240 align:middle line:84%
+They could be different
+functions at different layers,
+
+01:00:56.240 --> 01:00:58.980 align:middle line:84%
+but in parallel,
+across all operations
+
+01:00:58.980 --> 01:01:01.420 align:middle line:84%
+of aggregation within one
+layer of the message-passing
+
+01:01:01.420 --> 01:01:05.020 align:middle line:84%
+algorithm, are going to be
+using the same function.
+
+01:01:05.020 --> 01:01:08.820 align:middle line:84%
+So that's the
+weight sharing idea,
+
+01:01:08.820 --> 01:01:11.340 align:middle line:84%
+and that has some
+really nice properties.
+
+01:01:11.340 --> 01:01:15.580 align:middle line:84%
+That means that if we add
+more nodes to the graph
+
+01:01:15.580 --> 01:01:17.660 align:middle line:84%
+after having trained--
+so we're learning
+
+01:01:17.660 --> 01:01:19.200 align:middle line:84%
+the parameters of
+these gray boxes,
+
+01:01:19.200 --> 01:01:21.892 align:middle line:84%
+learning the parameters of the
+Aggregate and Update functions.
+
+01:01:21.892 --> 01:01:23.600 align:middle line:84%
+But after we've learned
+those parameters,
+
+01:01:23.600 --> 01:01:28.500 align:middle line:84%
+we could run the same GNN with
+the same aggregate function
+
+01:01:28.500 --> 01:01:31.888 align:middle line:84%
+on a graph that has a different
+shape because in order
+
+01:01:31.888 --> 01:01:33.680 align:middle line:84%
+to aggregate over a
+different set of nodes,
+
+01:01:33.680 --> 01:01:37.120 align:middle line:84%
+we just use the same function
+again on those new set of nodes.
+
+01:01:37.120 --> 01:01:39.443 align:middle line:84%
+Just like in ConvNets, I
+can train on a small image
+
+01:01:39.443 --> 01:01:41.360 align:middle line:84%
+and run the filters on
+a big image because I'm
+
+01:01:41.360 --> 01:01:43.200 align:middle line:84%
+going to use the
+learn filter, but just
+
+01:01:43.200 --> 01:01:46.080 align:middle line:90%
+on a different set of inputs.
+
+01:01:46.080 --> 01:01:47.838 align:middle line:84%
+OK, so that means
+that graph nets
+
+01:01:47.838 --> 01:01:49.380 align:middle line:84%
+can be trained on
+graphs of one size,
+
+01:01:49.380 --> 01:01:53.120 align:middle line:84%
+but they'll generalize
+to graphs of other size.
+
+01:01:53.120 --> 01:01:56.240 align:middle line:84%
+Statistically, they
+might only generalize
+
+01:01:56.240 --> 01:01:57.920 align:middle line:84%
+to graphs of a
+slightly different size
+
+01:01:57.920 --> 01:01:59.600 align:middle line:84%
+because they'll
+have maybe overfit
+
+01:01:59.600 --> 01:02:02.960 align:middle line:84%
+to the training data which
+came in a certain size.
+
+01:02:02.960 --> 01:02:04.838 align:middle line:84%
+But functionally,
+they can process--
+
+01:02:04.838 --> 01:02:06.880 align:middle line:84%
+they can just repeat the
+same operation no matter
+
+01:02:06.880 --> 01:02:09.960 align:middle line:90%
+how big the graph becomes.
+
+01:02:09.960 --> 01:02:13.880 align:middle line:84%
+So we're going to get
+to the theory that
+
+01:02:13.880 --> 01:02:16.800 align:middle line:84%
+makes use of these
+trees in just a second.
+
+01:02:16.800 --> 01:02:20.640 align:middle line:84%
+But let's quickly make sure we
+understand how to set up a GNN
+
+01:02:20.640 --> 01:02:22.500 align:middle line:90%
+and train it on a problem.
+
+01:02:22.500 --> 01:02:25.340 align:middle line:84%
+So let's say I want
+to train a graph
+
+01:02:25.340 --> 01:02:28.440 align:middle line:84%
+net on some problem of
+interest, like predicting
+
+01:02:28.440 --> 01:02:30.080 align:middle line:90%
+the toxicity of molecules.
+
+01:02:30.080 --> 01:02:32.120 align:middle line:90%
+So what would a data point be?
+
+01:02:32.120 --> 01:02:34.135 align:middle line:84%
+What would a training
+data point look like?
+
+01:02:34.135 --> 01:02:35.760 align:middle line:84%
+So who can tell me
+what a training data
+
+01:02:35.760 --> 01:02:37.450 align:middle line:84%
+point would look
+like for classifying
+
+01:02:37.450 --> 01:02:39.050 align:middle line:90%
+toxicity of molecules?
+
+01:02:39.050 --> 01:02:41.370 align:middle line:90%
+Let's go to somebody new.
+
+01:02:41.370 --> 01:02:42.770 align:middle line:90%
+Over here, yeah.
+
+01:02:42.770 --> 01:02:45.750 align:middle line:84%
+AUDIENCE: [INAUDIBLE] the
+different molecules [INAUDIBLE],
+
+01:02:45.750 --> 01:02:50.110 align:middle line:84%
+and each [INAUDIBLE] molecule
+would have an embedding.
+
+01:02:50.110 --> 01:02:53.370 align:middle line:84%
+So one data point would be
+like a set of node embeddings,
+
+01:02:53.370 --> 01:02:56.010 align:middle line:84%
+as well as a set of edges
+defining that molecule.
+
+01:02:56.010 --> 01:02:59.357 align:middle line:84%
+And then you would have
+a label for the toxicity?
+
+01:02:59.357 --> 01:03:00.190 align:middle line:90%
+PHILLIP ISOLA: Yeah.
+
+01:03:00.190 --> 01:03:06.890 align:middle line:84%
+So I think you're roughly saying
+what I wanted to say here.
+
+01:03:06.890 --> 01:03:10.450 align:middle line:84%
+If I have a supervised
+learning problem where
+
+01:03:10.450 --> 01:03:14.450 align:middle line:84%
+I know the desirable prediction
+I want to make for every node,
+
+01:03:14.450 --> 01:03:16.050 align:middle line:84%
+like, the label of
+every node, then I
+
+01:03:16.050 --> 01:03:17.970 align:middle line:84%
+would have node and
+label pairs, and that
+
+01:03:17.970 --> 01:03:19.330 align:middle line:90%
+would be my training data.
+
+01:03:19.330 --> 01:03:21.990 align:middle line:84%
+If I want to predict a
+property of the whole graph,
+
+01:03:21.990 --> 01:03:24.390 align:middle line:84%
+like I was saying, the toxicity
+of that entire molecule,
+
+01:03:24.390 --> 01:03:28.670 align:middle line:84%
+it'd be the whole
+graph plus the label,
+
+01:03:28.670 --> 01:03:30.670 align:middle line:84%
+is it toxic or not,
+maybe a binary label.
+
+01:03:30.670 --> 01:03:32.970 align:middle line:84%
+So that's what my
+training data looks like.
+
+01:03:32.970 --> 01:03:37.313 align:middle line:84%
+So molecule, toxicity,
+or a social network,
+
+01:03:37.313 --> 01:03:39.230 align:middle line:84%
+and for every single
+node, every single person
+
+01:03:39.230 --> 01:03:40.688 align:middle line:84%
+in the social
+network, a prediction
+
+01:03:40.688 --> 01:03:42.310 align:middle line:84%
+of what music they
+like to listen to.
+
+01:03:42.310 --> 01:03:44.150 align:middle line:84%
+And that would be a
+label of what music
+
+01:03:44.150 --> 01:03:47.430 align:middle line:84%
+they truly like to listen to if
+I'm going to fit to that data.
+
+01:03:47.430 --> 01:03:48.570 align:middle line:90%
+OK, so then what do we do?
+
+01:03:48.570 --> 01:03:49.290 align:middle line:90%
+How do we train on that?
+
+01:03:49.290 --> 01:03:50.415 align:middle line:90%
+What do we have to specify?
+
+01:03:50.415 --> 01:03:53.230 align:middle line:84%
+We have to specify the aggregate
+function, the update function,
+
+01:03:53.230 --> 01:03:55.395 align:middle line:84%
+and the readout function,
+the loss function.
+
+01:03:55.395 --> 01:03:56.770 align:middle line:84%
+If it's a
+classification problem.
+
+01:03:56.770 --> 01:04:00.510 align:middle line:84%
+Maybe I'm going to have
+a cross-entropy loss
+
+01:04:00.510 --> 01:04:03.830 align:middle line:84%
+between the predictions
+at each node
+
+01:04:03.830 --> 01:04:06.333 align:middle line:90%
+and the ground-truth labels.
+
+01:04:06.333 --> 01:04:08.750 align:middle line:84%
+And then we'll train this with
+backpropagation, stochastic
+
+01:04:08.750 --> 01:04:12.150 align:middle line:90%
+gradient descent.
+
+01:04:12.150 --> 01:04:12.870 align:middle line:90%
+Yeah, question
+
+01:04:12.870 --> 01:04:15.810 align:middle line:84%
+AUDIENCE: For clarification,
+for the node label pair,
+
+01:04:15.810 --> 01:04:18.878 align:middle line:90%
+how do you [INAUDIBLE]?
+
+01:04:18.878 --> 01:04:20.670 align:middle line:84%
+PHILLIP ISOLA: Oh, for
+the node label pair,
+
+01:04:20.670 --> 01:04:24.510 align:middle line:84%
+we'll also take as input
+the adjacency matrix.
+
+01:04:24.510 --> 01:04:28.910 align:middle line:84%
+So a single data
+point would be a graph
+
+01:04:28.910 --> 01:04:32.237 align:middle line:84%
+with a target ground-truth
+label for every node,
+
+01:04:32.237 --> 01:04:34.070 align:middle line:84%
+and additionally, the
+connectivity structure
+
+01:04:34.070 --> 01:04:36.050 align:middle line:84%
+of that graph because
+that's going to be
+
+01:04:36.050 --> 01:04:37.190 align:middle line:90%
+used in the algorithm, too.
+
+01:04:37.190 --> 01:04:37.690 align:middle line:90%
+Yeah.
+
+01:04:37.690 --> 01:04:40.110 align:middle line:84%
+AUDIENCE: And how is that
+different from the graph
+
+01:04:40.110 --> 01:04:40.610 align:middle line:90%
+label pair?
+
+01:04:40.610 --> 01:04:44.690 align:middle line:84%
+PHILLIP ISOLA: The graph label
+pair would just be the graph--
+
+01:04:44.690 --> 01:04:46.810 align:middle line:84%
+the same input, but
+then the target output
+
+01:04:46.810 --> 01:04:48.890 align:middle line:84%
+would be a label for
+the entire graph.
+
+01:04:48.890 --> 01:04:50.370 align:middle line:90%
+Yeah.
+
+01:04:50.370 --> 01:04:53.930 align:middle line:84%
+So I suppose I should have said
+node, comma, adjacency matrix,
+
+01:04:53.930 --> 01:04:55.890 align:middle line:90%
+comma, labels.
+
+01:04:55.890 --> 01:04:57.910 align:middle line:84%
+But every node has a
+label is the point there,
+
+01:04:57.910 --> 01:05:00.570 align:middle line:84%
+and then you'd also need
+that other information.
+
+01:05:00.570 --> 01:05:03.330 align:middle line:90%
+OK, one more question here.
+
+01:05:03.330 --> 01:05:06.990 align:middle line:84%
+AUDIENCE: Why do you
+color these areas blue?
+
+01:05:06.990 --> 01:05:10.170 align:middle line:84%
+So does that mean that some
+nodes cannot have labels?
+
+01:05:10.170 --> 01:05:14.130 align:middle line:84%
+PHILLIP ISOLA: Yeah, that's
+really just meant to refer to--
+
+01:05:14.130 --> 01:05:17.590 align:middle line:84%
+we are isolating one node and
+looking at its set of neighbors.
+
+01:05:17.590 --> 01:05:22.370 align:middle line:84%
+And yeah, don't read too
+much into the visualization.
+
+01:05:22.370 --> 01:05:22.870 align:middle line:90%
+OK.
+
+01:05:22.870 --> 01:05:23.370 align:middle line:90%
+Sorry.
+
+01:05:23.370 --> 01:05:26.490 align:middle line:84%
+This wasn't the
+best visualization
+
+01:05:26.490 --> 01:05:26.990 align:middle line:90%
+OK.
+
+01:05:26.990 --> 01:05:29.990 align:middle line:84%
+So I think I'm going
+to skip past this.
+
+01:05:29.990 --> 01:05:33.050 align:middle line:84%
+This is just giving
+an example of,
+
+01:05:33.050 --> 01:05:36.290 align:middle line:84%
+in that paper that I showed at
+the start, how they can use--
+
+01:05:36.290 --> 01:05:40.070 align:middle line:84%
+how they can set it up as
+a GNN to predict something
+
+01:05:40.070 --> 01:05:41.570 align:middle line:90%
+about molecules.
+
+01:05:41.570 --> 01:05:44.070 align:middle line:84%
+And you can see on
+the left over there
+
+01:05:44.070 --> 01:05:47.830 align:middle line:84%
+that we have these boxes, which
+are aggregating information
+
+01:05:47.830 --> 01:05:52.550 align:middle line:84%
+from all the different
+proteins and pharmaceuticals
+
+01:05:52.550 --> 01:05:54.630 align:middle line:84%
+that are interacting
+in this system.
+
+01:05:54.630 --> 01:05:56.910 align:middle line:84%
+You can read that more
+if you're interested.
+
+01:05:56.910 --> 01:05:57.890 align:middle line:90%
+This is the same.
+
+01:05:57.890 --> 01:06:02.870 align:middle line:84%
+We can set up our
+Google Maps problem.
+
+01:06:02.870 --> 01:06:05.830 align:middle line:84%
+And there's a lot of
+connections for you
+
+01:06:05.830 --> 01:06:07.850 align:middle line:84%
+to read up on if
+you're interested.
+
+01:06:07.850 --> 01:06:09.730 align:middle line:84%
+So of course, graphs
+come up everywhere.
+
+01:06:09.730 --> 01:06:13.350 align:middle line:84%
+So signal processing and
+probabilistic graphical models
+
+01:06:13.350 --> 01:06:16.190 align:middle line:84%
+and inference, and graph
+nets are intimately
+
+01:06:16.190 --> 01:06:19.310 align:middle line:84%
+connected to these, and
+here's a few examples.
+
+01:06:19.310 --> 01:06:21.970 align:middle line:84%
+But let's get into
+the final section,
+
+01:06:21.970 --> 01:06:24.310 align:middle line:84%
+which is the theory of
+what kinds of functions
+
+01:06:24.310 --> 01:06:27.110 align:middle line:90%
+can GNNs approximate.
+
+01:06:27.110 --> 01:06:30.270 align:middle line:84%
+And the key question
+here is going to be,
+
+01:06:30.270 --> 01:06:33.097 align:middle line:84%
+which graphs can a
+GNN again distinguish?
+
+01:06:33.097 --> 01:06:34.680 align:middle line:84%
+And we'll see that
+they actually can't
+
+01:06:34.680 --> 01:06:37.000 align:middle line:84%
+distinguish all possible
+graphs from each other.
+
+01:06:37.000 --> 01:06:38.720 align:middle line:84%
+There will be these
+equivalent sets
+
+01:06:38.720 --> 01:06:42.120 align:middle line:84%
+where there'll be two different
+graphs where a GNN will
+
+01:06:42.120 --> 01:06:44.220 align:middle line:84%
+necessarily have to make
+the same prediction,
+
+01:06:44.220 --> 01:06:46.920 align:middle line:84%
+because according to GNN,
+those are the same graphs.
+
+01:06:46.920 --> 01:06:48.840 align:middle line:90%
+So what is the equivalent set.
+
+01:06:48.840 --> 01:06:52.500 align:middle line:90%
+So here are a bunch of graphs.
+
+01:06:52.500 --> 01:06:57.920 align:middle line:84%
+And you can imagine that from
+the perspective of certain types
+
+01:06:57.920 --> 01:07:02.920 align:middle line:84%
+of algorithms, certain
+sets of these graphs
+
+01:07:02.920 --> 01:07:04.618 align:middle line:90%
+will be seen as the same.
+
+01:07:04.618 --> 01:07:07.160 align:middle line:84%
+And we want to ask, which sets
+of graphs are going to be seen
+
+01:07:07.160 --> 01:07:10.320 align:middle line:84%
+as the, same as the graph
+that cannot make a separate
+
+01:07:10.320 --> 01:07:13.500 align:middle line:84%
+prediction on one graph
+versus the other graph,
+
+01:07:13.500 --> 01:07:16.240 align:middle line:84%
+if they're part of the
+same equivalence class?
+
+01:07:16.240 --> 01:07:20.760 align:middle line:84%
+So we're trying to understand
+what types of predictions
+
+01:07:20.760 --> 01:07:22.468 align:middle line:84%
+and functions graph
+nets can approximate.
+
+01:07:22.468 --> 01:07:25.052 align:middle line:84%
+And the way we'll do that is by
+showing that graph nets cannot
+
+01:07:25.052 --> 01:07:26.885 align:middle line:84%
+distinguish between
+certain types of inputs.
+
+01:07:26.885 --> 01:07:28.302 align:middle line:84%
+So they, necessarily,
+would not be
+
+01:07:28.302 --> 01:07:30.680 align:middle line:84%
+able to approximate a function
+that has to distinguish
+
+01:07:30.680 --> 01:07:33.340 align:middle line:90%
+between those inputs.
+
+01:07:33.340 --> 01:07:41.940 align:middle line:84%
+So yeah, the theorem is just
+a formal statement of that,
+
+01:07:41.940 --> 01:07:46.460 align:middle line:84%
+that if a graph net cannot
+distinguish between two items
+
+01:07:46.460 --> 01:07:48.300 align:middle line:84%
+in an equivalence
+class, then clearly,
+
+01:07:48.300 --> 01:07:52.020 align:middle line:84%
+it must incur an approximation
+error if the function I'm trying
+
+01:07:52.020 --> 01:07:55.540 align:middle line:84%
+to approximate does distinguish
+between those two graphs in that
+
+01:07:55.540 --> 01:07:57.120 align:middle line:90%
+equivalence class.
+
+01:07:57.120 --> 01:08:00.220 align:middle line:84%
+So what is the set of
+equivalence classes
+
+01:08:00.220 --> 01:08:02.380 align:middle line:90%
+for graph nets?
+
+01:08:02.380 --> 01:08:06.800 align:middle line:84%
+What graphs are considered
+equivalent to each other?
+
+01:08:06.800 --> 01:08:10.140 align:middle line:84%
+So the way to understand
+this is the tree structure.
+
+01:08:10.140 --> 01:08:14.980 align:middle line:84%
+So according to a graph net,
+that graph on the left--
+
+01:08:14.980 --> 01:08:17.939 align:middle line:84%
+according to-- any node
+that's trying to update its
+
+01:08:17.939 --> 01:08:21.020 align:middle line:84%
+representation based
+on messages coming in--
+
+01:08:21.020 --> 01:08:23.640 align:middle line:84%
+what it sees is these
+tree structures.
+
+01:08:23.640 --> 01:08:27.500 align:middle line:84%
+So the red node is going to see
+this neighborhood structure that
+
+01:08:27.500 --> 01:08:28.200 align:middle line:90%
+has that tree.
+
+01:08:28.200 --> 01:08:32.100 align:middle line:84%
+So it's connected on the first
+hop to the blue and green,
+
+01:08:32.100 --> 01:08:34.439 align:middle line:84%
+and on the second hop
+to all the other nodes.
+
+01:08:34.439 --> 01:08:36.979 align:middle line:84%
+And the green node is going
+to have that tree structure,
+
+01:08:36.979 --> 01:08:38.354 align:middle line:84%
+and the other
+green node is going
+
+01:08:38.354 --> 01:08:40.279 align:middle line:90%
+to have that tree structure.
+
+01:08:40.279 --> 01:08:43.600 align:middle line:84%
+So from the perspective
+of a graph net,
+
+01:08:43.600 --> 01:08:47.319 align:middle line:84%
+these trees are the entire
+characterization of that graph.
+
+01:08:47.319 --> 01:08:49.560 align:middle line:84%
+That's all they can
+see because that's how
+
+01:08:49.560 --> 01:08:52.120 align:middle line:90%
+the messages get propagated.
+
+01:08:52.120 --> 01:08:55.520 align:middle line:84%
+So if two graphs have
+the same tree structures
+
+01:08:55.520 --> 01:08:57.840 align:middle line:84%
+for all the nodes,
+then those two graphs
+
+01:08:57.840 --> 01:09:00.800 align:middle line:84%
+are equivalent according
+to the graph net.
+
+01:09:00.800 --> 01:09:03.359 align:middle line:84%
+So this may not be
+obvious, but it turns out
+
+01:09:03.359 --> 01:09:06.840 align:middle line:84%
+we can find two graphs
+that are different
+
+01:09:06.840 --> 01:09:08.560 align:middle line:84%
+and yet have the
+same tree structure.
+
+01:09:08.560 --> 01:09:11.200 align:middle line:84%
+And those two graphs will be
+two graphs that graph net cannot
+
+01:09:11.200 --> 01:09:13.377 align:middle line:84%
+distinguish, cannot make
+different predictions for.
+
+01:09:13.377 --> 01:09:14.960 align:middle line:84%
+So here's an example,
+and you're going
+
+01:09:14.960 --> 01:09:16.502 align:middle line:84%
+to work on your
+problem set on trying
+
+01:09:16.502 --> 01:09:18.458 align:middle line:90%
+to show some other examples.
+
+01:09:18.458 --> 01:09:20.500 align:middle line:84%
+But I'm going to show you
+this one in particular.
+
+01:09:20.500 --> 01:09:24.660 align:middle line:84%
+So first, convince yourself that
+these are not the same graph.
+
+01:09:24.660 --> 01:09:26.660 align:middle line:84%
+Structurally, these are
+different graphs, right?
+
+01:09:26.660 --> 01:09:29.319 align:middle line:84%
+One has these two
+closed planar regions,
+
+01:09:29.319 --> 01:09:33.180 align:middle line:84%
+and the other has two regions,
+but there are triangles.
+
+01:09:33.180 --> 01:09:36.080 align:middle line:84%
+These are structurally
+distinct graphs.
+
+01:09:36.080 --> 01:09:38.620 align:middle line:90%
+
+
+01:09:38.620 --> 01:09:41.779 align:middle line:84%
+But let's look at
+the tree structure
+
+01:09:41.779 --> 01:09:44.899 align:middle line:90%
+of the top left red node.
+
+01:09:44.899 --> 01:09:47.740 align:middle line:84%
+It has exactly the same tree
+structure for both graphs.
+
+01:09:47.740 --> 01:09:49.800 align:middle line:84%
+We can expand those
+trees going further down,
+
+01:09:49.800 --> 01:09:52.899 align:middle line:84%
+but this is enough
+to make the point.
+
+01:09:52.899 --> 01:09:55.580 align:middle line:84%
+So the red node has a
+yellow node and a red node
+
+01:09:55.580 --> 01:09:57.620 align:middle line:84%
+as a neighbor, and
+the yellow node
+
+01:09:57.620 --> 01:09:59.998 align:middle line:84%
+has a red, yellow, and
+red node as neighbor.
+
+01:09:59.998 --> 01:10:02.040 align:middle line:84%
+And then we can just keep
+repeating that process.
+
+01:10:02.040 --> 01:10:04.620 align:middle line:84%
+You'll see they're
+entirely equivalent.
+
+01:10:04.620 --> 01:10:06.143 align:middle line:84%
+And yet, they're
+not the same graph.
+
+01:10:06.143 --> 01:10:08.060 align:middle line:84%
+So two graphs can have
+the same tree structure
+
+01:10:08.060 --> 01:10:09.700 align:middle line:90%
+but not be the same graph.
+
+01:10:09.700 --> 01:10:12.180 align:middle line:84%
+That means that if one of
+these molecules is toxic
+
+01:10:12.180 --> 01:10:13.763 align:middle line:84%
+and the other is
+not-- let's say these
+
+01:10:13.763 --> 01:10:16.280 align:middle line:84%
+are molecules and one of them
+is toxic and the other's not.
+
+01:10:16.280 --> 01:10:18.420 align:middle line:84%
+These are different physical
+things, and so one of them
+
+01:10:18.420 --> 01:10:19.120 align:middle line:90%
+could be different.
+
+01:10:19.120 --> 01:10:20.953 align:middle line:84%
+It could be toxic, and
+then it might not be.
+
+01:10:20.953 --> 01:10:23.520 align:middle line:84%
+A graph net will have to
+assign the same label to them.
+
+01:10:23.520 --> 01:10:24.020 align:middle line:90%
+Yeah.
+
+01:10:24.020 --> 01:10:28.080 align:middle line:84%
+AUDIENCE: So if you just
+gave each node in the graph
+
+01:10:28.080 --> 01:10:32.000 align:middle line:84%
+the one-hot encoding in
+addition to its node attribute,
+
+01:10:32.000 --> 01:10:32.897 align:middle line:90%
+then you could.
+
+01:10:32.897 --> 01:10:35.480 align:middle line:84%
+PHILLIP ISOLA: Yeah, so you're
+giving the answer to a question
+
+01:10:35.480 --> 01:10:37.120 align:middle line:84%
+I was going to ask
+in a few slides.
+
+01:10:37.120 --> 01:10:40.020 align:middle line:84%
+So if you simply give each
+node a one-hot encoding,
+
+01:10:40.020 --> 01:10:43.600 align:middle line:84%
+like, tell it its
+position in the graph,
+
+01:10:43.600 --> 01:10:45.655 align:middle line:90%
+then the symmetry can be broken.
+
+01:10:45.655 --> 01:10:47.280 align:middle line:84%
+But the power of
+graph nets is that you
+
+01:10:47.280 --> 01:10:50.540 align:middle line:84%
+want to be invariant to
+the ordering of the nodes.
+
+01:10:50.540 --> 01:10:52.160 align:middle line:84%
+And so by breaking
+that symmetry,
+
+01:10:52.160 --> 01:10:53.740 align:middle line:84%
+you break the
+permutation invariance.
+
+01:10:53.740 --> 01:10:57.680 align:middle line:90%
+So it's a trade-off.
+
+01:10:57.680 --> 01:10:59.700 align:middle line:84%
+Here's another case,
+a bit harder to see,
+
+01:10:59.700 --> 01:11:04.160 align:middle line:84%
+but these two graphs are
+equivalent according to a GNN.
+
+01:11:04.160 --> 01:11:07.680 align:middle line:90%
+But they're not the same graph.
+
+01:11:07.680 --> 01:11:09.520 align:middle line:84%
+So those are equivalence
+classes according
+
+01:11:09.520 --> 01:11:13.240 align:middle line:84%
+to the GNNs because
+a GNN can only
+
+01:11:13.240 --> 01:11:16.720 align:middle line:84%
+distinguish two graphs that
+have different neighborhood tree
+
+01:11:16.720 --> 01:11:17.920 align:middle line:90%
+structures.
+
+01:11:17.920 --> 01:11:20.720 align:middle line:84%
+Now, this actually connects
+to some deep and old theory
+
+01:11:20.720 --> 01:11:23.280 align:middle line:84%
+in graphs, graph
+isomorphism, where
+
+01:11:23.280 --> 01:11:26.330 align:middle line:84%
+you're trying to say, how
+can I tell if one graph is
+
+01:11:26.330 --> 01:11:28.090 align:middle line:90%
+the same as another graph?
+
+01:11:28.090 --> 01:11:30.690 align:middle line:84%
+And GNNs have the same
+power to distinguish graphs
+
+01:11:30.690 --> 01:11:35.370 align:middle line:84%
+as this thing called
+the one WL algorithm?
+
+01:11:35.370 --> 01:11:37.722 align:middle line:84%
+So some of you might
+have seen this before.
+
+01:11:37.722 --> 01:11:39.430 align:middle line:84%
+I'm not going to go
+into all the details.
+
+01:11:39.430 --> 01:11:41.750 align:middle line:84%
+But this is going
+back to the 1960s.
+
+01:11:41.750 --> 01:11:44.650 align:middle line:84%
+This is really
+classical graph theory.
+
+01:11:44.650 --> 01:11:47.308 align:middle line:84%
+And the Weisfeiler-Leman
+algorithm
+
+01:11:47.308 --> 01:11:48.850 align:middle line:84%
+is an algorithm that
+takes two graphs
+
+01:11:48.850 --> 01:11:51.130 align:middle line:84%
+and decides if they're
+the same or different.
+
+01:11:51.130 --> 01:11:54.003 align:middle line:84%
+And the one
+Weisfeiler-Leman algorithm
+
+01:11:54.003 --> 01:11:55.670 align:middle line:84%
+can distinguish certain
+kinds of graphs,
+
+01:11:55.670 --> 01:11:57.170 align:middle line:84%
+and it's the same
+kinds of graphs
+
+01:11:57.170 --> 01:11:58.710 align:middle line:90%
+that a GNN can distinguish.
+
+01:11:58.710 --> 01:12:01.770 align:middle line:84%
+And so whatever the
+Weisfeiler-Leman algorithm
+
+01:12:01.770 --> 01:12:03.750 align:middle line:84%
+can discriminate a
+GNN can discriminate.
+
+01:12:03.750 --> 01:12:08.050 align:middle line:84%
+And this is just a connection
+to some graph theory.
+
+01:12:08.050 --> 01:12:12.210 align:middle line:84%
+So roughly, the way that the
+Weisfeiler-Leman algorithm works
+
+01:12:12.210 --> 01:12:14.830 align:middle line:84%
+is you assign colors to
+the nodes in the graph,
+
+01:12:14.830 --> 01:12:17.010 align:middle line:84%
+and then you do some
+kind of propagation,
+
+01:12:17.010 --> 01:12:19.170 align:middle line:84%
+and you'd decide
+if two graphs are
+
+01:12:19.170 --> 01:12:25.270 align:middle line:84%
+the same if they result in the
+same coloring of the nodes.
+
+01:12:25.270 --> 01:12:30.270 align:middle line:90%
+And let's see.
+
+01:12:30.270 --> 01:12:34.270 align:middle line:84%
+So yeah, a GNN can, at best,
+distinguish the same graphs
+
+01:12:34.270 --> 01:12:36.830 align:middle line:84%
+that the one-dimensional
+Weisfeiler-Leman algorithm
+
+01:12:36.830 --> 01:12:37.950 align:middle line:90%
+can distinguish.
+
+01:12:37.950 --> 01:12:41.870 align:middle line:84%
+But another interesting thing
+is that it's not only, can best.
+
+01:12:41.870 --> 01:12:43.530 align:middle line:84%
+It's actually, you
+can achieve this.
+
+01:12:43.530 --> 01:12:48.750 align:middle line:84%
+So for any size graph,
+there exists a GNN such
+
+01:12:48.750 --> 01:12:52.710 align:middle line:84%
+that you can distinguish
+two graphs that
+
+01:12:52.710 --> 01:12:55.830 align:middle line:84%
+are distinguishable
+by the WL algorithm.
+
+01:12:55.830 --> 01:12:58.510 align:middle line:84%
+So we have universal
+approximation
+
+01:12:58.510 --> 01:13:02.710 align:middle line:84%
+within this family--
+a universal ability
+
+01:13:02.710 --> 01:13:05.670 align:middle line:84%
+to discriminate within
+this family of graphs
+
+01:13:05.670 --> 01:13:09.030 align:middle line:84%
+that can be discriminated
+by this classical theory.
+
+01:13:09.030 --> 01:13:14.710 align:middle line:84%
+And just giving you the gist
+of why you get universality
+
+01:13:14.710 --> 01:13:16.910 align:middle line:90%
+within that family is--
+
+01:13:16.910 --> 01:13:17.970 align:middle line:90%
+it's a two-part argument.
+
+01:13:17.970 --> 01:13:21.770 align:middle line:84%
+The first part is that
+a arbitrary, nonlinear,
+
+01:13:21.770 --> 01:13:25.930 align:middle line:84%
+some nonlinear function is
+a universal approximator
+
+01:13:25.930 --> 01:13:28.970 align:middle line:84%
+of any multiset
+function, and MLPs
+
+01:13:28.970 --> 01:13:32.490 align:middle line:84%
+are universal approximators to
+arbitrary nonlinear functions.
+
+01:13:32.490 --> 01:13:36.090 align:middle line:84%
+So MLP-- some MLP is a
+universal approximator
+
+01:13:36.090 --> 01:13:40.705 align:middle line:90%
+to multiset functions.
+
+01:13:40.705 --> 01:13:43.010 align:middle line:84%
+And then, yeah,
+you can essentially
+
+01:13:43.010 --> 01:13:49.352 align:middle line:84%
+show that the aggregate
+in this form that
+
+01:13:49.352 --> 01:13:50.810 align:middle line:84%
+can take on a
+multiset function can
+
+01:13:50.810 --> 01:13:52.850 align:middle line:84%
+distinguish exactly the
+same class of algorithms
+
+01:13:52.850 --> 01:13:54.790 align:middle line:90%
+as the WL algorithm.
+
+01:13:54.790 --> 01:13:56.170 align:middle line:90%
+Yeah.
+
+01:13:56.170 --> 01:13:58.610 align:middle line:90%
+AUDIENCE: How common is it?
+
+01:13:58.610 --> 01:14:00.110 align:middle line:84%
+PHILLIP ISOLA: Yeah,
+great question.
+
+01:14:00.110 --> 01:14:02.370 align:middle line:84%
+So how common is it to find
+two graphs that cannot be
+
+01:14:02.370 --> 01:14:04.570 align:middle line:90%
+distinguished in this way?
+
+01:14:04.570 --> 01:14:07.790 align:middle line:84%
+I think that last year, I
+said, oh, it's an edge case.
+
+01:14:07.790 --> 01:14:08.930 align:middle line:90%
+It's not too common.
+
+01:14:08.930 --> 01:14:11.450 align:middle line:84%
+And then I realized I
+don't actually know.
+
+01:14:11.450 --> 01:14:16.030 align:middle line:84%
+So it's hard to come up with
+them on pencil and paper.
+
+01:14:16.030 --> 01:14:20.650 align:middle line:90%
+
+
+01:14:20.650 --> 01:14:23.093 align:middle line:84%
+My guess is that this is a
+theoretically important thing.
+
+01:14:23.093 --> 01:14:25.010 align:middle line:84%
+It's like an adversarial--
+a worst-case thing.
+
+01:14:25.010 --> 01:14:28.880 align:middle line:84%
+Like, this could exist, and
+then all your machinery breaks.
+
+01:14:28.880 --> 01:14:30.630 align:middle line:84%
+But it would be really
+interesting to know
+
+01:14:30.630 --> 01:14:32.430 align:middle line:84%
+if actual molecules
+that you're trying
+
+01:14:32.430 --> 01:14:36.770 align:middle line:84%
+to classify the toxicity of
+would ever have this issue.
+
+01:14:36.770 --> 01:14:40.630 align:middle line:84%
+Would there ever be like a
+benign and a toxic molecule that
+
+01:14:40.630 --> 01:14:42.770 align:middle line:84%
+would be indistinguishable,
+according to graph net,
+
+01:14:42.770 --> 01:14:45.710 align:middle line:84%
+but actually have different
+effects on the body?
+
+01:14:45.710 --> 01:14:47.110 align:middle line:90%
+And the answer is, I don't know.
+
+01:14:47.110 --> 01:14:50.310 align:middle line:84%
+But I imagine that for
+health and safety-critical
+
+01:14:50.310 --> 01:14:54.190 align:middle line:84%
+applications, this is
+important to understand.
+
+01:14:54.190 --> 01:14:55.210 align:middle line:90%
+So this is a worst-case.
+
+01:14:55.210 --> 01:14:57.950 align:middle line:84%
+I'm not sure how common
+it is in practice.
+
+01:14:57.950 --> 01:14:59.550 align:middle line:90%
+Yeah.
+
+01:14:59.550 --> 01:15:00.050 align:middle line:90%
+OK.
+
+01:15:00.050 --> 01:15:03.190 align:middle line:90%
+
+
+01:15:03.190 --> 01:15:06.030 align:middle line:84%
+So I do want to bring this
+back to empirical practice
+
+01:15:06.030 --> 01:15:09.370 align:middle line:84%
+to show that this really does
+make an important difference.
+
+01:15:09.370 --> 01:15:12.950 align:middle line:84%
+If you understand
+the theory of what
+
+01:15:12.950 --> 01:15:15.678 align:middle line:84%
+are the appropriate
+aggregation functions that
+
+01:15:15.678 --> 01:15:17.470 align:middle line:84%
+will lead you to be
+able to approximate all
+
+01:15:17.470 --> 01:15:19.910 align:middle line:84%
+the functions you care
+about within the set
+
+01:15:19.910 --> 01:15:23.680 align:middle line:84%
+of multiset functions, well,
+is that theory actually
+
+01:15:23.680 --> 01:15:25.060 align:middle line:90%
+important in practice?
+
+01:15:25.060 --> 01:15:27.400 align:middle line:90%
+So let's look at this example.
+
+01:15:27.400 --> 01:15:31.700 align:middle line:84%
+So here's a paper where we have
+training accuracy on the y-axis,
+
+01:15:31.700 --> 01:15:34.640 align:middle line:84%
+and we have the epochs of
+learning on the x-axis.
+
+01:15:34.640 --> 01:15:36.420 align:middle line:90%
+And higher is better.
+
+01:15:36.420 --> 01:15:42.220 align:middle line:84%
+So the red line is using
+an aggregation function,
+
+01:15:42.220 --> 01:15:44.560 align:middle line:90%
+which is MLP, some MLP.
+
+01:15:44.560 --> 01:15:47.960 align:middle line:84%
+So the Gs are an MLP
+for the red line.
+
+01:15:47.960 --> 01:15:51.320 align:middle line:84%
+And I stated that that is
+a universal approximator
+
+01:15:51.320 --> 01:15:53.320 align:middle line:90%
+to any multiset function.
+
+01:15:53.320 --> 01:15:57.012 align:middle line:84%
+And indeed, this is able
+to get 100% accuracy
+
+01:15:57.012 --> 01:15:58.220 align:middle line:90%
+on fitting the training data.
+
+01:15:58.220 --> 01:15:59.500 align:middle line:84%
+This is just the
+training accuracy,
+
+01:15:59.500 --> 01:16:00.840 align:middle line:84%
+so this is just about
+approximation, not
+
+01:16:00.840 --> 01:16:01.820 align:middle line:90%
+about generalization.
+
+01:16:01.820 --> 01:16:03.880 align:middle line:90%
+Can I fit the training data?
+
+01:16:03.880 --> 01:16:05.480 align:middle line:84%
+But the interesting
+thing is that if I
+
+01:16:05.480 --> 01:16:07.870 align:middle line:84%
+use a different
+aggregation operation--
+
+01:16:07.870 --> 01:16:09.920 align:middle line:84%
+like, you might be just
+hacking away in PyTorch
+
+01:16:09.920 --> 01:16:14.260 align:middle line:84%
+and think, oh, I'm not
+going to do MLP-- sum, MLP.
+
+01:16:14.260 --> 01:16:17.680 align:middle line:84%
+I'll just do sum
+and linear ReLU.
+
+01:16:17.680 --> 01:16:19.220 align:middle line:84%
+So linear ReLU is
+not a full MLP.
+
+01:16:19.220 --> 01:16:20.860 align:middle line:84%
+It's not a universal
+approximator.
+
+01:16:20.860 --> 01:16:22.860 align:middle line:84%
+We have to have
+linear ReLU linear
+
+01:16:22.860 --> 01:16:25.333 align:middle line:84%
+is a universal approximator,
+but linear ReLU is not.
+
+01:16:25.333 --> 01:16:28.000 align:middle line:84%
+So let's say I just decided, I'm
+going to save some computation.
+
+01:16:28.000 --> 01:16:30.180 align:middle line:84%
+I'm going to skip
+that line in PyTorch.
+
+01:16:30.180 --> 01:16:32.682 align:middle line:84%
+Well, that's not a
+universal approximator.
+
+01:16:32.682 --> 01:16:35.140 align:middle line:84%
+And for this type of data, this
+protein prediction problem,
+
+01:16:35.140 --> 01:16:36.557 align:middle line:84%
+I don't know the
+domain very well.
+
+01:16:36.557 --> 01:16:38.100 align:middle line:84%
+But for this
+problem, you actually
+
+01:16:38.100 --> 01:16:40.920 align:middle line:84%
+just plateau at a lower
+level of accuracy.
+
+01:16:40.920 --> 01:16:44.422 align:middle line:84%
+And I suppose that's because you
+can't even approximate the data
+
+01:16:44.422 --> 01:16:46.380 align:middle line:84%
+you're trying to approximate
+because you're not
+
+01:16:46.380 --> 01:16:49.780 align:middle line:84%
+using an approximation function
+that has that capacity.
+
+01:16:49.780 --> 01:16:51.860 align:middle line:84%
+So the theory actually
+is meaningful here.
+
+01:16:51.860 --> 01:16:55.380 align:middle line:84%
+And sometimes I think that
+it's hard to see, like,
+
+01:16:55.380 --> 01:16:58.503 align:middle line:84%
+why do we need to learn all
+this theory of what kinds
+
+01:16:58.503 --> 01:17:00.420 align:middle line:84%
+of functions can be
+approximated by what kinds
+
+01:17:00.420 --> 01:17:01.580 align:middle line:90%
+of neural networks?
+
+01:17:01.580 --> 01:17:04.000 align:middle line:84%
+Well, it actually can
+matter in practice.
+
+01:17:04.000 --> 01:17:06.460 align:middle line:84%
+And if you use something that
+does not have the capacity
+
+01:17:06.460 --> 01:17:08.420 align:middle line:84%
+to approximate the
+family you care about,
+
+01:17:08.420 --> 01:17:10.940 align:middle line:84%
+you can just be
+fundamentally limited.
+
+01:17:10.940 --> 01:17:14.978 align:middle line:84%
+The other curves are even
+worse aggregation functions.
+
+01:17:14.978 --> 01:17:16.520 align:middle line:84%
+So here's one really
+interesting one.
+
+01:17:16.520 --> 01:17:17.280 align:middle line:90%
+Look at this one.
+
+01:17:17.280 --> 01:17:19.280 align:middle line:84%
+That is, I just used--
+the blue curve is using
+
+01:17:19.280 --> 01:17:21.560 align:middle line:90%
+the mean as opposed to the sum.
+
+01:17:21.560 --> 01:17:25.180 align:middle line:84%
+So I believe it's the same
+as the equation at the top.
+
+01:17:25.180 --> 01:17:28.280 align:middle line:84%
+But rather than taking
+a sum, I take the mean.
+
+01:17:28.280 --> 01:17:29.540 align:middle line:90%
+And suddenly, it doesn't work.
+
+01:17:29.540 --> 01:17:33.040 align:middle line:84%
+And you might think, that seems
+like a tiny, tiny difference.
+
+01:17:33.040 --> 01:17:35.740 align:middle line:84%
+Instead of taking the sum
+over my node, my neighbors,
+
+01:17:35.740 --> 01:17:37.520 align:middle line:84%
+I'm taking the mean
+over my neighbors.
+
+01:17:37.520 --> 01:17:38.742 align:middle line:90%
+Surely that should work.
+
+01:17:38.742 --> 01:17:40.700 align:middle line:84%
+And you might be coding
+this way and just said,
+
+01:17:40.700 --> 01:17:43.155 align:middle line:84%
+oh, I bet taking the average
+as opposed to the sum
+
+01:17:43.155 --> 01:17:44.780 align:middle line:84%
+is going to be more
+numerically stable.
+
+01:17:44.780 --> 01:17:45.740 align:middle line:90%
+I'll just do that.
+
+01:17:45.740 --> 01:17:47.660 align:middle line:84%
+Well, the thing would
+fail completely.
+
+01:17:47.660 --> 01:17:52.920 align:middle line:84%
+Anyone know why taking the mean
+is going to lose information
+
+01:17:52.920 --> 01:17:54.200 align:middle line:90%
+that the sum has?
+
+01:17:54.200 --> 01:17:57.000 align:middle line:84%
+Let's see if we can
+go-- right back here.
+
+01:17:57.000 --> 01:17:57.702 align:middle line:90%
+Yeah.
+
+01:17:57.702 --> 01:17:59.160 align:middle line:84%
+AUDIENCE: Maybe
+you can't calculate
+
+01:17:59.160 --> 01:18:00.960 align:middle line:90%
+how many neighbors [INAUDIBLE].
+
+01:18:00.960 --> 01:18:01.560 align:middle line:84%
+PHILLIP ISOLA:
+Yeah, so maybe you
+
+01:18:01.560 --> 01:18:03.140 align:middle line:84%
+can't calculate
+how many neighbors.
+
+01:18:03.140 --> 01:18:05.660 align:middle line:84%
+So taking the sum
+knows something
+
+01:18:05.660 --> 01:18:07.160 align:middle line:84%
+about the total
+number of neighbors,
+
+01:18:07.160 --> 01:18:09.040 align:middle line:84%
+because it gets bigger
+with more neighbors.
+
+01:18:09.040 --> 01:18:11.580 align:middle line:84%
+Taking the mean divides by
+the number of neighbors,
+
+01:18:11.580 --> 01:18:13.140 align:middle line:90%
+so it loses information.
+
+01:18:13.140 --> 01:18:15.440 align:middle line:84%
+And by losing that
+information on this problem,
+
+01:18:15.440 --> 01:18:17.700 align:middle line:84%
+you just get--
+you can't actually
+
+01:18:17.700 --> 01:18:20.020 align:middle line:84%
+learn the true function
+because you required knowing
+
+01:18:20.020 --> 01:18:21.533 align:middle line:90%
+the number of neighbors.
+
+01:18:21.533 --> 01:18:24.200 align:middle line:84%
+So these tiny little details can
+actually make a big difference,
+
+01:18:24.200 --> 01:18:26.860 align:middle line:90%
+and it's important to know that.
+
+01:18:26.860 --> 01:18:32.540 align:middle line:84%
+So here's a few other properties
+of graphs that cannot be learned
+
+01:18:32.540 --> 01:18:35.740 align:middle line:84%
+with a conventional GNN as
+I've described it so far.
+
+01:18:35.740 --> 01:18:39.640 align:middle line:84%
+So you can't estimate the
+longest cycle in a graph.
+
+01:18:39.640 --> 01:18:42.040 align:middle line:84%
+You can't estimate the
+diameter of the graph.
+
+01:18:42.040 --> 01:18:44.332 align:middle line:84%
+These are things that, no
+matter how much training data
+
+01:18:44.332 --> 01:18:46.130 align:middle line:90%
+you have, the graph net is--
+
+01:18:46.130 --> 01:18:48.380 align:middle line:84%
+there's going to be cases
+where you'll get arbitrarily
+
+01:18:48.380 --> 01:18:53.020 align:middle line:84%
+large error on these estimates
+because you can construct
+
+01:18:53.020 --> 01:18:55.597 align:middle line:84%
+two graphs that are isomorphic
+according to the GNN, two
+
+01:18:55.597 --> 01:18:57.180 align:middle line:84%
+graphs that have the
+same neighborhood
+
+01:18:57.180 --> 01:18:59.620 align:middle line:84%
+structure but
+different diameters.
+
+01:18:59.620 --> 01:19:02.200 align:middle line:84%
+OK, so there's fundamental
+limits to what GNNs can do.
+
+01:19:02.200 --> 01:19:04.433 align:middle line:84%
+But how do we get around
+these fundamental limits?
+
+01:19:04.433 --> 01:19:05.600 align:middle line:90%
+We heard the answer already.
+
+01:19:05.600 --> 01:19:08.320 align:middle line:84%
+But anyone want to
+shout it out again?
+
+01:19:08.320 --> 01:19:11.040 align:middle line:84%
+What would be a way
+of making a graph
+
+01:19:11.040 --> 01:19:18.390 align:middle line:84%
+net that is not going to be
+invariant to permutations
+
+01:19:18.390 --> 01:19:20.210 align:middle line:90%
+of the nodes?
+
+01:19:20.210 --> 01:19:21.252 align:middle line:90%
+AUDIENCE: One-hot coding?
+
+01:19:21.252 --> 01:19:22.585 align:middle line:90%
+PHILLIP ISOLA: One-hot encoding.
+
+01:19:22.585 --> 01:19:23.270 align:middle line:90%
+Yeah.
+
+01:19:23.270 --> 01:19:26.740 align:middle line:84%
+So more generally,
+positional encodings.
+
+01:19:26.740 --> 01:19:28.990 align:middle line:84%
+So just like we can make a
+convolutional network which
+
+01:19:28.990 --> 01:19:30.550 align:middle line:84%
+is not
+translation-equivariant, we
+
+01:19:30.550 --> 01:19:33.430 align:middle line:84%
+can make a graph net that is
+not invariant to permutations
+
+01:19:33.430 --> 01:19:35.830 align:middle line:84%
+by adding-- telling
+each node where it is,
+
+01:19:35.830 --> 01:19:37.670 align:middle line:90%
+what position it's at.
+
+01:19:37.670 --> 01:19:40.230 align:middle line:84%
+And this allows you to break
+some of these symmetries
+
+01:19:40.230 --> 01:19:44.230 align:middle line:84%
+with these equivalence
+classes of two graphs that
+
+01:19:44.230 --> 01:19:46.470 align:middle line:84%
+have the same neighborhood
+structure because now
+
+01:19:46.470 --> 01:19:50.190 align:middle line:84%
+we actually can see that the
+nodes have different positions
+
+01:19:50.190 --> 01:19:51.670 align:middle line:90%
+in the graph.
+
+01:19:51.670 --> 01:19:53.930 align:middle line:84%
+And one of the common
+ways of doing this--
+
+01:19:53.930 --> 01:19:58.510 align:middle line:84%
+remember that Sarah talked about
+adding a sinusoidal positional
+
+01:19:58.510 --> 01:20:03.150 align:middle line:84%
+encoding, where every position
+in your image is going to get--
+
+01:20:03.150 --> 01:20:05.930 align:middle line:84%
+it's going to get a vector
+that tells us where it is.
+
+01:20:05.930 --> 01:20:06.670 align:middle line:90%
+Is it upper left?
+
+01:20:06.670 --> 01:20:07.290 align:middle line:90%
+Is it middle?
+
+01:20:07.290 --> 01:20:08.230 align:middle line:90%
+Is it right?
+
+01:20:08.230 --> 01:20:10.750 align:middle line:84%
+Well, in a graph, we can get
+a kind of generalized version
+
+01:20:10.750 --> 01:20:13.630 align:middle line:84%
+of where you are in the
+graph using the eigenvectors
+
+01:20:13.630 --> 01:20:14.793 align:middle line:90%
+of the graph Laplacian.
+
+01:20:14.793 --> 01:20:16.710 align:middle line:84%
+So I'm not going to talk
+in detail about that.
+
+01:20:16.710 --> 01:20:18.710 align:middle line:84%
+But this is just a
+generalized coordinate system
+
+01:20:18.710 --> 01:20:21.090 align:middle line:84%
+for your location of
+a node within a graph.
+
+01:20:21.090 --> 01:20:24.170 align:middle line:84%
+And if you add those
+to your graph node
+
+01:20:24.170 --> 01:20:27.550 align:middle line:84%
+inputs, the node vectors of the
+input layer to the graph net,
+
+01:20:27.550 --> 01:20:29.750 align:middle line:84%
+then you will break some
+of these symmetries.
+
+01:20:29.750 --> 01:20:32.330 align:middle line:84%
+And that can be good or bad
+because now you might not
+
+01:20:32.330 --> 01:20:34.210 align:middle line:84%
+generalize to new
+permutations, but you
+
+01:20:34.210 --> 01:20:36.752 align:middle line:84%
+will be able to discriminate
+things you couldn't discriminate
+
+01:20:36.752 --> 01:20:37.410 align:middle line:90%
+before.
+
+01:20:37.410 --> 01:20:40.130 align:middle line:90%
+So it's a trade-off.
+
+01:20:40.130 --> 01:20:44.350 align:middle line:84%
+So yeah, that's just like
+positional encoding in CNNs,
+
+01:20:44.350 --> 01:20:46.090 align:middle line:84%
+which we saw on
+the previous day.
+
+01:20:46.090 --> 01:20:48.602 align:middle line:90%
+So I'm going to end there.
+
+01:20:48.602 --> 01:20:50.810 align:middle line:84%
+We saw that graph nets are
+appropriate for processing
+
+01:20:50.810 --> 01:20:52.088 align:middle line:90%
+graph-structured data.
+
+01:20:52.088 --> 01:20:54.130 align:middle line:84%
+It turns out that a special
+case of the graph net
+
+01:20:54.130 --> 01:20:55.450 align:middle line:84%
+is called the
+transformer, and that's
+
+01:20:55.450 --> 01:20:57.200 align:middle line:84%
+just the dominant
+architecture these days.
+
+01:20:57.200 --> 01:21:00.250 align:middle line:84%
+And we're going to hear a lot
+more about that in a week or so.
+
+01:21:00.250 --> 01:21:02.390 align:middle line:84%
+And I can take questions
+up here at the end,
+
+01:21:02.390 --> 01:21:03.910 align:middle line:84%
+but you're welcome
+to all leave now.
+
+01:21:03.910 --> 01:21:05.640 align:middle line:90%
+Thank you.
+
+01:21:05.640 --> 01:21:14.000 align:middle line:90%

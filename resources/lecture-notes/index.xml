@@ -1,0 +1,172 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Lecture Notes on MIT OpenCourseWare</title>
+    <link>/resources/lecture-notes/</link>
+    <description>Recent content in Lecture Notes on MIT OpenCourseWare</description>
+    <generator>Hugo</generator>
+    <language>en-us</language>
+    <atom:link href="/resources/lecture-notes/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Lecture 1: Introduction to Deep Learning</title>
+      <link>/resources/mit6_7960_f24_lec1_pdf/data.json</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      <guid>/resources/mit6_7960_f24_lec1_pdf/data.json</guid>
+      <description></description>
+    </item>
+    <item>
+      <title>Lecture 10: Memory and Sequence Modeling</title>
+      <link>/resources/mit6_7960_f24_lec10_pdf/data.json</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      <guid>/resources/mit6_7960_f24_lec10_pdf/data.json</guid>
+      <description></description>
+    </item>
+    <item>
+      <title>Lecture 11: Representation Learning I</title>
+      <link>/resources/mit6_7960_f24_lec11_pdf/data.json</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      <guid>/resources/mit6_7960_f24_lec11_pdf/data.json</guid>
+      <description></description>
+    </item>
+    <item>
+      <title>Lecture 12: Similarity-Based Representation Learning</title>
+      <link>/resources/mit6_7960_f24_lec12_pdf/data.json</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      <guid>/resources/mit6_7960_f24_lec12_pdf/data.json</guid>
+      <description></description>
+    </item>
+    <item>
+      <title>Lecture 13: Architectural Bias on Representations</title>
+      <link>/resources/mit6_7960_f24_lec13_pdf/data.json</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      <guid>/resources/mit6_7960_f24_lec13_pdf/data.json</guid>
+      <description></description>
+    </item>
+    <item>
+      <title>Lecture 14: Deep Generative Models I</title>
+      <link>/resources/mit6_7960_f24_lec14_pdf/data.json</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      <guid>/resources/mit6_7960_f24_lec14_pdf/data.json</guid>
+      <description></description>
+    </item>
+    <item>
+      <title>Lecture 15: Deep Generative Models II</title>
+      <link>/resources/mit6_7960_f24_lec15_pdf/data.json</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      <guid>/resources/mit6_7960_f24_lec15_pdf/data.json</guid>
+      <description></description>
+    </item>
+    <item>
+      <title>Lecture 16: Deep Generative Models III</title>
+      <link>/resources/mit6_7960_f24_lec16_pdf/data.json</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      <guid>/resources/mit6_7960_f24_lec16_pdf/data.json</guid>
+      <description></description>
+    </item>
+    <item>
+      <title>Lecture 17: Out-of-Distribution Generalization</title>
+      <link>/resources/mit6_7960_f24_lec17_pdf/data.json</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      <guid>/resources/mit6_7960_f24_lec17_pdf/data.json</guid>
+      <description></description>
+    </item>
+    <item>
+      <title>Lecture 18: Transfer Learning I</title>
+      <link>/resources/mit6_7960_f24_lec18_pdf/data.json</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      <guid>/resources/mit6_7960_f24_lec18_pdf/data.json</guid>
+      <description></description>
+    </item>
+    <item>
+      <title>Lecture 19: Transfer Learning II</title>
+      <link>/resources/mit6_7960_f24_lec19_pdf/data.json</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      <guid>/resources/mit6_7960_f24_lec19_pdf/data.json</guid>
+      <description></description>
+    </item>
+    <item>
+      <title>Lecture 2: How to Train a Neural Net</title>
+      <link>/resources/mit6_7960_f24_lec2_pdf/data.json</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      <guid>/resources/mit6_7960_f24_lec2_pdf/data.json</guid>
+      <description></description>
+    </item>
+    <item>
+      <title>Lecture 20: Scaling Laws</title>
+      <link>/resources/mit6_7960_f24_lec20_pdf/data.json</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      <guid>/resources/mit6_7960_f24_lec20_pdf/data.json</guid>
+      <description></description>
+    </item>
+    <item>
+      <title>Lecture 21: Language Models</title>
+      <link>/resources/mit6_7960_f24_lec21_pdf/data.json</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      <guid>/resources/mit6_7960_f24_lec21_pdf/data.json</guid>
+      <description></description>
+    </item>
+    <item>
+      <title>Lecture 23: Metrized Deep Learning</title>
+      <link>/resources/mit6_7960_f24_lec23_pdf/data.json</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      <guid>/resources/mit6_7960_f24_lec23_pdf/data.json</guid>
+      <description></description>
+    </item>
+    <item>
+      <title>Lecture 24: Inference Methods for Deep Learning</title>
+      <link>/resources/mit6_7960_f24_lec24_pdf/data.json</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      <guid>/resources/mit6_7960_f24_lec24_pdf/data.json</guid>
+      <description></description>
+    </item>
+    <item>
+      <title>Lecture 3: Approximation Theory</title>
+      <link>/resources/mit6_7960_f24_lec3_pdf/data.json</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      <guid>/resources/mit6_7960_f24_lec3_pdf/data.json</guid>
+      <description></description>
+    </item>
+    <item>
+      <title>Lecture 4: Architectures for Grids</title>
+      <link>/resources/mit6_7960_f24_lec4_pdf/data.json</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      <guid>/resources/mit6_7960_f24_lec4_pdf/data.json</guid>
+      <description></description>
+    </item>
+    <item>
+      <title>Lecture 5: Graph Neural Networks</title>
+      <link>/resources/mit6_7960_f24_lec5_pdf/data.json</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      <guid>/resources/mit6_7960_f24_lec5_pdf/data.json</guid>
+      <description></description>
+    </item>
+    <item>
+      <title>Lecture 6: Neural Network Generalization</title>
+      <link>/resources/mit6_7960_f24_lec6_pdf/data.json</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      <guid>/resources/mit6_7960_f24_lec6_pdf/data.json</guid>
+      <description></description>
+    </item>
+    <item>
+      <title>Lecture 7: Scaling Rules for Optimization</title>
+      <link>/resources/mit6_7960_f24_lec7_pdf/data.json</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      <guid>/resources/mit6_7960_f24_lec7_pdf/data.json</guid>
+      <description></description>
+    </item>
+    <item>
+      <title>Lecture 8: Transformers</title>
+      <link>/resources/mit6_7960_f24_lec8_pdf/data.json</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      <guid>/resources/mit6_7960_f24_lec8_pdf/data.json</guid>
+      <description></description>
+    </item>
+    <item>
+      <title>Lecture 9: Hacker&#39;s Guide to Deep Learning</title>
+      <link>/resources/mit6_7960_f24_lec9_pdf/data.json</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      <guid>/resources/mit6_7960_f24_lec9_pdf/data.json</guid>
+      <description></description>
+    </item>
+  </channel>
+</rss>

@@ -1,0 +1,7446 @@
+WEBVTT
+
+00:00:00.000 --> 00:00:02.925 align:middle line:90%
+[SQUEAKING]
+
+00:00:02.925 --> 00:00:04.380 align:middle line:90%
+[RUSTLING]
+
+00:00:04.380 --> 00:00:05.835 align:middle line:90%
+[CLICKING]
+
+00:00:05.835 --> 00:00:12.450 align:middle line:90%
+
+
+00:00:12.450 --> 00:00:13.200 align:middle line:90%
+PHILLIP ISOLA: OK.
+
+00:00:13.200 --> 00:00:13.460 align:middle line:90%
+Yeah.
+
+00:00:13.460 --> 00:00:14.220 align:middle line:90%
+Welcome, everyone.
+
+00:00:14.220 --> 00:00:17.360 align:middle line:84%
+So now we're coming to another
+section of the course, which
+
+00:00:17.360 --> 00:00:18.340 align:middle line:90%
+is generative models.
+
+00:00:18.340 --> 00:00:21.000 align:middle line:84%
+We'll have three lectures
+on generative models.
+
+00:00:21.000 --> 00:00:23.080 align:middle line:90%
+And generative models are--
+
+00:00:23.080 --> 00:00:24.740 align:middle line:84%
+the new name for them
+is generative AI.
+
+00:00:24.740 --> 00:00:27.900 align:middle line:84%
+So this is the
+big thing of 2023,
+
+00:00:27.900 --> 00:00:32.119 align:middle line:84%
+and continuing on
+to this year, 2024.
+
+00:00:32.119 --> 00:00:32.619 align:middle line:90%
+OK.
+
+00:00:32.619 --> 00:00:34.202 align:middle line:84%
+So we're going to
+learn all about what
+
+00:00:34.202 --> 00:00:35.720 align:middle line:90%
+generative models are.
+
+00:00:35.720 --> 00:00:37.200 align:middle line:84%
+Again, this is one
+of those topics
+
+00:00:37.200 --> 00:00:39.660 align:middle line:84%
+which you could teach without
+mentioning deep learning at all.
+
+00:00:39.660 --> 00:00:41.785 align:middle line:84%
+Of course, we'll talk about
+deep generative models.
+
+00:00:41.785 --> 00:00:45.760 align:middle line:84%
+But the place where generative
+models are having innovation
+
+00:00:45.760 --> 00:00:48.000 align:middle line:90%
+is mostly in deep learning.
+
+00:00:48.000 --> 00:00:50.280 align:middle line:90%
+They kind of go hand in hand.
+
+00:00:50.280 --> 00:00:52.280 align:middle line:90%
+OK.
+
+00:00:52.280 --> 00:00:54.200 align:middle line:84%
+So I want to come
+back to this picture
+
+00:00:54.200 --> 00:00:57.680 align:middle line:84%
+because we've had three lectures
+now on representation, learning,
+
+00:00:57.680 --> 00:01:00.370 align:middle line:84%
+and the way I like to think
+about generative modeling
+
+00:01:00.370 --> 00:01:02.630 align:middle line:84%
+is it's just the inverse
+of representation learning.
+
+00:01:02.630 --> 00:01:04.463 align:middle line:84%
+So these two things,
+representation learning
+
+00:01:04.463 --> 00:01:07.570 align:middle line:84%
+and generative modeling,
+are very tightly coupled.
+
+00:01:07.570 --> 00:01:10.930 align:middle line:84%
+And we'll see, actually,
+in the next lecture, models
+
+00:01:10.930 --> 00:01:13.530 align:middle line:84%
+that do both representation
+learning and generative
+
+00:01:13.530 --> 00:01:15.558 align:middle line:90%
+modeling at the same time.
+
+00:01:15.558 --> 00:01:17.350 align:middle line:84%
+But we're talking about
+this direction now.
+
+00:01:17.350 --> 00:01:19.130 align:middle line:84%
+So we've so far, in
+the last few weeks,
+
+00:01:19.130 --> 00:01:21.170 align:middle line:84%
+talked a lot about going
+from data to some kind
+
+00:01:21.170 --> 00:01:23.410 align:middle line:90%
+of low-dimensional embedding.
+
+00:01:23.410 --> 00:01:26.290 align:middle line:84%
+And now we'll be going
+from simple low-dimensional
+
+00:01:26.290 --> 00:01:28.510 align:middle line:90%
+embeddings to data.
+
+00:01:28.510 --> 00:01:29.010 align:middle line:90%
+OK.
+
+00:01:29.010 --> 00:01:31.930 align:middle line:84%
+So today will be just
+a tour of a bunch
+
+00:01:31.930 --> 00:01:34.090 align:middle line:84%
+of the fundamentals
+of generative modeling
+
+00:01:34.090 --> 00:01:38.010 align:middle line:84%
+and some of the popular models
+like diffusion models and GANs.
+
+00:01:38.010 --> 00:01:40.210 align:middle line:84%
+And then, next week,
+we'll be looking
+
+00:01:40.210 --> 00:01:42.890 align:middle line:84%
+at variational autoencoders,
+which are a model that
+
+00:01:42.890 --> 00:01:46.050 align:middle line:90%
+does both directions jointly.
+
+00:01:46.050 --> 00:01:49.850 align:middle line:84%
+And then we'll talk about
+conditional models, which
+
+00:01:49.850 --> 00:01:52.850 align:middle line:84%
+is, How can I condition a
+generative model on some data
+
+00:01:52.850 --> 00:01:54.110 align:middle line:90%
+to predict some other data?
+
+00:01:54.110 --> 00:01:57.110 align:middle line:84%
+And in lecture 16,
+we'll really get out,
+
+00:01:57.110 --> 00:01:58.870 align:middle line:84%
+What are these
+things useful for?
+
+00:01:58.870 --> 00:02:00.370 align:middle line:84%
+So it might be a little
+confusing when you first
+
+00:02:00.370 --> 00:02:01.620 align:middle line:90%
+come across generative models.
+
+00:02:01.620 --> 00:02:04.050 align:middle line:84%
+You know, like, why do we
+care about these things?
+
+00:02:04.050 --> 00:02:06.630 align:middle line:84%
+There are things that make
+random images, random stories.
+
+00:02:06.630 --> 00:02:07.770 align:middle line:90%
+Why would you care?
+
+00:02:07.770 --> 00:02:09.850 align:middle line:84%
+Well, we care
+because-- you know,
+
+00:02:09.850 --> 00:02:11.490 align:middle line:84%
+ChatGPT is a generative
+model, and we
+
+00:02:11.490 --> 00:02:13.530 align:middle line:84%
+know that that's
+something that's popular.
+
+00:02:13.530 --> 00:02:15.290 align:middle line:84%
+But we'll talk more
+about the applications
+
+00:02:15.290 --> 00:02:18.210 align:middle line:84%
+of generative models
+in lecture 16.
+
+00:02:18.210 --> 00:02:21.410 align:middle line:84%
+And yeah, I love
+generative models.
+
+00:02:21.410 --> 00:02:23.750 align:middle line:90%
+I just think that--
+
+00:02:23.750 --> 00:02:25.950 align:middle line:84%
+my favorite topic is
+representation learning,
+
+00:02:25.950 --> 00:02:27.910 align:middle line:84%
+but my even more favorite
+topic is generative modeling.
+
+00:02:27.910 --> 00:02:29.660 align:middle line:84%
+And I think they're
+really the same topic.
+
+00:02:29.660 --> 00:02:31.830 align:middle line:84%
+And this is just, like,
+the coolest thing in AI.
+
+00:02:31.830 --> 00:02:35.850 align:middle line:84%
+So to me, generative
+models are kind
+
+00:02:35.850 --> 00:02:37.590 align:middle line:90%
+of the core of intelligence.
+
+00:02:37.590 --> 00:02:39.770 align:middle line:84%
+And that's kind of played
+out in the last few years
+
+00:02:39.770 --> 00:02:42.170 align:middle line:84%
+with this generative
+AI revolution.
+
+00:02:42.170 --> 00:02:44.850 align:middle line:90%
+But it's just super cool stuff.
+
+00:02:44.850 --> 00:02:46.170 align:middle line:90%
+OK.
+
+00:02:46.170 --> 00:02:48.330 align:middle line:84%
+So I'm going to start
+by giving a little math
+
+00:02:48.330 --> 00:02:50.890 align:middle line:84%
+background because
+we're going to be using
+
+00:02:50.890 --> 00:02:53.130 align:middle line:84%
+a different type of math
+than we've used previously
+
+00:02:53.130 --> 00:02:55.310 align:middle line:84%
+in this class, which
+will be probability.
+
+00:02:55.310 --> 00:02:57.560 align:middle line:84%
+This will be things that you
+should have already seen.
+
+00:02:57.560 --> 00:02:59.900 align:middle line:84%
+If you haven't, you
+should touch up on this.
+
+00:02:59.900 --> 00:03:00.400 align:middle line:90%
+OK.
+
+00:03:00.400 --> 00:03:03.620 align:middle line:84%
+Then we'll talk about,
+What's a generative model?
+
+00:03:03.620 --> 00:03:06.420 align:middle line:84%
+We'll talk about density
+functions, energy functions,
+
+00:03:06.420 --> 00:03:08.340 align:middle line:90%
+and samplers.
+
+00:03:08.340 --> 00:03:12.020 align:middle line:84%
+And then we'll get into a
+survey of a few of the currently
+
+00:03:12.020 --> 00:03:13.360 align:middle line:90%
+popular generative models.
+
+00:03:13.360 --> 00:03:15.838 align:middle line:84%
+So one will be the
+autoregressive model.
+
+00:03:15.838 --> 00:03:17.380 align:middle line:84%
+The next will be
+the diffusion model.
+
+00:03:17.380 --> 00:03:19.820 align:middle line:84%
+And the next will be the GAN,
+the Generative Adversarial
+
+00:03:19.820 --> 00:03:20.700 align:middle line:90%
+Network.
+
+00:03:20.700 --> 00:03:22.373 align:middle line:90%
+So there's a lot.
+
+00:03:22.373 --> 00:03:25.040 align:middle line:84%
+You can have a whole lecture, a
+whole class on diffusion models.
+
+00:03:25.040 --> 00:03:27.207 align:middle line:84%
+But we're just going to go
+through the basics of it.
+
+00:03:27.207 --> 00:03:29.340 align:middle line:84%
+And hopefully, you'll
+have this toolkit
+
+00:03:29.340 --> 00:03:32.640 align:middle line:84%
+that you can read up
+on in your own work.
+
+00:03:32.640 --> 00:03:33.140 align:middle line:90%
+OK.
+
+00:03:33.140 --> 00:03:36.740 align:middle line:84%
+And the good news is
+all generative models
+
+00:03:36.740 --> 00:03:37.880 align:middle line:90%
+use the same principles.
+
+00:03:37.880 --> 00:03:41.480 align:middle line:84%
+So it's not-- there's very tight
+connections between all of them.
+
+00:03:41.480 --> 00:03:43.500 align:middle line:84%
+You can often cast one
+model as another model
+
+00:03:43.500 --> 00:03:46.100 align:middle line:90%
+with some exchange of variables.
+
+00:03:46.100 --> 00:03:48.640 align:middle line:84%
+A diffusion model is a type
+of variational autoencoder,
+
+00:03:48.640 --> 00:03:51.420 align:middle line:84%
+and an autoregressive
+model is a small variation
+
+00:03:51.420 --> 00:03:52.360 align:middle line:90%
+on a diffusion model.
+
+00:03:52.360 --> 00:03:53.770 align:middle line:90%
+They're all connected.
+
+00:03:53.770 --> 00:03:54.270 align:middle line:90%
+OK.
+
+00:03:54.270 --> 00:03:57.145 align:middle line:84%
+But you don't know what those
+terms mean, presumably, yet.
+
+00:03:57.145 --> 00:03:57.770 align:middle line:90%
+So don't worry.
+
+00:03:57.770 --> 00:04:01.390 align:middle line:84%
+We're going to see
+some connections.
+
+00:04:01.390 --> 00:04:03.590 align:middle line:84%
+So what I want to
+start with is, yeah,
+
+00:04:03.590 --> 00:04:05.605 align:middle line:84%
+What is the definition
+of a generative model?
+
+00:04:05.605 --> 00:04:07.730 align:middle line:84%
+And there's basically two
+definitions in the field.
+
+00:04:07.730 --> 00:04:10.250 align:middle line:84%
+There's the definition
+that I will focus on,
+
+00:04:10.250 --> 00:04:13.110 align:middle line:84%
+which is an algorithm
+that generates data.
+
+00:04:13.110 --> 00:04:15.430 align:middle line:84%
+And there's a definition
+that you may have come across
+
+00:04:15.430 --> 00:04:17.453 align:middle line:84%
+in a statistics class
+or a probability class,
+
+00:04:17.453 --> 00:04:18.870 align:middle line:84%
+a slightly older
+definition, which
+
+00:04:18.870 --> 00:04:22.970 align:middle line:84%
+is the joint distribution
+of some data,
+
+00:04:22.970 --> 00:04:26.750 align:middle line:84%
+so probability of a joint
+configuration of x's, y's,
+
+00:04:26.750 --> 00:04:29.590 align:middle line:90%
+and other variables
+
+00:04:29.590 --> 00:04:30.090 align:middle line:90%
+OK.
+
+00:04:30.090 --> 00:04:33.670 align:middle line:84%
+So these are actually
+highly related concepts.
+
+00:04:33.670 --> 00:04:34.790 align:middle line:90%
+But I think it's--
+
+00:04:34.790 --> 00:04:37.130 align:middle line:84%
+our real goal in
+generative modeling,
+
+00:04:37.130 --> 00:04:39.510 align:middle line:84%
+especially in this area that
+we would call generative AI,
+
+00:04:39.510 --> 00:04:42.010 align:middle line:84%
+is we want algorithms that make
+things that look like data.
+
+00:04:42.010 --> 00:04:42.690 align:middle line:90%
+So what's data?
+
+00:04:42.690 --> 00:04:43.482 align:middle line:90%
+It could be images.
+
+00:04:43.482 --> 00:04:45.230 align:middle line:84%
+We want algorithms
+that make images.
+
+00:04:45.230 --> 00:04:46.170 align:middle line:90%
+What's data?
+
+00:04:46.170 --> 00:04:47.010 align:middle line:90%
+Proteins are data.
+
+00:04:47.010 --> 00:04:49.070 align:middle line:84%
+We want algorithms
+that make proteins,
+
+00:04:49.070 --> 00:04:51.740 align:middle line:90%
+design proteins, design drugs.
+
+00:04:51.740 --> 00:04:54.060 align:middle line:84%
+We want algorithms that write
+stories and chat with us.
+
+00:04:54.060 --> 00:04:55.260 align:middle line:90%
+This is generating text.
+
+00:04:55.260 --> 00:04:56.320 align:middle line:90%
+That's data.
+
+00:04:56.320 --> 00:05:00.060 align:middle line:84%
+So this is in contrast
+to other forms of AI,
+
+00:05:00.060 --> 00:05:05.360 align:middle line:84%
+which are more about analyzing
+or classifying or deciding--
+
+00:05:05.360 --> 00:05:07.720 align:middle line:84%
+making decisions,
+taking data and saying,
+
+00:05:07.720 --> 00:05:10.320 align:middle line:84%
+this data is of
+type x, or this data
+
+00:05:10.320 --> 00:05:13.080 align:middle line:84%
+means I should turn
+left with my car.
+
+00:05:13.080 --> 00:05:16.773 align:middle line:84%
+So going from data to decisions
+or abstract representations
+
+00:05:16.773 --> 00:05:18.440 align:middle line:84%
+is what we've seen
+before, but now we're
+
+00:05:18.440 --> 00:05:21.260 align:middle line:90%
+going from something to data.
+
+00:05:21.260 --> 00:05:21.760 align:middle line:90%
+OK.
+
+00:05:21.760 --> 00:05:25.160 align:middle line:84%
+But most of the time,
+we'll be generating data
+
+00:05:25.160 --> 00:05:26.960 align:middle line:84%
+by either explicitly
+or implicitly
+
+00:05:26.960 --> 00:05:28.380 align:middle line:90%
+modeling a distribution.
+
+00:05:28.380 --> 00:05:30.920 align:middle line:90%
+
+
+00:05:30.920 --> 00:05:35.120 align:middle line:84%
+And I think that
+this is all probably
+
+00:05:35.120 --> 00:05:38.840 align:middle line:84%
+well known to you at
+this point in history,
+
+00:05:38.840 --> 00:05:42.280 align:middle line:84%
+but these things are
+all over the world now.
+
+00:05:42.280 --> 00:05:43.823 align:middle line:84%
+Generative models
+are what make it
+
+00:05:43.823 --> 00:05:45.240 align:middle line:84%
+so that you can
+type in a sentence
+
+00:05:45.240 --> 00:05:49.360 align:middle line:84%
+on your favorite
+text-to-image model and say,
+
+00:05:49.360 --> 00:05:52.120 align:middle line:84%
+a photo of a group of robots
+building this data center,
+
+00:05:52.120 --> 00:05:54.660 align:middle line:84%
+and you get almost
+photorealistic pictures.
+
+00:05:54.660 --> 00:05:56.800 align:middle line:84%
+Or you can make
+videos of this now.
+
+00:05:56.800 --> 00:06:00.640 align:middle line:84%
+This stuff is
+advancing so quickly.
+
+00:06:00.640 --> 00:06:02.280 align:middle line:84%
+But what you might
+not know as much,
+
+00:06:02.280 --> 00:06:04.360 align:middle line:84%
+or not see yet in
+the media as much,
+
+00:06:04.360 --> 00:06:06.360 align:middle line:84%
+is that generative
+models also can
+
+00:06:06.360 --> 00:06:11.480 align:middle line:84%
+be used to generate scientific
+data, data that is not just
+
+00:06:11.480 --> 00:06:14.440 align:middle line:84%
+for entertainment but might be
+for some kind of engineering
+
+00:06:14.440 --> 00:06:16.980 align:middle line:84%
+application or logistics
+data of some form.
+
+00:06:16.980 --> 00:06:20.140 align:middle line:84%
+Or in this case, this
+is a diffusion model,
+
+00:06:20.140 --> 00:06:21.560 align:middle line:84%
+a type of generative
+model, which
+
+00:06:21.560 --> 00:06:26.720 align:middle line:84%
+is generating some
+structures that describe
+
+00:06:26.720 --> 00:06:29.880 align:middle line:90%
+the geometry of a protein.
+
+00:06:29.880 --> 00:06:32.520 align:middle line:84%
+So we have this input,
+which is, like, I
+
+00:06:32.520 --> 00:06:35.320 align:middle line:90%
+want you to make me the--
+
+00:06:35.320 --> 00:06:38.900 align:middle line:84%
+I want you to tell me what the
+binding sites are on a protein,
+
+00:06:38.900 --> 00:06:42.320 align:middle line:84%
+and I'll use the diffusion
+model for that process.
+
+00:06:42.320 --> 00:06:43.380 align:middle line:90%
+Here's another example.
+
+00:06:43.380 --> 00:06:45.460 align:middle line:90%
+Here's an image-to-image model.
+
+00:06:45.460 --> 00:06:47.990 align:middle line:84%
+So it's generating-- the output
+of this model is an image.
+
+00:06:47.990 --> 00:06:50.450 align:middle line:84%
+But the output is
+a CT scan image,
+
+00:06:50.450 --> 00:06:53.430 align:middle line:84%
+and this is conditioned on an
+input which is an MRI image.
+
+00:06:53.430 --> 00:06:54.990 align:middle line:84%
+So it's taking it
+and it's saying,
+
+00:06:54.990 --> 00:06:56.570 align:middle line:84%
+What would it look
+like if the doctor
+
+00:06:56.570 --> 00:06:58.130 align:middle line:84%
+hadn't scanned
+with an MRI machine
+
+00:06:58.130 --> 00:07:00.530 align:middle line:84%
+but had scanned
+with a CT machine?
+
+00:07:00.530 --> 00:07:03.170 align:middle line:84%
+So we'll talk about
+that setting as well.
+
+00:07:03.170 --> 00:07:05.930 align:middle line:84%
+OK, so generative models are
+not just for entertainment,
+
+00:07:05.930 --> 00:07:09.250 align:middle line:84%
+but where they became popular
+was, yeah, writing funny stories
+
+00:07:09.250 --> 00:07:12.530 align:middle line:84%
+and having chatbots and
+making funny images.
+
+00:07:12.530 --> 00:07:14.570 align:middle line:90%
+OK.
+
+00:07:14.570 --> 00:07:17.530 align:middle line:84%
+So let's go over a little
+bit of math background
+
+00:07:17.530 --> 00:07:18.857 align:middle line:90%
+to get us all on the same page.
+
+00:07:18.857 --> 00:07:21.190 align:middle line:84%
+And this is material that if
+you haven't seen it before,
+
+00:07:21.190 --> 00:07:21.870 align:middle line:90%
+you should review.
+
+00:07:21.870 --> 00:07:23.870 align:middle line:84%
+But you should've taken
+some kind of probability
+
+00:07:23.870 --> 00:07:25.250 align:middle line:90%
+or statistics class.
+
+00:07:25.250 --> 00:07:28.210 align:middle line:84%
+So we are going to
+be assuming that.
+
+00:07:28.210 --> 00:07:28.902 align:middle line:90%
+OK.
+
+00:07:28.902 --> 00:07:30.610 align:middle line:84%
+But we're going to be
+changing the way we
+
+00:07:30.610 --> 00:07:32.130 align:middle line:90%
+think about neural nets.
+
+00:07:32.130 --> 00:07:35.050 align:middle line:84%
+So, so far, we've mostly
+thought of neural nets
+
+00:07:35.050 --> 00:07:39.610 align:middle line:84%
+as functions that map from some
+input data to some output data.
+
+00:07:39.610 --> 00:07:41.610 align:middle line:84%
+And in fact, we've
+thought of them
+
+00:07:41.610 --> 00:07:43.970 align:middle line:84%
+as the classical definition
+of a function, which
+
+00:07:43.970 --> 00:07:46.420 align:middle line:84%
+is, for each unique
+element of the--
+
+00:07:46.420 --> 00:07:48.380 align:middle line:84%
+for each element
+of the input space,
+
+00:07:48.380 --> 00:07:50.360 align:middle line:84%
+there is a unique element
+of the output space.
+
+00:07:50.360 --> 00:07:55.240 align:middle line:84%
+So it's a many-to-one mapping,
+or maybe a one-to-one mapping.
+
+00:07:55.240 --> 00:07:57.780 align:middle line:84%
+But it's not a
+one-to-many mapping.
+
+00:07:57.780 --> 00:08:00.562 align:middle line:84%
+So for every element of the
+input, there's only one output.
+
+00:08:00.562 --> 00:08:03.020 align:middle line:84%
+And that's not going to be
+sufficient for generative models
+
+00:08:03.020 --> 00:08:05.460 align:middle line:84%
+because we want to
+make we want to make
+
+00:08:05.460 --> 00:08:07.180 align:middle line:90%
+a whole distribution of things.
+
+00:08:07.180 --> 00:08:10.660 align:middle line:84%
+And so we're going to change
+our perspective a little bit.
+
+00:08:10.660 --> 00:08:13.420 align:middle line:84%
+Let me just give an example
+of the function perspective
+
+00:08:13.420 --> 00:08:14.940 align:middle line:90%
+on neural nets.
+
+00:08:14.940 --> 00:08:18.900 align:middle line:84%
+For an image classifier,
+the input might be a tensor,
+
+00:08:18.900 --> 00:08:22.783 align:middle line:84%
+an "N by M by C" number of color
+channels, a dimensional tensor.
+
+00:08:22.783 --> 00:08:24.200 align:middle line:84%
+We're going to
+learn a function f.
+
+00:08:24.200 --> 00:08:26.420 align:middle line:90%
+It will be a neural network.
+
+00:08:26.420 --> 00:08:28.600 align:middle line:84%
+Our goal is to output
+a class prediction.
+
+00:08:28.600 --> 00:08:30.780 align:middle line:84%
+So it will be an integer
+from 1 to d, where
+
+00:08:30.780 --> 00:08:33.260 align:middle line:90%
+d is the number of classes
+
+00:08:33.260 --> 00:08:34.620 align:middle line:90%
+OK.
+
+00:08:34.620 --> 00:08:37.220 align:middle line:84%
+So instead, we're going to
+now think of neural nets
+
+00:08:37.220 --> 00:08:39.100 align:middle line:84%
+as-- or the models
+that we'll consider
+
+00:08:39.100 --> 00:08:42.260 align:middle line:84%
+are going to be mappings
+from some input space X,
+
+00:08:42.260 --> 00:08:46.980 align:middle line:84%
+not to a object Y, but to a
+distribution over objects Y.
+
+00:08:46.980 --> 00:08:49.820 align:middle line:84%
+So we call that, with
+this fancy script, P,
+
+00:08:49.820 --> 00:08:54.420 align:middle line:84%
+the space of probability
+distributions over the space Y.
+
+00:08:54.420 --> 00:08:56.960 align:middle line:84%
+And that might seem
+a little bit weird,
+
+00:08:56.960 --> 00:08:59.420 align:middle line:84%
+but it's like going from
+data to a distribution
+
+00:08:59.420 --> 00:09:01.900 align:middle line:84%
+over possibilities,
+not just one answer.
+
+00:09:01.900 --> 00:09:03.583 align:middle line:84%
+And we've seen that,
+in fact, already.
+
+00:09:03.583 --> 00:09:05.500 align:middle line:84%
+In fact, almost all the
+things that we've seen
+
+00:09:05.500 --> 00:09:07.125 align:middle line:84%
+or you'll encounter
+in machine learning
+
+00:09:07.125 --> 00:09:08.980 align:middle line:84%
+can be recast from
+this perspective.
+
+00:09:08.980 --> 00:09:11.800 align:middle line:84%
+So one example is
+classification.
+
+00:09:11.800 --> 00:09:14.160 align:middle line:84%
+We actually model it
+as softmax regression.
+
+00:09:14.160 --> 00:09:17.920 align:middle line:84%
+This is a standard thing we've
+been doing in machine learning.
+
+00:09:17.920 --> 00:09:21.380 align:middle line:84%
+We learn a function from, in
+this case, let's say, images,
+
+00:09:21.380 --> 00:09:24.380 align:middle line:84%
+to a distribution
+over the probability
+
+00:09:24.380 --> 00:09:27.620 align:middle line:84%
+that the image contains
+each of the d classes.
+
+00:09:27.620 --> 00:09:30.420 align:middle line:84%
+So this little triangle is meant
+to indicate the simplex, which
+
+00:09:30.420 --> 00:09:34.900 align:middle line:84%
+is the space of all categorical
+distributions over d categories.
+
+00:09:34.900 --> 00:09:39.040 align:middle line:84%
+And for d categories, it's
+the d-minus-1 simplex.
+
+00:09:39.040 --> 00:09:42.570 align:middle line:84%
+So if I have a binary
+classifier, 0 or 1,
+
+00:09:42.570 --> 00:09:45.893 align:middle line:84%
+then my distribution will
+be, How much probability
+
+00:09:45.893 --> 00:09:47.810 align:middle line:84%
+do I place on class 1
+and how much probability
+
+00:09:47.810 --> 00:09:52.470 align:middle line:84%
+do I place on class 2?
+f that will be a line.
+
+00:09:52.470 --> 00:09:54.030 align:middle line:90%
+OK.
+
+00:09:54.030 --> 00:09:59.090 align:middle line:84%
+So this is the way we'll think
+of what we're actually modeling.
+
+00:09:59.090 --> 00:10:02.070 align:middle line:84%
+We're modeling the probability
+of some output conditioned
+
+00:10:02.070 --> 00:10:04.670 align:middle line:84%
+on the input, which is thought
+of as a random variable,
+
+00:10:04.670 --> 00:10:07.895 align:middle line:90%
+takes on some value x.
+
+00:10:07.895 --> 00:10:09.270 align:middle line:84%
+And again, this
+is something that
+
+00:10:09.270 --> 00:10:11.950 align:middle line:84%
+does characterize
+the classifiers we've
+
+00:10:11.950 --> 00:10:13.510 align:middle line:90%
+seen in the past.
+
+00:10:13.510 --> 00:10:17.630 align:middle line:84%
+If we have a vanilla regression,
+where we're doing regression
+
+00:10:17.630 --> 00:10:20.790 align:middle line:84%
+with respect to a Euclidean
+like squared error loss,
+
+00:10:20.790 --> 00:10:23.950 align:middle line:84%
+then you can recast that
+as outputting a Gaussian
+
+00:10:23.950 --> 00:10:25.730 align:middle line:84%
+distribution over
+the possibilities,
+
+00:10:25.730 --> 00:10:29.030 align:middle line:84%
+and the mean is what
+you're regressing.
+
+00:10:29.030 --> 00:10:30.530 align:middle line:90%
+OK.
+
+00:10:30.530 --> 00:10:33.510 align:middle line:84%
+So the main perspective here is
+that the outputs of neural nets
+
+00:10:33.510 --> 00:10:35.550 align:middle line:84%
+are, either implicitly
+or explicitly,
+
+00:10:35.550 --> 00:10:37.770 align:middle line:84%
+going to be distributions
+of possibilities,
+
+00:10:37.770 --> 00:10:39.820 align:middle line:84%
+as opposed to just one,
+like, point prediction.
+
+00:10:39.820 --> 00:10:42.680 align:middle line:90%
+
+
+00:10:42.680 --> 00:10:44.500 align:middle line:84%
+So this was in that
+hacker's guide lecture.
+
+00:10:44.500 --> 00:10:50.500 align:middle line:84%
+I talked about this idea that
+in a lot of deep learning,
+
+00:10:50.500 --> 00:10:54.360 align:middle line:84%
+we're going to be predicting
+something from something.
+
+00:10:54.360 --> 00:10:55.800 align:middle line:84%
+And this little
+trick, this hack,
+
+00:10:55.800 --> 00:10:57.207 align:middle line:84%
+is that you make
+the thing you're
+
+00:10:57.207 --> 00:10:59.040 align:middle line:84%
+conditioning on-- so
+you're going to predict
+
+00:10:59.040 --> 00:11:00.660 align:middle line:90%
+the class of an image.
+
+00:11:00.660 --> 00:11:03.960 align:middle line:84%
+But better than that would be
+to take your whole experience
+
+00:11:03.960 --> 00:11:06.880 align:middle line:84%
+of the photographer's life
+before they took that photo.
+
+00:11:06.880 --> 00:11:10.080 align:middle line:84%
+If you condition on more
+information, like a video,
+
+00:11:10.080 --> 00:11:12.560 align:middle line:84%
+then you get less
+uncertainty over the output.
+
+00:11:12.560 --> 00:11:14.320 align:middle line:84%
+And the neural
+nets we had looked
+
+00:11:14.320 --> 00:11:17.060 align:middle line:84%
+at before were making these
+point predictions, just saying,
+
+00:11:17.060 --> 00:11:18.602 align:middle line:84%
+for this input, I'm
+going to predict,
+
+00:11:18.602 --> 00:11:21.320 align:middle line:84%
+What is the possible label Y, or
+what is the possible outcome Y?
+
+00:11:21.320 --> 00:11:24.025 align:middle line:84%
+But in reality, there's
+some set of possibilities.
+
+00:11:24.025 --> 00:11:25.900 align:middle line:84%
+It's not always that
+there's only one answer.
+
+00:11:25.900 --> 00:11:28.000 align:middle line:84%
+There could be--
+this image could
+
+00:11:28.000 --> 00:11:30.000 align:middle line:84%
+be a cat with probability
+of 50% and a dog
+
+00:11:30.000 --> 00:11:31.375 align:middle line:90%
+with another probability.
+
+00:11:31.375 --> 00:11:33.500 align:middle line:84%
+And it becomes a complicated
+distribution to model.
+
+00:11:33.500 --> 00:11:36.280 align:middle line:84%
+And I said, just put
+more information into X
+
+00:11:36.280 --> 00:11:37.868 align:middle line:90%
+to reduce that uncertainty.
+
+00:11:37.868 --> 00:11:39.410 align:middle line:84%
+But now I'm going
+to tell you, if you
+
+00:11:39.410 --> 00:11:42.205 align:middle line:84%
+don't have that luxury, if you
+can't put more data into X,
+
+00:11:42.205 --> 00:11:42.830 align:middle line:90%
+what do you do?
+
+00:11:42.830 --> 00:11:45.550 align:middle line:84%
+How do you model a complicated
+output distribution
+
+00:11:45.550 --> 00:11:47.690 align:middle line:90%
+that's not just a point?
+
+00:11:47.690 --> 00:11:50.250 align:middle line:90%
+OK.
+
+00:11:50.250 --> 00:11:50.750 align:middle line:90%
+OK.
+
+00:11:50.750 --> 00:11:53.630 align:middle line:84%
+So that's what generative
+modeling tries to deal with.
+
+00:11:53.630 --> 00:11:56.170 align:middle line:90%
+So a little bit more notation--
+
+00:11:56.170 --> 00:11:57.950 align:middle line:84%
+so we'll talk about
+random variables.
+
+00:11:57.950 --> 00:12:00.150 align:middle line:84%
+They'll be characterized
+by a distribution.
+
+00:12:00.150 --> 00:12:07.670 align:middle line:84%
+So a random variable is
+a set of possible atoms,
+
+00:12:07.670 --> 00:12:10.970 align:middle line:84%
+and there's a
+distribution over what
+
+00:12:10.970 --> 00:12:13.070 align:middle line:84%
+values that random
+variable will take on.
+
+00:12:13.070 --> 00:12:16.030 align:middle line:84%
+And that distribution is
+either discrete or continuous.
+
+00:12:16.030 --> 00:12:18.790 align:middle line:84%
+If it's discrete, we call it
+a probability mass function.
+
+00:12:18.790 --> 00:12:21.490 align:middle line:84%
+And if it's continuous, we will
+call it a probability density
+
+00:12:21.490 --> 00:12:24.210 align:middle line:90%
+function.
+
+00:12:24.210 --> 00:12:26.850 align:middle line:84%
+And a realization of
+that random variable
+
+00:12:26.850 --> 00:12:29.770 align:middle line:84%
+will be indicated with a
+lowercase variable name.
+
+00:12:29.770 --> 00:12:32.130 align:middle line:84%
+So a sample from
+the distribution
+
+00:12:32.130 --> 00:12:34.890 align:middle line:84%
+of possible settings
+of that random variable
+
+00:12:34.890 --> 00:12:36.330 align:middle line:90%
+will be a realization x.
+
+00:12:36.330 --> 00:12:39.330 align:middle line:84%
+And we'll call that
+the probability of x.
+
+00:12:39.330 --> 00:12:41.790 align:middle line:84%
+And you can think of that as
+a mass, in the discrete case,
+
+00:12:41.790 --> 00:12:45.550 align:middle line:84%
+or a probability density of
+x, in the continuous case.
+
+00:12:45.550 --> 00:12:46.050 align:middle line:90%
+OK.
+
+00:12:46.050 --> 00:12:49.525 align:middle line:84%
+So uppercase letters, in this
+course, are random variables.
+
+00:12:49.525 --> 00:12:51.150 align:middle line:84%
+They're characterized
+by distributions.
+
+00:12:51.150 --> 00:12:52.950 align:middle line:84%
+Lowercase letters
+are realizations.
+
+00:12:52.950 --> 00:12:55.930 align:middle line:84%
+They're characterized by
+scalars, just the probability
+
+00:12:55.930 --> 00:12:59.270 align:middle line:90%
+of that realization.
+
+00:12:59.270 --> 00:12:59.770 align:middle line:90%
+OK.
+
+00:12:59.770 --> 00:13:03.570 align:middle line:84%
+So just, formally, a
+probability mass function
+
+00:13:03.570 --> 00:13:06.330 align:middle line:84%
+is a mapping from
+data to scalars.
+
+00:13:06.330 --> 00:13:08.990 align:middle line:84%
+And the scalars are
+between 0 and 1.
+
+00:13:08.990 --> 00:13:12.210 align:middle line:84%
+So the probability can be 0 up
+to a hundred percent, up to 1.
+
+00:13:12.210 --> 00:13:15.650 align:middle line:84%
+And the sum of all
+the probabilities
+
+00:13:15.650 --> 00:13:17.910 align:middle line:84%
+over all possibilities
+sums to 1.
+
+00:13:17.910 --> 00:13:20.050 align:middle line:84%
+That's just the
+definition of probability.
+
+00:13:20.050 --> 00:13:22.175 align:middle line:84%
+So if you ever have a vector
+that sums to 1-- like,
+
+00:13:22.175 --> 00:13:24.170 align:middle line:84%
+let's say you do
+L1 normalization
+
+00:13:24.170 --> 00:13:27.410 align:middle line:84%
+of a vector of activations in a
+neural network, and all of the--
+
+00:13:27.410 --> 00:13:31.290 align:middle line:84%
+and also, you have a sigmoid,
+so that the numbers are
+
+00:13:31.290 --> 00:13:33.170 align:middle line:84%
+all between 0 and 1--
+well, that vector, you
+
+00:13:33.170 --> 00:13:35.360 align:middle line:84%
+can call that a
+probability mass function.
+
+00:13:35.360 --> 00:13:39.857 align:middle line:84%
+That's just mathematically what
+a probability mass function is.
+
+00:13:39.857 --> 00:13:41.440 align:middle line:84%
+Probability density
+is the same thing,
+
+00:13:41.440 --> 00:13:44.700 align:middle line:84%
+except it's over a continuous
+space and it integrates to 1.
+
+00:13:44.700 --> 00:13:48.600 align:middle line:84%
+And the densities don't have to
+be-- they can go to infinity.
+
+00:13:48.600 --> 00:13:51.460 align:middle line:84%
+So it's just that the
+densities are nonnegative.
+
+00:13:51.460 --> 00:13:52.540 align:middle line:90%
+OK.
+
+00:13:52.540 --> 00:13:54.780 align:middle line:84%
+So again, this should be
+stuff from probability,
+
+00:13:54.780 --> 00:13:55.653 align:middle line:90%
+intro probability.
+
+00:13:55.653 --> 00:13:57.820 align:middle line:84%
+But it's a little bit of a
+different way of thinking
+
+00:13:57.820 --> 00:13:59.860 align:middle line:84%
+about things, and it's
+the fundamental language
+
+00:13:59.860 --> 00:14:02.300 align:middle line:90%
+of generative modeling.
+
+00:14:02.300 --> 00:14:04.160 align:middle line:84%
+So you should refresh
+yourself on that.
+
+00:14:04.160 --> 00:14:06.820 align:middle line:84%
+And the notation that is linked
+in the schedule for the very
+
+00:14:06.820 --> 00:14:09.960 align:middle line:84%
+first class, and that you should
+be using on your problem sets
+
+00:14:09.960 --> 00:14:11.860 align:middle line:84%
+and we're using
+throughout the class,
+
+00:14:11.860 --> 00:14:13.140 align:middle line:90%
+has a section on probability.
+
+00:14:13.140 --> 00:14:14.820 align:middle line:90%
+And we have some shorthands.
+
+00:14:14.820 --> 00:14:18.020 align:middle line:84%
+So one shorthand that
+might confuse you a little
+
+00:14:18.020 --> 00:14:21.840 align:middle line:84%
+is, if I write p of
+capital letter X,
+
+00:14:21.840 --> 00:14:24.760 align:middle line:84%
+I mean a distribution
+of this random variable.
+
+00:14:24.760 --> 00:14:27.140 align:middle line:84%
+And if I write p of
+lowercase letter x,
+
+00:14:27.140 --> 00:14:30.300 align:middle line:84%
+I mean the scalar probability
+of random variable X
+
+00:14:30.300 --> 00:14:31.790 align:middle line:90%
+taking on value x.
+
+00:14:31.790 --> 00:14:37.070 align:middle line:84%
+So this is shorthand for
+the distribution over X,
+
+00:14:37.070 --> 00:14:40.270 align:middle line:84%
+and this is shorthand
+for the distribution--
+
+00:14:40.270 --> 00:14:43.510 align:middle line:84%
+sorry, the scalar probability of
+the realization random variable
+
+00:14:43.510 --> 00:14:45.830 align:middle line:90%
+X takes on the value little x.
+
+00:14:45.830 --> 00:14:49.730 align:middle line:84%
+So this is on this slide as
+well, from the notation doc.
+
+00:14:49.730 --> 00:14:53.110 align:middle line:90%
+
+
+00:14:53.110 --> 00:14:53.610 align:middle line:90%
+OK.
+
+00:14:53.610 --> 00:14:54.110 align:middle line:90%
+Cool.
+
+00:14:54.110 --> 00:14:58.150 align:middle line:84%
+Any questions about the
+math background before we
+
+00:14:58.150 --> 00:15:02.590 align:middle line:90%
+now get into generative models?
+
+00:15:02.590 --> 00:15:04.150 align:middle line:90%
+Yeah?
+
+00:15:04.150 --> 00:15:07.750 align:middle line:84%
+AUDIENCE: When you say
+continuous probability function,
+
+00:15:07.750 --> 00:15:10.430 align:middle line:84%
+how can you define
+the density of X?
+
+00:15:10.430 --> 00:15:13.910 align:middle line:84%
+I mean, my understanding
+is that it's always zero.
+
+00:15:13.910 --> 00:15:15.270 align:middle line:90%
+PHILLIP ISOLA: Yeah.
+
+00:15:15.270 --> 00:15:15.930 align:middle line:90%
+Great question.
+
+00:15:15.930 --> 00:15:19.160 align:middle line:84%
+So the question is, For
+probability density functions,
+
+00:15:19.160 --> 00:15:20.410 align:middle line:90%
+how do you define probability?
+
+00:15:20.410 --> 00:15:23.550 align:middle line:84%
+The probability of an
+infinitesimal thing
+
+00:15:23.550 --> 00:15:24.530 align:middle line:90%
+shouldn't go to 0.
+
+00:15:24.530 --> 00:15:27.990 align:middle line:84%
+So the definition is
+you always only define
+
+00:15:27.990 --> 00:15:29.590 align:middle line:84%
+the probability of
+a variable taking
+
+00:15:29.590 --> 00:15:32.390 align:middle line:84%
+on some value over an
+interval, so the probability
+
+00:15:32.390 --> 00:15:36.133 align:middle line:90%
+of x being between 0 and 0.1.
+
+00:15:36.133 --> 00:15:38.050 align:middle line:84%
+So it's all defined with
+respect to integrals.
+
+00:15:38.050 --> 00:15:40.047 align:middle line:84%
+But usually, we don't
+worry about that.
+
+00:15:40.047 --> 00:15:41.630 align:middle line:84%
+This is, like, when
+you start thinking
+
+00:15:41.630 --> 00:15:44.005 align:middle line:84%
+about measure theory and the
+proper way to define things.
+
+00:15:44.005 --> 00:15:45.713 align:middle line:84%
+But just think of it
+like the probability
+
+00:15:45.713 --> 00:15:46.890 align:middle line:90%
+that X takes on that value.
+
+00:15:46.890 --> 00:15:48.830 align:middle line:84%
+It's really defined
+as some integral.
+
+00:15:48.830 --> 00:15:49.510 align:middle line:90%
+Yeah?
+
+00:15:49.510 --> 00:15:50.910 align:middle line:84%
+AUDIENCE: Could you
+explain one more time
+
+00:15:50.910 --> 00:15:52.510 align:middle line:84%
+how we can think
+of a neural network
+
+00:15:52.510 --> 00:15:54.237 align:middle line:90%
+as an implicit distribution?
+
+00:15:54.237 --> 00:15:55.070 align:middle line:90%
+PHILLIP ISOLA: Yeah.
+
+00:15:55.070 --> 00:15:56.570 align:middle line:84%
+How can we think
+of a neural network
+
+00:15:56.570 --> 00:15:58.250 align:middle line:84%
+as implying a
+probability distribution?
+
+00:15:58.250 --> 00:16:01.270 align:middle line:84%
+Well, I'll show a bunch
+of examples of this.
+
+00:16:01.270 --> 00:16:03.910 align:middle line:84%
+But basically, let's say
+that I'm doing regression
+
+00:16:03.910 --> 00:16:05.250 align:middle line:90%
+with an L2 loss.
+
+00:16:05.250 --> 00:16:07.190 align:middle line:84%
+I'm going to
+predict some number.
+
+00:16:07.190 --> 00:16:10.270 align:middle line:84%
+I will interpret that
+as, I am predicting
+
+00:16:10.270 --> 00:16:13.710 align:middle line:84%
+a distribution over outcomes,
+parameterized by the mean
+
+00:16:13.710 --> 00:16:16.630 align:middle line:84%
+equals my output of
+my neural network.
+
+00:16:16.630 --> 00:16:21.910 align:middle line:84%
+So that's like-- and that
+interpretation is valid
+
+00:16:21.910 --> 00:16:26.430 align:middle line:84%
+because the probability of the
+data under that Gaussian model
+
+00:16:26.430 --> 00:16:29.520 align:middle line:84%
+is equal to the squared
+error loss function.
+
+00:16:29.520 --> 00:16:32.320 align:middle line:84%
+So this is something--
+you can look
+
+00:16:32.320 --> 00:16:35.640 align:middle line:84%
+into the connection between
+Gaussian max likelihood modeling
+
+00:16:35.640 --> 00:16:38.580 align:middle line:90%
+and least squares regression.
+
+00:16:38.580 --> 00:16:39.360 align:middle line:90%
+AUDIENCE: OK.
+
+00:16:39.360 --> 00:16:44.340 align:middle line:84%
+So it's not that the network
+is sampling of a distribution,
+
+00:16:44.340 --> 00:16:46.340 align:middle line:84%
+it's that the output is
+a distribution itself?
+
+00:16:46.340 --> 00:16:47.220 align:middle line:90%
+PHILLIP ISOLA: We'll see both.
+
+00:16:47.220 --> 00:16:48.700 align:middle line:90%
+So there's two possibilities.
+
+00:16:48.700 --> 00:16:53.080 align:middle line:84%
+One, the network is outputting
+samples from a distribution,
+
+00:16:53.080 --> 00:16:55.040 align:middle line:84%
+and the other is the
+network is outputting
+
+00:16:55.040 --> 00:16:56.300 align:middle line:90%
+parameters of a distribution.
+
+00:16:56.300 --> 00:16:59.190 align:middle line:90%
+So I'm going to talk about both.
+
+00:16:59.190 --> 00:16:59.940 align:middle line:90%
+OK.
+
+00:16:59.940 --> 00:17:02.600 align:middle line:84%
+So let's build up
+some intuition.
+
+00:17:02.600 --> 00:17:04.060 align:middle line:90%
+So that was math background.
+
+00:17:04.060 --> 00:17:05.477 align:middle line:84%
+We're going to get
+some intuition,
+
+00:17:05.477 --> 00:17:07.920 align:middle line:84%
+and then we're going to
+get back to the math.
+
+00:17:07.920 --> 00:17:10.839 align:middle line:84%
+So I like to start
+with generative models
+
+00:17:10.839 --> 00:17:13.560 align:middle line:84%
+from this perspective,
+that we already
+
+00:17:13.560 --> 00:17:15.040 align:middle line:84%
+know about things
+like classifiers
+
+00:17:15.040 --> 00:17:16.677 align:middle line:90%
+take data and output a label.
+
+00:17:16.677 --> 00:17:18.760 align:middle line:84%
+And so again, I like
+thinking of generative models
+
+00:17:18.760 --> 00:17:21.440 align:middle line:84%
+as the inverse of that,
+the opposite direction.
+
+00:17:21.440 --> 00:17:24.319 align:middle line:84%
+Take a label or some
+abstract description, like,
+
+00:17:24.319 --> 00:17:26.530 align:middle line:84%
+I want you to make me a
+bird, and output the thing
+
+00:17:26.530 --> 00:17:28.410 align:middle line:84%
+that we would
+normally call data.
+
+00:17:28.410 --> 00:17:30.570 align:middle line:84%
+There's no definition
+to label versus data.
+
+00:17:30.570 --> 00:17:33.150 align:middle line:84%
+But you kind of have an
+intuition about what that means.
+
+00:17:33.150 --> 00:17:35.130 align:middle line:84%
+So, yeah, precisely,
+mathematically, there's
+
+00:17:35.130 --> 00:17:36.790 align:middle line:90%
+really no distinction here.
+
+00:17:36.790 --> 00:17:40.770 align:middle line:84%
+But generative models are
+when the outputs are something
+
+00:17:40.770 --> 00:17:42.970 align:middle line:90%
+you would think of as data.
+
+00:17:42.970 --> 00:17:44.946 align:middle line:90%
+OK.
+
+00:17:44.946 --> 00:17:48.490 align:middle line:90%
+So what is the problem?
+
+00:17:48.490 --> 00:17:50.650 align:middle line:84%
+The problem is that
+in this direction,
+
+00:17:50.650 --> 00:17:53.650 align:middle line:84%
+there's many possible
+outputs that match the input.
+
+00:17:53.650 --> 00:17:57.010 align:middle line:84%
+So in this direction, there's
+only one possible label
+
+00:17:57.010 --> 00:17:59.170 align:middle line:84%
+that is the correct
+label for this bird.
+
+00:17:59.170 --> 00:18:02.530 align:middle line:84%
+But in this
+direction, that robin
+
+00:18:02.530 --> 00:18:04.430 align:middle line:84%
+is just one possibility
+out of many.
+
+00:18:04.430 --> 00:18:07.610 align:middle line:84%
+So there's the distribution
+over correct answers.
+
+00:18:07.610 --> 00:18:10.210 align:middle line:84%
+So how do we model
+the distribution?
+
+00:18:10.210 --> 00:18:12.150 align:middle line:84%
+So we're going to see
+a few different ways.
+
+00:18:12.150 --> 00:18:15.290 align:middle line:90%
+But here's one of the ways.
+
+00:18:15.290 --> 00:18:18.990 align:middle line:84%
+We take a function generator,
+called a generator.
+
+00:18:18.990 --> 00:18:20.490 align:middle line:90%
+That's a neural net.
+
+00:18:20.490 --> 00:18:23.010 align:middle line:84%
+It's a deterministic
+function, but we condition it
+
+00:18:23.010 --> 00:18:25.020 align:middle line:90%
+on some random variable.
+
+00:18:25.020 --> 00:18:28.820 align:middle line:84%
+So we make multiple outputs
+by taking the function
+
+00:18:28.820 --> 00:18:31.553 align:middle line:84%
+and conditioning it on
+some random variable.
+
+00:18:31.553 --> 00:18:32.720 align:middle line:90%
+And that will be these dice.
+
+00:18:32.720 --> 00:18:33.760 align:middle line:90%
+So we roll the dice.
+
+00:18:33.760 --> 00:18:35.010 align:middle line:90%
+We input that into our system.
+
+00:18:35.010 --> 00:18:35.940 align:middle line:90%
+We get one outcome.
+
+00:18:35.940 --> 00:18:36.648 align:middle line:90%
+We roll the dice.
+
+00:18:36.648 --> 00:18:38.232 align:middle line:84%
+That's a different
+setting of numbers,
+
+00:18:38.232 --> 00:18:39.700 align:middle line:84%
+and that gives us
+another outcome.
+
+00:18:39.700 --> 00:18:43.060 align:middle line:84%
+And this is the way that you
+can turn a normal neural network
+
+00:18:43.060 --> 00:18:46.460 align:middle line:84%
+into something that can
+sample from a distribution,
+
+00:18:46.460 --> 00:18:50.340 align:middle line:84%
+by conditioning it
+on random variables.
+
+00:18:50.340 --> 00:18:53.140 align:middle line:90%
+OK.
+
+00:18:53.140 --> 00:18:55.860 align:middle line:84%
+So sometimes, people will
+call these random variables--
+
+00:18:55.860 --> 00:18:57.620 align:middle line:90%
+these dice, in this diagram--
+
+00:18:57.620 --> 00:18:59.340 align:middle line:90%
+as noise.
+
+00:18:59.340 --> 00:19:02.120 align:middle line:90%
+I think that's a confusing term.
+
+00:19:02.120 --> 00:19:04.970 align:middle line:84%
+They're noise in the sense
+that they are random variables,
+
+00:19:04.970 --> 00:19:06.660 align:middle line:90%
+so they're randomized.
+
+00:19:06.660 --> 00:19:09.140 align:middle line:84%
+But they're not noise in the
+sense that they're meaningless
+
+00:19:09.140 --> 00:19:11.380 align:middle line:84%
+or something that you want
+to get rid of or ignore.
+
+00:19:11.380 --> 00:19:14.780 align:middle line:84%
+These dice rolls, you
+should instead think of them
+
+00:19:14.780 --> 00:19:19.140 align:middle line:84%
+as specifying everything about
+the data that's not specified
+
+00:19:19.140 --> 00:19:20.280 align:middle line:90%
+by your input command.
+
+00:19:20.280 --> 00:19:21.870 align:middle line:84%
+So if I say, I want
+to make a bird,
+
+00:19:21.870 --> 00:19:23.620 align:middle line:84%
+well, everything else
+that's not specified
+
+00:19:23.620 --> 00:19:26.328 align:middle line:84%
+by that-- like what color is the
+bird, what species is the bird--
+
+00:19:26.328 --> 00:19:29.140 align:middle line:84%
+has to be specified,
+made deterministic by,
+
+00:19:29.140 --> 00:19:31.220 align:middle line:84%
+determined by these
+random variables.
+
+00:19:31.220 --> 00:19:34.920 align:middle line:84%
+So they're specifying,
+What's the color of the bird?
+
+00:19:34.920 --> 00:19:37.392 align:middle line:84%
+If I roll that, I'll change
+the color of the bird.
+
+00:19:37.392 --> 00:19:38.600 align:middle line:90%
+What's the angle of the bird?
+
+00:19:38.600 --> 00:19:40.787 align:middle line:84%
+If I roll that, I'll change
+the angle of the bird.
+
+00:19:40.787 --> 00:19:42.120 align:middle line:90%
+And what's the size of the bird?
+
+00:19:42.120 --> 00:19:43.720 align:middle line:90%
+OK.
+
+00:19:43.720 --> 00:19:47.020 align:middle line:84%
+So that's kind of how
+a generative model will
+
+00:19:47.020 --> 00:19:50.720 align:middle line:84%
+output randomized possible
+birds for the input command,
+
+00:19:50.720 --> 00:19:53.140 align:middle line:90%
+make me a photo of a bird.
+
+00:19:53.140 --> 00:19:54.540 align:middle line:90%
+OK.
+
+00:19:54.540 --> 00:19:58.057 align:middle line:84%
+So rather than thinking of them
+as dice rolls, another way,
+
+00:19:58.057 --> 00:20:00.140 align:middle line:84%
+you could think of them
+as these sort of control--
+
+00:20:00.140 --> 00:20:03.620 align:middle line:84%
+the underlying control variables
+that control the output
+
+00:20:03.620 --> 00:20:05.940 align:middle line:90%
+that you're going to get.
+
+00:20:05.940 --> 00:20:08.060 align:middle line:84%
+And I could spin
+this knob randomly,
+
+00:20:08.060 --> 00:20:10.100 align:middle line:84%
+and then it's like
+noise, a random variable,
+
+00:20:10.100 --> 00:20:11.480 align:middle line:90%
+that gives me a random bird.
+
+00:20:11.480 --> 00:20:14.700 align:middle line:84%
+But I could also set that
+knob, that dice-- now
+
+00:20:14.700 --> 00:20:17.460 align:middle line:84%
+I'm going to think of it as a
+knob-- to a value of the bird
+
+00:20:17.460 --> 00:20:18.380 align:middle line:90%
+I want.
+
+00:20:18.380 --> 00:20:22.098 align:middle line:84%
+And this is something that we'll
+see in a lot of the applications
+
+00:20:22.098 --> 00:20:24.390 align:middle line:84%
+of generative models, gearing
+the models by controlling
+
+00:20:24.390 --> 00:20:26.990 align:middle line:84%
+the latent variables that
+are input into the models.
+
+00:20:26.990 --> 00:20:28.270 align:middle line:90%
+OK.
+
+00:20:28.270 --> 00:20:28.810 align:middle line:90%
+OK.
+
+00:20:28.810 --> 00:20:31.393 align:middle line:84%
+So this is all kind of to build
+up this intuition about what's
+
+00:20:31.393 --> 00:20:33.230 align:middle line:90%
+going on.
+
+00:20:33.230 --> 00:20:36.270 align:middle line:84%
+Now let's-- I want to have you
+make a generative model really
+
+00:20:36.270 --> 00:20:36.770 align:middle line:90%
+quickly.
+
+00:20:36.770 --> 00:20:40.790 align:middle line:84%
+So one of the places where
+generative modeling got
+
+00:20:40.790 --> 00:20:43.070 align:middle line:84%
+started is statistics, but
+another place where it got
+
+00:20:43.070 --> 00:20:45.297 align:middle line:84%
+started is computer
+graphics, actually.
+
+00:20:45.297 --> 00:20:47.630 align:middle line:84%
+So in computer graphics, the
+name for a generative model
+
+00:20:47.630 --> 00:20:51.390 align:middle line:84%
+is-- the classical name
+is procedural graphics.
+
+00:20:51.390 --> 00:20:54.910 align:middle line:84%
+It's a way of making random
+content for your video game
+
+00:20:54.910 --> 00:20:55.730 align:middle line:90%
+or movie.
+
+00:20:55.730 --> 00:20:58.530 align:middle line:84%
+I want to draw a random
+map for my video game,
+
+00:20:58.530 --> 00:21:01.770 align:middle line:84%
+so I will write down a procedure
+that creates a random map.
+
+00:21:01.770 --> 00:21:02.950 align:middle line:90%
+That's a generative model.
+
+00:21:02.950 --> 00:21:05.710 align:middle line:84%
+So let's make a generative
+model like that.
+
+00:21:05.710 --> 00:21:08.810 align:middle line:84%
+So we're going to take
+in a random variable.
+
+00:21:08.810 --> 00:21:11.870 align:middle line:84%
+It will be a coin flip, so
+a Bernoulli random variable.
+
+00:21:11.870 --> 00:21:15.530 align:middle line:84%
+And we're going to try to make
+a generative model of rivers.
+
+00:21:15.530 --> 00:21:17.670 align:middle line:90%
+So here's how it's going to be.
+
+00:21:17.670 --> 00:21:20.480 align:middle line:90%
+Does anyone have a coin?
+
+00:21:20.480 --> 00:21:22.880 align:middle line:90%
+Somebody has a coin?
+
+00:21:22.880 --> 00:21:25.677 align:middle line:90%
+An object you can flip.
+
+00:21:25.677 --> 00:21:27.260 align:middle line:84%
+Google can do it for
+you, if you want.
+
+00:21:27.260 --> 00:21:30.080 align:middle line:90%
+You can search "coin flip."
+
+00:21:30.080 --> 00:21:31.080 align:middle line:90%
+AUDIENCE: I have a coin.
+
+00:21:31.080 --> 00:21:31.620 align:middle line:90%
+PHILLIP ISOLA: OK, good.
+
+00:21:31.620 --> 00:21:32.662 align:middle line:90%
+So why don't you do this?
+
+00:21:32.662 --> 00:21:35.505 align:middle line:84%
+So here's the
+start of the river.
+
+00:21:35.505 --> 00:21:37.880 align:middle line:84%
+So flip the coin, and it will
+determine if the river goes
+
+00:21:37.880 --> 00:21:39.200 align:middle line:90%
+left or right.
+
+00:21:39.200 --> 00:21:40.200 align:middle line:90%
+AUDIENCE: Heads is left?
+
+00:21:40.200 --> 00:21:40.760 align:middle line:90%
+PHILLIP ISOLA: OK.
+
+00:21:40.760 --> 00:21:41.260 align:middle line:90%
+Yeah.
+
+00:21:41.260 --> 00:21:42.173 align:middle line:90%
+Heads is left.
+
+00:21:42.173 --> 00:21:42.840 align:middle line:90%
+AUDIENCE: Heads.
+
+00:21:42.840 --> 00:21:43.200 align:middle line:90%
+PHILLIP ISOLA: OK.
+
+00:21:43.200 --> 00:21:43.700 align:middle line:90%
+Left.
+
+00:21:43.700 --> 00:21:45.968 align:middle line:90%
+Again.
+
+00:21:45.968 --> 00:21:46.800 align:middle line:90%
+AUDIENCE: Heads.
+
+00:21:46.800 --> 00:21:47.080 align:middle line:90%
+PHILLIP ISOLA: OK.
+
+00:21:47.080 --> 00:21:47.600 align:middle line:90%
+Left.
+
+00:21:47.600 --> 00:21:50.025 align:middle line:90%
+Again.
+
+00:21:50.025 --> 00:21:50.692 align:middle line:90%
+AUDIENCE: Heads.
+
+00:21:50.692 --> 00:21:51.680 align:middle line:90%
+[LAUGHTER]
+
+00:21:51.680 --> 00:21:52.980 align:middle line:84%
+PHILLIP ISOLA: So I don't
+know if you can still see it,
+
+00:21:52.980 --> 00:21:54.147 align:middle line:90%
+but anyways, going that way.
+
+00:21:54.147 --> 00:21:54.893 align:middle line:90%
+One more time?
+
+00:21:54.893 --> 00:21:55.560 align:middle line:90%
+AUDIENCE: Tails.
+
+00:21:55.560 --> 00:21:56.440 align:middle line:90%
+PHILLIP ISOLA: OK, cool.
+
+00:21:56.440 --> 00:21:58.023 align:middle line:84%
+So I think that's a
+pretty cool river.
+
+00:21:58.023 --> 00:21:59.840 align:middle line:84%
+And then my computer
+rendering engine
+
+00:21:59.840 --> 00:22:03.720 align:middle line:84%
+would probably make it a little
+thicker, smooth out the borders,
+
+00:22:03.720 --> 00:22:04.720 align:middle line:90%
+paint it blue.
+
+00:22:04.720 --> 00:22:06.060 align:middle line:90%
+And then there I go.
+
+00:22:06.060 --> 00:22:09.600 align:middle line:84%
+I have randomly generated a
+river from a distribution.
+
+00:22:09.600 --> 00:22:11.380 align:middle line:84%
+You could do the same
+trick with trees.
+
+00:22:11.380 --> 00:22:12.860 align:middle line:90%
+You could flip two coins.
+
+00:22:12.860 --> 00:22:15.062 align:middle line:84%
+One coin is, like, how
+many branches-- maybe
+
+00:22:15.062 --> 00:22:17.520 align:middle line:84%
+roll a dice, how many branches,
+and then the other coin is,
+
+00:22:17.520 --> 00:22:19.120 align:middle line:84%
+like, What's the
+angle of the branch?
+
+00:22:19.120 --> 00:22:20.870 align:middle line:84%
+So you can write little
+scripts like this.
+
+00:22:20.870 --> 00:22:24.840 align:middle line:84%
+You probably have done it in
+some of your coding experience.
+
+00:22:24.840 --> 00:22:25.600 align:middle line:90%
+OK.
+
+00:22:25.600 --> 00:22:28.400 align:middle line:84%
+So I wrote a little
+program that does that.
+
+00:22:28.400 --> 00:22:30.452 align:middle line:90%
+It's just exactly what we did.
+
+00:22:30.452 --> 00:22:31.660 align:middle line:90%
+So what is the program doing?
+
+00:22:31.660 --> 00:22:37.640 align:middle line:84%
+It's flipping a coin N times
+and drawing the river by just
+
+00:22:37.640 --> 00:22:41.100 align:middle line:84%
+changing the heading of the
+river by some 10-degree angle.
+
+00:22:41.100 --> 00:22:43.540 align:middle line:84%
+Depending on if I
+flip heads or tails,
+
+00:22:43.540 --> 00:22:45.680 align:middle line:90%
+it will choose left or right.
+
+00:22:45.680 --> 00:22:46.400 align:middle line:90%
+OK.
+
+00:22:46.400 --> 00:22:47.460 align:middle line:90%
+So what is that?
+
+00:22:47.460 --> 00:22:51.620 align:middle line:84%
+That's a mapping from random
+variables to generated imagery.
+
+00:22:51.620 --> 00:22:55.720 align:middle line:84%
+And that's how generative
+models tend to work.
+
+00:22:55.720 --> 00:22:59.520 align:middle line:84%
+So here's a more
+complicated mapping.
+
+00:22:59.520 --> 00:23:03.480 align:middle line:84%
+But again, you can specify
+so many details of the world
+
+00:23:03.480 --> 00:23:07.488 align:middle line:84%
+just via choosing a random
+variable that determines each
+
+00:23:07.488 --> 00:23:08.780 align:middle line:90%
+of the attributes of the image.
+
+00:23:08.780 --> 00:23:11.660 align:middle line:84%
+So in this case, I have a
+Bernoulli variable, N of them,
+
+00:23:11.660 --> 00:23:12.880 align:middle line:90%
+for the river turns.
+
+00:23:12.880 --> 00:23:15.830 align:middle line:84%
+I have a Gaussian variable
+for the color of the grass.
+
+00:23:15.830 --> 00:23:17.427 align:middle line:90%
+It's brighter or darker.
+
+00:23:17.427 --> 00:23:19.510 align:middle line:84%
+I have a uniform variable
+for the number of trees.
+
+00:23:19.510 --> 00:23:22.850 align:middle line:84%
+This is a top-down
+look at some river.
+
+00:23:22.850 --> 00:23:25.830 align:middle line:84%
+And you could say those
+random variables are noise.
+
+00:23:25.830 --> 00:23:29.210 align:middle line:84%
+But what we'll
+think of them as is
+
+00:23:29.210 --> 00:23:32.730 align:middle line:84%
+as control knobs that specify
+all the attributes of the data.
+
+00:23:32.730 --> 00:23:35.550 align:middle line:84%
+And a formal name for
+that is latent variables.
+
+00:23:35.550 --> 00:23:38.930 align:middle line:84%
+So a latent variable
+is any variable
+
+00:23:38.930 --> 00:23:41.570 align:middle line:84%
+that determines
+how the data looks
+
+00:23:41.570 --> 00:23:44.210 align:middle line:90%
+that is not directly observed.
+
+00:23:44.210 --> 00:23:45.430 align:middle line:90%
+OK.
+
+00:23:45.430 --> 00:23:47.930 align:middle line:84%
+So these latent
+variables are the thing
+
+00:23:47.930 --> 00:23:50.710 align:middle line:84%
+that underlie the causal
+process of generating the data.
+
+00:23:50.710 --> 00:23:53.730 align:middle line:90%
+
+
+00:23:53.730 --> 00:23:55.230 align:middle line:90%
+OK.
+
+00:23:55.230 --> 00:23:57.530 align:middle line:84%
+So yeah, that's one
+concept to start with,
+
+00:23:57.530 --> 00:24:00.770 align:middle line:84%
+is that generative
+models that we'll see
+
+00:24:00.770 --> 00:24:04.240 align:middle line:84%
+are going to be taking noise as
+input and turning it into data.
+
+00:24:04.240 --> 00:24:06.490 align:middle line:84%
+And you should really think
+of the noise as the latent
+
+00:24:06.490 --> 00:24:07.230 align:middle line:90%
+variables.
+
+00:24:07.230 --> 00:24:10.210 align:middle line:90%
+
+
+00:24:10.210 --> 00:24:14.880 align:middle line:84%
+OK So now let's talk about
+how to learn such models.
+
+00:24:14.880 --> 00:24:17.980 align:middle line:84%
+So you could handcraft this,
+write down a Python script
+
+00:24:17.980 --> 00:24:19.580 align:middle line:90%
+or play a game in a class.
+
+00:24:19.580 --> 00:24:22.420 align:middle line:84%
+But how do you actually
+learn that program
+
+00:24:22.420 --> 00:24:25.632 align:middle line:84%
+and represent it
+as a neural net?
+
+00:24:25.632 --> 00:24:27.840 align:middle line:84%
+And this gets to the question
+that was asked earlier.
+
+00:24:27.840 --> 00:24:30.300 align:middle line:84%
+There's going to be two
+different approaches.
+
+00:24:30.300 --> 00:24:32.540 align:middle line:84%
+One, I'll call the
+direct approach.
+
+00:24:32.540 --> 00:24:34.300 align:middle line:84%
+The direct approach
+is I'm going to learn
+
+00:24:34.300 --> 00:24:40.760 align:middle line:84%
+a function that directly samples
+random generated data points.
+
+00:24:40.760 --> 00:24:41.260 align:middle line:90%
+OK.
+
+00:24:41.260 --> 00:24:43.540 align:middle line:84%
+It'll start from
+z, which is going
+
+00:24:43.540 --> 00:24:46.720 align:middle line:84%
+to be our name for the noise,
+or the latent variables,
+
+00:24:46.720 --> 00:24:48.660 align:middle line:84%
+so the dice rolls
+or the coin flips.
+
+00:24:48.660 --> 00:24:50.980 align:middle line:90%
+And it will output data.
+
+00:24:50.980 --> 00:24:53.460 align:middle line:84%
+And the other approach
+will be, we'll call,
+
+00:24:53.460 --> 00:24:55.940 align:middle line:84%
+the indirect approach, which
+is, rather than learning
+
+00:24:55.940 --> 00:24:59.900 align:middle line:84%
+a function that goes from
+random variables to data,
+
+00:24:59.900 --> 00:25:03.740 align:middle line:84%
+I'll learn a function that
+scores the probability of a data
+
+00:25:03.740 --> 00:25:04.900 align:middle line:90%
+point.
+
+00:25:04.900 --> 00:25:06.980 align:middle line:84%
+So this is a function
+that should assign
+
+00:25:06.980 --> 00:25:11.950 align:middle line:84%
+a high score, a high
+scalar, to data that I like
+
+00:25:11.950 --> 00:25:14.470 align:middle line:84%
+and a low number to
+data that I don't like.
+
+00:25:14.470 --> 00:25:17.110 align:middle line:84%
+And there's a lot of different
+varieties of what that scoring
+
+00:25:17.110 --> 00:25:18.668 align:middle line:90%
+function could be.
+
+00:25:18.668 --> 00:25:21.210 align:middle line:84%
+The most basic one would be,
+it's the likelihood of the data,
+
+00:25:21.210 --> 00:25:23.510 align:middle line:84%
+the probability of
+the data, is a mapping
+
+00:25:23.510 --> 00:25:25.710 align:middle line:90%
+from the data to a scalar.
+
+00:25:25.710 --> 00:25:29.990 align:middle line:84%
+If it's a density, it's
+a nonnegative scalar.
+
+00:25:29.990 --> 00:25:30.910 align:middle line:90%
+OK.
+
+00:25:30.910 --> 00:25:32.850 align:middle line:84%
+Then, if I have such
+a scoring function,
+
+00:25:32.850 --> 00:25:36.190 align:middle line:84%
+I can generate data by
+searching for data points that
+
+00:25:36.190 --> 00:25:40.110 align:middle line:84%
+score highly, or by sampling
+from the distribution
+
+00:25:40.110 --> 00:25:43.030 align:middle line:90%
+given by that score.
+
+00:25:43.030 --> 00:25:47.693 align:middle line:84%
+So it's like the direct approach
+directly give me data points.
+
+00:25:47.693 --> 00:25:49.110 align:middle line:84%
+Indirect approach
+gives me a score
+
+00:25:49.110 --> 00:25:51.590 align:middle line:84%
+that I can optimize to
+find good data points,
+
+00:25:51.590 --> 00:25:55.710 align:middle line:84%
+or data points that
+are high probability.
+
+00:25:55.710 --> 00:25:58.657 align:middle line:84%
+Notation wise, there is
+kind of a historical name
+
+00:25:58.657 --> 00:26:00.990 align:middle line:84%
+for this top one, which is
+called an implicit generative
+
+00:26:00.990 --> 00:26:01.290 align:middle line:90%
+model.
+
+00:26:01.290 --> 00:26:03.690 align:middle line:84%
+I'm not sure that that name is
+still around or sticking around,
+
+00:26:03.690 --> 00:26:04.898 align:middle line:90%
+but you might come across it.
+
+00:26:04.898 --> 00:26:06.670 align:middle line:90%
+And if you do, don't worry.
+
+00:26:06.670 --> 00:26:09.090 align:middle line:84%
+Implicit sounds like
+it's kind of indirect,
+
+00:26:09.090 --> 00:26:10.670 align:middle line:90%
+but this is the direct approach.
+
+00:26:10.670 --> 00:26:13.110 align:middle line:84%
+So what it means is that
+the sampling procedure
+
+00:26:13.110 --> 00:26:14.950 align:middle line:84%
+implies a probability
+distribution
+
+00:26:14.950 --> 00:26:16.390 align:middle line:90%
+you're sampling from.
+
+00:26:16.390 --> 00:26:18.430 align:middle line:90%
+That's why it's called implicit.
+
+00:26:18.430 --> 00:26:20.945 align:middle line:84%
+So this direct sampler
+implies a distribution
+
+00:26:20.945 --> 00:26:22.570 align:middle line:84%
+that you could have
+drawn samples from.
+
+00:26:22.570 --> 00:26:25.510 align:middle line:84%
+And this distribution,
+this scoring function,
+
+00:26:25.510 --> 00:26:30.190 align:middle line:84%
+implies a sampler that can
+generate data directly.
+
+00:26:30.190 --> 00:26:34.610 align:middle line:84%
+So we'll see both of these
+types of models in more detail.
+
+00:26:34.610 --> 00:26:35.110 align:middle line:90%
+OK.
+
+00:26:35.110 --> 00:26:36.972 align:middle line:84%
+So let's start with
+the direct approach.
+
+00:26:36.972 --> 00:26:38.430 align:middle line:84%
+The direct approach
+is the one that
+
+00:26:38.430 --> 00:26:42.350 align:middle line:84%
+is kind of the more popular
+characterization right
+
+00:26:42.350 --> 00:26:43.990 align:middle line:84%
+now, whereas the
+indirect approach is
+
+00:26:43.990 --> 00:26:45.470 align:middle line:84%
+the more classical
+characterization
+
+00:26:45.470 --> 00:26:47.630 align:middle line:90%
+of generative models.
+
+00:26:47.630 --> 00:26:49.648 align:middle line:84%
+So the direct approach
+is, I start with--
+
+00:26:49.648 --> 00:26:51.690 align:middle line:84%
+I train the model by giving
+it a lot of examples.
+
+00:26:51.690 --> 00:26:52.850 align:middle line:84%
+It's just regular
+machine learning.
+
+00:26:52.850 --> 00:26:54.310 align:middle line:84%
+Right, I give you
+examples, and I
+
+00:26:54.310 --> 00:26:57.070 align:middle line:84%
+try to make more stuff
+like the examples.
+
+00:26:57.070 --> 00:26:58.890 align:middle line:90%
+And I'll take the data.
+
+00:26:58.890 --> 00:27:01.670 align:middle line:84%
+I'll output parameters of a
+parameterized function that
+
+00:27:01.670 --> 00:27:04.750 align:middle line:84%
+can map from random noise or
+from latent variables that
+
+00:27:04.750 --> 00:27:06.440 align:middle line:90%
+are randomized to--
+
+00:27:06.440 --> 00:27:09.280 align:middle line:84%
+that have simple distributions,
+to data samples that
+
+00:27:09.280 --> 00:27:11.040 align:middle line:90%
+look like the training data.
+
+00:27:11.040 --> 00:27:14.040 align:middle line:84%
+So the objective is
+to make more data that
+
+00:27:14.040 --> 00:27:16.240 align:middle line:90%
+looks like the training data.
+
+00:27:16.240 --> 00:27:16.740 align:middle line:90%
+OK.
+
+00:27:16.740 --> 00:27:19.548 align:middle line:84%
+So this, in our class,
+will be a neural network.
+
+00:27:19.548 --> 00:27:21.340 align:middle line:84%
+But it doesn't have to
+be a neural network.
+
+00:27:21.340 --> 00:27:23.880 align:middle line:84%
+But that's the thing that
+tends to work the best.
+
+00:27:23.880 --> 00:27:26.780 align:middle line:84%
+And we call these
+two phases training.
+
+00:27:26.780 --> 00:27:28.200 align:middle line:90%
+And now we use a different term.
+
+00:27:28.200 --> 00:27:29.900 align:middle line:84%
+Rather than testing, we
+might call it sampling.
+
+00:27:29.900 --> 00:27:31.483 align:middle line:84%
+But it's the same
+as the testing phase
+
+00:27:31.483 --> 00:27:33.493 align:middle line:84%
+for any neural net
+that's fit to data.
+
+00:27:33.493 --> 00:27:35.160 align:middle line:84%
+It's just, when I run
+it, you might call
+
+00:27:35.160 --> 00:27:37.117 align:middle line:90%
+it inference or deployment.
+
+00:27:37.117 --> 00:27:39.200 align:middle line:84%
+But from a generative
+model, we can also just call
+
+00:27:39.200 --> 00:27:41.480 align:middle line:90%
+it sampling from the model.
+
+00:27:41.480 --> 00:27:44.285 align:middle line:90%
+OK.
+
+00:27:44.285 --> 00:27:48.140 align:middle line:90%
+So the indirect approach is--
+
+00:27:48.140 --> 00:27:50.640 align:middle line:84%
+I already described it, but
+let's look at it in a little bit
+
+00:27:50.640 --> 00:27:51.880 align:middle line:90%
+more detail here.
+
+00:27:51.880 --> 00:27:54.680 align:middle line:84%
+So it is, take some
+data-- and this
+
+00:27:54.680 --> 00:27:57.240 align:middle line:84%
+is what you would've
+seen in your statistics
+
+00:27:57.240 --> 00:27:59.120 align:middle line:90%
+classes or probability classes.
+
+00:27:59.120 --> 00:28:03.440 align:middle line:84%
+You take some data and you
+learn a scoring function
+
+00:28:03.440 --> 00:28:06.890 align:middle line:84%
+that places a high score
+where the data lives.
+
+00:28:06.890 --> 00:28:07.490 align:middle line:90%
+OK.
+
+00:28:07.490 --> 00:28:11.290 align:middle line:84%
+So the most standard one would
+be a probability distribution
+
+00:28:11.290 --> 00:28:14.050 align:middle line:84%
+that has high probability
+where the data lives,
+
+00:28:14.050 --> 00:28:16.210 align:middle line:84%
+so that the samples
+that you observe
+
+00:28:16.210 --> 00:28:21.050 align:middle line:84%
+are samples from the
+distribution that you learn.
+
+00:28:21.050 --> 00:28:23.650 align:middle line:84%
+But it could also be what we'll
+call an energy function, which
+
+00:28:23.650 --> 00:28:25.317 align:middle line:84%
+I'll show you, or
+something more exotic,
+
+00:28:25.317 --> 00:28:27.650 align:middle line:84%
+some other type
+of score function.
+
+00:28:27.650 --> 00:28:29.550 align:middle line:84%
+And then, sampling
+is no longer direct.
+
+00:28:29.550 --> 00:28:32.130 align:middle line:84%
+Now, sampling is, I
+have my function that
+
+00:28:32.130 --> 00:28:36.030 align:middle line:84%
+scores the probability of
+every possible value of x.
+
+00:28:36.030 --> 00:28:38.550 align:middle line:84%
+So this is a one-dimensional
+distribution, the x-axis.
+
+00:28:38.550 --> 00:28:41.170 align:middle line:84%
+What's the probability of
+coming up with this value of x?
+
+00:28:41.170 --> 00:28:42.690 align:middle line:90%
+It's high probability.
+
+00:28:42.690 --> 00:28:45.370 align:middle line:84%
+And I can sample from
+that distribution using
+
+00:28:45.370 --> 00:28:48.770 align:middle line:84%
+another algorithm, which will
+be called a sampling algorithm.
+
+00:28:48.770 --> 00:28:53.230 align:middle line:84%
+And we won't go into too
+much detail about these.
+
+00:28:53.230 --> 00:28:57.890 align:middle line:84%
+But you probably-- you may
+have seen these before as--
+
+00:28:57.890 --> 00:29:00.600 align:middle line:84%
+Markov chain Monte Carlo is
+one type of sampling algorithm.
+
+00:29:00.600 --> 00:29:02.350 align:middle line:84%
+Another type is called
+rejection sampling.
+
+00:29:02.350 --> 00:29:05.450 align:middle line:84%
+You just take a random sample
+and reject it in proportion
+
+00:29:05.450 --> 00:29:07.745 align:middle line:84%
+to its probability under
+that scoring function.
+
+00:29:07.745 --> 00:29:09.370 align:middle line:84%
+So there's a lot of
+sampling algorithms
+
+00:29:09.370 --> 00:29:11.010 align:middle line:84%
+for how to go from
+this distribution
+
+00:29:11.010 --> 00:29:14.190 align:middle line:84%
+to samples from
+that distribution.
+
+00:29:14.190 --> 00:29:14.690 align:middle line:90%
+OK.
+
+00:29:14.690 --> 00:29:16.550 align:middle line:84%
+So this is the
+indirect approach.
+
+00:29:16.550 --> 00:29:20.980 align:middle line:90%
+
+
+00:29:20.980 --> 00:29:24.610 align:middle line:84%
+So what's the goal of
+generative modeling?
+
+00:29:24.610 --> 00:29:29.105 align:middle line:84%
+The goal is to make synthetic
+data that looks like real data,
+
+00:29:29.105 --> 00:29:31.230 align:middle line:84%
+make more stuff that looks
+like your training data.
+
+00:29:31.230 --> 00:29:34.830 align:middle line:90%
+
+
+00:29:34.830 --> 00:29:36.788 align:middle line:84%
+So the modeling
+questions to answer are,
+
+00:29:36.788 --> 00:29:38.830 align:middle line:84%
+What does it mean to look
+like the training data?
+
+00:29:38.830 --> 00:29:40.810 align:middle line:84%
+What does it mean for it to
+be making more stuff that's
+
+00:29:40.810 --> 00:29:41.710 align:middle line:90%
+like the training data?
+
+00:29:41.710 --> 00:29:43.002 align:middle line:90%
+It doesn't have to be an image.
+
+00:29:43.002 --> 00:29:46.637 align:middle line:84%
+It could be "looks like"
+in an abstract sense.
+
+00:29:46.637 --> 00:29:48.970 align:middle line:84%
+And there's a lot of answers
+to this question, that lead
+
+00:29:48.970 --> 00:29:50.970 align:middle line:90%
+to different types of model.
+
+00:29:50.970 --> 00:29:53.050 align:middle line:84%
+But we've kind of
+converged on one main one
+
+00:29:53.050 --> 00:29:56.610 align:middle line:84%
+in machine learning, which
+is that you should make
+
+00:29:56.610 --> 00:30:00.860 align:middle line:84%
+more data that has high
+probability under a density
+
+00:30:00.860 --> 00:30:04.060 align:middle line:90%
+model fit to your training data.
+
+00:30:04.060 --> 00:30:06.460 align:middle line:84%
+So this is called the
+max likelihood objective.
+
+00:30:06.460 --> 00:30:09.085 align:middle line:84%
+We're going to go through that
+in a little bit more detail now.
+
+00:30:09.085 --> 00:30:11.140 align:middle line:90%
+
+
+00:30:11.140 --> 00:30:13.160 align:middle line:84%
+So here's, again,
+the density model.
+
+00:30:13.160 --> 00:30:16.340 align:middle line:84%
+It's a mapping from data
+to positive numbers--
+
+00:30:16.340 --> 00:30:18.500 align:middle line:90%
+or nonnegative numbers, in fact.
+
+00:30:18.500 --> 00:30:20.390 align:middle line:84%
+And it's going to
+be parameterized
+
+00:30:20.390 --> 00:30:22.140 align:middle line:84%
+by parameters theta,
+which are the weights
+
+00:30:22.140 --> 00:30:24.140 align:middle line:90%
+and biases in a neural network.
+
+00:30:24.140 --> 00:30:30.100 align:middle line:84%
+And think of that as assigning
+a likelihood, a probability,
+
+00:30:30.100 --> 00:30:33.500 align:middle line:84%
+to every point along some
+data space X. So here,
+
+00:30:33.500 --> 00:30:36.260 align:middle line:84%
+data is just a
+one-dimensional space.
+
+00:30:36.260 --> 00:30:37.640 align:middle line:90%
+And here's my training data.
+
+00:30:37.640 --> 00:30:40.640 align:middle line:84%
+My training data is examples
+of what the data looks like,
+
+00:30:40.640 --> 00:30:42.540 align:middle line:90%
+and I want to make more like it.
+
+00:30:42.540 --> 00:30:44.740 align:middle line:84%
+So in order to maximize
+the probability
+
+00:30:44.740 --> 00:30:48.140 align:middle line:84%
+that my model P theta
+places on the training data,
+
+00:30:48.140 --> 00:30:49.420 align:middle line:90%
+I will start with some model.
+
+00:30:49.420 --> 00:30:54.580 align:middle line:84%
+Maybe I have-- my neural
+network is going to output
+
+00:30:54.580 --> 00:30:57.140 align:middle line:84%
+this shape, so it's going to
+output a structured object
+
+00:30:57.140 --> 00:30:58.110 align:middle line:90%
+of this shape.
+
+00:30:58.110 --> 00:30:59.730 align:middle line:84%
+Now, how does it
+actually do that?
+
+00:30:59.730 --> 00:31:01.470 align:middle line:84%
+It's going to output
+the parameters
+
+00:31:01.470 --> 00:31:03.510 align:middle line:90%
+of a parameterized function--
+
+00:31:03.510 --> 00:31:06.110 align:middle line:84%
+like, a Gaussian is a
+parameterized function specified
+
+00:31:06.110 --> 00:31:07.318 align:middle line:90%
+by the mean and the variance.
+
+00:31:07.318 --> 00:31:09.152 align:middle line:84%
+So I could output the
+mean and the variance,
+
+00:31:09.152 --> 00:31:11.950 align:middle line:84%
+and my neural net is telling me
+that that's the distribution it
+
+00:31:11.950 --> 00:31:14.225 align:middle line:90%
+thinks explains the data.
+
+00:31:14.225 --> 00:31:15.850 align:middle line:84%
+But it could be a
+mixture of Gaussians,
+
+00:31:15.850 --> 00:31:17.430 align:middle line:84%
+or it could be any-- yeah,
+it could output, like,
+
+00:31:17.430 --> 00:31:18.610 align:middle line:90%
+the shape of some spline.
+
+00:31:18.610 --> 00:31:20.710 align:middle line:84%
+So the network can output
+a set of numbers that
+
+00:31:20.710 --> 00:31:22.770 align:middle line:90%
+parameterizes the distribution.
+
+00:31:22.770 --> 00:31:23.270 align:middle line:90%
+OK.
+
+00:31:23.270 --> 00:31:25.650 align:middle line:84%
+So here's what I'll do with
+max likelihood modeling.
+
+00:31:25.650 --> 00:31:30.190 align:middle line:84%
+I'll simply-- so the definition
+of a probability distribution
+
+00:31:30.190 --> 00:31:32.910 align:middle line:84%
+is constant mass, right, so
+this area under the curve
+
+00:31:32.910 --> 00:31:35.790 align:middle line:90%
+has to be constant, 1.
+
+00:31:35.790 --> 00:31:36.370 align:middle line:90%
+OK.
+
+00:31:36.370 --> 00:31:38.310 align:middle line:84%
+So I will push up
+the probability
+
+00:31:38.310 --> 00:31:40.230 align:middle line:90%
+I place where the data lives.
+
+00:31:40.230 --> 00:31:43.950 align:middle line:84%
+I'll increase the probability
+my model places on the data.
+
+00:31:43.950 --> 00:31:46.350 align:middle line:84%
+And because it's
+constant mass, I'll
+
+00:31:46.350 --> 00:31:48.870 align:middle line:84%
+have to take away mass
+from somewhere else, where
+
+00:31:48.870 --> 00:31:51.270 align:middle line:90%
+the data does not live.
+
+00:31:51.270 --> 00:31:54.870 align:middle line:84%
+OK, so I'm outputting
+a set of parameters
+
+00:31:54.870 --> 00:31:57.680 align:middle line:84%
+that characterize a parametric
+family of distributions
+
+00:31:57.680 --> 00:31:58.780 align:middle line:90%
+that integrate to 1.
+
+00:31:58.780 --> 00:32:01.200 align:middle line:84%
+So every possible
+set of the parameters
+
+00:32:01.200 --> 00:32:05.920 align:middle line:84%
+specifies a curve, where the
+area under the curve is 1.
+
+00:32:05.920 --> 00:32:08.740 align:middle line:84%
+And if I increase the
+curve where the data lives,
+
+00:32:08.740 --> 00:32:12.720 align:middle line:84%
+I necessarily decrease the curve
+where the data does not live.
+
+00:32:12.720 --> 00:32:16.940 align:middle line:84%
+And that's the idea
+of a density model.
+
+00:32:16.940 --> 00:32:19.440 align:middle line:84%
+So a gradient update
+to my density model
+
+00:32:19.440 --> 00:32:22.320 align:middle line:84%
+will increase the probability
+I place on the data
+
+00:32:22.320 --> 00:32:26.000 align:middle line:84%
+and, therefore, decrease the
+probability a place elsewhere.
+
+00:32:26.000 --> 00:32:27.840 align:middle line:84%
+So the output of
+my neural network
+
+00:32:27.840 --> 00:32:31.740 align:middle line:84%
+is a set of parameters that
+characterize this curve.
+
+00:32:31.740 --> 00:32:32.240 align:middle line:90%
+Yeah?
+
+00:32:32.240 --> 00:32:33.027 align:middle line:90%
+Question.
+
+00:32:33.027 --> 00:32:34.860 align:middle line:84%
+AUDIENCE: Can you go
+back one slide, please?
+
+00:32:34.860 --> 00:32:35.760 align:middle line:90%
+PHILLIP ISOLA: Yeah.
+
+00:32:35.760 --> 00:32:37.927 align:middle line:84%
+AUDIENCE: One thing I'm
+just a little confused about
+
+00:32:37.927 --> 00:32:40.720 align:middle line:84%
+is you have p sub
+theta mapping each data
+
+00:32:40.720 --> 00:32:44.660 align:middle line:84%
+point to some probability
+between 0 and infinity,
+
+00:32:44.660 --> 00:32:47.400 align:middle line:84%
+but normally, I think of
+probability distributions
+
+00:32:47.400 --> 00:32:48.140 align:middle line:90%
+as summing to 1.
+
+00:32:48.140 --> 00:32:49.640 align:middle line:84%
+So it's hard to
+reconcile, like, how
+
+00:32:49.640 --> 00:32:53.600 align:middle line:84%
+you can have points with very
+large probability, potentially.
+
+00:32:53.600 --> 00:32:54.680 align:middle line:90%
+PHILLIP ISOLA: Yeah.
+
+00:32:54.680 --> 00:32:59.960 align:middle line:84%
+So I think the question is,
+if the probability density can
+
+00:32:59.960 --> 00:33:02.600 align:middle line:84%
+go to infinity, how can
+I-- like, how does that
+
+00:33:02.600 --> 00:33:04.200 align:middle line:90%
+make sense numerically?
+
+00:33:04.200 --> 00:33:06.120 align:middle line:84%
+How can that still
+integrate to 1?
+
+00:33:06.120 --> 00:33:09.100 align:middle line:84%
+This is that kind of subtlety
+of continuous probabilities.
+
+00:33:09.100 --> 00:33:13.000 align:middle line:84%
+We characterize the distribution
+with probability density
+
+00:33:13.000 --> 00:33:15.340 align:middle line:84%
+function, which is not
+actually a probability.
+
+00:33:15.340 --> 00:33:18.510 align:middle line:84%
+The probability is an integral
+of the probability density
+
+00:33:18.510 --> 00:33:20.760 align:middle line:84%
+over some interval, and that
+specifies the probability
+
+00:33:20.760 --> 00:33:21.843 align:middle line:90%
+of being in that interval.
+
+00:33:21.843 --> 00:33:23.520 align:middle line:84%
+And if the interval
+is infinitesimal,
+
+00:33:23.520 --> 00:33:26.537 align:middle line:84%
+then the density can
+go to infinity over
+
+00:33:26.537 --> 00:33:27.620 align:middle line:90%
+an infinitesimal interval.
+
+00:33:27.620 --> 00:33:29.745 align:middle line:84%
+So it's like infinity
+divided by infinity, roughly.
+
+00:33:29.745 --> 00:33:32.680 align:middle line:84%
+You get into the subtleties
+of continuous math.
+
+00:33:32.680 --> 00:33:33.840 align:middle line:90%
+Yeah.
+
+00:33:33.840 --> 00:33:36.280 align:middle line:90%
+OK.
+
+00:33:36.280 --> 00:33:37.200 align:middle line:90%
+Cool.
+
+00:33:37.200 --> 00:33:45.040 align:middle line:84%
+So what is our objective going
+to be to fit my density to data?
+
+00:33:45.040 --> 00:33:46.220 align:middle line:90%
+I gave you the intuition.
+
+00:33:46.220 --> 00:33:49.760 align:middle line:84%
+But formally, we like to
+minimize the difference
+
+00:33:49.760 --> 00:33:54.653 align:middle line:84%
+between the world's true data
+generating distribution--
+
+00:33:54.653 --> 00:33:56.570 align:middle line:84%
+so these data points,
+these black data points,
+
+00:33:56.570 --> 00:33:58.310 align:middle line:90%
+came from some unknown process.
+
+00:33:58.310 --> 00:34:00.492 align:middle line:84%
+We're going to call that
+unknown process pdata.
+
+00:34:00.492 --> 00:34:02.950 align:middle line:84%
+We'll use that all over the
+place in the next few lectures.
+
+00:34:02.950 --> 00:34:05.613 align:middle line:84%
+pdata is just the
+probability from which--
+
+00:34:05.613 --> 00:34:08.030 align:middle line:84%
+the distribution from which
+the training data was sampled.
+
+00:34:08.030 --> 00:34:08.988 align:middle line:90%
+But we don't know that.
+
+00:34:08.988 --> 00:34:10.196 align:middle line:90%
+We don't have access to that.
+
+00:34:10.196 --> 00:34:11.738 align:middle line:84%
+And then we're going
+to fit our model
+
+00:34:11.738 --> 00:34:13.469 align:middle line:84%
+to be close to
+that distribution,
+
+00:34:13.469 --> 00:34:15.270 align:middle line:90%
+according to the KL divergence.
+
+00:34:15.270 --> 00:34:17.409 align:middle line:84%
+It's just a measure
+of the difference
+
+00:34:17.409 --> 00:34:19.770 align:middle line:90%
+between two distributions.
+
+00:34:19.770 --> 00:34:21.784 align:middle line:84%
+And we want our
+model distribution
+
+00:34:21.784 --> 00:34:23.409 align:middle line:84%
+to be the same as
+nature's distribution
+
+00:34:23.409 --> 00:34:25.730 align:middle line:84%
+that generated
+the training data.
+
+00:34:25.730 --> 00:34:28.290 align:middle line:84%
+So we're going to see
+that it will come out
+
+00:34:28.290 --> 00:34:31.949 align:middle line:84%
+to just pushing up probability
+where the data points live.
+
+00:34:31.949 --> 00:34:33.870 align:middle line:84%
+But mathematically,
+here's what it looks like.
+
+00:34:33.870 --> 00:34:36.969 align:middle line:84%
+So this is the definition
+of KL divergence.
+
+00:34:36.969 --> 00:34:39.889 align:middle line:84%
+It'll be negative log
+of how much probability
+
+00:34:39.889 --> 00:34:42.330 align:middle line:84%
+the model places on
+a data point, divided
+
+00:34:42.330 --> 00:34:47.130 align:middle line:84%
+by how much probability nature
+placed on the data point.
+
+00:34:47.130 --> 00:34:50.010 align:middle line:84%
+OK, so we want these
+to be the same.
+
+00:34:50.010 --> 00:34:57.600 align:middle line:84%
+So we want these to go to 1,
+so that log of 1 will be 0.
+
+00:34:57.600 --> 00:34:59.360 align:middle line:84%
+And then I will be
+minimizing this,
+
+00:34:59.360 --> 00:35:02.980 align:middle line:84%
+and I'll eventually
+get these to be equal.
+
+00:35:02.980 --> 00:35:04.980 align:middle line:90%
+OK.
+
+00:35:04.980 --> 00:35:07.860 align:middle line:84%
+So we can separate out
+the log of the ratio
+
+00:35:07.860 --> 00:35:11.820 align:middle line:84%
+into how much log probability
+I place on the data--
+
+00:35:11.820 --> 00:35:13.900 align:middle line:84%
+sorry, how much log
+probability the model places
+
+00:35:13.900 --> 00:35:16.540 align:middle line:84%
+on the data, minus how much
+log probability nature placed
+
+00:35:16.540 --> 00:35:17.480 align:middle line:90%
+on the data.
+
+00:35:17.480 --> 00:35:19.780 align:middle line:90%
+I want that difference to be 0.
+
+00:35:19.780 --> 00:35:22.780 align:middle line:84%
+We can't actually measure how
+much probability nature placed
+
+00:35:22.780 --> 00:35:23.280 align:middle line:90%
+on the data.
+
+00:35:23.280 --> 00:35:24.488 align:middle line:90%
+We don't have access to that.
+
+00:35:24.488 --> 00:35:26.568 align:middle line:84%
+We only have access
+to samples from pdata.
+
+00:35:26.568 --> 00:35:28.360 align:middle line:84%
+We don't have access
+to the function pdata.
+
+00:35:28.360 --> 00:35:30.500 align:middle line:90%
+That's just the universe.
+
+00:35:30.500 --> 00:35:31.620 align:middle line:90%
+OK.
+
+00:35:31.620 --> 00:35:33.940 align:middle line:84%
+So the nice trick
+is that in order
+
+00:35:33.940 --> 00:35:37.173 align:middle line:84%
+to maximize-- so, OK, we're
+minimizing the difference.
+
+00:35:37.173 --> 00:35:38.840 align:middle line:84%
+But now we got rid
+of the negative sign,
+
+00:35:38.840 --> 00:35:44.100 align:middle line:84%
+so going to maximize
+this term, this equation.
+
+00:35:44.100 --> 00:35:46.300 align:middle line:84%
+Well, in order to
+maximize this with respect
+
+00:35:46.300 --> 00:35:48.700 align:middle line:84%
+to the parameters theta,
+the parameters theta
+
+00:35:48.700 --> 00:35:51.320 align:middle line:84%
+don't appear in the second
+term, so that's just a constant.
+
+00:35:51.320 --> 00:35:53.020 align:middle line:84%
+So we don't actually
+have to consider
+
+00:35:53.020 --> 00:35:54.560 align:middle line:90%
+that in the maximization.
+
+00:35:54.560 --> 00:35:56.075 align:middle line:90%
+So we drop that second term.
+
+00:35:56.075 --> 00:35:57.700 align:middle line:84%
+And that's great
+because we didn't even
+
+00:35:57.700 --> 00:35:59.450 align:middle line:84%
+have a way of evaluating
+that second term,
+
+00:35:59.450 --> 00:36:01.820 align:middle line:84%
+since we don't have
+access to pdata directly.
+
+00:36:01.820 --> 00:36:04.060 align:middle line:84%
+And instead, we are
+going to maximize
+
+00:36:04.060 --> 00:36:07.260 align:middle line:84%
+the probability the
+model places on samples
+
+00:36:07.260 --> 00:36:08.860 align:middle line:90%
+from the distribution.
+
+00:36:08.860 --> 00:36:12.460 align:middle line:84%
+And whenever we try to maximize
+an expectation, in machine
+
+00:36:12.460 --> 00:36:15.540 align:middle line:84%
+learning, we're going to tend
+to always approximate that
+
+00:36:15.540 --> 00:36:18.540 align:middle line:90%
+with a finite set of samples.
+
+00:36:18.540 --> 00:36:22.430 align:middle line:84%
+So this is the probability the
+model places on the population.
+
+00:36:22.430 --> 00:36:24.180 align:middle line:84%
+And this is the
+probability that the model
+
+00:36:24.180 --> 00:36:26.580 align:middle line:84%
+places on the set of samples
+from the population, which
+
+00:36:26.580 --> 00:36:28.060 align:middle line:90%
+are our training data.
+
+00:36:28.060 --> 00:36:31.800 align:middle line:84%
+And this is called max
+likelihood learning--
+
+00:36:31.800 --> 00:36:34.057 align:middle line:84%
+maximize the likelihood,
+the probability,
+
+00:36:34.057 --> 00:36:36.140 align:middle line:84%
+that the model places on
+your training data, which
+
+00:36:36.140 --> 00:36:41.460 align:middle line:84%
+are samples from some unknown
+data generating process, pdata.
+
+00:36:41.460 --> 00:36:41.960 align:middle line:90%
+OK.
+
+00:36:41.960 --> 00:36:44.220 align:middle line:84%
+So you should recognize
+this as being the same form
+
+00:36:44.220 --> 00:36:50.172 align:middle line:84%
+as we saw with softmax
+regression, or it's kind of--
+
+00:36:50.172 --> 00:36:51.630 align:middle line:84%
+max likelihood is
+usually the thing
+
+00:36:51.630 --> 00:36:53.130 align:middle line:84%
+that we're doing
+in data modeling.
+
+00:36:53.130 --> 00:36:55.270 align:middle line:84%
+It's often the
+thing we're doing.
+
+00:36:55.270 --> 00:36:56.470 align:middle line:90%
+OK.
+
+00:36:56.470 --> 00:36:56.970 align:middle line:90%
+Yeah?
+
+00:36:56.970 --> 00:36:57.527 align:middle line:90%
+Question.
+
+00:36:57.527 --> 00:36:59.610 align:middle line:84%
+AUDIENCE: If you don't
+have a regularization term,
+
+00:36:59.610 --> 00:37:01.110 align:middle line:84%
+is this just going
+to lead to, like,
+
+00:37:01.110 --> 00:37:03.478 align:middle line:84%
+Dirac delta spikes
+on your data points?
+
+00:37:03.478 --> 00:37:04.270 align:middle line:90%
+PHILLIP ISOLA: Yes.
+
+00:37:04.270 --> 00:37:04.570 align:middle line:90%
+OK.
+
+00:37:04.570 --> 00:37:06.528 align:middle line:84%
+If you don't have a
+regularizer, will this just
+
+00:37:06.528 --> 00:37:09.390 align:middle line:84%
+lead to Dirac delta function
+on your data points?
+
+00:37:09.390 --> 00:37:11.070 align:middle line:84%
+That's going to
+be the next slide.
+
+00:37:11.070 --> 00:37:11.610 align:middle line:90%
+Wonderful.
+
+00:37:11.610 --> 00:37:14.212 align:middle line:84%
+So this is the question
+that comes up all the time
+
+00:37:14.212 --> 00:37:15.170 align:middle line:90%
+in generative modeling.
+
+00:37:15.170 --> 00:37:16.670 align:middle line:90%
+It's kind of confusing.
+
+00:37:16.670 --> 00:37:18.030 align:middle line:90%
+So here's a question for you.
+
+00:37:18.030 --> 00:37:20.550 align:middle line:84%
+Is the filing cabinet--
+remember the filing cabinet
+
+00:37:20.550 --> 00:37:22.230 align:middle line:84%
+from the lecture
+on generalization?
+
+00:37:22.230 --> 00:37:25.190 align:middle line:84%
+Is the filing cabinet a
+good generative model?
+
+00:37:25.190 --> 00:37:27.270 align:middle line:84%
+OK, so what is the
+filing cabinet?
+
+00:37:27.270 --> 00:37:29.570 align:middle line:84%
+I'm going to define
+it as follows.
+
+00:37:29.570 --> 00:37:33.170 align:middle line:84%
+I will train the generative
+model by taking my data set X,
+
+00:37:33.170 --> 00:37:37.750 align:middle line:84%
+and I'll just put every
+data point into a file.
+
+00:37:37.750 --> 00:37:39.490 align:middle line:90%
+So I'll just add to the cabinet.
+
+00:37:39.490 --> 00:37:41.710 align:middle line:84%
+And then to sample from my
+learned generative model,
+
+00:37:41.710 --> 00:37:45.680 align:middle line:84%
+this cabinet, I will simply take
+a random drawer, or random file,
+
+00:37:45.680 --> 00:37:47.360 align:middle line:90%
+and pull it out.
+
+00:37:47.360 --> 00:37:50.180 align:middle line:84%
+So is this a good
+generative model.
+
+00:37:50.180 --> 00:37:52.830 align:middle line:90%
+What do you think?
+
+00:37:52.830 --> 00:37:54.330 align:middle line:84%
+AUDIENCE: It doesn't
+make new stuff.
+
+00:37:54.330 --> 00:37:56.038 align:middle line:84%
+PHILLIP ISOLA: It
+doesn't make new stuff.
+
+00:37:56.038 --> 00:37:57.832 align:middle line:90%
+OK.
+
+00:37:57.832 --> 00:38:02.085 align:middle line:84%
+But it does make data which is
+identical to the training data.
+
+00:38:02.085 --> 00:38:04.460 align:middle line:84%
+So that's like-- that kind of
+seemed like what we wanted.
+
+00:38:04.460 --> 00:38:07.110 align:middle line:84%
+We wanted to make data that's
+identical to the training data,
+
+00:38:07.110 --> 00:38:08.120 align:middle line:90%
+right?
+
+00:38:08.120 --> 00:38:10.000 align:middle line:84%
+This does maximize
+the likelihood.
+
+00:38:10.000 --> 00:38:11.972 align:middle line:84%
+This is the max
+likelihood solution,
+
+00:38:11.972 --> 00:38:13.680 align:middle line:84%
+or this is getting
+the highest likelihood
+
+00:38:13.680 --> 00:38:15.200 align:middle line:90%
+you could possibly get.
+
+00:38:15.200 --> 00:38:19.200 align:middle line:84%
+Just memorize the data
+and output the same data.
+
+00:38:19.200 --> 00:38:21.520 align:middle line:84%
+You're right, but
+any other answers?
+
+00:38:21.520 --> 00:38:24.200 align:middle line:90%
+Want to elaborate on this?
+
+00:38:24.200 --> 00:38:25.940 align:middle line:84%
+How could we avoid
+this solution?
+
+00:38:25.940 --> 00:38:28.060 align:middle line:84%
+This is intuitively
+a bad solution.
+
+00:38:28.060 --> 00:38:31.000 align:middle line:90%
+I didn't do anything.
+
+00:38:31.000 --> 00:38:31.820 align:middle line:90%
+Any thoughts?
+
+00:38:31.820 --> 00:38:34.440 align:middle line:90%
+
+
+00:38:34.440 --> 00:38:35.160 align:middle line:90%
+OK.
+
+00:38:35.160 --> 00:38:37.560 align:middle line:84%
+So here's how I like
+to think about it.
+
+00:38:37.560 --> 00:38:40.200 align:middle line:84%
+It's exactly the same as
+overfitting in classical machine
+
+00:38:40.200 --> 00:38:40.700 align:middle line:90%
+learning.
+
+00:38:40.700 --> 00:38:42.120 align:middle line:84%
+So if you understand
+overfitting,
+
+00:38:42.120 --> 00:38:44.490 align:middle line:84%
+then you can understand
+why the filing cabinet
+
+00:38:44.490 --> 00:38:46.250 align:middle line:90%
+is a bad generative model.
+
+00:38:46.250 --> 00:38:48.290 align:middle line:90%
+So here's my training data.
+
+00:38:48.290 --> 00:38:53.290 align:middle line:84%
+And exactly as you said, the
+optimal generative model--
+
+00:38:53.290 --> 00:38:55.150 align:middle line:84%
+and the max likelihood
+generative model,
+
+00:38:55.150 --> 00:38:57.462 align:middle line:84%
+if I have infinite
+capacity, I can
+
+00:38:57.462 --> 00:39:00.170 align:middle line:84%
+fit any wiggly curve-- is to put
+a delta function on all the data
+
+00:39:00.170 --> 00:39:02.690 align:middle line:84%
+points, on all the
+training points.
+
+00:39:02.690 --> 00:39:05.090 align:middle line:84%
+But the true data
+generating process
+
+00:39:05.090 --> 00:39:07.570 align:middle line:84%
+is something unknown,
+which here, as a cartoon,
+
+00:39:07.570 --> 00:39:08.850 align:middle line:90%
+it could look like that.
+
+00:39:08.850 --> 00:39:11.890 align:middle line:84%
+So these blue dots are just
+samples, my training data
+
+00:39:11.890 --> 00:39:14.250 align:middle line:84%
+samples, from some
+underlying process.
+
+00:39:14.250 --> 00:39:16.030 align:middle line:90%
+So what went wrong here?
+
+00:39:16.030 --> 00:39:19.270 align:middle line:84%
+If I take new samples
+from that same process,
+
+00:39:19.270 --> 00:39:20.510 align:middle line:90%
+they'll land somewhere else.
+
+00:39:20.510 --> 00:39:22.890 align:middle line:84%
+And I'll have placed zero
+probability, under this model,
+
+00:39:22.890 --> 00:39:24.410 align:middle line:90%
+on those samples.
+
+00:39:24.410 --> 00:39:27.730 align:middle line:84%
+So what matters in generative
+modeling is the probability
+
+00:39:27.730 --> 00:39:31.130 align:middle line:84%
+you place on the test data,
+on new samples from the data
+
+00:39:31.130 --> 00:39:33.010 align:middle line:90%
+generating process.
+
+00:39:33.010 --> 00:39:35.535 align:middle line:84%
+We optimize the probability
+you place on the training data,
+
+00:39:35.535 --> 00:39:37.410 align:middle line:84%
+but what matters is the
+probability you place
+
+00:39:37.410 --> 00:39:39.130 align:middle line:84%
+on the test data--
+exactly the same
+
+00:39:39.130 --> 00:39:42.100 align:middle line:84%
+as overfitting in machine
+learning, where you actually
+
+00:39:42.100 --> 00:39:44.350 align:middle line:84%
+care about test performance,
+not training performance.
+
+00:39:44.350 --> 00:39:46.010 align:middle line:84%
+But here, test
+performance is going
+
+00:39:46.010 --> 00:39:49.210 align:middle line:84%
+to be the density you
+have placed on new samples
+
+00:39:49.210 --> 00:39:51.370 align:middle line:84%
+from the true
+generating process.
+
+00:39:51.370 --> 00:39:54.610 align:middle line:84%
+And you have to control
+capacity or regularize in order
+
+00:39:54.610 --> 00:39:58.690 align:middle line:84%
+to avoid the
+memorization solution.
+
+00:39:58.690 --> 00:40:00.908 align:middle line:90%
+OK.
+
+00:40:00.908 --> 00:40:03.450 align:middle line:84%
+So that's what overfitting looks
+like for a generative model.
+
+00:40:03.450 --> 00:40:04.825 align:middle line:84%
+So the goal of a
+generative model
+
+00:40:04.825 --> 00:40:07.210 align:middle line:84%
+is not to make exactly
+the training data
+
+00:40:07.210 --> 00:40:10.210 align:middle line:84%
+or, actually, maximize
+likelihood on the training data.
+
+00:40:10.210 --> 00:40:12.850 align:middle line:84%
+It's to make things
+that are new but capture
+
+00:40:12.850 --> 00:40:15.170 align:middle line:84%
+the important statistics
+and realistic properties
+
+00:40:15.170 --> 00:40:18.250 align:middle line:84%
+of the data, but
+are infinitely new.
+
+00:40:18.250 --> 00:40:20.490 align:middle line:84%
+We can quantify that as
+likelihood of the test data
+
+00:40:20.490 --> 00:40:21.930 align:middle line:90%
+under a model.
+
+00:40:21.930 --> 00:40:25.350 align:middle line:84%
+Now, if I don't have an explicit
+representation of the density,
+
+00:40:25.350 --> 00:40:27.230 align:middle line:84%
+then it's not easy
+to quantify this.
+
+00:40:27.230 --> 00:40:29.950 align:middle line:84%
+And that's why these
+methods, the direct methods,
+
+00:40:29.950 --> 00:40:31.850 align:middle line:84%
+that just produce samples
+but not densities,
+
+00:40:31.850 --> 00:40:33.568 align:middle line:84%
+are a little bit
+hard to calibrate.
+
+00:40:33.568 --> 00:40:35.610 align:middle line:84%
+It's a little bit hard to
+know what the test data
+
+00:40:35.610 --> 00:40:37.010 align:middle line:90%
+likelihood is.
+
+00:40:37.010 --> 00:40:38.540 align:middle line:84%
+But with density
+models, I can just
+
+00:40:38.540 --> 00:40:40.020 align:middle line:84%
+cross-validate by
+having a test set
+
+00:40:40.020 --> 00:40:43.300 align:middle line:84%
+and measuring the likelihood
+I place on the test set.
+
+00:40:43.300 --> 00:40:45.340 align:middle line:90%
+OK.
+
+00:40:45.340 --> 00:40:49.278 align:middle line:84%
+So here's the way that you
+can measure the quality
+
+00:40:49.278 --> 00:40:50.320 align:middle line:90%
+of your generative model.
+
+00:40:50.320 --> 00:40:51.000 align:middle line:90%
+You can evaluate it.
+
+00:40:51.000 --> 00:40:51.917 align:middle line:90%
+You can't fit on this.
+
+00:40:51.917 --> 00:40:54.460 align:middle line:84%
+This is like the test
+score, the validation score.
+
+00:40:54.460 --> 00:40:57.040 align:middle line:84%
+You sample new samples
+from the world.
+
+00:40:57.040 --> 00:40:59.680 align:middle line:84%
+You make a split, your test
+split or your validation split.
+
+00:40:59.680 --> 00:41:01.260 align:middle line:84%
+And you measure
+generalization error
+
+00:41:01.260 --> 00:41:05.080 align:middle line:84%
+as the likelihood your model
+places on the test data.
+
+00:41:05.080 --> 00:41:05.580 align:middle line:90%
+OK.
+
+00:41:05.580 --> 00:41:08.940 align:middle line:90%
+
+
+00:41:08.940 --> 00:41:09.440 align:middle line:90%
+OK.
+
+00:41:09.440 --> 00:41:11.780 align:middle line:84%
+Any questions about
+density models?
+
+00:41:11.780 --> 00:41:15.860 align:middle line:84%
+And then we're going
+to do energy models.
+
+00:41:15.860 --> 00:41:17.060 align:middle line:90%
+Yeah?
+
+00:41:17.060 --> 00:41:19.800 align:middle line:84%
+AUDIENCE: How exactly is
+p sub theta parameterized?
+
+00:41:19.800 --> 00:41:22.700 align:middle line:90%
+Like what is it actually doing?
+
+00:41:22.700 --> 00:41:25.795 align:middle line:84%
+PHILLIP ISOLA: So theta,
+how is it parameterized?
+
+00:41:25.795 --> 00:41:27.920 align:middle line:84%
+You can parameterize it in
+a lot of different ways.
+
+00:41:27.920 --> 00:41:30.020 align:middle line:84%
+So one example
+would be the network
+
+00:41:30.020 --> 00:41:32.420 align:middle line:84%
+outputs two numbers,
+two scalars, so it's
+
+00:41:32.420 --> 00:41:33.820 align:middle line:90%
+a two-dimensional vector.
+
+00:41:33.820 --> 00:41:35.820 align:middle line:84%
+That would be sufficient
+to parameterize
+
+00:41:35.820 --> 00:41:37.522 align:middle line:90%
+a one-dimensional Gaussian.
+
+00:41:37.522 --> 00:41:38.730 align:middle line:90%
+The first number is the mean.
+
+00:41:38.730 --> 00:41:40.590 align:middle line:84%
+The second number
+is the variance.
+
+00:41:40.590 --> 00:41:43.930 align:middle line:84%
+Another option is the network
+could output a thousand numbers,
+
+00:41:43.930 --> 00:41:46.710 align:middle line:84%
+and that would be
+sufficient to characterize--
+
+00:41:46.710 --> 00:41:48.150 align:middle line:84%
+or, let's say, a
+hundred numbers,
+
+00:41:48.150 --> 00:41:50.070 align:middle line:84%
+or a hundred plus 10 numbers,
+that would be sufficient
+
+00:41:50.070 --> 00:41:52.510 align:middle line:84%
+to characterize a 10-dimensional
+Gaussian where I have
+
+00:41:52.510 --> 00:41:55.970 align:middle line:84%
+a covariance matrix which is
+10 by 10, so a hundred numbers,
+
+00:41:55.970 --> 00:41:57.870 align:middle line:84%
+and a mean which
+is 10 dimensions.
+
+00:41:57.870 --> 00:42:01.070 align:middle line:84%
+So I have to output
+the number of--
+
+00:42:01.070 --> 00:42:02.790 align:middle line:84%
+the vector output
+by my network has
+
+00:42:02.790 --> 00:42:05.710 align:middle line:84%
+to be all the parameters of
+the family of distributions
+
+00:42:05.710 --> 00:42:07.790 align:middle line:90%
+that I am considering.
+
+00:42:07.790 --> 00:42:09.770 align:middle line:84%
+And if I want to do a
+mixture of Gaussians,
+
+00:42:09.770 --> 00:42:12.170 align:middle line:84%
+then I have to-- if I want
+to output two Gaussians,
+
+00:42:12.170 --> 00:42:15.930 align:middle line:84%
+I can do that with 2
+times 100 plus 10 numbers.
+
+00:42:15.930 --> 00:42:18.850 align:middle line:84%
+And if I wanted to output
+other, funny-shaped curves,
+
+00:42:18.850 --> 00:42:21.195 align:middle line:84%
+I can do that with other
+parametric families.
+
+00:42:21.195 --> 00:42:22.570 align:middle line:84%
+It doesn't have
+to be a Gaussian.
+
+00:42:22.570 --> 00:42:25.950 align:middle line:90%
+But that's the general idea.
+
+00:42:25.950 --> 00:42:30.270 align:middle line:84%
+AUDIENCE: So assuming that you
+have a finite set of validation
+
+00:42:30.270 --> 00:42:30.873 align:middle line:90%
+data--
+
+00:42:30.873 --> 00:42:32.790 align:middle line:84%
+I assume your procedure
+would be to train this
+
+00:42:32.790 --> 00:42:36.030 align:middle line:84%
+until your validation
+loss starts to increase,
+
+00:42:36.030 --> 00:42:38.310 align:middle line:84%
+and then you do early
+stopping to try and find
+
+00:42:38.310 --> 00:42:41.822 align:middle line:84%
+a good point at which you've
+got a good generative model.
+
+00:42:41.822 --> 00:42:44.030 align:middle line:84%
+Is there an analogy similar
+to what we learned before
+
+00:42:44.030 --> 00:42:46.870 align:middle line:84%
+about inductive bias
+in these models?
+
+00:42:46.870 --> 00:42:49.870 align:middle line:84%
+Presumably, if you're
+trying to generate images,
+
+00:42:49.870 --> 00:42:51.630 align:middle line:84%
+you should somehow
+be able to add
+
+00:42:51.630 --> 00:42:53.750 align:middle line:84%
+a form of bias or
+regularization that says,
+
+00:42:53.750 --> 00:42:56.910 align:middle line:84%
+like, images should
+not look like static.
+
+00:42:56.910 --> 00:43:00.550 align:middle line:84%
+You should not be able to
+have just a zero-value pixel
+
+00:43:00.550 --> 00:43:02.790 align:middle line:84%
+next to something that's
+a max-value pixel,
+
+00:43:02.790 --> 00:43:04.950 align:middle line:84%
+so images have this
+sort of smooth quality.
+
+00:43:04.950 --> 00:43:08.370 align:middle line:84%
+So does that show up in how
+you regularize in the loss?
+
+00:43:08.370 --> 00:43:10.110 align:middle line:90%
+Or is that a [AUDIO OUT]?
+
+00:43:10.110 --> 00:43:11.110 align:middle line:90%
+PHILLIP ISOLA: Yeah.
+
+00:43:11.110 --> 00:43:12.210 align:middle line:90%
+So yeah, great question.
+
+00:43:12.210 --> 00:43:16.190 align:middle line:84%
+So can we add inductive
+biases to generative models
+
+00:43:16.190 --> 00:43:18.218 align:middle line:84%
+to prevent them from
+finding bad solutions
+
+00:43:18.218 --> 00:43:20.510 align:middle line:84%
+and kind of encourage them
+to find a good solution that
+
+00:43:20.510 --> 00:43:22.630 align:middle line:84%
+actually generalizes
+to the test data?
+
+00:43:22.630 --> 00:43:25.590 align:middle line:84%
+And all the tricks that we
+have from other deep learning
+
+00:43:25.590 --> 00:43:26.610 align:middle line:90%
+can apply here.
+
+00:43:26.610 --> 00:43:29.190 align:middle line:84%
+So you can use an
+architecture which
+
+00:43:29.190 --> 00:43:31.910 align:middle line:84%
+has some kind of
+spatial smoothness.
+
+00:43:31.910 --> 00:43:35.800 align:middle line:84%
+So a convolutional architecture
+has baked-in spatial locality.
+
+00:43:35.800 --> 00:43:37.680 align:middle line:84%
+You can use positional
+codes in transformers
+
+00:43:37.680 --> 00:43:39.480 align:middle line:84%
+that have baked-in
+kind of inductive bias
+
+00:43:39.480 --> 00:43:41.080 align:middle line:90%
+towards spatial locality.
+
+00:43:41.080 --> 00:43:44.040 align:middle line:84%
+You can use regularizers
+that-- you can
+
+00:43:44.040 --> 00:43:45.280 align:middle line:90%
+do all the tricks, basically.
+
+00:43:45.280 --> 00:43:48.320 align:middle line:84%
+There's a lot to say, but
+you can do everything.
+
+00:43:48.320 --> 00:43:49.600 align:middle line:90%
+Yeah.
+
+00:43:49.600 --> 00:43:50.440 align:middle line:90%
+OK.
+
+00:43:50.440 --> 00:43:53.227 align:middle line:84%
+Question in the back,
+and then I'll move on.
+
+00:43:53.227 --> 00:43:55.562 align:middle line:84%
+AUDIENCE: Is there a connection
+between max likelihood
+
+00:43:55.562 --> 00:43:58.287 align:middle line:84%
+estimation and empirical
+risk minimization?
+
+00:43:58.287 --> 00:43:59.120 align:middle line:90%
+PHILLIP ISOLA: Yeah.
+
+00:43:59.120 --> 00:44:01.412 align:middle line:84%
+Is there a connection between
+max likelihood estimation
+
+00:44:01.412 --> 00:44:02.920 align:middle line:90%
+and empirical risk minimization?
+
+00:44:02.920 --> 00:44:04.860 align:middle line:90%
+Generally, yes.
+
+00:44:04.860 --> 00:44:09.168 align:middle line:84%
+I guess I would say
+empirical max likelihood,
+
+00:44:09.168 --> 00:44:10.960 align:middle line:84%
+which is the maximized
+likelihood you place
+
+00:44:10.960 --> 00:44:12.920 align:middle line:84%
+on the data-- that's
+what empirical means,
+
+00:44:12.920 --> 00:44:16.240 align:middle line:90%
+is on the training data--
+
+00:44:16.240 --> 00:44:18.960 align:middle line:84%
+that is a form of empirical
+risk minimization for the risk
+
+00:44:18.960 --> 00:44:20.860 align:middle line:84%
+function which is the
+likelihood of the data.
+
+00:44:20.860 --> 00:44:22.360 align:middle line:84%
+But you could have
+more general risk
+
+00:44:22.360 --> 00:44:25.840 align:middle line:84%
+functions that might not have
+interpretations as likelihood.
+
+00:44:25.840 --> 00:44:26.400 align:middle line:90%
+Yeah.
+
+00:44:26.400 --> 00:44:30.620 align:middle line:84%
+But typically, the ones we use,
+like squared error or L1 error,
+
+00:44:30.620 --> 00:44:32.850 align:middle line:84%
+these all have
+interpretations as some type
+
+00:44:32.850 --> 00:44:37.090 align:middle line:90%
+of likelihood function.
+
+00:44:37.090 --> 00:44:39.710 align:middle line:84%
+So let's talk about
+energy-based models.
+
+00:44:39.710 --> 00:44:41.770 align:middle line:90%
+So energy-based models are--
+
+00:44:41.770 --> 00:44:43.810 align:middle line:84%
+I said that the
+indirect approach-- this
+
+00:44:43.810 --> 00:44:45.630 align:middle line:84%
+is another possible
+indirect approach.
+
+00:44:45.630 --> 00:44:49.110 align:middle line:84%
+The indirect approach is
+you try to score your data
+
+00:44:49.110 --> 00:44:51.870 align:middle line:84%
+and then sample from
+or optimize the score,
+
+00:44:51.870 --> 00:44:56.638 align:middle line:84%
+find data points
+that have high score.
+
+00:44:56.638 --> 00:44:58.930 align:middle line:84%
+Energy-based models say,
+Well, what if the score is not
+
+00:44:58.930 --> 00:45:02.650 align:middle line:84%
+a probability, but it's just
+an unnormalized probability?
+
+00:45:02.650 --> 00:45:05.930 align:middle line:84%
+So remember that the definition
+of a probability density
+
+00:45:05.930 --> 00:45:08.010 align:middle line:90%
+is it integrates to 1.
+
+00:45:08.010 --> 00:45:11.810 align:middle line:84%
+An energy function
+is just a probability
+
+00:45:11.810 --> 00:45:13.270 align:middle line:90%
+that is unnormalized.
+
+00:45:13.270 --> 00:45:18.690 align:middle line:84%
+So for any probability, I
+can represent-- or, yeah,
+
+00:45:18.690 --> 00:45:21.943 align:middle line:84%
+for a broad family of functions,
+I can represent them like this.
+
+00:45:21.943 --> 00:45:24.110 align:middle line:84%
+This is sometimes called
+the Boltzmann distribution.
+
+00:45:24.110 --> 00:45:26.850 align:middle line:84%
+So it's an exponential
+of the negative energy
+
+00:45:26.850 --> 00:45:29.700 align:middle line:90%
+divided by a normalization.
+
+00:45:29.700 --> 00:45:34.180 align:middle line:84%
+And any energy function,
+any function E,
+
+00:45:34.180 --> 00:45:37.140 align:middle line:84%
+that is not
+necessarily normalized,
+
+00:45:37.140 --> 00:45:40.753 align:middle line:84%
+will, through this map,
+imply a probability function
+
+00:45:40.753 --> 00:45:43.420 align:middle line:84%
+p that is normalized, because I
+just divide by the normalization
+
+00:45:43.420 --> 00:45:44.980 align:middle line:90%
+constant.
+
+00:45:44.980 --> 00:45:48.540 align:middle line:84%
+So whatever E is, if I divide
+by Z, which is this integral,
+
+00:45:48.540 --> 00:45:50.960 align:middle line:90%
+p will be normalized.
+
+00:45:50.960 --> 00:45:51.460 align:middle line:90%
+Yeah?
+
+00:45:51.460 --> 00:45:53.117 align:middle line:84%
+AUDIENCE: What is
+an energy function?
+
+00:45:53.117 --> 00:45:54.700 align:middle line:84%
+PHILLIP ISOLA: Energy
+function is just
+
+00:45:54.700 --> 00:45:58.020 align:middle line:84%
+a map from data to a scalar,
+between negative infinity
+
+00:45:58.020 --> 00:45:58.960 align:middle line:90%
+and infinity.
+
+00:45:58.960 --> 00:46:01.095 align:middle line:84%
+AUDIENCE: So kind of
+like a loss, in a sense?
+
+00:46:01.095 --> 00:46:03.220 align:middle line:84%
+PHILLIP ISOLA: Just like
+the score-- so think of it
+
+00:46:03.220 --> 00:46:04.838 align:middle line:90%
+as an unnormalized probability.
+
+00:46:04.838 --> 00:46:05.380 align:middle line:90%
+AUDIENCE: OK.
+
+00:46:05.380 --> 00:46:05.700 align:middle line:90%
+PHILLIP ISOLA: Yeah.
+
+00:46:05.700 --> 00:46:07.140 align:middle line:90%
+Unnormalized probability.
+
+00:46:07.140 --> 00:46:07.727 align:middle line:90%
+Yeah.
+
+00:46:07.727 --> 00:46:10.060 align:middle line:84%
+AUDIENCE: Kind of like the
+thing that goes into softmax?
+
+00:46:10.060 --> 00:46:10.852 align:middle line:90%
+PHILLIP ISOLA: Yes.
+
+00:46:10.852 --> 00:46:12.980 align:middle line:84%
+So the logits in a
+softmax classifier
+
+00:46:12.980 --> 00:46:15.980 align:middle line:90%
+can be considered the energy.
+
+00:46:15.980 --> 00:46:17.900 align:middle line:84%
+And then, softmax
+is just, you divide
+
+00:46:17.900 --> 00:46:19.858 align:middle line:84%
+by the normalization--
+you exponentiate and you
+
+00:46:19.858 --> 00:46:21.580 align:middle line:90%
+divide by the normalization.
+
+00:46:21.580 --> 00:46:23.620 align:middle line:90%
+OK.
+
+00:46:23.620 --> 00:46:24.120 align:middle line:90%
+OK.
+
+00:46:24.120 --> 00:46:26.620 align:middle line:90%
+So why are energies good?
+
+00:46:26.620 --> 00:46:28.460 align:middle line:84%
+Because they're
+often sufficient.
+
+00:46:28.460 --> 00:46:31.320 align:middle line:84%
+So, OK, so first of all,
+why are probabilities bad?
+
+00:46:31.320 --> 00:46:33.840 align:middle line:84%
+Because probabilities
+need to be normalized.
+
+00:46:33.840 --> 00:46:35.820 align:middle line:84%
+So my family of
+functions I search over
+
+00:46:35.820 --> 00:46:37.660 align:middle line:90%
+is just normalized functions.
+
+00:46:37.660 --> 00:46:40.220 align:middle line:84%
+And if I search over
+arbitrary curves-- like,
+
+00:46:40.220 --> 00:46:42.660 align:middle line:84%
+let's say the neural
+network doesn't parameterize
+
+00:46:42.660 --> 00:46:45.020 align:middle line:84%
+a Gaussian, which is
+normalized, but it just
+
+00:46:45.020 --> 00:46:49.245 align:middle line:90%
+outputs some polynomial curve.
+
+00:46:49.245 --> 00:46:51.620 align:middle line:84%
+Or maybe it just outputs a
+set of numbers that are, like,
+
+00:46:51.620 --> 00:46:52.920 align:middle line:90%
+the control points on a spline.
+
+00:46:52.920 --> 00:46:54.860 align:middle line:90%
+Whatever.
+
+00:46:54.860 --> 00:46:58.580 align:middle line:84%
+Or maybe it just outputs,
+like, a number per data point.
+
+00:46:58.580 --> 00:47:00.413 align:middle line:84%
+So I could have a network
+that takes in data
+
+00:47:00.413 --> 00:47:02.538 align:middle line:84%
+and just outputs a number
+between negative infinity
+
+00:47:02.538 --> 00:47:03.140 align:middle line:90%
+and infinity.
+
+00:47:03.140 --> 00:47:04.528 align:middle line:84%
+Well, how would
+I normalize that?
+
+00:47:04.528 --> 00:47:06.820 align:middle line:84%
+I'd have to do this integral
+over all possible settings
+
+00:47:06.820 --> 00:47:07.320 align:middle line:90%
+of the data.
+
+00:47:07.320 --> 00:47:08.278 align:middle line:90%
+And that's intractable.
+
+00:47:08.278 --> 00:47:09.460 align:middle line:90%
+I don't want to do that.
+
+00:47:09.460 --> 00:47:12.220 align:middle line:84%
+So that's why probability
+densities are bad,
+
+00:47:12.220 --> 00:47:15.200 align:middle line:84%
+because I have to consider
+families that are normalized,
+
+00:47:15.200 --> 00:47:17.500 align:middle line:90%
+and that's very restrictive.
+
+00:47:17.500 --> 00:47:20.380 align:middle line:84%
+But energies are sufficient
+because energies,
+
+00:47:20.380 --> 00:47:24.000 align:middle line:84%
+energy ratios are equal
+to probability ratios OK.
+
+00:47:24.000 --> 00:47:26.270 align:middle line:84%
+So the probability that
+I place on-- let's say
+
+00:47:26.270 --> 00:47:27.877 align:middle line:84%
+I want to say, Which
+is more likely,
+
+00:47:27.877 --> 00:47:29.710 align:middle line:84%
+that it's going to snow
+tomorrow or there'll
+
+00:47:29.710 --> 00:47:30.990 align:middle line:90%
+be a hurricane tomorrow?
+
+00:47:30.990 --> 00:47:32.830 align:middle line:84%
+So that's some
+probability ratio.
+
+00:47:32.830 --> 00:47:34.470 align:middle line:84%
+And maybe that's
+the type of thing
+
+00:47:34.470 --> 00:47:38.732 align:middle line:84%
+I need to decide for how to
+prepare for some disaster.
+
+00:47:38.732 --> 00:47:40.690 align:middle line:84%
+Oftentimes, relative
+judgments are what matter.
+
+00:47:40.690 --> 00:47:42.815 align:middle line:84%
+And so relative judgments,
+the relative probability
+
+00:47:42.815 --> 00:47:46.390 align:middle line:84%
+of x1 divided by x2,
+is equal to-- here's
+
+00:47:46.390 --> 00:47:50.030 align:middle line:84%
+the definition of
+my energy function.
+
+00:47:50.030 --> 00:47:53.070 align:middle line:84%
+And notice that the
+normalization functions
+
+00:47:53.070 --> 00:47:54.430 align:middle line:90%
+cancel out.
+
+00:47:54.430 --> 00:48:00.030 align:middle line:84%
+So that means that exponential
+energies provide the same ratio
+
+00:48:00.030 --> 00:48:02.390 align:middle line:90%
+as probabilities.
+
+00:48:02.390 --> 00:48:06.710 align:middle line:84%
+And I can evaluate
+whether a hurricane
+
+00:48:06.710 --> 00:48:08.730 align:middle line:84%
+is less likely or
+more likely than snow
+
+00:48:08.730 --> 00:48:10.230 align:middle line:84%
+by just looking at
+the energy ratio,
+
+00:48:10.230 --> 00:48:12.750 align:middle line:84%
+as opposed to the probability
+ratio, which is intractable
+
+00:48:12.750 --> 00:48:16.010 align:middle line:90%
+unless I know the normalization.
+
+00:48:16.010 --> 00:48:16.510 align:middle line:90%
+Yeah?
+
+00:48:16.510 --> 00:48:18.110 align:middle line:84%
+AUDIENCE: So it's
+the energy ratio?
+
+00:48:18.110 --> 00:48:19.510 align:middle line:90%
+PHILLIP ISOLA: Yeah.
+
+00:48:19.510 --> 00:48:22.130 align:middle line:84%
+AUDIENCE: So I guess energy
+ration includes exponentiation.
+
+00:48:22.130 --> 00:48:22.963 align:middle line:90%
+PHILLIP ISOLA: Yeah.
+
+00:48:22.963 --> 00:48:25.333 align:middle line:84%
+AUDIENCE: So it's
+quantum difference, or?
+
+00:48:25.333 --> 00:48:27.000 align:middle line:84%
+PHILLIP ISOLA: Yeah,
+you could do like--
+
+00:48:27.000 --> 00:48:28.200 align:middle line:90%
+so the question is like--
+
+00:48:28.200 --> 00:48:29.540 align:middle line:90%
+I said energy ratio.
+
+00:48:29.540 --> 00:48:32.185 align:middle line:84%
+I meant exponential. e to
+the negative energy divided
+
+00:48:32.185 --> 00:48:33.560 align:middle line:84%
+by e to the negative
+other energy
+
+00:48:33.560 --> 00:48:34.980 align:middle line:84%
+is equal to the
+probability ratio.
+
+00:48:34.980 --> 00:48:36.760 align:middle line:84%
+If you took a log of
+that, you could see,
+
+00:48:36.760 --> 00:48:38.080 align:middle line:90%
+it'll have another form.
+
+00:48:38.080 --> 00:48:39.520 align:middle line:90%
+It'll be some difference.
+
+00:48:39.520 --> 00:48:41.440 align:middle line:90%
+OK.
+
+00:48:41.440 --> 00:48:44.480 align:middle line:84%
+So this is-- relative
+probabilities are often all
+
+00:48:44.480 --> 00:48:45.840 align:middle line:90%
+you need for decisionmaking.
+
+00:48:45.840 --> 00:48:49.900 align:middle line:84%
+In particular, they're also all
+you need for a lot of samplers.
+
+00:48:49.900 --> 00:48:53.260 align:middle line:84%
+So Markov chain Monte Carlo only
+requires relative probabilities,
+
+00:48:53.260 --> 00:48:56.260 align:middle line:84%
+so you don't need to have a
+normalized density or output.
+
+00:48:56.260 --> 00:48:59.960 align:middle line:84%
+You can just output arbitrary
+unnormalized numbers and still
+
+00:48:59.960 --> 00:49:02.360 align:middle line:84%
+sample from that, the
+implied distribution.
+
+00:49:02.360 --> 00:49:02.860 align:middle line:90%
+OK.
+
+00:49:02.860 --> 00:49:05.960 align:middle line:84%
+So energy functions
+are often all you need.
+
+00:49:05.960 --> 00:49:06.800 align:middle line:90%
+Yeah?
+
+00:49:06.800 --> 00:49:08.592 align:middle line:84%
+AUDIENCE: Can you
+explain the negative sign
+
+00:49:08.592 --> 00:49:09.680 align:middle line:90%
+in front of the energy?
+
+00:49:09.680 --> 00:49:11.160 align:middle line:84%
+PHILLIP ISOLA: Yeah, so
+that's just a definition.
+
+00:49:11.160 --> 00:49:12.780 align:middle line:84%
+You could have--
+you don't need that.
+
+00:49:12.780 --> 00:49:15.320 align:middle line:90%
+It's just the definition.
+
+00:49:15.320 --> 00:49:19.280 align:middle line:84%
+Because E is just a function
+that outputs negative infinity
+
+00:49:19.280 --> 00:49:23.040 align:middle line:84%
+to infinity, so the
+definition is energies
+
+00:49:23.040 --> 00:49:25.020 align:middle line:84%
+are related to
+negative probabilities.
+
+00:49:25.020 --> 00:49:27.060 align:middle line:84%
+So low energy means
+high probability.
+
+00:49:27.060 --> 00:49:30.680 align:middle line:90%
+It's just a definition.
+
+00:49:30.680 --> 00:49:32.510 align:middle line:90%
+OK.
+
+00:49:32.510 --> 00:49:34.620 align:middle line:84%
+So why would you actually
+want a probability?
+
+00:49:34.620 --> 00:49:36.580 align:middle line:84%
+Why wouldn't you always
+work with energies?
+
+00:49:36.580 --> 00:49:39.720 align:middle line:84%
+Anyone have some
+thoughts on that?
+
+00:49:39.720 --> 00:49:42.700 align:middle line:84%
+Why would I ever care about
+using normalized probabilities,
+
+00:49:42.700 --> 00:49:46.460 align:middle line:90%
+if what I'm saying is true?
+
+00:49:46.460 --> 00:49:50.760 align:middle line:90%
+
+
+00:49:50.760 --> 00:49:51.940 align:middle line:90%
+Yeah, any thoughts on that?
+
+00:49:51.940 --> 00:49:52.440 align:middle line:90%
+Yeah?
+
+00:49:52.440 --> 00:49:54.815 align:middle line:84%
+AUDIENCE: How would you scale
+them to different concepts,
+
+00:49:54.815 --> 00:49:55.440 align:middle line:90%
+perhaps?
+
+00:49:55.440 --> 00:49:56.760 align:middle line:84%
+PHILLIP ISOLA: How
+would you scale them?
+
+00:49:56.760 --> 00:49:57.940 align:middle line:90%
+AUDIENCE: To different concepts.
+
+00:49:57.940 --> 00:49:59.020 align:middle line:84%
+PHILLIP ISOLA: To
+different concepts.
+
+00:49:59.020 --> 00:49:59.617 align:middle line:90%
+Yeah.
+
+00:49:59.617 --> 00:50:01.700 align:middle line:84%
+So how would you scale
+them to different concepts?
+
+00:50:01.700 --> 00:50:04.600 align:middle line:84%
+I think that's getting at
+what I think I agree with,
+
+00:50:04.600 --> 00:50:07.600 align:middle line:84%
+that probabilities
+put everything
+
+00:50:07.600 --> 00:50:11.562 align:middle line:84%
+on the same kind of unit,
+on the same playing field.
+
+00:50:11.562 --> 00:50:14.020 align:middle line:84%
+Like, you're kind of scaling
+things to have the same units.
+
+00:50:14.020 --> 00:50:17.200 align:middle line:90%
+So 90% probability could be--
+
+00:50:17.200 --> 00:50:19.710 align:middle line:84%
+in one domain, it's 90%
+probability in another domain,
+
+00:50:19.710 --> 00:50:22.370 align:middle line:84%
+but the energies could
+be arbitrarily scaled
+
+00:50:22.370 --> 00:50:24.170 align:middle line:90%
+or arbitrarily offset.
+
+00:50:24.170 --> 00:50:26.530 align:middle line:84%
+So I think
+probabilities are often
+
+00:50:26.530 --> 00:50:28.330 align:middle line:84%
+more interpretable
+and more exchangeable
+
+00:50:28.330 --> 00:50:29.673 align:middle line:90%
+between different problems.
+
+00:50:29.673 --> 00:50:31.090 align:middle line:84%
+If you go to the
+hospital and they
+
+00:50:31.090 --> 00:50:33.320 align:middle line:84%
+tell you your energy of
+having cancer is 10 million,
+
+00:50:33.320 --> 00:50:35.070 align:middle line:84%
+what are you going to
+do with that, right?
+
+00:50:35.070 --> 00:50:37.930 align:middle line:84%
+But if they say your
+likelihood is 0.1%,
+
+00:50:37.930 --> 00:50:40.170 align:middle line:84%
+you're going to be
+like, OK, that's fine.
+
+00:50:40.170 --> 00:50:42.040 align:middle line:90%
+OK.
+
+00:50:42.040 --> 00:50:44.150 align:middle line:84%
+So human interpretability
+is the most obvious,
+
+00:50:44.150 --> 00:50:47.330 align:middle line:84%
+but I think there's other
+reasons beyond that, too.
+
+00:50:47.330 --> 00:50:49.310 align:middle line:84%
+So how do you optimize
+an energy-based model?
+
+00:50:49.310 --> 00:50:51.490 align:middle line:84%
+How do you fit an
+energy-based model to data?
+
+00:50:51.490 --> 00:50:52.987 align:middle line:90%
+So here's how you do it.
+
+00:50:52.987 --> 00:50:54.570 align:middle line:84%
+So we do the same
+thing we did before.
+
+00:50:54.570 --> 00:50:58.570 align:middle line:84%
+We find our data and we decrease
+the energy where the data lives.
+
+00:50:58.570 --> 00:51:01.530 align:middle line:84%
+Remember, decrease energy
+means increase probability,
+
+00:51:01.530 --> 00:51:04.490 align:middle line:84%
+because energy is related
+to probability by negative.
+
+00:51:04.490 --> 00:51:08.410 align:middle line:84%
+e to the negative
+energy is probability.
+
+00:51:08.410 --> 00:51:09.290 align:middle line:90%
+OK.
+
+00:51:09.290 --> 00:51:12.030 align:middle line:90%
+So what's wrong with this?
+
+00:51:12.030 --> 00:51:15.650 align:middle line:84%
+We're going to decrease our
+energy where the data lives.
+
+00:51:15.650 --> 00:51:18.460 align:middle line:90%
+What's wrong with this?
+
+00:51:18.460 --> 00:51:20.020 align:middle line:90%
+What's wrong with this?
+
+00:51:20.020 --> 00:51:21.305 align:middle line:90%
+AUDIENCE: It's not constant.
+
+00:51:21.305 --> 00:51:22.180 align:middle line:90%
+PHILLIP ISOLA: Sorry.
+
+00:51:22.180 --> 00:51:22.680 align:middle line:90%
+Yes.
+
+00:51:22.680 --> 00:51:23.980 align:middle line:90%
+Not constant mass.
+
+00:51:23.980 --> 00:51:25.940 align:middle line:84%
+What's wrong with
+this is I could just
+
+00:51:25.940 --> 00:51:28.960 align:middle line:84%
+decrease my energy to be
+negative infinity everywhere.
+
+00:51:28.960 --> 00:51:31.440 align:middle line:84%
+If my only goal is decrease
+energy where the data lives,
+
+00:51:31.440 --> 00:51:34.140 align:middle line:84%
+I can just say, well, I'll also
+decrease energy everywhere else.
+
+00:51:34.140 --> 00:51:36.480 align:middle line:84%
+I'm not forcing it
+to be normalized.
+
+00:51:36.480 --> 00:51:39.460 align:middle line:84%
+So there's no necessity
+to increase energy
+
+00:51:39.460 --> 00:51:41.220 align:middle line:90%
+where the data does not live.
+
+00:51:41.220 --> 00:51:45.060 align:middle line:84%
+So the simple solution is I will
+add a term to increase energy
+
+00:51:45.060 --> 00:51:47.900 align:middle line:90%
+where the data doesn't live.
+
+00:51:47.900 --> 00:51:52.580 align:middle line:84%
+So the way you do this
+is you decrease energy
+
+00:51:52.580 --> 00:51:56.220 align:middle line:84%
+where the data lives and
+you increase energy where
+
+00:51:56.220 --> 00:51:57.960 align:middle line:90%
+the model places high energy.
+
+00:51:57.960 --> 00:51:59.640 align:middle line:84%
+You actually sample
+from the model.
+
+00:51:59.640 --> 00:52:02.560 align:middle line:84%
+So I said you can
+sample from an energy--
+
+00:52:02.560 --> 00:52:04.060 align:middle line:84%
+you can sample from
+the distribution
+
+00:52:04.060 --> 00:52:06.300 align:middle line:84%
+implied by an energy without
+having the normalization
+
+00:52:06.300 --> 00:52:06.920 align:middle line:90%
+constant.
+
+00:52:06.920 --> 00:52:10.900 align:middle line:84%
+That's what things like
+Markov chain Monte Carlo do.
+
+00:52:10.900 --> 00:52:13.400 align:middle line:84%
+So I can sample from
+my energy function,
+
+00:52:13.400 --> 00:52:16.050 align:middle line:84%
+but I can't evaluate
+the probability.
+
+00:52:16.050 --> 00:52:18.033 align:middle line:84%
+But I can take these
+points, and I'm
+
+00:52:18.033 --> 00:52:19.950 align:middle line:84%
+sampling where there's
+low energy because that
+
+00:52:19.950 --> 00:52:21.110 align:middle line:90%
+means high probability.
+
+00:52:21.110 --> 00:52:23.150 align:middle line:84%
+I'm going to increase
+energy there,
+
+00:52:23.150 --> 00:52:25.430 align:middle line:90%
+and I'll get this solution.
+
+00:52:25.430 --> 00:52:27.990 align:middle line:84%
+If I repeat this process,
+I decrease energy
+
+00:52:27.990 --> 00:52:30.670 align:middle line:84%
+where the data lives
+and I increase energy
+
+00:52:30.670 --> 00:52:32.390 align:middle line:84%
+where my current
+energy function implies
+
+00:52:32.390 --> 00:52:35.110 align:middle line:90%
+high probability via sampling.
+
+00:52:35.110 --> 00:52:36.490 align:middle line:90%
+I go like that.
+
+00:52:36.490 --> 00:52:37.730 align:middle line:90%
+And eventually, I get this.
+
+00:52:37.730 --> 00:52:40.490 align:middle line:84%
+And here, I decrease energy
+where the data lives,
+
+00:52:40.490 --> 00:52:42.390 align:middle line:84%
+and I increase energy
+where the model
+
+00:52:42.390 --> 00:52:44.870 align:middle line:90%
+has placed high probability.
+
+00:52:44.870 --> 00:52:46.050 align:middle line:90%
+And they cancel out.
+
+00:52:46.050 --> 00:52:49.330 align:middle line:84%
+So eventually, I get a delta
+function on the data points.
+
+00:52:49.330 --> 00:52:52.400 align:middle line:84%
+And that convergence of this
+algorithm, the positive term,
+
+00:52:52.400 --> 00:52:54.650 align:middle line:84%
+which is decrease in energy,
+equals the negative term,
+
+00:52:54.650 --> 00:52:57.390 align:middle line:84%
+which is increasing energy,
+because the model places energy
+
+00:52:57.390 --> 00:52:58.730 align:middle line:90%
+exactly where the data lives.
+
+00:52:58.730 --> 00:52:59.230 align:middle line:90%
+OK.
+
+00:52:59.230 --> 00:53:01.750 align:middle line:84%
+So that should, therefore,
+kind convince you graphically
+
+00:53:01.750 --> 00:53:05.170 align:middle line:84%
+that this thing will converge to
+a solution that fits the data.
+
+00:53:05.170 --> 00:53:07.670 align:middle line:84%
+It will overfit in the same way
+that other generative models
+
+00:53:07.670 --> 00:53:08.830 align:middle line:90%
+overfit.
+
+00:53:08.830 --> 00:53:11.830 align:middle line:84%
+But we'll just do early
+stopping or regularization
+
+00:53:11.830 --> 00:53:13.370 align:middle line:90%
+of various forms.
+
+00:53:13.370 --> 00:53:13.870 align:middle line:90%
+OK.
+
+00:53:13.870 --> 00:53:17.750 align:middle line:84%
+So at convergence, the green
+arrows and the red arrows
+
+00:53:17.750 --> 00:53:18.950 align:middle line:90%
+cancel out.
+
+00:53:18.950 --> 00:53:21.610 align:middle line:84%
+I get zero delta between
+them, and the thing stops.
+
+00:53:21.610 --> 00:53:23.170 align:middle line:84%
+So let's look at
+that mathematically.
+
+00:53:23.170 --> 00:53:25.210 align:middle line:84%
+This algorithm is called
+contrastive divergence.
+
+00:53:25.210 --> 00:53:27.117 align:middle line:84%
+And variations on
+this come up a lot.
+
+00:53:27.117 --> 00:53:28.950 align:middle line:84%
+It's even connected to
+contrastive learning,
+
+00:53:28.950 --> 00:53:32.150 align:middle line:90%
+but a little bit indirectly.
+
+00:53:32.150 --> 00:53:33.830 align:middle line:84%
+It's another
+contrast, the contrast
+
+00:53:33.830 --> 00:53:36.710 align:middle line:84%
+between where the data lives
+and where the model has
+
+00:53:36.710 --> 00:53:37.730 align:middle line:90%
+placed high probability.
+
+00:53:37.730 --> 00:53:40.710 align:middle line:84%
+You want that to cancel out
+so that the model places
+
+00:53:40.710 --> 00:53:43.990 align:middle line:84%
+high probability exactly
+where the data lives.
+
+00:53:43.990 --> 00:53:48.373 align:middle line:84%
+So mathematically, here's
+how you derive that.
+
+00:53:48.373 --> 00:53:49.790 align:middle line:84%
+This is the kind
+of thing that you
+
+00:53:49.790 --> 00:53:52.910 align:middle line:84%
+might want to work through
+yourself after the lecture.
+
+00:53:52.910 --> 00:53:55.110 align:middle line:84%
+But I'll go through
+the steps for you here.
+
+00:53:55.110 --> 00:53:57.870 align:middle line:84%
+So we're going to do
+max likelihood learning
+
+00:53:57.870 --> 00:53:59.630 align:middle line:90%
+with energy-based models.
+
+00:53:59.630 --> 00:54:04.050 align:middle line:84%
+So max likelihood learning is,
+I want to update the parameters,
+
+00:54:04.050 --> 00:54:06.030 align:middle line:84%
+find the gradient of
+the parameters that
+
+00:54:06.030 --> 00:54:09.990 align:middle line:84%
+will increase the probability
+I place on the data.
+
+00:54:09.990 --> 00:54:13.220 align:middle line:84%
+And I'm writing it in terms of
+the expectation over samples,
+
+00:54:13.220 --> 00:54:17.480 align:middle line:84%
+but you would really do this
+on an empirical training set.
+
+00:54:17.480 --> 00:54:18.160 align:middle line:90%
+OK.
+
+00:54:18.160 --> 00:54:21.560 align:middle line:84%
+So I can rewrite my
+probability distribution
+
+00:54:21.560 --> 00:54:24.920 align:middle line:84%
+as an energy function
+divided by a normalization.
+
+00:54:24.920 --> 00:54:25.720 align:middle line:90%
+OK.
+
+00:54:25.720 --> 00:54:28.900 align:middle line:84%
+And now I'm parameterizing
+the energy function.
+
+00:54:28.900 --> 00:54:32.343 align:middle line:84%
+So the neural net E is just a
+mapping from data to a number.
+
+00:54:32.343 --> 00:54:33.760 align:middle line:84%
+And I'm going to
+parameterize that
+
+00:54:33.760 --> 00:54:37.520 align:middle line:84%
+by theta, which are
+the weights and biases
+
+00:54:37.520 --> 00:54:38.240 align:middle line:90%
+OK.
+
+00:54:38.240 --> 00:54:41.380 align:middle line:84%
+Now I'm going to take the log
+and split it into two terms.
+
+00:54:41.380 --> 00:54:47.160 align:middle line:84%
+It'll place high energy where
+the data lives, and then
+
+00:54:47.160 --> 00:54:52.040 align:middle line:84%
+have this extra term related to
+the normalization integral Z.
+
+00:54:52.040 --> 00:54:52.640 align:middle line:90%
+OK.
+
+00:54:52.640 --> 00:54:54.190 align:middle line:84%
+So that's called
+the positive term.
+
+00:54:54.190 --> 00:54:55.300 align:middle line:90%
+That's those green arrows.
+
+00:54:55.300 --> 00:54:56.120 align:middle line:90%
+And this is the negative term.
+
+00:54:56.120 --> 00:54:57.340 align:middle line:90%
+That was the red arrows.
+
+00:54:57.340 --> 00:54:58.820 align:middle line:90%
+So this one's easy, right?
+
+00:54:58.820 --> 00:55:03.460 align:middle line:84%
+This one is just, I have
+my samples from the data,
+
+00:55:03.460 --> 00:55:05.480 align:middle line:84%
+and I just do
+backprop to increase
+
+00:55:05.480 --> 00:55:07.168 align:middle line:84%
+the energy I place
+on those samples--
+
+00:55:07.168 --> 00:55:08.460 align:middle line:90%
+or, sorry, decrease the energy.
+
+00:55:08.460 --> 00:55:12.370 align:middle line:84%
+Remember, negative energy
+means high probability.
+
+00:55:12.370 --> 00:55:14.190 align:middle line:84%
+But how do you measure
+the normalization?
+
+00:55:14.190 --> 00:55:18.850 align:middle line:84%
+How do you measure the gradient
+of this normalization function?
+
+00:55:18.850 --> 00:55:20.890 align:middle line:84%
+So here's the full
+derivation, which
+
+00:55:20.890 --> 00:55:23.310 align:middle line:84%
+you might want to kind of walk
+through after the lecture.
+
+00:55:23.310 --> 00:55:24.730 align:middle line:90%
+But here's what it is.
+
+00:55:24.730 --> 00:55:28.690 align:middle line:84%
+It turns out that this thing
+has a very simple form.
+
+00:55:28.690 --> 00:55:34.670 align:middle line:84%
+So the gradient of this
+normalization function,
+
+00:55:34.670 --> 00:55:36.690 align:middle line:84%
+sometimes called the
+partition function,
+
+00:55:36.690 --> 00:55:40.930 align:middle line:84%
+is-- so grad of log of
+f of x is equal to 1
+
+00:55:40.930 --> 00:55:44.210 align:middle line:90%
+over f at x grad of f of x.
+
+00:55:44.210 --> 00:55:45.630 align:middle line:84%
+That's an identity
+from calculus.
+
+00:55:45.630 --> 00:55:47.610 align:middle line:90%
+It's a good thing to remember.
+
+00:55:47.610 --> 00:55:51.650 align:middle line:84%
+So this is equal to
+1 over Z grad of Z.
+
+00:55:51.650 --> 00:55:54.650 align:middle line:84%
+Now I can write the definition
+of Z. The definition of Z
+
+00:55:54.650 --> 00:55:57.610 align:middle line:90%
+is the integral over x of--
+
+00:55:57.610 --> 00:55:59.345 align:middle line:84%
+this is like we're
+doing the softmax.
+
+00:55:59.345 --> 00:56:00.470 align:middle line:90%
+This is exactly what we do.
+
+00:56:00.470 --> 00:56:02.450 align:middle line:84%
+This is just the
+more general setting.
+
+00:56:02.450 --> 00:56:06.190 align:middle line:84%
+This is the
+normalizing constant,
+
+00:56:06.190 --> 00:56:09.810 align:middle line:84%
+so the integral over how much
+energy I place on all the data.
+
+00:56:09.810 --> 00:56:10.490 align:middle line:90%
+OK.
+
+00:56:10.490 --> 00:56:10.990 align:middle line:90%
+Oops.
+
+00:56:10.990 --> 00:56:12.130 align:middle line:90%
+Sorry.
+
+00:56:12.130 --> 00:56:18.990 align:middle line:84%
+So then, the next line is
+going to be chain rule.
+
+00:56:18.990 --> 00:56:20.850 align:middle line:84%
+So this is just
+the gradient of e
+
+00:56:20.850 --> 00:56:24.490 align:middle line:84%
+to the negative function
+of x, is-- here,
+
+00:56:24.490 --> 00:56:26.635 align:middle line:84%
+gradient of e to the
+x is e to the x times
+
+00:56:26.635 --> 00:56:28.510 align:middle line:84%
+the gradient of whatever
+was in the exponent.
+
+00:56:28.510 --> 00:56:30.450 align:middle line:90%
+That's just the chain rule.
+
+00:56:30.450 --> 00:56:34.970 align:middle line:84%
+And then this line here is
+just rearrangement of terms.
+
+00:56:34.970 --> 00:56:37.970 align:middle line:84%
+I'm taking this
+ratio, dividing by Z,
+
+00:56:37.970 --> 00:56:39.430 align:middle line:90%
+pulling it into the integral.
+
+00:56:39.430 --> 00:56:42.210 align:middle line:84%
+So now I get this term,
+which simplifies to p again.
+
+00:56:42.210 --> 00:56:43.710 align:middle line:84%
+So it's just
+rearrangement of terms.
+
+00:56:43.710 --> 00:56:45.752 align:middle line:84%
+That's the definition of
+p is equal to this term.
+
+00:56:45.752 --> 00:56:46.510 align:middle line:90%
+I found it again.
+
+00:56:46.510 --> 00:56:50.090 align:middle line:84%
+But now I have an integral
+of p of this thing.
+
+00:56:50.090 --> 00:56:52.450 align:middle line:84%
+And this is-- the whole
+point is to rearrange
+
+00:56:52.450 --> 00:56:55.150 align:middle line:84%
+the terms until I get something
+that looks an expectation.
+
+00:56:55.150 --> 00:56:56.110 align:middle line:90%
+That's an expectation.
+
+00:56:56.110 --> 00:56:59.390 align:middle line:84%
+An expectation is
+integral of p of x f of x.
+
+00:56:59.390 --> 00:57:03.550 align:middle line:84%
+That's expectation of f of x
+under the distribution p of x.
+
+00:57:03.550 --> 00:57:05.210 align:middle line:90%
+OK, so I got an expectation.
+
+00:57:05.210 --> 00:57:07.740 align:middle line:84%
+So this is all equal to
+expectation of samples
+
+00:57:07.740 --> 00:57:11.740 align:middle line:84%
+from the model of the
+gradient of the energy.
+
+00:57:11.740 --> 00:57:13.767 align:middle line:84%
+So what does that--
+why did I do that?
+
+00:57:13.767 --> 00:57:16.100 align:middle line:84%
+Because if I get things into
+the form of an expectation,
+
+00:57:16.100 --> 00:57:18.960 align:middle line:84%
+I know how to approximate
+expectations on finite data.
+
+00:57:18.960 --> 00:57:20.500 align:middle line:84%
+I don't have to
+compute an integral
+
+00:57:20.500 --> 00:57:22.920 align:middle line:84%
+over some analytical
+infinite set.
+
+00:57:22.920 --> 00:57:24.620 align:middle line:84%
+I approximate
+expectation with samples,
+
+00:57:24.620 --> 00:57:26.040 align:middle line:90%
+and we know how to do that.
+
+00:57:26.040 --> 00:57:30.660 align:middle line:84%
+That's just sample from p,
+evaluate this, and backprop.
+
+00:57:30.660 --> 00:57:31.160 align:middle line:90%
+OK.
+
+00:57:31.160 --> 00:57:32.700 align:middle line:90%
+So here we go.
+
+00:57:32.700 --> 00:57:35.220 align:middle line:84%
+We converted this
+funny-looking term into now
+
+00:57:35.220 --> 00:57:36.980 align:middle line:90%
+just another expectation.
+
+00:57:36.980 --> 00:57:40.200 align:middle line:84%
+Both of these expectations can
+be approximated with samples.
+
+00:57:40.200 --> 00:57:42.580 align:middle line:84%
+This is samples from
+my training set.
+
+00:57:42.580 --> 00:57:45.540 align:middle line:84%
+And this is samples
+from my model.
+
+00:57:45.540 --> 00:57:47.780 align:middle line:84%
+And that's the gradient
+that will maximize
+
+00:57:47.780 --> 00:57:50.660 align:middle line:84%
+the likelihood of
+the density implied
+
+00:57:50.660 --> 00:57:55.260 align:middle line:84%
+by the energy for an
+energy-based model.
+
+00:57:55.260 --> 00:57:59.100 align:middle line:84%
+It's called
+contrastive divergence.
+
+00:57:59.100 --> 00:58:01.960 align:middle line:90%
+Any questions?
+
+00:58:01.960 --> 00:58:02.460 align:middle line:90%
+Yeah?
+
+00:58:02.460 --> 00:58:03.950 align:middle line:84%
+AUDIENCE: Just one
+question on the derivation.
+
+00:58:03.950 --> 00:58:05.410 align:middle line:84%
+You pulled out,
+like, a minus sign,
+
+00:58:05.410 --> 00:58:07.290 align:middle line:84%
+but it wasn't-- if I
+understand correctly,
+
+00:58:07.290 --> 00:58:08.332 align:middle line:90%
+it was not a subtraction.
+
+00:58:08.332 --> 00:58:09.450 align:middle line:90%
+It was times negative 1.
+
+00:58:09.450 --> 00:58:11.450 align:middle line:84%
+PHILLIP ISOLA: That-- I
+think-- oh, yeah, sorry.
+
+00:58:11.450 --> 00:58:13.602 align:middle line:84%
+That's a little-- this
+is a times negative 1.
+
+00:58:13.602 --> 00:58:14.810 align:middle line:90%
+Yeah, that's not subtraction.
+
+00:58:14.810 --> 00:58:17.630 align:middle line:90%
+That's probably confusing, yeah.
+
+00:58:17.630 --> 00:58:18.710 align:middle line:90%
+OK.
+
+00:58:18.710 --> 00:58:19.670 align:middle line:90%
+OK.
+
+00:58:19.670 --> 00:58:20.610 align:middle line:90%
+So that's the math.
+
+00:58:20.610 --> 00:58:24.090 align:middle line:84%
+But you can also just kind of
+keep in mind the intuition.
+
+00:58:24.090 --> 00:58:26.290 align:middle line:84%
+Push down energy
+where the data lives.
+
+00:58:26.290 --> 00:58:28.350 align:middle line:84%
+Push up energy where
+the model currently
+
+00:58:28.350 --> 00:58:31.428 align:middle line:90%
+places high probability.
+
+00:58:31.428 --> 00:58:33.970 align:middle line:84%
+Eventually, those cancel out,
+and the model has fit the data.
+
+00:58:33.970 --> 00:58:36.750 align:middle line:90%
+
+
+00:58:36.750 --> 00:58:37.250 align:middle line:90%
+OK.
+
+00:58:37.250 --> 00:58:40.210 align:middle line:84%
+So we've seen a few different
+families of generative models
+
+00:58:40.210 --> 00:58:40.710 align:middle line:90%
+now.
+
+00:58:40.710 --> 00:58:43.150 align:middle line:84%
+We've seen that generative
+modeling takes data,
+
+00:58:43.150 --> 00:58:45.270 align:middle line:84%
+and you can learn a density
+function that assigns
+
+00:58:45.270 --> 00:58:46.650 align:middle line:90%
+a normalized score to the data.
+
+00:58:46.650 --> 00:58:48.310 align:middle line:84%
+You can define an
+energy function
+
+00:58:48.310 --> 00:58:53.710 align:middle line:84%
+that gives you a unnormalized
+score to the data.
+
+00:58:53.710 --> 00:58:58.430 align:middle line:84%
+And you can also directly
+sample by learning
+
+00:58:58.430 --> 00:59:02.920 align:middle line:84%
+a mapping from random noise
+or latent variables to data.
+
+00:59:02.920 --> 00:59:05.840 align:middle line:84%
+So you can represent
+the data generating
+
+00:59:05.840 --> 00:59:07.760 align:middle line:84%
+process in any of these
+ways, either directly
+
+00:59:07.760 --> 00:59:12.480 align:middle line:84%
+generate data from initial
+random variable or sample
+
+00:59:12.480 --> 00:59:15.680 align:middle line:84%
+from a density or
+energy fit to the data.
+
+00:59:15.680 --> 00:59:17.320 align:middle line:84%
+And each of these
+things, then, will
+
+00:59:17.320 --> 00:59:19.600 align:middle line:84%
+have a family of
+generative models
+
+00:59:19.600 --> 00:59:21.982 align:middle line:84%
+and deep generative models
+that have one of these forms.
+
+00:59:21.982 --> 00:59:23.440 align:middle line:84%
+And a lot of deep
+generative models
+
+00:59:23.440 --> 00:59:28.300 align:middle line:84%
+have multiple of these
+forms simultaneously.
+
+00:59:28.300 --> 00:59:32.400 align:middle line:84%
+So, finally, we're going to
+get to the popular, named,
+
+00:59:32.400 --> 00:59:33.460 align:middle line:90%
+deep generative models.
+
+00:59:33.460 --> 00:59:35.280 align:middle line:84%
+All of that was
+really just background
+
+00:59:35.280 --> 00:59:38.760 align:middle line:84%
+on generative modeling
+and probability theory.
+
+00:59:38.760 --> 00:59:40.220 align:middle line:90%
+So let's start.
+
+00:59:40.220 --> 00:59:41.720 align:middle line:84%
+We're going to talk
+about three now.
+
+00:59:41.720 --> 00:59:43.440 align:middle line:84%
+We're going to talk about
+autoregressive models, which
+
+00:59:43.440 --> 00:59:44.628 align:middle line:90%
+we've actually seen before.
+
+00:59:44.628 --> 00:59:46.420 align:middle line:84%
+We're going to talk
+about diffusion models.
+
+00:59:46.420 --> 00:59:48.545 align:middle line:84%
+And we're going to
+talk about GANs.
+
+00:59:48.545 --> 00:59:49.920 align:middle line:84%
+And then tomorrow--
+not tomorrow,
+
+00:59:49.920 --> 00:59:54.300 align:middle line:84%
+but next week, we'll talk about
+VAEs, variational autoencoders.
+
+00:59:54.300 --> 00:59:57.200 align:middle line:84%
+So autoregressive models
+are kind of the simplest one
+
+00:59:57.200 --> 00:59:58.960 align:middle line:84%
+to understand, so
+we'll start there.
+
+00:59:58.960 --> 01:00:02.880 align:middle line:84%
+So autoregressive models are
+these next word predictors,
+
+01:00:02.880 --> 01:00:04.780 align:middle line:90%
+or next data point predictors.
+
+01:00:04.780 --> 01:00:08.140 align:middle line:84%
+So I do "once upon" and I try
+to predict what's the next word.
+
+01:00:08.140 --> 01:00:09.700 align:middle line:90%
+"A."
+
+01:00:09.700 --> 01:00:11.068 align:middle line:90%
+And then I repeat the process.
+
+01:00:11.068 --> 01:00:12.360 align:middle line:90%
+So we've seen this a few times.
+
+01:00:12.360 --> 01:00:14.320 align:middle line:90%
+"Time."
+
+01:00:14.320 --> 01:00:16.020 align:middle line:84%
+So how is this a
+generative model?
+
+01:00:16.020 --> 01:00:19.600 align:middle line:84%
+What probability distribution
+is it sampling from?
+
+01:00:19.600 --> 01:00:22.180 align:middle line:84%
+And I don't have to
+go in temporal order.
+
+01:00:22.180 --> 01:00:24.880 align:middle line:90%
+That's just a particular choice.
+
+01:00:24.880 --> 01:00:26.238 align:middle line:90%
+So, recap.
+
+01:00:26.238 --> 01:00:27.780 align:middle line:84%
+I think I've shown
+this slide before.
+
+01:00:27.780 --> 01:00:29.320 align:middle line:84%
+We trained an
+autoregressive model
+
+01:00:29.320 --> 01:00:31.180 align:middle line:84%
+with standard
+supervised learning.
+
+01:00:31.180 --> 01:00:32.940 align:middle line:90%
+We have a data set of sentences.
+
+01:00:32.940 --> 01:00:37.920 align:middle line:84%
+We just chop the sentence into
+the prefix and the final word,
+
+01:00:37.920 --> 01:00:41.240 align:middle line:84%
+or the next word at some
+point in the sentence.
+
+01:00:41.240 --> 01:00:42.860 align:middle line:84%
+That's a supervised
+learning problem.
+
+01:00:42.860 --> 01:00:45.100 align:middle line:84%
+I can just try to treat
+it as classification.
+
+01:00:45.100 --> 01:00:46.760 align:middle line:90%
+Predict the next word
+
+01:00:46.760 --> 01:00:47.260 align:middle line:90%
+OK.
+
+01:00:47.260 --> 01:00:48.593 align:middle line:90%
+So that's my learning algorithm.
+
+01:00:48.593 --> 01:00:51.320 align:middle line:84%
+And my sampling algorithm-- now
+I'm going to call it sampling--
+
+01:00:51.320 --> 01:00:52.960 align:middle line:90%
+is I run--
+
+01:00:52.960 --> 01:00:55.640 align:middle line:84%
+I predict the next
+word, but I'm not
+
+01:00:55.640 --> 01:00:58.870 align:middle line:84%
+going to necessarily
+just predict one word.
+
+01:00:58.870 --> 01:01:00.510 align:middle line:84%
+I'll predict a
+distribution over words.
+
+01:01:00.510 --> 01:01:03.003 align:middle line:84%
+So it's like, if each word
+is treated as a class,
+
+01:01:03.003 --> 01:01:04.670 align:middle line:84%
+I can output a
+categorical distribution.
+
+01:01:04.670 --> 01:01:07.770 align:middle line:84%
+I can do softmax regression and
+sample from that distribution.
+
+01:01:07.770 --> 01:01:10.476 align:middle line:90%
+
+
+01:01:10.476 --> 01:01:11.170 align:middle line:90%
+OK.
+
+01:01:11.170 --> 01:01:14.230 align:middle line:84%
+So why is this a valid
+probability model?
+
+01:01:14.230 --> 01:01:17.090 align:middle line:84%
+Why does this actually
+do max likelihood density
+
+01:01:17.090 --> 01:01:19.410 align:middle line:90%
+modeling of a distribution?
+
+01:01:19.410 --> 01:01:22.170 align:middle line:84%
+The reason is because of this
+equation, which is, I think,
+
+01:01:22.170 --> 01:01:24.230 align:middle line:84%
+sometimes called the
+chain rule of probability.
+
+01:01:24.230 --> 01:01:30.350 align:middle line:84%
+But it says that the probability
+a set of words-- or a vector X,
+
+01:01:30.350 --> 01:01:33.810 align:middle line:90%
+so a set of data points X--
+
+01:01:33.810 --> 01:01:37.750 align:middle line:84%
+is equal to the
+probability of x2 given x1.
+
+01:01:37.750 --> 01:01:40.290 align:middle line:84%
+So x1 through xn are the
+elements of my vector
+
+01:01:40.290 --> 01:01:44.010 align:middle line:84%
+X. So I just do probability of
+x1 times probability of x2 times
+
+01:01:44.010 --> 01:01:44.670 align:middle line:90%
+x1.
+
+01:01:44.670 --> 01:01:47.770 align:middle line:84%
+So that becomes
+probability of x1 and x2.
+
+01:01:47.770 --> 01:01:50.130 align:middle line:84%
+And then I multiply that by
+probability of x3, given x1
+
+01:01:50.130 --> 01:01:50.810 align:middle line:90%
+and x2.
+
+01:01:50.810 --> 01:01:51.310 align:middle line:90%
+OK.
+
+01:01:51.310 --> 01:01:55.330 align:middle line:84%
+So this is an identity, an
+identity from probability.
+
+01:01:55.330 --> 01:01:56.140 align:middle line:90%
+OK.
+
+01:01:56.140 --> 01:01:58.820 align:middle line:84%
+So I can just write that
+in the shorthand form
+
+01:01:58.820 --> 01:02:01.818 align:middle line:84%
+as this is product over all the
+conditionals of the next token
+
+01:02:01.818 --> 01:02:03.860 align:middle line:84%
+given the previous tokens,
+or the next word given
+
+01:02:03.860 --> 01:02:05.693 align:middle line:84%
+the previous word, the
+next data point given
+
+01:02:05.693 --> 01:02:07.650 align:middle line:90%
+previous data points.
+
+01:02:07.650 --> 01:02:09.900 align:middle line:84%
+OK, so here's what that looks
+like for the probability
+
+01:02:09.900 --> 01:02:12.140 align:middle line:84%
+of "once upon a time" is equal
+to the probability of "once"
+
+01:02:12.140 --> 01:02:13.973 align:middle line:84%
+times the probability
+of "upon" given "once"
+
+01:02:13.973 --> 01:02:15.340 align:middle line:90%
+times the probability of--
+
+01:02:15.340 --> 01:02:15.960 align:middle line:90%
+right.
+
+01:02:15.960 --> 01:02:16.580 align:middle line:90%
+OK.
+
+01:02:16.580 --> 01:02:19.820 align:middle line:84%
+So it's the product of all
+those conditional probabilities.
+
+01:02:19.820 --> 01:02:22.340 align:middle line:84%
+And autoregressive
+modeling is simply
+
+01:02:22.340 --> 01:02:25.700 align:middle line:84%
+modeling all of those
+conditional probabilities
+
+01:02:25.700 --> 01:02:29.160 align:middle line:84%
+in a sequence and trying
+to maximize the likelihood.
+
+01:02:29.160 --> 01:02:31.660 align:middle line:84%
+So how do I model probability
+of "time" given "once upon a"?
+
+01:02:31.660 --> 01:02:34.880 align:middle line:90%
+I just do next word classifier.
+
+01:02:34.880 --> 01:02:37.100 align:middle line:84%
+So I just output a
+categorical distribution
+
+01:02:37.100 --> 01:02:39.077 align:middle line:90%
+over my vocabulary size.
+
+01:02:39.077 --> 01:02:40.660 align:middle line:84%
+The number of
+categories is the number
+
+01:02:40.660 --> 01:02:42.320 align:middle line:84%
+of words I could
+possibly predict.
+
+01:02:42.320 --> 01:02:44.860 align:middle line:84%
+So "once upon a," I output
+a probability mass function,
+
+01:02:44.860 --> 01:02:48.233 align:middle line:84%
+a categorical distribution, over
+all the possible next words.
+
+01:02:48.233 --> 01:02:49.900 align:middle line:84%
+There's a few other
+ways you could do it
+
+01:02:49.900 --> 01:02:51.400 align:middle line:90%
+in natural language processing.
+
+01:02:51.400 --> 01:02:54.660 align:middle line:84%
+But this is kind
+of the basic idea.
+
+01:02:54.660 --> 01:02:56.140 align:middle line:90%
+OK.
+
+01:02:56.140 --> 01:02:57.520 align:middle line:90%
+What about in image processing?
+
+01:02:57.520 --> 01:02:59.437 align:middle line:84%
+Here's how you would do
+it in image processing
+
+01:02:59.437 --> 01:03:00.860 align:middle line:90%
+for an autoregressive model.
+
+01:03:00.860 --> 01:03:03.580 align:middle line:84%
+I am going to start
+drawing this bird,
+
+01:03:03.580 --> 01:03:05.820 align:middle line:84%
+and at any point
+in my drawing, I'm
+
+01:03:05.820 --> 01:03:08.260 align:middle line:84%
+going to predict the color
+of the next pixel given
+
+01:03:08.260 --> 01:03:10.300 align:middle line:90%
+all the previous pixels.
+
+01:03:10.300 --> 01:03:10.800 align:middle line:90%
+OK.
+
+01:03:10.800 --> 01:03:14.495 align:middle line:90%
+So I can quantize my pixels--
+
+01:03:14.495 --> 01:03:17.120 align:middle line:84%
+just like I showed in one of the
+colorization examples earlier,
+
+01:03:17.120 --> 01:03:19.260 align:middle line:84%
+I can quantize my
+pixels into classes--
+
+01:03:19.260 --> 01:03:21.460 align:middle line:84%
+red, green, blue, and
+so forth-- and output
+
+01:03:21.460 --> 01:03:23.480 align:middle line:84%
+a categorical distribution
+over the classes.
+
+01:03:23.480 --> 01:03:26.020 align:middle line:84%
+That's just softmax regression,
+that we've seen before.
+
+01:03:26.020 --> 01:03:27.420 align:middle line:84%
+And then I sample
+from it by just
+
+01:03:27.420 --> 01:03:29.160 align:middle line:84%
+sampling from a
+categorical distribution.
+
+01:03:29.160 --> 01:03:30.422 align:middle line:90%
+So if I have--
+
+01:03:30.422 --> 01:03:32.880 align:middle line:84%
+it's easy to sample from a
+categorical distribution, right?
+
+01:03:32.880 --> 01:03:36.060 align:middle line:84%
+I can just take the
+unit interval 0 to 1,
+
+01:03:36.060 --> 01:03:38.960 align:middle line:84%
+I can take a uniform
+sample from 0 to 1,
+
+01:03:38.960 --> 01:03:41.860 align:middle line:84%
+and I can walk through
+my probability vector
+
+01:03:41.860 --> 01:03:44.940 align:middle line:90%
+until I get to--
+
+01:03:44.940 --> 01:03:48.820 align:middle line:84%
+until I get to the segment
+that has been sampled from.
+
+01:03:48.820 --> 01:03:52.070 align:middle line:84%
+So we can easily sample from
+a categorical distribution.
+
+01:03:52.070 --> 01:03:54.290 align:middle line:84%
+And then we just
+repeat the process.
+
+01:03:54.290 --> 01:03:56.970 align:middle line:84%
+So I go from nothing to next
+pixel, next pixel, next pixel.
+
+01:03:56.970 --> 01:04:02.110 align:middle line:84%
+It's the same as predicting
+the next word in a sentence.
+
+01:04:02.110 --> 01:04:04.040 align:middle line:90%
+OK.
+
+01:04:04.040 --> 01:04:05.790 align:middle line:90%
+And this is just, again--
+
+01:04:05.790 --> 01:04:07.710 align:middle line:84%
+I think one of the early
+slides in this course
+
+01:04:07.710 --> 01:04:10.810 align:middle line:84%
+was classifying images
+into categories,
+
+01:04:10.810 --> 01:04:13.170 align:middle line:84%
+and here, I'm classifying
+next pixel into categories.
+
+01:04:13.170 --> 01:04:18.190 align:middle line:84%
+And my loss function is the
+likelihood that my model--
+
+01:04:18.190 --> 01:04:20.810 align:middle line:84%
+my model, which is not
+really specified here,
+
+01:04:20.810 --> 01:04:24.588 align:middle line:84%
+but anyway-- f theta places
+on the ground-truth class.
+
+01:04:24.588 --> 01:04:26.630 align:middle line:84%
+This is the amount of
+probability my model places
+
+01:04:26.630 --> 01:04:28.610 align:middle line:90%
+on the ground-truth class.
+
+01:04:28.610 --> 01:04:33.550 align:middle line:84%
+I want to maximize that,
+max likelihood modeling.
+
+01:04:33.550 --> 01:04:34.270 align:middle line:90%
+OK.
+
+01:04:34.270 --> 01:04:37.750 align:middle line:84%
+So yeah, just spelling it out
+for a different data type.
+
+01:04:37.750 --> 01:04:39.790 align:middle line:84%
+So now my supervised
+data I learned from
+
+01:04:39.790 --> 01:04:43.710 align:middle line:84%
+is examples of patches of
+pixels and the next pixel
+
+01:04:43.710 --> 01:04:45.030 align:middle line:90%
+in the sequence.
+
+01:04:45.030 --> 01:04:47.450 align:middle line:84%
+I do supervised
+softmax regression,
+
+01:04:47.450 --> 01:04:49.830 align:middle line:84%
+and I can predict the next
+pixel in the sequence given
+
+01:04:49.830 --> 01:04:51.800 align:middle line:84%
+the previous pixels,
+and I can actually
+
+01:04:51.800 --> 01:04:55.260 align:middle line:84%
+sample to create a randomized
+variety of birds in this way.
+
+01:04:55.260 --> 01:04:58.220 align:middle line:90%
+
+
+01:04:58.220 --> 01:04:58.720 align:middle line:90%
+Yeah?
+
+01:04:58.720 --> 01:04:59.960 align:middle line:90%
+Question.
+
+01:04:59.960 --> 01:05:01.800 align:middle line:84%
+AUDIENCE: So would
+you characterize
+
+01:05:01.800 --> 01:05:03.680 align:middle line:90%
+this as a density model?
+
+01:05:03.680 --> 01:05:06.200 align:middle line:84%
+Can you draw that
+correspondence lower?
+
+01:05:06.200 --> 01:05:08.617 align:middle line:84%
+PHILLIP ISOLA: Yeah, so what
+would I characterize this as?
+
+01:05:08.617 --> 01:05:11.980 align:middle line:84%
+A density model,
+sampler, energy model?
+
+01:05:11.980 --> 01:05:13.360 align:middle line:90%
+What do you all think?
+
+01:05:13.360 --> 01:05:14.500 align:middle line:90%
+Who thinks density model?
+
+01:05:14.500 --> 01:05:15.620 align:middle line:90%
+Raise your hand.
+
+01:05:15.620 --> 01:05:16.120 align:middle line:90%
+OK.
+
+01:05:16.120 --> 01:05:18.040 align:middle line:90%
+Who thinks energy model?
+
+01:05:18.040 --> 01:05:23.840 align:middle line:84%
+Who thinks sampler or
+the direct approach?
+
+01:05:23.840 --> 01:05:27.000 align:middle line:84%
+So I think density model
+was the highest vote.
+
+01:05:27.000 --> 01:05:29.340 align:middle line:84%
+I think that these things
+are a little fuzzy.
+
+01:05:29.340 --> 01:05:32.060 align:middle line:84%
+You can actually-- I'm not sure
+there's a correct answer here.
+
+01:05:32.060 --> 01:05:34.760 align:middle line:84%
+But I would characterize
+it as a density model
+
+01:05:34.760 --> 01:05:39.520 align:middle line:84%
+because we're outputting the
+density over the next pixel
+
+01:05:39.520 --> 01:05:41.120 align:middle line:90%
+given the previous pixels.
+
+01:05:41.120 --> 01:05:42.720 align:middle line:84%
+And we're actually
+going to do that
+
+01:05:42.720 --> 01:05:44.880 align:middle line:84%
+for every pixel in a
+sequence or every word
+
+01:05:44.880 --> 01:05:47.600 align:middle line:84%
+in a sequence to get a
+probability that's explicitly
+
+01:05:47.600 --> 01:05:48.260 align:middle line:90%
+represented.
+
+01:05:48.260 --> 01:05:50.290 align:middle line:84%
+So this is actually--
+you can multiply
+
+01:05:50.290 --> 01:05:52.745 align:middle line:84%
+all of those
+probabilities together,
+
+01:05:52.745 --> 01:05:54.870 align:middle line:84%
+and you'll get the probability
+of the entire image.
+
+01:05:54.870 --> 01:05:56.970 align:middle line:84%
+So the product of all the
+conditional probabilities
+
+01:05:56.970 --> 01:05:58.595 align:middle line:84%
+is the probability
+of the entire image.
+
+01:05:58.595 --> 01:06:01.050 align:middle line:84%
+That's a density
+that integrates to 1.
+
+01:06:01.050 --> 01:06:03.690 align:middle line:84%
+So I would call it
+a density model.
+
+01:06:03.690 --> 01:06:07.062 align:middle line:90%
+OK.
+
+01:06:07.062 --> 01:06:09.970 align:middle line:84%
+And people do this in a lot
+of sequential data modeling
+
+01:06:09.970 --> 01:06:10.550 align:middle line:90%
+problems.
+
+01:06:10.550 --> 01:06:13.387 align:middle line:84%
+Time series modeling is
+often autoregressive.
+
+01:06:13.387 --> 01:06:14.970 align:middle line:84%
+So here's another
+example, where we're
+
+01:06:14.970 --> 01:06:18.910 align:middle line:84%
+going to predict the next
+sound wave in a sound.
+
+01:06:18.910 --> 01:06:22.330 align:middle line:84%
+So this is, like, for music
+modeling or audio modeling.
+
+01:06:22.330 --> 01:06:24.450 align:middle line:90%
+I simply predict the next--
+
+01:06:24.450 --> 01:06:27.970 align:middle line:90%
+
+
+01:06:27.970 --> 01:06:29.470 align:middle line:84%
+I have some
+representation of sound,
+
+01:06:29.470 --> 01:06:32.930 align:middle line:84%
+and I predict what the sound
+will be on the next time step.
+
+01:06:32.930 --> 01:06:35.530 align:middle line:84%
+So it looks exactly
+like language modeling.
+
+01:06:35.530 --> 01:06:39.530 align:middle line:84%
+This is just autoregressive
+modeling on another domain.
+
+01:06:39.530 --> 01:06:41.570 align:middle line:90%
+OK.
+
+01:06:41.570 --> 01:06:42.450 align:middle line:90%
+Right.
+
+01:06:42.450 --> 01:06:47.050 align:middle line:84%
+So maybe it was a
+little-- let me-- sorry.
+
+01:06:47.050 --> 01:06:50.170 align:middle line:90%
+Let me just go up here.
+
+01:06:50.170 --> 01:06:56.330 align:middle line:84%
+So just to clarify, I'm trying
+to maximize the likelihood
+
+01:06:56.330 --> 01:06:57.855 align:middle line:90%
+I place on my training data.
+
+01:06:57.855 --> 01:06:59.730 align:middle line:84%
+So the likelihood I
+place on my training data
+
+01:06:59.730 --> 01:07:01.147 align:middle line:84%
+is the product
+over the likelihood
+
+01:07:01.147 --> 01:07:06.930 align:middle line:84%
+I place on each next
+observation in this sequence.
+
+01:07:06.930 --> 01:07:09.810 align:middle line:84%
+And if I'm using
+log probabilities,
+
+01:07:09.810 --> 01:07:12.770 align:middle line:84%
+it becomes the sum over
+the log probabilities.
+
+01:07:12.770 --> 01:07:16.490 align:middle line:84%
+So the likelihood that
+the autoregressive model
+
+01:07:16.490 --> 01:07:21.810 align:middle line:84%
+places on a training example is
+the sum of the log probabilities
+
+01:07:21.810 --> 01:07:24.570 align:middle line:84%
+it places on every next
+pixel in the sequence.
+
+01:07:24.570 --> 01:07:27.690 align:middle line:84%
+And I just sum all
+those up and backprop.
+
+01:07:27.690 --> 01:07:29.450 align:middle line:84%
+And that's how you
+do optimization.
+
+01:07:29.450 --> 01:07:34.850 align:middle line:84%
+So that's kind of what
+this picture is showing,
+
+01:07:34.850 --> 01:07:36.242 align:middle line:84%
+is I will just
+make a prediction,
+
+01:07:36.242 --> 01:07:37.950 align:middle line:84%
+then I'll compare it
+to the ground truth,
+
+01:07:37.950 --> 01:07:41.210 align:middle line:84%
+measure the probability under
+my categorical distribution.
+
+01:07:41.210 --> 01:07:43.355 align:middle line:84%
+Then I have output of
+that ground-truth point,
+
+01:07:43.355 --> 01:07:44.980 align:middle line:84%
+and I'll sum up all
+those probabilities
+
+01:07:44.980 --> 01:07:46.360 align:middle line:90%
+and backprop through this graph.
+
+01:07:46.360 --> 01:07:48.152 align:middle line:84%
+So that's how you
+actually train the thing.
+
+01:07:48.152 --> 01:07:50.580 align:middle line:90%
+
+
+01:07:50.580 --> 01:07:53.260 align:middle line:90%
+OK.
+
+01:07:53.260 --> 01:07:53.760 align:middle line:90%
+OK.
+
+01:07:53.760 --> 01:07:56.200 align:middle line:84%
+So same as what we saw in
+other sequence modeling
+
+01:07:56.200 --> 01:07:57.560 align:middle line:90%
+in previous lectures, like RNNs.
+
+01:07:57.560 --> 01:07:59.243 align:middle line:84%
+We talked about, you
+output predictions,
+
+01:07:59.243 --> 01:08:00.160 align:middle line:90%
+you measure the error.
+
+01:08:00.160 --> 01:08:03.820 align:middle line:84%
+But now I'm just giving it
+this probabilistic language.
+
+01:08:03.820 --> 01:08:06.740 align:middle line:84%
+So next model that we're
+going to talk about
+
+01:08:06.740 --> 01:08:09.580 align:middle line:90%
+is diffusion model.
+
+01:08:09.580 --> 01:08:13.628 align:middle line:84%
+So diffusion models are
+really clever because they
+
+01:08:13.628 --> 01:08:14.920 align:middle line:90%
+make the following observation.
+
+01:08:14.920 --> 01:08:18.260 align:middle line:84%
+They say that-- you know,
+it's pretty hard to--
+
+01:08:18.260 --> 01:08:21.240 align:middle line:84%
+these are one of these more
+direct generative models.
+
+01:08:21.240 --> 01:08:25.220 align:middle line:84%
+So they're directly mapping from
+a random dice roll to a sample,
+
+01:08:25.220 --> 01:08:30.380 align:middle line:84%
+as opposed to going through a
+density or an energy function.
+
+01:08:30.380 --> 01:08:33.580 align:middle line:84%
+So diffusion models make
+the very clever observation
+
+01:08:33.580 --> 01:08:38.300 align:middle line:84%
+that it's very hard to convert
+noise, random variables,
+
+01:08:38.300 --> 01:08:42.020 align:middle line:84%
+into data, structured
+objects, but it's really easy
+
+01:08:42.020 --> 01:08:44.250 align:middle line:84%
+to convert structured
+objects into noise,
+
+01:08:44.250 --> 01:08:47.069 align:middle line:84%
+into random variables
+with simple distributions.
+
+01:08:47.069 --> 01:08:50.550 align:middle line:84%
+So just imagine that these birds
+are like balloon animals filled
+
+01:08:50.550 --> 01:08:54.330 align:middle line:84%
+with some kind of colored gas,
+and then you pop the balloon.
+
+01:08:54.330 --> 01:08:55.050 align:middle line:90%
+What happens?
+
+01:08:55.050 --> 01:08:57.399 align:middle line:84%
+All the particles
+spread out randomly,
+
+01:08:57.399 --> 01:08:59.149 align:middle line:84%
+and eventually, they
+become just uniformly
+
+01:08:59.149 --> 01:09:01.470 align:middle line:90%
+distributed in a space.
+
+01:09:01.470 --> 01:09:03.569 align:middle line:84%
+Physically, that's called
+a diffusion process.
+
+01:09:03.569 --> 01:09:05.830 align:middle line:84%
+And diffusion models are
+exactly the same thing,
+
+01:09:05.830 --> 01:09:09.210 align:middle line:84%
+except you're diffusing in some
+high-dimensional data space.
+
+01:09:09.210 --> 01:09:12.350 align:middle line:84%
+Whatever your data is,
+it might be a tensor,
+
+01:09:12.350 --> 01:09:15.310 align:middle line:84%
+and you're diffusing by
+just randomly perturbing it
+
+01:09:15.310 --> 01:09:19.270 align:middle line:84%
+until it becomes uniform, or
+it has a simple distribution,
+
+01:09:19.270 --> 01:09:20.990 align:middle line:90%
+typically Gaussian.
+
+01:09:20.990 --> 01:09:23.529 align:middle line:84%
+So converting images to
+noise is really easy.
+
+01:09:23.529 --> 01:09:24.870 align:middle line:90%
+Here's how it looks like.
+
+01:09:24.870 --> 01:09:29.010 align:middle line:84%
+I just take an image and I let
+the pixels diffuse outward.
+
+01:09:29.010 --> 01:09:32.158 align:middle line:84%
+So I simply take every pixel
+and I add a little bit of noise.
+
+01:09:32.158 --> 01:09:34.450 align:middle line:84%
+And I add a little more noise,
+add a little more noise.
+
+01:09:34.450 --> 01:09:35.867 align:middle line:84%
+Eventually, I get
+to a state which
+
+01:09:35.867 --> 01:09:38.689 align:middle line:84%
+is, like, fully entropic,
+a very simple distribution.
+
+01:09:38.689 --> 01:09:39.732 align:middle line:90%
+Maybe it's uniform.
+
+01:09:39.732 --> 01:09:41.149 align:middle line:84%
+In the models that
+we'll see, it's
+
+01:09:41.149 --> 01:09:42.399 align:middle line:90%
+actually going to be Gaussian.
+
+01:09:42.399 --> 01:09:44.850 align:middle line:84%
+If I just add a sequence of
+Gaussian random perturbations,
+
+01:09:44.850 --> 01:09:50.870 align:middle line:84%
+I end up with a unit Gaussian at
+the very end of that sequence.
+
+01:09:50.870 --> 01:09:54.470 align:middle line:84%
+So diffusion models
+convert data to noise
+
+01:09:54.470 --> 01:09:57.470 align:middle line:84%
+and then just learn to
+reverse the process.
+
+01:09:57.470 --> 01:09:59.030 align:middle line:90%
+So easy, right?
+
+01:09:59.030 --> 01:10:00.510 align:middle line:84%
+So it's extremely
+hard to know how
+
+01:10:00.510 --> 01:10:02.650 align:middle line:84%
+to do that mapping
+from noise to data,
+
+01:10:02.650 --> 01:10:06.590 align:middle line:84%
+but I supervise it by telling
+it the exact path to take.
+
+01:10:06.590 --> 01:10:08.190 align:middle line:84%
+So every little
+step of denoising,
+
+01:10:08.190 --> 01:10:11.582 align:middle line:84%
+of going from noise to a little
+less noise, is a very simple--
+
+01:10:11.582 --> 01:10:13.290 align:middle line:84%
+just remove a little
+bit of noise, right?
+
+01:10:13.290 --> 01:10:14.530 align:middle line:90%
+It's a very easy thing to model.
+
+01:10:14.530 --> 01:10:16.197 align:middle line:84%
+I can model it with
+supervised learning.
+
+01:10:16.197 --> 01:10:19.790 align:middle line:84%
+So I simply-- I've created
+a lot of noisy sequences
+
+01:10:19.790 --> 01:10:22.590 align:middle line:90%
+like this on my training data.
+
+01:10:22.590 --> 01:10:25.230 align:middle line:84%
+I turn them all around,
+and I then chop it up.
+
+01:10:25.230 --> 01:10:28.330 align:middle line:84%
+And for every noisy
+to less noisy pair,
+
+01:10:28.330 --> 01:10:31.850 align:middle line:84%
+that's like an xy target,
+a noisy to a less noisy.
+
+01:10:31.850 --> 01:10:35.510 align:middle line:84%
+And we'll index the noise
+level with t, so higher noise
+
+01:10:35.510 --> 01:10:37.590 align:middle line:90%
+means higher t.
+
+01:10:37.590 --> 01:10:40.540 align:middle line:84%
+I'll just use supervised
+learning to reverse the process,
+
+01:10:40.540 --> 01:10:46.080 align:middle line:84%
+and this learns a mapping
+from random noise to images.
+
+01:10:46.080 --> 01:10:50.172 align:middle line:84%
+And to sample an image, I simply
+can sample a random noise vector
+
+01:10:50.172 --> 01:10:51.880 align:middle line:84%
+and put it through
+that mapping that I've
+
+01:10:51.880 --> 01:10:54.910 align:middle line:84%
+learned, that reverse diffusion
+process, as it's known.
+
+01:10:54.910 --> 01:10:56.660 align:middle line:84%
+OK, so here, again,
+is what it looks like.
+
+01:10:56.660 --> 01:11:00.000 align:middle line:84%
+I create a data set of
+noisy and less noisy images
+
+01:11:00.000 --> 01:11:03.560 align:middle line:84%
+by having started with less
+noisy images and adding noise.
+
+01:11:03.560 --> 01:11:05.500 align:middle line:84%
+And I do supervised
+learning on that.
+
+01:11:05.500 --> 01:11:08.900 align:middle line:84%
+That could be as simple as just,
+like, mean squared regression,
+
+01:11:08.900 --> 01:11:12.620 align:middle line:84%
+try to predict, according to L,
+which might be the squared loss,
+
+01:11:12.620 --> 01:11:14.620 align:middle line:84%
+the less noisy image from
+the more noisy image.
+
+01:11:14.620 --> 01:11:16.828 align:middle line:84%
+And you could do this with
+any data, not just images.
+
+01:11:16.828 --> 01:11:18.120 align:middle line:90%
+It's just an example.
+
+01:11:18.120 --> 01:11:19.440 align:middle line:90%
+OK.
+
+01:11:19.440 --> 01:11:21.800 align:middle line:84%
+And this converts
+generative modeling
+
+01:11:21.800 --> 01:11:26.280 align:middle line:84%
+into a bunch of supervised,
+tiny little prediction problems.
+
+01:11:26.280 --> 01:11:26.780 align:middle line:90%
+OK.
+
+01:11:26.780 --> 01:11:28.530 align:middle line:84%
+I'll get to the question
+in just a second.
+
+01:11:28.530 --> 01:11:31.080 align:middle line:90%
+
+
+01:11:31.080 --> 01:11:32.440 align:middle line:90%
+So-- yeah.
+
+01:11:32.440 --> 01:11:32.940 align:middle line:90%
+OK.
+
+01:11:32.940 --> 01:11:33.980 align:middle line:84%
+Actually, I'll do
+the question now.
+
+01:11:33.980 --> 01:11:34.480 align:middle line:90%
+Yeah.
+
+01:11:34.480 --> 01:11:35.080 align:middle line:90%
+Go ahead.
+
+01:11:35.080 --> 01:11:37.330 align:middle line:84%
+AUDIENCE: I wanted to
+ask, so in each step,
+
+01:11:37.330 --> 01:11:41.663 align:middle line:90%
+is each step the same model?
+
+01:11:41.663 --> 01:11:43.330 align:middle line:84%
+Or are there a bunch
+of different models
+
+01:11:43.330 --> 01:11:45.010 align:middle line:90%
+doing each step individually?
+
+01:11:45.010 --> 01:11:47.170 align:middle line:84%
+PHILLIP ISOLA: So is
+each step the same model?
+
+01:11:47.170 --> 01:11:51.270 align:middle line:84%
+Is f the same function for all
+t, or is it different for t?
+
+01:11:51.270 --> 01:11:52.930 align:middle line:90%
+Either option is fine.
+
+01:11:52.930 --> 01:11:55.250 align:middle line:84%
+The most common option
+is you make f a function
+
+01:11:55.250 --> 01:11:57.930 align:middle line:90%
+of x, and you condition on t.
+
+01:11:57.930 --> 01:12:01.490 align:middle line:84%
+So you just tell the network
+what timestep you're on.
+
+01:12:01.490 --> 01:12:03.950 align:middle line:90%
+But that's a modeling choice.
+
+01:12:03.950 --> 01:12:05.950 align:middle line:90%
+It's not fundamental.
+
+01:12:05.950 --> 01:12:06.450 align:middle line:90%
+OK.
+
+01:12:06.450 --> 01:12:08.130 align:middle line:90%
+So if I--
+
+01:12:08.130 --> 01:12:10.730 align:middle line:84%
+I'll get to that
+equation in a minute.
+
+01:12:10.730 --> 01:12:13.010 align:middle line:84%
+But anyway, if I want
+to sample a new image,
+
+01:12:13.010 --> 01:12:15.530 align:middle line:84%
+well, I've converted all
+of my data at the end,
+
+01:12:15.530 --> 01:12:17.290 align:middle line:84%
+at t equals big
+T-- meaning, like,
+
+01:12:17.290 --> 01:12:19.030 align:middle line:84%
+as t goes to
+infinity, it turns--
+
+01:12:19.030 --> 01:12:21.690 align:middle line:84%
+if I'm adding Gaussian
+noise, it asymptotically
+
+01:12:21.690 --> 01:12:26.650 align:middle line:84%
+becomes a unit Gaussian, if I
+do it with the right scaling.
+
+01:12:26.650 --> 01:12:29.490 align:middle line:84%
+And that means that I can
+now, if I reverse the process,
+
+01:12:29.490 --> 01:12:31.110 align:middle line:84%
+start with a unit
+Gaussian sample,
+
+01:12:31.110 --> 01:12:33.410 align:middle line:84%
+roll the dice, which are
+unit Gaussian variables,
+
+01:12:33.410 --> 01:12:35.380 align:middle line:84%
+and then I denoise with
+my learned function.
+
+01:12:35.380 --> 01:12:38.540 align:middle line:84%
+And every unit Gaussian sample
+gives me a different noisy
+
+01:12:38.540 --> 01:12:41.237 align:middle line:84%
+image, which are like
+the latent variables that
+
+01:12:41.237 --> 01:12:42.820 align:middle line:84%
+specify all the
+properties of the data
+
+01:12:42.820 --> 01:12:45.740 align:middle line:84%
+that you will
+generate in the end.
+
+01:12:45.740 --> 01:12:48.220 align:middle line:90%
+So sampling is really easy.
+
+01:12:48.220 --> 01:12:51.020 align:middle line:84%
+It's just slow because
+you have to do this, run
+
+01:12:51.020 --> 01:12:53.060 align:middle line:84%
+the denoising neural
+network, over and over
+
+01:12:53.060 --> 01:12:55.180 align:middle line:84%
+and over again, like,
+for t time steps.
+
+01:12:55.180 --> 01:12:58.933 align:middle line:84%
+And when these first came out,
+t was large, like, a thousand.
+
+01:12:58.933 --> 01:13:01.600 align:middle line:84%
+Now people are showing how to do
+this with t being pretty small,
+
+01:13:01.600 --> 01:13:03.820 align:middle line:90%
+like, even going down to 1.
+
+01:13:03.820 --> 01:13:06.520 align:middle line:84%
+But you typically have
+to do a few time steps.
+
+01:13:06.520 --> 01:13:07.020 align:middle line:90%
+OK.
+
+01:13:07.020 --> 01:13:11.140 align:middle line:84%
+So here's the Gaussian
+diffusion model mathematically.
+
+01:13:11.140 --> 01:13:14.555 align:middle line:84%
+So we're going to define a
+data generating process that
+
+01:13:14.555 --> 01:13:16.180 align:middle line:84%
+starts from a simple
+distribution, unit
+
+01:13:16.180 --> 01:13:18.660 align:middle line:90%
+Gaussian, and maps to data.
+
+01:13:18.660 --> 01:13:23.100 align:middle line:84%
+And we're going to train it
+by training the denoiser that
+
+01:13:23.100 --> 01:13:26.540 align:middle line:84%
+predicts the less noisy image
+from the more noisy image,
+
+01:13:26.540 --> 01:13:30.020 align:middle line:84%
+to invert the noiser, which is
+a simple deterministic process
+
+01:13:30.020 --> 01:13:34.020 align:middle line:84%
+that adds Gaussian
+noise to an image.
+
+01:13:34.020 --> 01:13:36.600 align:middle line:84%
+And we can condition the
+denoiser on the timestep
+
+01:13:36.600 --> 01:13:39.240 align:middle line:84%
+so it knows, What is
+the current noise level?
+
+01:13:39.240 --> 01:13:42.940 align:middle line:84%
+And that helps it be a better
+predictor of what the true data
+
+01:13:42.940 --> 01:13:45.020 align:middle line:90%
+point should have been.
+
+01:13:45.020 --> 01:13:49.540 align:middle line:84%
+So the forward
+process is simply add
+
+01:13:49.540 --> 01:13:51.820 align:middle line:84%
+a Gaussian noise, which
+is a unit Gaussian,
+
+01:13:51.820 --> 01:13:54.860 align:middle line:84%
+epsilon t, and scale
+that noise according
+
+01:13:54.860 --> 01:13:59.800 align:middle line:84%
+to some scale beta, which
+can be time-varying as well.
+
+01:13:59.800 --> 01:14:01.300 align:middle line:84%
+And there's some
+engineering details
+
+01:14:01.300 --> 01:14:03.860 align:middle line:90%
+about how you select beta.
+
+01:14:03.860 --> 01:14:05.940 align:middle line:84%
+But in general, you can
+do this in such a way
+
+01:14:05.940 --> 01:14:08.980 align:middle line:84%
+that at the end of the day,
+you will get unit Gaussian
+
+01:14:08.980 --> 01:14:13.240 align:middle line:84%
+noise, asymptotically,
+as t goes to infinity.
+
+01:14:13.240 --> 01:14:15.003 align:middle line:90%
+OK, the reverse process.
+
+01:14:15.003 --> 01:14:16.420 align:middle line:84%
+In fact, with the
+reverse process,
+
+01:14:16.420 --> 01:14:20.900 align:middle line:84%
+you're going to treat every
+little step as a small Gaussian
+
+01:14:20.900 --> 01:14:23.540 align:middle line:84%
+max likelihood density
+modeling problem.
+
+01:14:23.540 --> 01:14:25.460 align:middle line:84%
+So the reverse
+process, f is not going
+
+01:14:25.460 --> 01:14:27.555 align:middle line:84%
+to just predict the
+noiseless image--
+
+01:14:27.555 --> 01:14:29.680 align:middle line:84%
+or, not going to just
+predict the less noisy image.
+
+01:14:29.680 --> 01:14:33.270 align:middle line:84%
+It's going to predict the mean
+of a Gaussian distribution
+
+01:14:33.270 --> 01:14:35.950 align:middle line:90%
+over the less noisy image.
+
+01:14:35.950 --> 01:14:38.050 align:middle line:84%
+This is just-- there's
+various reasons,
+
+01:14:38.050 --> 01:14:41.150 align:middle line:84%
+but this gives kind of a nice,
+mathematical, probabilistic
+
+01:14:41.150 --> 01:14:43.710 align:middle line:84%
+interpretation to
+what's going on.
+
+01:14:43.710 --> 01:14:46.750 align:middle line:84%
+OK, so the next
+denoised timestep
+
+01:14:46.750 --> 01:14:48.990 align:middle line:84%
+will be a sample from
+a Gaussian whose mean
+
+01:14:48.990 --> 01:14:51.050 align:middle line:84%
+is the output of my
+neural network denoiser.
+
+01:14:51.050 --> 01:14:54.890 align:middle line:90%
+
+
+01:14:54.890 --> 01:14:57.990 align:middle line:84%
+So people like to
+use these terms,
+
+01:14:57.990 --> 01:15:01.910 align:middle line:84%
+p for one of the processes
+and q for the reverse process.
+
+01:15:01.910 --> 01:15:04.950 align:middle line:84%
+And it connects to the
+standard notation and things
+
+01:15:04.950 --> 01:15:06.530 align:middle line:84%
+like called
+variational inference.
+
+01:15:06.530 --> 01:15:08.447 align:middle line:84%
+But you don't have to
+worry about it too much.
+
+01:15:08.447 --> 01:15:11.990 align:middle line:84%
+We'll just say the forward
+process is q, which, x of t
+
+01:15:11.990 --> 01:15:15.650 align:middle line:84%
+is a Gaussian centered
+on x of t minus 1.
+
+01:15:15.650 --> 01:15:17.790 align:middle line:84%
+And the reverse process
+I'm trying to learn
+
+01:15:17.790 --> 01:15:21.190 align:middle line:84%
+is another Gaussian, but
+it's centered on a function
+
+01:15:21.190 --> 01:15:22.790 align:middle line:90%
+of the noisy image.
+
+01:15:22.790 --> 01:15:23.290 align:middle line:90%
+OK.
+
+01:15:23.290 --> 01:15:26.190 align:middle line:84%
+So the forward process
+is just add noise,
+
+01:15:26.190 --> 01:15:27.790 align:middle line:84%
+and the reverse
+process is predict
+
+01:15:27.790 --> 01:15:31.280 align:middle line:84%
+the mean of a
+reverse Gaussian, so
+
+01:15:31.280 --> 01:15:35.400 align:middle line:84%
+predict the mean and then
+sample from that Gaussian.
+
+01:15:35.400 --> 01:15:36.530 align:middle line:90%
+OK.
+
+01:15:36.530 --> 01:15:38.280 align:middle line:84%
+There's a lot of
+variations and other ways
+
+01:15:38.280 --> 01:15:40.280 align:middle line:84%
+you could do this, this
+kind of vanilla Gaussian
+
+01:15:40.280 --> 01:15:43.280 align:middle line:90%
+diffusion model.
+
+01:15:43.280 --> 01:15:47.440 align:middle line:84%
+And if you want, I wrote a
+very vanilla version of this.
+
+01:15:47.440 --> 01:15:50.000 align:middle line:84%
+So you can play with
+the Colab if you want.
+
+01:15:50.000 --> 01:15:54.000 align:middle line:84%
+But now, I think there's
+probably better ones out there.
+
+01:15:54.000 --> 01:15:56.960 align:middle line:84%
+I want to make the connection
+between diffusion models
+
+01:15:56.960 --> 01:15:59.000 align:middle line:90%
+and autoregressive models.
+
+01:15:59.000 --> 01:16:00.920 align:middle line:84%
+So they're almost
+the same thing.
+
+01:16:00.920 --> 01:16:04.080 align:middle line:84%
+So both of them use
+a very simple trick.
+
+01:16:04.080 --> 01:16:07.040 align:middle line:84%
+You change generative modeling
+of a high-dimensional structured
+
+01:16:07.040 --> 01:16:11.680 align:middle line:84%
+object into a sequence of very,
+very simple modeling problems.
+
+01:16:11.680 --> 01:16:16.200 align:middle line:84%
+In autoregressive modeling,
+you convert your data
+
+01:16:16.200 --> 01:16:20.360 align:middle line:84%
+into a sequence of simple
+categorical density modeling
+
+01:16:20.360 --> 01:16:22.860 align:middle line:84%
+problems, a.k.a.
+classification problems.
+
+01:16:22.860 --> 01:16:25.800 align:middle line:90%
+
+
+01:16:25.800 --> 01:16:26.300 align:middle line:90%
+OK.
+
+01:16:26.300 --> 01:16:29.740 align:middle line:84%
+Again, you're free to choose
+other types of simple sequences,
+
+01:16:29.740 --> 01:16:31.680 align:middle line:84%
+but that's just the
+most common choice.
+
+01:16:31.680 --> 01:16:32.700 align:middle line:90%
+So think of it this way.
+
+01:16:32.700 --> 01:16:35.260 align:middle line:84%
+You start with a
+structured data object,
+
+01:16:35.260 --> 01:16:39.340 align:middle line:84%
+and you remove one data point at
+a time until you get to nothing,
+
+01:16:39.340 --> 01:16:42.065 align:middle line:84%
+and then that supervises
+the reverse process.
+
+01:16:42.065 --> 01:16:44.440 align:middle line:84%
+Diffusion model, you start
+with a structured, complicated
+
+01:16:44.440 --> 01:16:44.980 align:middle line:90%
+object.
+
+01:16:44.980 --> 01:16:48.920 align:middle line:84%
+You add noise kind of globally,
+to every data point, until you
+
+01:16:48.920 --> 01:16:52.120 align:middle line:84%
+get to a very simple
+distribution you
+
+01:16:52.120 --> 01:16:54.480 align:middle line:84%
+can sample from, and
+then you supervise
+
+01:16:54.480 --> 01:16:55.585 align:middle line:90%
+it to reverse the process.
+
+01:16:55.585 --> 01:16:56.960 align:middle line:84%
+This is your
+training data that's
+
+01:16:56.960 --> 01:16:58.585 align:middle line:84%
+going to supervise
+the reverse process.
+
+01:16:58.585 --> 01:17:00.085 align:middle line:84%
+This is your training
+data that will
+
+01:17:00.085 --> 01:17:01.413 align:middle line:90%
+supervise the reverse process.
+
+01:17:01.413 --> 01:17:02.580 align:middle line:90%
+This is easy to sample from.
+
+01:17:02.580 --> 01:17:04.780 align:middle line:84%
+You're just sampling
+one pixel color.
+
+01:17:04.780 --> 01:17:05.600 align:middle line:90%
+OK.
+
+01:17:05.600 --> 01:17:07.840 align:middle line:84%
+Let's say I have
+256 possible colors.
+
+01:17:07.840 --> 01:17:09.800 align:middle line:90%
+I just take a random--
+
+01:17:09.800 --> 01:17:12.840 align:middle line:84%
+I have a categorical
+distribution
+
+01:17:12.840 --> 01:17:16.580 align:middle line:84%
+over the 256 possible colors
+that occur in natural images.
+
+01:17:16.580 --> 01:17:17.480 align:middle line:90%
+Super easy.
+
+01:17:17.480 --> 01:17:20.160 align:middle line:84%
+And then I just
+reverse the process
+
+01:17:20.160 --> 01:17:24.120 align:middle line:84%
+by trying to classify the next
+pixel given the previous pixel.
+
+01:17:24.120 --> 01:17:27.050 align:middle line:84%
+So the whole point is
+that a common strategy
+
+01:17:27.050 --> 01:17:31.130 align:middle line:84%
+in generative modeling is
+turn a complicated structure
+
+01:17:31.130 --> 01:17:34.910 align:middle line:84%
+of distribution into a sequence
+of simple distributions,
+
+01:17:34.910 --> 01:17:37.150 align:middle line:84%
+and model that sequence
+of simple distributions.
+
+01:17:37.150 --> 01:17:40.610 align:middle line:90%
+
+
+01:17:40.610 --> 01:17:43.410 align:middle line:90%
+OK.
+
+01:17:43.410 --> 01:17:43.910 align:middle line:90%
+OK.
+
+01:17:43.910 --> 01:17:46.157 align:middle line:84%
+So in the last two
+minutes, I'll just do GANs.
+
+01:17:46.157 --> 01:17:46.990 align:middle line:90%
+They're very simple.
+
+01:17:46.990 --> 01:17:48.130 align:middle line:90%
+Don't worry.
+
+01:17:48.130 --> 01:17:50.853 align:middle line:84%
+I know there's a lot in this
+lecture, but I'm hoping that--
+
+01:17:50.853 --> 01:17:52.270 align:middle line:84%
+I want to give you
+the intuitions,
+
+01:17:52.270 --> 01:17:54.665 align:middle line:84%
+and then in the problem
+sets and in the readings,
+
+01:17:54.665 --> 01:17:56.290 align:middle line:84%
+you can dig a little
+more into the math
+
+01:17:56.290 --> 01:17:57.570 align:middle line:90%
+and you can work it out.
+
+01:17:57.570 --> 01:18:01.650 align:middle line:84%
+So GANs are a whole other
+class of generative model.
+
+01:18:01.650 --> 01:18:06.005 align:middle line:90%
+GANs are a-- OK.
+
+01:18:06.005 --> 01:18:08.130 align:middle line:84%
+I'll tell you what they
+are, and then I'll ask you,
+
+01:18:08.130 --> 01:18:09.390 align:middle line:90%
+Are they direct or indirect?
+
+01:18:09.390 --> 01:18:11.490 align:middle line:84%
+So they start with a
+latent variable, which
+
+01:18:11.490 --> 01:18:15.770 align:middle line:84%
+is a vector of random
+numbers, and they map it
+
+01:18:15.770 --> 01:18:18.370 align:middle line:84%
+through a generator
+network to an image.
+
+01:18:18.370 --> 01:18:20.050 align:middle line:84%
+And then they play
+this game where
+
+01:18:20.050 --> 01:18:23.220 align:middle line:84%
+they ask another neural network
+to decide if the image looks
+
+01:18:23.220 --> 01:18:26.700 align:middle line:84%
+like a real data point or a
+synthetic data point sampled
+
+01:18:26.700 --> 01:18:27.580 align:middle line:90%
+from the model.
+
+01:18:27.580 --> 01:18:30.840 align:middle line:84%
+So is g a direct or
+indirect approach?
+
+01:18:30.840 --> 01:18:32.660 align:middle line:90%
+Who thinks direct?
+
+01:18:32.660 --> 01:18:35.500 align:middle line:90%
+OK, who thinks indirect?
+
+01:18:35.500 --> 01:18:36.740 align:middle line:90%
+Ooh interesting.
+
+01:18:36.740 --> 01:18:37.720 align:middle line:90%
+Maybe it's more subtle.
+
+01:18:37.720 --> 01:18:37.900 align:middle line:90%
+OK.
+
+01:18:37.900 --> 01:18:40.067 align:middle line:84%
+I would have called it
+direct because we're directly
+
+01:18:40.067 --> 01:18:45.180 align:middle line:84%
+mapping from a random variable
+to a sample from a distribution.
+
+01:18:45.180 --> 01:18:47.160 align:middle line:84%
+But with d, it becomes
+a little more confusing.
+
+01:18:47.160 --> 01:18:49.820 align:middle line:84%
+So maybe either answer
+could have an interpretation
+
+01:18:49.820 --> 01:18:50.940 align:middle line:90%
+which is correct.
+
+01:18:50.940 --> 01:18:54.900 align:middle line:84%
+So g tries to synthesize
+synthetic images that
+
+01:18:54.900 --> 01:18:58.100 align:middle line:90%
+fool d and--
+
+01:18:58.100 --> 01:18:59.700 align:middle line:90%
+that's a typo. g--
+
+01:18:59.700 --> 01:19:01.320 align:middle line:90%
+sorry, that should be d.
+
+01:19:01.320 --> 01:19:05.140 align:middle line:90%
+
+
+01:19:05.140 --> 01:19:07.420 align:middle line:90%
+d tries to identify the fakes
+
+01:19:07.420 --> 01:19:08.380 align:middle line:90%
+OK.
+
+01:19:08.380 --> 01:19:10.080 align:middle line:90%
+So why should that work?
+
+01:19:10.080 --> 01:19:13.987 align:middle line:84%
+That should work because if
+g is able to make output data
+
+01:19:13.987 --> 01:19:15.820 align:middle line:84%
+points which are
+indistinguishable from your
+
+01:19:15.820 --> 01:19:18.260 align:middle line:84%
+training data
+points, then it must
+
+01:19:18.260 --> 01:19:21.670 align:middle line:84%
+be that you're
+outputting things that
+
+01:19:21.670 --> 01:19:23.870 align:middle line:90%
+are from the same distribution.
+
+01:19:23.870 --> 01:19:25.510 align:middle line:90%
+You can prove that, in fact.
+
+01:19:25.510 --> 01:19:28.770 align:middle line:84%
+So d plays this game.
+d is a classifier for,
+
+01:19:28.770 --> 01:19:32.910 align:middle line:84%
+Is it a sample from
+g, my synthetic data,
+
+01:19:32.910 --> 01:19:34.970 align:middle line:84%
+or is it a sample
+from the real world,
+
+01:19:34.970 --> 01:19:37.070 align:middle line:90%
+a real photo of flamingos?
+
+01:19:37.070 --> 01:19:39.890 align:middle line:84%
+This is just a binary
+softmax classifier.
+
+01:19:39.890 --> 01:19:44.830 align:middle line:84%
+I'm going to try to maximize
+the probability I place on real
+
+01:19:44.830 --> 01:19:47.010 align:middle line:84%
+and minimize the
+probability I place on fake,
+
+01:19:47.010 --> 01:19:51.710 align:middle line:84%
+and that will be a classifier
+of real versus fake.
+
+01:19:51.710 --> 01:20:01.270 align:middle line:84%
+And g tries to fool d by trying
+to minimize the accuracy that d
+
+01:20:01.270 --> 01:20:04.110 align:middle line:84%
+will get on fake,
+synthetic images.
+
+01:20:04.110 --> 01:20:09.070 align:middle line:84%
+So g just minimizes the
+exact same objective
+
+01:20:09.070 --> 01:20:10.670 align:middle line:90%
+that d was maximizing.
+
+01:20:10.670 --> 01:20:16.430 align:middle line:84%
+So d is going to try to place,
+basically, low probability
+
+01:20:16.430 --> 01:20:18.350 align:middle line:90%
+on this being a real image.
+
+01:20:18.350 --> 01:20:21.598 align:middle line:84%
+And g will simply
+try to place-- cause
+
+01:20:21.598 --> 01:20:23.890 align:middle line:84%
+d to place high probability
+on this being a real image.
+
+01:20:23.890 --> 01:20:26.150 align:middle line:84%
+So it'll try to
+update its parameters
+
+01:20:26.150 --> 01:20:29.683 align:middle line:84%
+to make an image that causes
+d to get a low score on that,
+
+01:20:29.683 --> 01:20:33.070 align:middle line:90%
+on that synthetic photo.
+
+01:20:33.070 --> 01:20:36.130 align:middle line:90%
+So this is a min-max game.
+
+01:20:36.130 --> 01:20:37.370 align:middle line:90%
+It's an adversarial game.
+
+01:20:37.370 --> 01:20:39.950 align:middle line:84%
+But think of it more like
+a student and a teacher.
+
+01:20:39.950 --> 01:20:42.250 align:middle line:84%
+d is the teacher,
+and g is the student.
+
+01:20:42.250 --> 01:20:43.750 align:middle line:84%
+The teacher is
+saying, hey, you need
+
+01:20:43.750 --> 01:20:45.190 align:middle line:84%
+to make a realistic
+painting, and you
+
+01:20:45.190 --> 01:20:46.130 align:middle line:90%
+didn't get it quite right.
+
+01:20:46.130 --> 01:20:47.090 align:middle line:90%
+The shadows are wrong.
+
+01:20:47.090 --> 01:20:49.810 align:middle line:84%
+So g will update its parameters
+to make realistic shadows.
+
+01:20:49.810 --> 01:20:51.268 align:middle line:84%
+And then d will
+say, oh, that looks
+
+01:20:51.268 --> 01:20:54.330 align:middle line:84%
+indistinguishable from what
+I consider realistic art,
+
+01:20:54.330 --> 01:20:56.910 align:middle line:90%
+so therefore, you've done well.
+
+01:20:56.910 --> 01:21:00.450 align:middle line:90%
+So that's a GAN.
+
+01:21:00.450 --> 01:21:02.690 align:middle line:84%
+I think-- this is just
+a summary figure of it.
+
+01:21:02.690 --> 01:21:03.770 align:middle line:90%
+I should stop there.
+
+01:21:03.770 --> 01:21:06.353 align:middle line:84%
+And we'll continue with two more
+lectures on generative models
+
+01:21:06.353 --> 01:21:08.180 align:middle line:90%
+next week.
+
+01:21:08.180 --> 01:21:18.000 align:middle line:90%

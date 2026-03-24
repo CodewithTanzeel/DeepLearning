@@ -1,0 +1,2221 @@
+WEBVTT
+
+00:00:00.000 --> 00:00:00.500 align:middle line:90%
+
+
+00:00:00.500 --> 00:00:01.979 align:middle line:90%
+[SQUEAKING]
+
+00:00:01.979 --> 00:00:03.951 align:middle line:90%
+[RUSTLING]
+
+00:00:03.951 --> 00:00:07.402 align:middle line:90%
+[CLICKING]
+
+00:00:07.402 --> 00:00:13.140 align:middle line:90%
+
+
+00:00:13.140 --> 00:00:15.080 align:middle line:84%
+JAMISON MEINDL: So I
+guess we can get started.
+
+00:00:15.080 --> 00:00:17.497 align:middle line:84%
+We're going to be going over
+some of the basics of PyTorch
+
+00:00:17.497 --> 00:00:20.800 align:middle line:84%
+today, and you guys are going
+to be using PyTorch many times
+
+00:00:20.800 --> 00:00:22.240 align:middle line:90%
+with all of your psets.
+
+00:00:22.240 --> 00:00:24.760 align:middle line:84%
+And I think if you keep doing
+deep learning in the future,
+
+00:00:24.760 --> 00:00:26.240 align:middle line:90%
+everyone's using PyTorch.
+
+00:00:26.240 --> 00:00:28.560 align:middle line:84%
+And so lots of projects,
+research projects
+
+00:00:28.560 --> 00:00:32.920 align:middle line:84%
+and real industry projects,
+are actually using PyTorch.
+
+00:00:32.920 --> 00:00:36.360 align:middle line:84%
+So there's a few things
+to know about PyTorch.
+
+00:00:36.360 --> 00:00:41.340 align:middle line:84%
+And a few of the more important
+things are that PyTorch is fast.
+
+00:00:41.340 --> 00:00:43.520 align:middle line:84%
+So we're able to
+run PyTorch on GPU.
+
+00:00:43.520 --> 00:00:46.640 align:middle line:84%
+And this allows us to actually
+complete powerful deep learning
+
+00:00:46.640 --> 00:00:50.800 align:middle line:84%
+models by actually running these
+things within a reasonable time
+
+00:00:50.800 --> 00:00:51.640 align:middle line:90%
+frame.
+
+00:00:51.640 --> 00:00:53.960 align:middle line:84%
+So GPUs really
+speed up the ability
+
+00:00:53.960 --> 00:00:56.400 align:middle line:84%
+to perform operations
+that we use
+
+00:00:56.400 --> 00:00:58.560 align:middle line:84%
+within these machine
+learning models,
+
+00:00:58.560 --> 00:01:00.432 align:middle line:84%
+and PyTorch supports
+that ability.
+
+00:01:00.432 --> 00:01:02.140 align:middle line:84%
+So you may have used
+something like NumPy
+
+00:01:02.140 --> 00:01:08.260 align:middle line:84%
+before, where PyTorch and NumPy
+have similar data operations,
+
+00:01:08.260 --> 00:01:11.780 align:middle line:84%
+but we're able to use GPU
+and speed up within PyTorch.
+
+00:01:11.780 --> 00:01:14.820 align:middle line:84%
+The other thing about PyTorch
+is it supports autograd.
+
+00:01:14.820 --> 00:01:18.820 align:middle line:84%
+So we talked about gradients
+a little bit in lecture today.
+
+00:01:18.820 --> 00:01:20.660 align:middle line:84%
+But autograd is
+basically the idea
+
+00:01:20.660 --> 00:01:23.460 align:middle line:84%
+that we can compute the
+gradients automatically
+
+00:01:23.460 --> 00:01:26.260 align:middle line:84%
+as we iterate
+through our models.
+
+00:01:26.260 --> 00:01:28.380 align:middle line:84%
+And so PyTorch makes
+this very easy for us.
+
+00:01:28.380 --> 00:01:30.540 align:middle line:84%
+It makes it very
+intuitive and simple
+
+00:01:30.540 --> 00:01:32.580 align:middle line:84%
+for us to actually
+train and update
+
+00:01:32.580 --> 00:01:35.580 align:middle line:90%
+the weights of our models.
+
+00:01:35.580 --> 00:01:38.140 align:middle line:84%
+So that's a few reasons
+of why we use PyTorch.
+
+00:01:38.140 --> 00:01:41.420 align:middle line:84%
+It's a great library, and I
+think you guys will hopefully
+
+00:01:41.420 --> 00:01:43.140 align:middle line:90%
+enjoy it.
+
+00:01:43.140 --> 00:01:45.980 align:middle line:84%
+So today, just a quick overview
+of what we're going to do,
+
+00:01:45.980 --> 00:01:49.500 align:middle line:84%
+I'm going to go over some of
+intro stuff of just how we use
+
+00:01:49.500 --> 00:01:52.340 align:middle line:84%
+PyTorch tensors and some
+of the simple operations
+
+00:01:52.340 --> 00:01:53.542 align:middle line:90%
+on these tensors.
+
+00:01:53.542 --> 00:01:55.500 align:middle line:84%
+And then we're going to
+go through a little bit
+
+00:01:55.500 --> 00:01:57.500 align:middle line:84%
+about autograd, and
+then a little bit
+
+00:01:57.500 --> 00:02:00.380 align:middle line:90%
+about how we can train a model.
+
+00:02:00.380 --> 00:02:03.400 align:middle line:84%
+You'll go into a lot more
+depth on some of the psets,
+
+00:02:03.400 --> 00:02:06.040 align:middle line:84%
+but overall, this should
+give you a good start
+
+00:02:06.040 --> 00:02:09.188 align:middle line:84%
+to be able to understand how it
+actually works behind the scenes
+
+00:02:09.188 --> 00:02:11.480 align:middle line:84%
+and how you're going to
+actually be able to use it well
+
+00:02:11.480 --> 00:02:13.440 align:middle line:90%
+on your psets.
+
+00:02:13.440 --> 00:02:16.660 align:middle line:84%
+So just to start off, just how
+many people have used PyTorch?
+
+00:02:16.660 --> 00:02:20.560 align:middle line:84%
+Maybe you could raise your
+hand if you've used PyTorch.
+
+00:02:20.560 --> 00:02:25.120 align:middle line:84%
+OK, so we definitely have a lot
+of newbies to PyTorch, I guess.
+
+00:02:25.120 --> 00:02:26.340 align:middle line:90%
+And that's totally fine.
+
+00:02:26.340 --> 00:02:28.173 align:middle line:84%
+I think you guys will
+all be able to pick it
+
+00:02:28.173 --> 00:02:33.320 align:middle line:84%
+up and be able to be totally
+fine throughout the course.
+
+00:02:33.320 --> 00:02:35.080 align:middle line:90%
+So yeah, let's get started.
+
+00:02:35.080 --> 00:02:37.220 align:middle line:84%
+If you guys want to pull
+up this notebook, you can.
+
+00:02:37.220 --> 00:02:39.000 align:middle line:90%
+It's on the Piazza.
+
+00:02:39.000 --> 00:02:40.060 align:middle line:90%
+I posted it.
+
+00:02:40.060 --> 00:02:43.360 align:middle line:84%
+It's probably one
+of the latest posts.
+
+00:02:43.360 --> 00:02:45.920 align:middle line:90%
+And yeah, we'll get started.
+
+00:02:45.920 --> 00:02:49.280 align:middle line:84%
+So the first thing we have to do
+is we have to do a few imports.
+
+00:02:49.280 --> 00:02:53.912 align:middle line:84%
+PyTorch can be imported
+by importing torch here.
+
+00:02:53.912 --> 00:02:56.120 align:middle line:84%
+And then we'll import a few
+other things as well just
+
+00:02:56.120 --> 00:03:01.360 align:middle line:84%
+to help with this visualizing
+and creating tensors.
+
+00:03:01.360 --> 00:03:04.660 align:middle line:90%
+
+
+00:03:04.660 --> 00:03:07.850 align:middle line:84%
+So the first topic we're going
+to go over is PyTorch tensors.
+
+00:03:07.850 --> 00:03:10.100 align:middle line:84%
+And PyTorch tensors is
+basically where we can actually
+
+00:03:10.100 --> 00:03:12.300 align:middle line:90%
+store data within PyTorch.
+
+00:03:12.300 --> 00:03:14.260 align:middle line:84%
+So if you ever had
+some input data
+
+00:03:14.260 --> 00:03:17.220 align:middle line:84%
+that you wanted to put into
+a machine learning model,
+
+00:03:17.220 --> 00:03:19.400 align:middle line:84%
+or if you wanted to
+compare some outputs,
+
+00:03:19.400 --> 00:03:22.600 align:middle line:84%
+these outputs are going to be
+represented as PyTorch tensors.
+
+00:03:22.600 --> 00:03:24.100 align:middle line:84%
+And so the first
+thing we'll go over
+
+00:03:24.100 --> 00:03:26.933 align:middle line:84%
+is how we can actually
+initialize a tensor.
+
+00:03:26.933 --> 00:03:29.600 align:middle line:84%
+So the first way we can do this
+here is just directly from data.
+
+00:03:29.600 --> 00:03:31.200 align:middle line:84%
+You're probably not going to
+actually do this too often.
+
+00:03:31.200 --> 00:03:33.940 align:middle line:84%
+But it's good to know all the
+different ways that you can do.
+
+00:03:33.940 --> 00:03:37.020 align:middle line:84%
+So if we just have
+a Python list here
+
+00:03:37.020 --> 00:03:39.500 align:middle line:84%
+where we have the
+inputs 1, 2, 3, and 4,
+
+00:03:39.500 --> 00:03:42.620 align:middle line:84%
+we can create a tensor
+directly from that data.
+
+00:03:42.620 --> 00:03:46.620 align:middle line:84%
+So if we run that cell, we see
+that we create a tensor object
+
+00:03:46.620 --> 00:03:50.780 align:middle line:84%
+here, which is the same
+structure as that nested list
+
+00:03:50.780 --> 00:03:51.840 align:middle line:90%
+that we saw before.
+
+00:03:51.840 --> 00:03:54.780 align:middle line:90%
+
+
+00:03:54.780 --> 00:03:56.540 align:middle line:84%
+The next way we
+can do this is we
+
+00:03:56.540 --> 00:04:00.880 align:middle line:84%
+can also transform and create
+tensors from a NumPy array.
+
+00:04:00.880 --> 00:04:03.280 align:middle line:84%
+So do we have a
+question back there?
+
+00:04:03.280 --> 00:04:04.323 align:middle line:90%
+AUDIENCE: [INAUDIBLE]
+
+00:04:04.323 --> 00:04:05.740 align:middle line:84%
+JAMISON MEINDL:
+Oh, you can't see?
+
+00:04:05.740 --> 00:04:09.120 align:middle line:90%
+
+
+00:04:09.120 --> 00:04:12.400 align:middle line:90%
+Is that a little better?
+
+00:04:12.400 --> 00:04:15.040 align:middle line:90%
+One more?
+
+00:04:15.040 --> 00:04:17.399 align:middle line:90%
+Good?
+
+00:04:17.399 --> 00:04:20.160 align:middle line:84%
+All right, so yeah,
+we can create tensors
+
+00:04:20.160 --> 00:04:22.000 align:middle line:90%
+from NumPy arrays.
+
+00:04:22.000 --> 00:04:24.240 align:middle line:84%
+NumPy arrays are obviously
+another common way
+
+00:04:24.240 --> 00:04:26.240 align:middle line:90%
+we can store data in Python.
+
+00:04:26.240 --> 00:04:28.240 align:middle line:84%
+And tensors and
+NumPy arrays store
+
+00:04:28.240 --> 00:04:30.240 align:middle line:90%
+a lot of the same structure.
+
+00:04:30.240 --> 00:04:32.280 align:middle line:84%
+So we can copy directly
+from NumPy arrays.
+
+00:04:32.280 --> 00:04:35.040 align:middle line:84%
+And it actually can
+use the same memory
+
+00:04:35.040 --> 00:04:38.160 align:middle line:84%
+in the system for both the
+tensor and NumPy array.
+
+00:04:38.160 --> 00:04:41.440 align:middle line:84%
+So if we do the same thing here,
+we're copying the same data.
+
+00:04:41.440 --> 00:04:46.580 align:middle line:84%
+And we can create a tensor with
+this torch.from_numpy function.
+
+00:04:46.580 --> 00:04:49.560 align:middle line:90%
+
+
+00:04:49.560 --> 00:04:51.400 align:middle line:84%
+The next way we
+can create tensors
+
+00:04:51.400 --> 00:04:54.960 align:middle line:84%
+is if we wanted to create a
+tensor with a specific shape
+
+00:04:54.960 --> 00:04:56.960 align:middle line:84%
+and specific values
+within it, we
+
+00:04:56.960 --> 00:04:59.880 align:middle line:84%
+might want to create a tensor
+of all ones or a tensor
+
+00:04:59.880 --> 00:05:05.110 align:middle line:84%
+with random numbers to
+initialize some of model.
+
+00:05:05.110 --> 00:05:07.690 align:middle line:84%
+And what we can do here
+is just use this ones_like
+
+00:05:07.690 --> 00:05:10.550 align:middle line:84%
+if we wanted to make a
+tensor of the same shape
+
+00:05:10.550 --> 00:05:12.142 align:middle line:90%
+as another object.
+
+00:05:12.142 --> 00:05:13.350 align:middle line:90%
+But there's also operations--
+
+00:05:13.350 --> 00:05:15.270 align:middle line:84%
+I think I have that--
+that's next, where
+
+00:05:15.270 --> 00:05:17.270 align:middle line:90%
+you can input a specific shape.
+
+00:05:17.270 --> 00:05:22.070 align:middle line:84%
+And then rand_like will give you
+a random number between 0 and 1
+
+00:05:22.070 --> 00:05:23.090 align:middle line:90%
+in each element.
+
+00:05:23.090 --> 00:05:27.310 align:middle line:90%
+
+
+00:05:27.310 --> 00:05:30.770 align:middle line:84%
+Moving on, yeah, we can create
+tensors of specific shapes.
+
+00:05:30.770 --> 00:05:34.150 align:middle line:84%
+Here, I'm using rand, ones,
+zeros, and you can also--
+
+00:05:34.150 --> 00:05:36.910 align:middle line:84%
+there's more that you can
+find in the documentation
+
+00:05:36.910 --> 00:05:39.710 align:middle line:84%
+of different types of
+initializations of each element
+
+00:05:39.710 --> 00:05:41.310 align:middle line:90%
+that you can do.
+
+00:05:41.310 --> 00:05:44.153 align:middle line:84%
+So yeah, we can also define
+tensors with a specific shape.
+
+00:05:44.153 --> 00:05:46.070 align:middle line:84%
+So if you didn't already
+have a tensor defined
+
+00:05:46.070 --> 00:05:47.730 align:middle line:84%
+that you were
+interested in the shape,
+
+00:05:47.730 --> 00:05:52.390 align:middle line:84%
+you could, say, create
+a tensor of size 2 by 3.
+
+00:05:52.390 --> 00:05:54.390 align:middle line:84%
+And we can do that in a
+few different ways here.
+
+00:05:54.390 --> 00:05:55.370 align:middle line:90%
+We can do random.
+
+00:05:55.370 --> 00:05:57.150 align:middle line:90%
+We can do ones, zeros.
+
+00:05:57.150 --> 00:05:58.790 align:middle line:90%
+There's a few other options.
+
+00:05:58.790 --> 00:06:01.450 align:middle line:84%
+There's a few attributes of a
+tensor that are good to know.
+
+00:06:01.450 --> 00:06:04.250 align:middle line:84%
+So the first one that we've
+seen already is the shape.
+
+00:06:04.250 --> 00:06:07.010 align:middle line:84%
+So if we make a random
+tensor of size 3 by 4,
+
+00:06:07.010 --> 00:06:10.530 align:middle line:84%
+we can get the shape
+by doing .shape.
+
+00:06:10.530 --> 00:06:12.430 align:middle line:84%
+The next thing to
+know is the data type.
+
+00:06:12.430 --> 00:06:15.850 align:middle line:84%
+So most of the tensors you're
+probably going to be using
+
+00:06:15.850 --> 00:06:18.770 align:middle line:84%
+and that we use as inputs
+to machine learning models
+
+00:06:18.770 --> 00:06:20.190 align:middle line:90%
+are going to be float32.
+
+00:06:20.190 --> 00:06:23.970 align:middle line:90%
+So that's a 32-bit float.
+
+00:06:23.970 --> 00:06:28.330 align:middle line:84%
+But you might see integers
+as well in some situations.
+
+00:06:28.330 --> 00:06:32.490 align:middle line:84%
+But the float 32 is generally
+used because it's the fastest.
+
+00:06:32.490 --> 00:06:37.050 align:middle line:84%
+And GPU hardware is
+optimized to use that.
+
+00:06:37.050 --> 00:06:39.370 align:middle line:84%
+The last thing you see
+here is the device.
+
+00:06:39.370 --> 00:06:43.970 align:middle line:84%
+We get the device the tensor
+is stored on by doing .device.
+
+00:06:43.970 --> 00:06:47.370 align:middle line:84%
+And this is important if
+you're using both CPU and GPU.
+
+00:06:47.370 --> 00:06:49.250 align:middle line:84%
+So we can only do
+operations between tensors
+
+00:06:49.250 --> 00:06:50.545 align:middle line:90%
+that are on the same device.
+
+00:06:50.545 --> 00:06:53.170 align:middle line:84%
+So if you have one tensor that's
+on a CPU and one tensor that's
+
+00:06:53.170 --> 00:06:54.610 align:middle line:84%
+on a GPU, you
+won't be able to do
+
+00:06:54.610 --> 00:06:56.110 align:middle line:90%
+any operations between the two.
+
+00:06:56.110 --> 00:06:58.210 align:middle line:84%
+You'd have to move one
+to the other device
+
+00:06:58.210 --> 00:07:00.870 align:middle line:84%
+before you can actually do
+any operations between them.
+
+00:07:00.870 --> 00:07:04.550 align:middle line:84%
+And so you will
+probably be frequently
+
+00:07:04.550 --> 00:07:07.370 align:middle line:84%
+be finding out which device your
+tensors are on and then moving
+
+00:07:07.370 --> 00:07:08.870 align:middle line:84%
+them to the device
+you actually want
+
+00:07:08.870 --> 00:07:10.550 align:middle line:84%
+them to be on if
+you wanted to do
+
+00:07:10.550 --> 00:07:12.170 align:middle line:90%
+some operation between the two.
+
+00:07:12.170 --> 00:07:15.643 align:middle line:90%
+
+
+00:07:15.643 --> 00:07:17.310 align:middle line:84%
+The next thing we're
+going to talk about
+
+00:07:17.310 --> 00:07:18.990 align:middle line:84%
+is just some of the
+basic operations
+
+00:07:18.990 --> 00:07:21.150 align:middle line:90%
+that we can perform on tensors.
+
+00:07:21.150 --> 00:07:24.110 align:middle line:84%
+So we can do things
+like, to modify a tensor
+
+00:07:24.110 --> 00:07:28.590 align:middle line:84%
+or create a new tensor
+based on the tensor input,
+
+00:07:28.590 --> 00:07:32.310 align:middle line:84%
+and these are pretty simple
+operations that include things
+
+00:07:32.310 --> 00:07:34.910 align:middle line:84%
+like adding tensors
+together or multiplying them
+
+00:07:34.910 --> 00:07:38.470 align:middle line:84%
+that we can do to get
+different data that we want.
+
+00:07:38.470 --> 00:07:41.550 align:middle line:84%
+So if we look at an example,
+the first thing we'll do
+
+00:07:41.550 --> 00:07:44.950 align:middle line:84%
+is let's just create
+some of input tensor.
+
+00:07:44.950 --> 00:07:47.350 align:middle line:84%
+And this notation
+here is basically
+
+00:07:47.350 --> 00:07:51.230 align:middle line:84%
+going to create a tensor of
+101 equally-spaced numbers
+
+00:07:51.230 --> 00:07:52.925 align:middle line:90%
+from 0 to 5.
+
+00:07:52.925 --> 00:07:54.550 align:middle line:84%
+And so that might be
+something if we're
+
+00:07:54.550 --> 00:07:59.150 align:middle line:84%
+interested in seeing the
+effect along a specific range
+
+00:07:59.150 --> 00:08:02.090 align:middle line:90%
+in this case 0 to 5.
+
+00:08:02.090 --> 00:08:04.070 align:middle line:84%
+And if we wanted
+to see that worked,
+
+00:08:04.070 --> 00:08:05.930 align:middle line:84%
+we can print the
+first five things
+
+00:08:05.930 --> 00:08:08.330 align:middle line:84%
+in x by just indexing
+in the same way
+
+00:08:08.330 --> 00:08:14.450 align:middle line:84%
+we would in NumPy or
+other Python environments.
+
+00:08:14.450 --> 00:08:18.370 align:middle line:84%
+So we can also get the last
+ones by doing negative 5
+
+00:08:18.370 --> 00:08:24.050 align:middle line:84%
+to the end, which you may have
+seen in other Python libraries.
+
+00:08:24.050 --> 00:08:27.730 align:middle line:84%
+So let's try and perform some
+operations on this tensor.
+
+00:08:27.730 --> 00:08:31.490 align:middle line:84%
+So if we wanted to, say,
+graph a sine wave or cosine,
+
+00:08:31.490 --> 00:08:34.289 align:middle line:90%
+we could do x.sin.
+
+00:08:34.289 --> 00:08:38.770 align:middle line:84%
+And that will perform sine
+on each input in the tensor.
+
+00:08:38.770 --> 00:08:40.809 align:middle line:84%
+We can also do
+something more complex
+
+00:08:40.809 --> 00:08:45.730 align:middle line:84%
+like doing x to the power
+of x cosine to create
+
+00:08:45.730 --> 00:08:49.530 align:middle line:90%
+a more interesting output.
+
+00:08:49.530 --> 00:08:50.810 align:middle line:90%
+We can also subtract tensors.
+
+00:08:50.810 --> 00:08:53.010 align:middle line:84%
+So we can subtract
+those two outputs
+
+00:08:53.010 --> 00:08:56.510 align:middle line:84%
+or just find the specific
+value within that tensor.
+
+00:08:56.510 --> 00:08:58.010 align:middle line:84%
+So if we wanted to
+find the min, you
+
+00:08:58.010 --> 00:09:00.450 align:middle line:84%
+could also find max,
+mean, standard deviation,
+
+00:09:00.450 --> 00:09:01.830 align:middle line:90%
+stuff like that.
+
+00:09:01.830 --> 00:09:06.350 align:middle line:84%
+If you wanted to find some
+characteristic about a tensor,
+
+00:09:06.350 --> 00:09:08.370 align:middle line:84%
+we can also use tensors
+with matplotlib.
+
+00:09:08.370 --> 00:09:11.870 align:middle line:84%
+So maybe some of you have used
+matplotlib in other cases.
+
+00:09:11.870 --> 00:09:14.910 align:middle line:84%
+And we can directly
+input these tensors
+
+00:09:14.910 --> 00:09:17.630 align:middle line:84%
+and create plots
+with matplotlib.
+
+00:09:17.630 --> 00:09:20.190 align:middle line:84%
+So we see here that some
+of our transformations
+
+00:09:20.190 --> 00:09:23.470 align:middle line:84%
+of x from 0 to 5,
+and we can see how
+
+00:09:23.470 --> 00:09:27.345 align:middle line:84%
+those different
+transformations occurred.
+
+00:09:27.345 --> 00:09:29.470 align:middle line:84%
+So there's a lot of different
+operations we can do.
+
+00:09:29.470 --> 00:09:31.830 align:middle line:84%
+I'm obviously not going to
+be able to go through all
+
+00:09:31.830 --> 00:09:33.670 align:middle line:84%
+the different
+operations, but just
+
+00:09:33.670 --> 00:09:37.030 align:middle line:84%
+know that you can apply some
+of these vector operations
+
+00:09:37.030 --> 00:09:42.110 align:middle line:84%
+to tensors, and you'll just
+get a tensor as the output.
+
+00:09:42.110 --> 00:09:44.590 align:middle line:84%
+Another thing that
+might be important
+
+00:09:44.590 --> 00:09:46.370 align:middle line:90%
+is you can clamp tensors.
+
+00:09:46.370 --> 00:09:50.230 align:middle line:84%
+So if you, say, were worried
+about your outputs going too far
+
+00:09:50.230 --> 00:09:54.350 align:middle line:84%
+in some direction, you can use
+.clamp and then some specific
+
+00:09:54.350 --> 00:09:57.870 align:middle line:84%
+range to actually get a
+specifically clamped output.
+
+00:09:57.870 --> 00:10:01.850 align:middle line:84%
+So we can see this plot here
+of that kind of transformation.
+
+00:10:01.850 --> 00:10:04.410 align:middle line:84%
+And so yeah, there's lots
+of different transformations
+
+00:10:04.410 --> 00:10:05.110 align:middle line:90%
+that we can do.
+
+00:10:05.110 --> 00:10:07.235 align:middle line:84%
+I'm not going to be able
+to go through all of them,
+
+00:10:07.235 --> 00:10:11.050 align:middle line:84%
+but just know that if you
+want to do some of operation
+
+00:10:11.050 --> 00:10:14.250 align:middle line:84%
+or transformation on a tensor,
+there's probably some ability
+
+00:10:14.250 --> 00:10:14.750 align:middle line:90%
+to do it.
+
+00:10:14.750 --> 00:10:16.833 align:middle line:84%
+And you'll just have to
+look up the documentation.
+
+00:10:16.833 --> 00:10:20.330 align:middle line:90%
+
+
+00:10:20.330 --> 00:10:23.530 align:middle line:84%
+Moving on, we're going to start
+talking about how we can deal
+
+00:10:23.530 --> 00:10:25.410 align:middle line:90%
+with multidimensional data.
+
+00:10:25.410 --> 00:10:29.450 align:middle line:84%
+So we're going to be
+dealing with, frequently,
+
+00:10:29.450 --> 00:10:31.610 align:middle line:84%
+some sort of data input
+that's in a batch.
+
+00:10:31.610 --> 00:10:34.010 align:middle line:84%
+And I think we talked about
+batches in lectures today.
+
+00:10:34.010 --> 00:10:37.810 align:middle line:84%
+But basically, we create
+a batch of some of inputs.
+
+00:10:37.810 --> 00:10:40.530 align:middle line:84%
+And generally, what
+we do to represent
+
+00:10:40.530 --> 00:10:43.610 align:middle line:84%
+that is we include the batch
+as the first dimension.
+
+00:10:43.610 --> 00:10:46.670 align:middle line:84%
+And then this example
+is for an image.
+
+00:10:46.670 --> 00:10:50.410 align:middle line:84%
+So you might do the
+channel of R, G, and B
+
+00:10:50.410 --> 00:10:54.190 align:middle line:84%
+as the second dimension, and
+then the rest of your data,
+
+00:10:54.190 --> 00:10:54.733 align:middle line:90%
+and so on.
+
+00:10:54.733 --> 00:10:56.650 align:middle line:84%
+But in general I think
+the most important part
+
+00:10:56.650 --> 00:11:03.110 align:middle line:84%
+there is that the batch index is
+generally the first dimension.
+
+00:11:03.110 --> 00:11:06.750 align:middle line:84%
+Moving on, we can look at some
+of these tensors of higher
+
+00:11:06.750 --> 00:11:10.150 align:middle line:84%
+dimensions and see how we
+can play with their shapes
+
+00:11:10.150 --> 00:11:13.470 align:middle line:90%
+and see how this affects things.
+
+00:11:13.470 --> 00:11:15.310 align:middle line:84%
+So if we create a
+random tensor, we're
+
+00:11:15.310 --> 00:11:18.970 align:middle line:84%
+going to do this shape
+representing two images here.
+
+00:11:18.970 --> 00:11:24.230 align:middle line:84%
+So we have two RGB
+images that are 5 by 4.
+
+00:11:24.230 --> 00:11:27.370 align:middle line:90%
+And we can create this random--
+
+00:11:27.370 --> 00:11:28.930 align:middle line:90%
+we'll just say random numbers.
+
+00:11:28.930 --> 00:11:31.590 align:middle line:84%
+They're obviously not
+following RGB format,
+
+00:11:31.590 --> 00:11:34.060 align:middle line:90%
+but that's OK for this example.
+
+00:11:34.060 --> 00:11:35.810 align:middle line:84%
+One thing we can do
+is permute dimensions.
+
+00:11:35.810 --> 00:11:38.910 align:middle line:84%
+So if we were interested in
+swapping the dimensions x and y
+
+00:11:38.910 --> 00:11:42.243 align:middle line:84%
+within our image, we can
+use this permute command.
+
+00:11:42.243 --> 00:11:43.910 align:middle line:84%
+And so what you do
+is you basically just
+
+00:11:43.910 --> 00:11:46.530 align:middle line:84%
+order the dimensions how
+you want them to be ordered.
+
+00:11:46.530 --> 00:11:48.790 align:middle line:84%
+So if you wanted to keep
+the batch size the same,
+
+00:11:48.790 --> 00:11:51.790 align:middle line:84%
+and then the RGB
+dimension the same,
+
+00:11:51.790 --> 00:11:55.790 align:middle line:84%
+we'd say 0 and 1 because
+those are indexed.
+
+00:11:55.790 --> 00:11:59.350 align:middle line:84%
+And then if we wanted to
+swap, say, the x and y,
+
+00:11:59.350 --> 00:12:02.650 align:middle line:84%
+we'd just swap the dimensions
+that they were originally
+
+00:12:02.650 --> 00:12:06.850 align:middle line:90%
+in our permute statement.
+
+00:12:06.850 --> 00:12:12.560 align:middle line:84%
+So if we run that, we see that
+we originally had a size of 2,
+
+00:12:12.560 --> 00:12:16.570 align:middle line:84%
+3, 4, 5, but in this case, we've
+swapped the 4 and the 5 with
+
+00:12:16.570 --> 00:12:20.370 align:middle line:90%
+our .permute command.
+
+00:12:20.370 --> 00:12:23.170 align:middle line:84%
+Another thing you might
+frequently do is reshaping.
+
+00:12:23.170 --> 00:12:25.170 align:middle line:84%
+And so there's a few
+different ways to do this.
+
+00:12:25.170 --> 00:12:27.210 align:middle line:90%
+The first is with .view.
+
+00:12:27.210 --> 00:12:30.190 align:middle line:84%
+And this is generally
+the more efficient way.
+
+00:12:30.190 --> 00:12:32.810 align:middle line:84%
+But there's also .reshape, and
+it has pretty much the same
+
+00:12:32.810 --> 00:12:34.570 align:middle line:90%
+functionality.
+
+00:12:34.570 --> 00:12:38.690 align:middle line:84%
+And basically, what we can do
+is we can input specific shapes
+
+00:12:38.690 --> 00:12:39.350 align:middle line:90%
+that we want.
+
+00:12:39.350 --> 00:12:42.090 align:middle line:84%
+So in this case, we're just
+keeping the batch size.
+
+00:12:42.090 --> 00:12:43.753 align:middle line:84%
+And then the negative
+basically just
+
+00:12:43.753 --> 00:12:46.170 align:middle line:84%
+means that we're going to have
+all of the rest of the data
+
+00:12:46.170 --> 00:12:49.430 align:middle line:84%
+that we had included
+in one dimension.
+
+00:12:49.430 --> 00:12:52.770 align:middle line:84%
+So we end up with a
+shape of just 2 and 60,
+
+00:12:52.770 --> 00:12:57.090 align:middle line:84%
+because this negative 1 was just
+the rest of the data in each--
+
+00:12:57.090 --> 00:12:59.630 align:middle line:90%
+the rest of those dimensions.
+
+00:12:59.630 --> 00:13:01.830 align:middle line:90%
+Next thing to know is indexing.
+
+00:13:01.830 --> 00:13:06.430 align:middle line:84%
+So PyTorch does indexing pretty
+much the same way as NumPy does.
+
+00:13:06.430 --> 00:13:09.230 align:middle line:84%
+So if we wanted to, say, get
+something like the first row,
+
+00:13:09.230 --> 00:13:11.610 align:middle line:84%
+we can just input
+a specific number.
+
+00:13:11.610 --> 00:13:13.150 align:middle line:90%
+So that would be 0.
+
+00:13:13.150 --> 00:13:15.970 align:middle line:84%
+And if we wanted to
+get the first column,
+
+00:13:15.970 --> 00:13:18.110 align:middle line:84%
+we can use this
+colon to represent
+
+00:13:18.110 --> 00:13:21.910 align:middle line:84%
+all of the rows and then the 0
+to represent the first column.
+
+00:13:21.910 --> 00:13:24.710 align:middle line:84%
+And so that's the
+second dimension.
+
+00:13:24.710 --> 00:13:26.790 align:middle line:84%
+And then if we want
+to get the last thing,
+
+00:13:26.790 --> 00:13:32.270 align:middle line:84%
+similar to other Python methods,
+you can just use negative 1.
+
+00:13:32.270 --> 00:13:35.610 align:middle line:84%
+We can also use this
+slicing to assign values.
+
+00:13:35.610 --> 00:13:39.710 align:middle line:84%
+So if we did wanted to assign
+the first column or, I guess,
+
+00:13:39.710 --> 00:13:42.390 align:middle line:84%
+this second column
+to 0, we could
+
+00:13:42.390 --> 00:13:44.110 align:middle line:90%
+do this using this assignment.
+
+00:13:44.110 --> 00:13:47.210 align:middle line:84%
+The next thing we might want
+to do is join tensors together.
+
+00:13:47.210 --> 00:13:52.550 align:middle line:84%
+So we might want to combine
+different maybe batches or just
+
+00:13:52.550 --> 00:13:55.790 align:middle line:84%
+specific elements to
+create a larger tensor.
+
+00:13:55.790 --> 00:13:57.870 align:middle line:84%
+And so we'll go through
+two different ways here.
+
+00:13:57.870 --> 00:14:00.290 align:middle line:90%
+The first is just concatenating.
+
+00:14:00.290 --> 00:14:02.610 align:middle line:84%
+So we use this
+torch.cat operator.
+
+00:14:02.610 --> 00:14:08.170 align:middle line:84%
+Then we input our
+tensors in a list here.
+
+00:14:08.170 --> 00:14:11.712 align:middle line:84%
+We also define a dimension that
+we want to concatenate along.
+
+00:14:11.712 --> 00:14:13.170 align:middle line:84%
+And basically, what
+this will do is
+
+00:14:13.170 --> 00:14:16.930 align:middle line:84%
+it will just add all
+of these input tensors
+
+00:14:16.930 --> 00:14:18.950 align:middle line:84%
+together along that
+specific dimension.
+
+00:14:18.950 --> 00:14:22.450 align:middle line:84%
+So we see here we have this
+tensor that's a 4 by 4.
+
+00:14:22.450 --> 00:14:25.330 align:middle line:84%
+And if we concatenate the
+three tensors together
+
+00:14:25.330 --> 00:14:28.030 align:middle line:84%
+along the first
+dimension dim equals 1.
+
+00:14:28.030 --> 00:14:30.010 align:middle line:84%
+We're going to end
+up with a 4 by 12.
+
+00:14:30.010 --> 00:14:33.890 align:middle line:84%
+And you can see how this works
+out with our second column
+
+00:14:33.890 --> 00:14:37.490 align:middle line:90%
+and our tensor, all 0's.
+
+00:14:37.490 --> 00:14:39.730 align:middle line:84%
+The next thing you
+can do is torch.stack.
+
+00:14:39.730 --> 00:14:41.810 align:middle line:84%
+And instead of concatenating
+along one dimension,
+
+00:14:41.810 --> 00:14:44.170 align:middle line:84%
+you're going to actually
+create a new dimension.
+
+00:14:44.170 --> 00:14:48.010 align:middle line:84%
+So say if you had a
+few different inputs
+
+00:14:48.010 --> 00:14:49.850 align:middle line:84%
+and you wanted to
+create a batch,
+
+00:14:49.850 --> 00:14:53.530 align:middle line:84%
+you might do a stack
+along dimension equals 0,
+
+00:14:53.530 --> 00:14:56.690 align:middle line:84%
+and you'll end up with
+an additional dimension
+
+00:14:56.690 --> 00:14:58.290 align:middle line:90%
+at the start here.
+
+00:14:58.290 --> 00:15:00.440 align:middle line:84%
+The next thing we
+can do is things
+
+00:15:00.440 --> 00:15:02.462 align:middle line:90%
+like matrix multiplication.
+
+00:15:02.462 --> 00:15:04.420 align:middle line:84%
+So there's a few different
+ways we can do this.
+
+00:15:04.420 --> 00:15:08.240 align:middle line:84%
+All of these operations
+here do the same thing.
+
+00:15:08.240 --> 00:15:11.100 align:middle line:84%
+I think using the at symbol
+is probably the easiest way,
+
+00:15:11.100 --> 00:15:13.360 align:middle line:84%
+but you can pick
+whatever you would like.
+
+00:15:13.360 --> 00:15:15.400 align:middle line:84%
+And this just performs
+matrix multiplication,
+
+00:15:15.400 --> 00:15:17.280 align:middle line:90%
+as you would expect.
+
+00:15:17.280 --> 00:15:22.000 align:middle line:84%
+And so, in this case,
+we made this tensor,
+
+00:15:22.000 --> 00:15:26.720 align:middle line:84%
+and we'll just apply matrix
+multiplication to it.
+
+00:15:26.720 --> 00:15:29.720 align:middle line:84%
+We can also compute
+element-wise products.
+
+00:15:29.720 --> 00:15:32.440 align:middle line:84%
+So that will just be the
+multiplication symbol
+
+00:15:32.440 --> 00:15:34.920 align:middle line:90%
+or this tensor.mul.
+
+00:15:34.920 --> 00:15:37.260 align:middle line:84%
+And so that will do just
+an element-wise product.
+
+00:15:37.260 --> 00:15:41.720 align:middle line:84%
+So if we had this
+tensor of 1, 2, 3, 4,
+
+00:15:41.720 --> 00:15:46.060 align:middle line:84%
+we'll just end up with the
+squares element-wise product.
+
+00:15:46.060 --> 00:15:49.160 align:middle line:90%
+
+
+00:15:49.160 --> 00:15:53.480 align:middle line:84%
+Next thing to know is we can
+use some aggregators to find
+
+00:15:53.480 --> 00:15:57.780 align:middle line:84%
+some different statistics or
+values within our tensors.
+
+00:15:57.780 --> 00:16:03.700 align:middle line:84%
+So we can do things like sum,
+mean, max, min, stuff like that,
+
+00:16:03.700 --> 00:16:06.700 align:middle line:84%
+and get the value along
+a specific dimension
+
+00:16:06.700 --> 00:16:08.460 align:middle line:90%
+or along the whole tensor.
+
+00:16:08.460 --> 00:16:13.875 align:middle line:84%
+So that concludes the
+overall tensor part of this.
+
+00:16:13.875 --> 00:16:16.000 align:middle line:84%
+Definitely going a little
+slower than I was hoping,
+
+00:16:16.000 --> 00:16:20.820 align:middle line:84%
+but we'll try and get
+through as much as we can.
+
+00:16:20.820 --> 00:16:24.323 align:middle line:84%
+So the next thing to talk about
+is the autograd of PyTorch.
+
+00:16:24.323 --> 00:16:26.740 align:middle line:84%
+And autograd is one of the
+most important parts of PyTorch
+
+00:16:26.740 --> 00:16:29.740 align:middle line:84%
+because it allows us to actually
+compute gradients and update
+
+00:16:29.740 --> 00:16:32.820 align:middle line:84%
+our models so that they can
+actually learn and produce
+
+00:16:32.820 --> 00:16:34.660 align:middle line:90%
+reasonable outputs.
+
+00:16:34.660 --> 00:16:37.300 align:middle line:84%
+And so we can first use
+autograd to just calculate
+
+00:16:37.300 --> 00:16:39.380 align:middle line:90%
+a simple gradient of a vector.
+
+00:16:39.380 --> 00:16:42.100 align:middle line:84%
+So I think we saw a similar
+example here before,
+
+00:16:42.100 --> 00:16:46.340 align:middle line:84%
+where we made this x, which
+is the values between 0 and 5.
+
+00:16:46.340 --> 00:16:48.600 align:middle line:84%
+And then we applied
+an operator on this.
+
+00:16:48.600 --> 00:16:52.500 align:middle line:84%
+So we're squaring it, and
+then taking the cosine here.
+
+00:16:52.500 --> 00:16:56.140 align:middle line:84%
+And we can find the
+derivative of this
+
+00:16:56.140 --> 00:16:58.860 align:middle line:84%
+by using the autograd
+features of PyTorch.
+
+00:16:58.860 --> 00:17:02.260 align:middle line:84%
+And so if we want to
+take a derivative,
+
+00:17:02.260 --> 00:17:05.700 align:middle line:84%
+we actually need to have
+a scalar as an output.
+
+00:17:05.700 --> 00:17:07.480 align:middle line:84%
+So we take the sum
+here, and then we
+
+00:17:07.480 --> 00:17:12.359 align:middle line:84%
+can use this torch.autograd
+of that output with respect
+
+00:17:12.359 --> 00:17:18.520 align:middle line:84%
+to x to get our actual
+derivative here, dy by dx.
+
+00:17:18.520 --> 00:17:23.800 align:middle line:84%
+And so this is the backend,
+how you could specifically
+
+00:17:23.800 --> 00:17:27.520 align:middle line:84%
+calculate one specific gradient
+or one derivative here.
+
+00:17:27.520 --> 00:17:29.800 align:middle line:84%
+But when we're
+actually doing a model,
+
+00:17:29.800 --> 00:17:33.320 align:middle line:84%
+PyTorch takes care of exactly
+which derivatives we need.
+
+00:17:33.320 --> 00:17:36.080 align:middle line:84%
+And we don't have to do these
+really specific calculations
+
+00:17:36.080 --> 00:17:39.613 align:middle line:84%
+of which differential
+we actually want.
+
+00:17:39.613 --> 00:17:41.280 align:middle line:84%
+But we can see in
+this plot here that we
+
+00:17:41.280 --> 00:17:47.040 align:middle line:84%
+have our x squared cosine, where
+we end up with a shorter period
+
+00:17:47.040 --> 00:17:48.840 align:middle line:90%
+as we go to the right.
+
+00:17:48.840 --> 00:17:51.680 align:middle line:84%
+And then we can see
+our gradient here,
+
+00:17:51.680 --> 00:17:57.360 align:middle line:84%
+where it's the correct
+gradient of that value.
+
+00:17:57.360 --> 00:18:00.040 align:middle line:84%
+We can do this with
+another function here.
+
+00:18:00.040 --> 00:18:03.600 align:middle line:84%
+So if you have a polynomial and
+we want to compute the gradient,
+
+00:18:03.600 --> 00:18:07.620 align:middle line:84%
+we can do this in the same
+way as we previously did.
+
+00:18:07.620 --> 00:18:10.720 align:middle line:84%
+And we can run this, and we
+can see the result is the same.
+
+00:18:10.720 --> 00:18:13.620 align:middle line:84%
+We end up with our plot,
+and we have our gradient
+
+00:18:13.620 --> 00:18:17.180 align:middle line:90%
+of our plot as well.
+
+00:18:17.180 --> 00:18:19.860 align:middle line:84%
+So these are this
+really specific way
+
+00:18:19.860 --> 00:18:22.620 align:middle line:84%
+we can calculate
+this exact gradient.
+
+00:18:22.620 --> 00:18:25.620 align:middle line:84%
+But PyTorch allows us
+to actually calculate
+
+00:18:25.620 --> 00:18:27.703 align:middle line:90%
+all the gradients all together.
+
+00:18:27.703 --> 00:18:29.620 align:middle line:84%
+And so we don't need to
+specifically calculate
+
+00:18:29.620 --> 00:18:30.700 align:middle line:90%
+one gradient.
+
+00:18:30.700 --> 00:18:33.460 align:middle line:84%
+Instead, we can just
+do a specific command,
+
+00:18:33.460 --> 00:18:35.883 align:middle line:84%
+and we will get all the
+gradients that we want.
+
+00:18:35.883 --> 00:18:37.300 align:middle line:84%
+And so that's what
+you'll actually
+
+00:18:37.300 --> 00:18:39.560 align:middle line:84%
+be doing if you're
+running a PyTorch model.
+
+00:18:39.560 --> 00:18:42.700 align:middle line:84%
+You won't need to calculate
+and store each different part
+
+00:18:42.700 --> 00:18:45.020 align:middle line:90%
+individually.
+
+00:18:45.020 --> 00:18:47.820 align:middle line:84%
+And so if we look at this, we
+have the same example as we had
+
+00:18:47.820 --> 00:18:52.720 align:middle line:84%
+before, but instead of doing our
+autograd and using the brackets,
+
+00:18:52.720 --> 00:18:55.340 align:middle line:84%
+as we saw before, we can
+just use this .backward,
+
+00:18:55.340 --> 00:19:01.440 align:middle line:84%
+and that will store the gradient
+of each part within the tensor.
+
+00:19:01.440 --> 00:19:04.360 align:middle line:84%
+And so if we just
+get the use .grad,
+
+00:19:04.360 --> 00:19:07.680 align:middle line:84%
+we can actually get the specific
+gradient using the .backward
+
+00:19:07.680 --> 00:19:08.880 align:middle line:90%
+command.
+
+00:19:08.880 --> 00:19:12.240 align:middle line:84%
+So you'll never do
+the autograd.grad
+
+00:19:12.240 --> 00:19:13.440 align:middle line:90%
+that we had up here.
+
+00:19:13.440 --> 00:19:15.680 align:middle line:84%
+You'll always use the
+.backward to just calculate all
+
+00:19:15.680 --> 00:19:17.680 align:middle line:90%
+the gradients that you need.
+
+00:19:17.680 --> 00:19:19.645 align:middle line:84%
+So yeah, as I was
+mentioning, if you
+
+00:19:19.645 --> 00:19:21.020 align:middle line:84%
+aren't going to
+use the gradient,
+
+00:19:21.020 --> 00:19:22.540 align:middle line:90%
+you shouldn't calculate it.
+
+00:19:22.540 --> 00:19:23.717 align:middle line:90%
+And we can use--
+
+00:19:23.717 --> 00:19:25.300 align:middle line:84%
+I don't know if I
+have it listed here,
+
+00:19:25.300 --> 00:19:31.160 align:middle line:84%
+but you would say torch.no_grad,
+and that would allow you to not
+
+00:19:31.160 --> 00:19:35.760 align:middle line:84%
+use the gradient and
+speed up your computation.
+
+00:19:35.760 --> 00:19:39.880 align:middle line:84%
+Oh yeah, here we go with
+torch.no_grad that would be what
+
+00:19:39.880 --> 00:19:40.660 align:middle line:90%
+we would use.
+
+00:19:40.660 --> 00:19:43.640 align:middle line:90%
+
+
+00:19:43.640 --> 00:19:46.040 align:middle line:84%
+Next thing we're going to
+talk about is optimizers.
+
+00:19:46.040 --> 00:19:48.807 align:middle line:84%
+So we figured out how we
+can calculate a gradient.
+
+00:19:48.807 --> 00:19:50.640 align:middle line:84%
+But the next thing we
+need to do is actually
+
+00:19:50.640 --> 00:19:55.280 align:middle line:84%
+use that gradient to optimize
+some function, some loss
+
+00:19:55.280 --> 00:19:56.820 align:middle line:90%
+function, something like that.
+
+00:19:56.820 --> 00:20:00.580 align:middle line:84%
+So this naive gradient
+descent-- obviously,
+
+00:20:00.580 --> 00:20:02.660 align:middle line:84%
+it works for this scenario,
+but in a lot of cases
+
+00:20:02.660 --> 00:20:06.820 align:middle line:84%
+we want to be more adaptive
+and speed up our training.
+
+00:20:06.820 --> 00:20:11.060 align:middle line:84%
+So I think we saw stochastic
+gradient descent in lecture.
+
+00:20:11.060 --> 00:20:12.600 align:middle line:90%
+But this is another method.
+
+00:20:12.600 --> 00:20:14.700 align:middle line:90%
+We import this optimizer.
+
+00:20:14.700 --> 00:20:16.780 align:middle line:84%
+And if we do
+optimizer.step it takes
+
+00:20:16.780 --> 00:20:18.600 align:middle line:90%
+care of the gradient update.
+
+00:20:18.600 --> 00:20:21.940 align:middle line:84%
+So it will use the
+gradient, and it will update
+
+00:20:21.940 --> 00:20:23.160 align:middle line:90%
+the weights of our model.
+
+00:20:23.160 --> 00:20:25.780 align:middle line:90%
+
+
+00:20:25.780 --> 00:20:31.107 align:middle line:84%
+So if we run this, we see,
+again, our model minimizes.
+
+00:20:31.107 --> 00:20:32.940 align:middle line:84%
+Maybe it got to the
+minimum a little faster,
+
+00:20:32.940 --> 00:20:35.460 align:middle line:84%
+and then it's jumping
+around a little bit.
+
+00:20:35.460 --> 00:20:37.920 align:middle line:84%
+This is just some
+little toy examples,
+
+00:20:37.920 --> 00:20:42.220 align:middle line:84%
+so we're not too concerned
+exactly about what's happening.
+
+00:20:42.220 --> 00:20:45.140 align:middle line:84%
+The last optimizer here we're
+going to look at is Adam.
+
+00:20:45.140 --> 00:20:47.200 align:middle line:84%
+So Adam is a pretty
+common optimizer.
+
+00:20:47.200 --> 00:20:50.580 align:middle line:84%
+And it adaptively does
+a lot of the steps.
+
+00:20:50.580 --> 00:20:53.460 align:middle line:84%
+And it generally is
+the most efficient.
+
+00:20:53.460 --> 00:20:55.740 align:middle line:84%
+So a lot of people use
+that in real scenarios
+
+00:20:55.740 --> 00:20:57.660 align:middle line:84%
+as opposed to just
+naive gradient descent
+
+00:20:57.660 --> 00:21:01.200 align:middle line:90%
+or stochastic gradient descent.
+
+00:21:01.200 --> 00:21:02.560 align:middle line:90%
+So we can run this one.
+
+00:21:02.560 --> 00:21:07.360 align:middle line:84%
+It's the same
+structure as the SGD.
+
+00:21:07.360 --> 00:21:10.000 align:middle line:84%
+But we see in this example,
+it's not quite doing
+
+00:21:10.000 --> 00:21:13.260 align:middle line:84%
+as well as some of the
+simpler ways, but in general,
+
+00:21:13.260 --> 00:21:16.760 align:middle line:84%
+this is a pretty good
+method of optimizing.
+
+00:21:16.760 --> 00:21:19.480 align:middle line:84%
+I think we can try and
+get through a quick bit
+
+00:21:19.480 --> 00:21:21.800 align:middle line:84%
+of neural networks
+and how we can use
+
+00:21:21.800 --> 00:21:25.080 align:middle line:90%
+PyTorch for neural networks.
+
+00:21:25.080 --> 00:21:28.080 align:middle line:84%
+So obviously, that's a
+big part of deep learning
+
+00:21:28.080 --> 00:21:29.840 align:middle line:90%
+is neural networks.
+
+00:21:29.840 --> 00:21:32.200 align:middle line:84%
+And so there's a lot of
+modules within PyTorch
+
+00:21:32.200 --> 00:21:34.360 align:middle line:84%
+that we can use
+to create networks
+
+00:21:34.360 --> 00:21:39.520 align:middle line:84%
+from just really simple
+MLPs to more complex models.
+
+00:21:39.520 --> 00:21:43.600 align:middle line:84%
+So the first building block that
+we see here is the linear layer.
+
+00:21:43.600 --> 00:21:45.240 align:middle line:84%
+And so this is
+basically just going
+
+00:21:45.240 --> 00:21:47.840 align:middle line:84%
+to do a transformation
+from one dimension
+
+00:21:47.840 --> 00:21:53.640 align:middle line:84%
+to another dimension with
+a linear transformation.
+
+00:21:53.640 --> 00:21:56.560 align:middle line:84%
+So we can generate
+that, and we can
+
+00:21:56.560 --> 00:21:58.020 align:middle line:84%
+set the number of
+input features,
+
+00:21:58.020 --> 00:22:04.140 align:middle line:84%
+the number of output features,
+along with a bias term as well.
+
+00:22:04.140 --> 00:22:06.180 align:middle line:84%
+And so we could
+just run an input
+
+00:22:06.180 --> 00:22:08.700 align:middle line:90%
+through our linear network.
+
+00:22:08.700 --> 00:22:12.500 align:middle line:84%
+We put an input of size 3
+and get an output of size 2.
+
+00:22:12.500 --> 00:22:14.640 align:middle line:84%
+So yeah, then we can
+pass an input to that,
+
+00:22:14.640 --> 00:22:17.340 align:middle line:90%
+and we see we had an input of 3.
+
+00:22:17.340 --> 00:22:21.780 align:middle line:84%
+And then we end up with
+an output of size 2.
+
+00:22:21.780 --> 00:22:23.080 align:middle line:90%
+We can also use a batch.
+
+00:22:23.080 --> 00:22:27.420 align:middle line:84%
+So we have four
+inputs of size 3 here.
+
+00:22:27.420 --> 00:22:30.640 align:middle line:84%
+And natively, it will
+just work to support that,
+
+00:22:30.640 --> 00:22:32.680 align:middle line:84%
+and we get four
+outputs of size 2.
+
+00:22:32.680 --> 00:22:35.387 align:middle line:90%
+
+
+00:22:35.387 --> 00:22:37.220 align:middle line:84%
+If we can take a look
+at some of the weights
+
+00:22:37.220 --> 00:22:41.860 align:middle line:84%
+and bias of this linear
+layer, we can just
+
+00:22:41.860 --> 00:22:43.317 align:middle line:90%
+get the actual numbers.
+
+00:22:43.317 --> 00:22:44.900 align:middle line:84%
+And so these are the
+numbers that it's
+
+00:22:44.900 --> 00:22:48.300 align:middle line:84%
+going to multiply the inputs
+by to actually get an output.
+
+00:22:48.300 --> 00:22:50.800 align:middle line:84%
+And the bias terms are
+added to the outputs.
+
+00:22:50.800 --> 00:22:53.620 align:middle line:90%
+
+
+00:22:53.620 --> 00:22:56.740 align:middle line:84%
+And you'll note the
+requires_grad=True on this
+
+00:22:56.740 --> 00:23:00.480 align:middle line:84%
+tensor here, which shows that
+it's calculating the gradient
+
+00:23:00.480 --> 00:23:01.340 align:middle line:90%
+as you go along.
+
+00:23:01.340 --> 00:23:05.040 align:middle line:90%
+
+
+00:23:05.040 --> 00:23:10.280 align:middle line:84%
+We can set specific things like
+the bias to 0 if we wanted to.
+
+00:23:10.280 --> 00:23:13.960 align:middle line:84%
+And then we can see that
+our outputs will not
+
+00:23:13.960 --> 00:23:16.460 align:middle line:90%
+add that bias term at the end.
+
+00:23:16.460 --> 00:23:19.760 align:middle line:90%
+
+
+00:23:19.760 --> 00:23:22.920 align:middle line:84%
+We can look at some
+of the parameters.
+
+00:23:22.920 --> 00:23:25.760 align:middle line:84%
+Just if we do this
+net.name_parameters,
+
+00:23:25.760 --> 00:23:29.400 align:middle line:84%
+and that will get the exact
+values within those weights
+
+00:23:29.400 --> 00:23:31.200 align:middle line:90%
+as well.
+
+00:23:31.200 --> 00:23:34.060 align:middle line:84%
+And we can see that we set it to
+0, and the bias term is now 0.
+
+00:23:34.060 --> 00:23:40.080 align:middle line:90%
+
+
+00:23:40.080 --> 00:23:42.260 align:middle line:84%
+We can look at a few
+different features,
+
+00:23:42.260 --> 00:23:45.920 align:middle line:90%
+the shapes of our weights.
+
+00:23:45.920 --> 00:23:49.460 align:middle line:90%
+We can load them.
+
+00:23:49.460 --> 00:23:51.880 align:middle line:84%
+So yeah, we saved the
+weights, and then we
+
+00:23:51.880 --> 00:23:54.617 align:middle line:90%
+can load the weights here.
+
+00:23:54.617 --> 00:23:57.200 align:middle line:84%
+Sorry, I'm trying to go-- let's
+see if we can get to something
+
+00:23:57.200 --> 00:24:00.340 align:middle line:90%
+a little more interesting.
+
+00:24:00.340 --> 00:24:02.180 align:middle line:84%
+Maybe if we wanted to
+calculate a loss, so
+
+00:24:02.180 --> 00:24:05.900 align:middle line:84%
+if we're trying to
+optimize this linear layer,
+
+00:24:05.900 --> 00:24:08.140 align:middle line:84%
+and let's say we
+wanted to just--
+
+00:24:08.140 --> 00:24:11.100 align:middle line:84%
+kind of a dumb example, but if
+we wanted to just always output
+
+00:24:11.100 --> 00:24:14.820 align:middle line:84%
+1 comma 1, we could try
+and train our linear layer
+
+00:24:14.820 --> 00:24:17.180 align:middle line:90%
+to always output 1 comma 1.
+
+00:24:17.180 --> 00:24:20.900 align:middle line:84%
+So if we see here,
+first, we get an output.
+
+00:24:20.900 --> 00:24:22.660 align:middle line:84%
+And it will calculate
+this loss, where
+
+00:24:22.660 --> 00:24:27.620 align:middle line:90%
+we're doing squared loss here.
+
+00:24:27.620 --> 00:24:29.380 align:middle line:84%
+And we could use
+the loss.backward
+
+00:24:29.380 --> 00:24:30.900 align:middle line:90%
+to get the gradients.
+
+00:24:30.900 --> 00:24:32.540 align:middle line:84%
+And then we could
+use those gradients
+
+00:24:32.540 --> 00:24:35.680 align:middle line:90%
+to update our linear layer.
+
+00:24:35.680 --> 00:24:39.620 align:middle line:90%
+
+
+00:24:39.620 --> 00:24:42.980 align:middle line:84%
+So here, if we wanted to
+actually train this model
+
+00:24:42.980 --> 00:24:46.340 align:middle line:84%
+to learn to always
+output 1 comma 1,
+
+00:24:46.340 --> 00:24:47.600 align:middle line:90%
+we could do an update loop.
+
+00:24:47.600 --> 00:24:52.020 align:middle line:84%
+So here we're just looping
+doing a batch input
+
+00:24:52.020 --> 00:24:54.540 align:middle line:90%
+and then calculating the loss.
+
+00:24:54.540 --> 00:24:57.460 align:middle line:84%
+We're getting the gradients
+here with loss.backward.
+
+00:24:57.460 --> 00:24:59.250 align:middle line:84%
+And then we're just
+using gradient descent
+
+00:24:59.250 --> 00:25:01.450 align:middle line:90%
+to update our parameters.
+
+00:25:01.450 --> 00:25:05.450 align:middle line:84%
+And we can see if
+we run this, we
+
+00:25:05.450 --> 00:25:07.550 align:middle line:84%
+should get a graph
+of what our loss is.
+
+00:25:07.550 --> 00:25:09.390 align:middle line:84%
+So we end up with the
+following weights.
+
+00:25:09.390 --> 00:25:12.450 align:middle line:84%
+You can see the weights within
+the linear layer just went to 0,
+
+00:25:12.450 --> 00:25:14.490 align:middle line:90%
+and our bias went to 1.
+
+00:25:14.490 --> 00:25:18.810 align:middle line:84%
+And so our loss went to
+near 0 because we've learned
+
+00:25:18.810 --> 00:25:21.850 align:middle line:90%
+to always output 1 comma 1.
+
+00:25:21.850 --> 00:25:25.290 align:middle line:84%
+I'll try and work through
+maybe one more part here,
+
+00:25:25.290 --> 00:25:27.550 align:middle line:84%
+but feel free to go
+if you need to go.
+
+00:25:27.550 --> 00:25:30.250 align:middle line:90%
+
+
+00:25:30.250 --> 00:25:32.010 align:middle line:84%
+So the last thing I
+want to talk about
+
+00:25:32.010 --> 00:25:34.450 align:middle line:84%
+is that we can create a
+more complex network using
+
+00:25:34.450 --> 00:25:36.250 align:middle line:90%
+this sequential command.
+
+00:25:36.250 --> 00:25:39.170 align:middle line:84%
+This will combine
+different layers together.
+
+00:25:39.170 --> 00:25:42.730 align:middle line:84%
+So here, we see a combination
+of linear and ReLU layers.
+
+00:25:42.730 --> 00:25:46.348 align:middle line:84%
+So ReLU is the activation
+that we've seen in lecture.
+
+00:25:46.348 --> 00:25:47.890 align:middle line:84%
+And then we can
+combine this together
+
+00:25:47.890 --> 00:25:50.610 align:middle line:90%
+with this sequential framework.
+
+00:25:50.610 --> 00:25:53.010 align:middle line:84%
+And so this actually
+creates a little bit
+
+00:25:53.010 --> 00:25:55.290 align:middle line:84%
+of a more interesting
+network that we
+
+00:25:55.290 --> 00:25:56.910 align:middle line:90%
+can use to create outputs.
+
+00:25:56.910 --> 00:26:03.180 align:middle line:90%
+
+
+00:26:03.180 --> 00:26:04.930 align:middle line:84%
+So we can see the
+different parts of this.
+
+00:26:04.930 --> 00:26:07.950 align:middle line:84%
+We have sequential parts,
+we have linear parts, ReLU.
+
+00:26:07.950 --> 00:26:11.010 align:middle line:84%
+And then, continuously,
+we're creating a network--
+
+00:26:11.010 --> 00:26:14.610 align:middle line:84%
+I think this one is
+3 layers in size.
+
+00:26:14.610 --> 00:26:17.270 align:middle line:90%
+
+
+00:26:17.270 --> 00:26:21.652 align:middle line:84%
+So we can use this to train
+a more interesting model.
+
+00:26:21.652 --> 00:26:23.110 align:middle line:84%
+So here, what we're
+trying to do is
+
+00:26:23.110 --> 00:26:25.110 align:middle line:84%
+we're trying to
+train a model that
+
+00:26:25.110 --> 00:26:29.750 align:middle line:90%
+takes an input in the space--
+
+00:26:29.750 --> 00:26:32.630 align:middle line:84%
+a 2D input in the
+space negative 2 to 2.
+
+00:26:32.630 --> 00:26:36.310 align:middle line:84%
+And it's going to
+try and output--
+
+00:26:36.310 --> 00:26:38.950 align:middle line:84%
+try and classify points as
+either above a sine wave
+
+00:26:38.950 --> 00:26:41.830 align:middle line:90%
+or below a sine wave.
+
+00:26:41.830 --> 00:26:46.690 align:middle line:84%
+And so what we do is we want
+to use the Adam optimizer.
+
+00:26:46.690 --> 00:26:49.430 align:middle line:84%
+Here, we have a
+classify target, which
+
+00:26:49.430 --> 00:26:54.110 align:middle line:84%
+is going to say is our input
+either above or below the sine
+
+00:26:54.110 --> 00:26:54.870 align:middle line:90%
+wave.
+
+00:26:54.870 --> 00:26:58.650 align:middle line:84%
+And that's going to
+give us our loss when
+
+00:26:58.650 --> 00:27:02.090 align:middle line:84%
+we use this crossentropy
+because we can actually generate
+
+00:27:02.090 --> 00:27:05.530 align:middle line:90%
+what the actual target is.
+
+00:27:05.530 --> 00:27:08.010 align:middle line:84%
+So what we do in this
+loop is we're iterating.
+
+00:27:08.010 --> 00:27:12.770 align:middle line:84%
+We're generating a
+batch of random inputs.
+
+00:27:12.770 --> 00:27:15.810 align:middle line:84%
+We're classifying
+those random inputs as
+
+00:27:15.810 --> 00:27:18.090 align:middle line:84%
+either above the sine wave
+or below the sine wave.
+
+00:27:18.090 --> 00:27:19.465 align:middle line:84%
+And then we're
+calculating a loss
+
+00:27:19.465 --> 00:27:22.930 align:middle line:84%
+using crossentropy, which
+is a loss typically used
+
+00:27:22.930 --> 00:27:25.090 align:middle line:90%
+for classification model.
+
+00:27:25.090 --> 00:27:28.570 align:middle line:84%
+And basically, it's going
+to give a higher value
+
+00:27:28.570 --> 00:27:31.010 align:middle line:84%
+if your classification
+result is worse
+
+00:27:31.010 --> 00:27:34.730 align:middle line:84%
+and a lower value
+if it's better.
+
+00:27:34.730 --> 00:27:36.652 align:middle line:84%
+And then we continue
+with this iteration.
+
+00:27:36.652 --> 00:27:38.610 align:middle line:84%
+We're doing loss.backward
+to get our gradients,
+
+00:27:38.610 --> 00:27:41.530 align:middle line:84%
+and we're doing
+an optimizer step.
+
+00:27:41.530 --> 00:27:43.450 align:middle line:84%
+And then the last
+bit here is just
+
+00:27:43.450 --> 00:27:47.410 align:middle line:84%
+giving us some information
+about our accuracy.
+
+00:27:47.410 --> 00:27:49.610 align:middle line:90%
+And so if we run this--
+
+00:27:49.610 --> 00:27:50.950 align:middle line:90%
+oh, I didn't create the--
+
+00:27:50.950 --> 00:27:59.790 align:middle line:90%
+
+
+00:27:59.790 --> 00:28:08.310 align:middle line:84%
+sorry, must have not
+ran another cell above.
+
+00:28:08.310 --> 00:28:11.950 align:middle line:84%
+Must have not ran
+a few cells above.
+
+00:28:11.950 --> 00:28:17.397 align:middle line:84%
+But basically, if
+we want to run this,
+
+00:28:17.397 --> 00:28:19.230 align:middle line:84%
+we're going to be able
+to train a model that
+
+00:28:19.230 --> 00:28:22.390 align:middle line:84%
+is able to classify these points
+as either above the sine wave
+
+00:28:22.390 --> 00:28:24.430 align:middle line:90%
+or below the sine wave.
+
+00:28:24.430 --> 00:28:30.910 align:middle line:84%
+Let me see if I can find
+where that's not loaded.
+
+00:28:30.910 --> 00:28:34.270 align:middle line:90%
+Not sure where that is.
+
+00:28:34.270 --> 00:28:38.810 align:middle line:90%
+But yeah, I think--
+
+00:28:38.810 --> 00:28:41.413 align:middle line:90%
+
+
+00:28:41.413 --> 00:28:42.330 align:middle line:90%
+it's a little strange.
+
+00:28:42.330 --> 00:28:53.790 align:middle line:90%
+
+
+00:28:53.790 --> 00:28:57.140 align:middle line:84%
+I think, yeah, we'll
+just leave that there.
+
+00:28:57.140 --> 00:28:59.000 align:middle line:90%

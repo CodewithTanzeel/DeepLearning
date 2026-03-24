@@ -1,0 +1,6810 @@
+WEBVTT
+
+00:00:00.000 --> 00:00:00.500 align:middle line:90%
+
+
+00:00:00.500 --> 00:00:01.988 align:middle line:90%
+[SQUEAKING]
+
+00:00:01.988 --> 00:00:03.476 align:middle line:90%
+[RUSTLING]
+
+00:00:03.476 --> 00:00:05.460 align:middle line:90%
+[CLICKING]
+
+00:00:05.460 --> 00:00:13.825 align:middle line:90%
+
+
+00:00:13.825 --> 00:00:14.700 align:middle line:90%
+PHILLIP ISOLA: Great.
+
+00:00:14.700 --> 00:00:16.360 align:middle line:90%
+So welcome.
+
+00:00:16.360 --> 00:00:19.680 align:middle line:84%
+This lecture is going
+to be on generalization.
+
+00:00:19.680 --> 00:00:22.240 align:middle line:84%
+So this is the next topic
+in the series of how
+
+00:00:22.240 --> 00:00:23.580 align:middle line:90%
+do you approximate functions?
+
+00:00:23.580 --> 00:00:26.040 align:middle line:90%
+Now do they actually generalize?
+
+00:00:26.040 --> 00:00:30.180 align:middle line:84%
+And the basic question is, do
+neural networks generalize?
+
+00:00:30.180 --> 00:00:33.220 align:middle line:84%
+And well, we'll see, yes, the
+answer is yes to some degree.
+
+00:00:33.220 --> 00:00:34.780 align:middle line:90%
+And then the question is why?
+
+00:00:34.780 --> 00:00:36.020 align:middle line:90%
+Why do they generalize?
+
+00:00:36.020 --> 00:00:39.200 align:middle line:90%
+
+
+00:00:39.200 --> 00:00:40.940 align:middle line:90%
+A few logistical reminders.
+
+00:00:40.940 --> 00:00:43.240 align:middle line:90%
+Problem set one is due today.
+
+00:00:43.240 --> 00:00:46.240 align:middle line:90%
+Problem set two goes out today.
+
+00:00:46.240 --> 00:00:49.060 align:middle line:84%
+Problem set two will be posted
+sometime after this class.
+
+00:00:49.060 --> 00:00:53.640 align:middle line:84%
+So we always will post problem
+sets after the lecture.
+
+00:00:53.640 --> 00:00:57.200 align:middle line:84%
+And you might want to look at
+the first question of problem
+
+00:00:57.200 --> 00:01:00.570 align:middle line:84%
+set two if you happen to have
+time before Thursday's lecture,
+
+00:01:00.570 --> 00:01:03.630 align:middle line:84%
+because it can help motivate--
+you don't have to solve it,
+
+00:01:03.630 --> 00:01:05.610 align:middle line:84%
+but it can help motivate
+and put into context
+
+00:01:05.610 --> 00:01:07.130 align:middle line:90%
+what we'll see on Thursday.
+
+00:01:07.130 --> 00:01:10.770 align:middle line:84%
+So I'd recommend taking a
+look at that first problem.
+
+00:01:10.770 --> 00:01:12.570 align:middle line:84%
+And then you'll
+kind of know what
+
+00:01:12.570 --> 00:01:15.530 align:middle line:84%
+to look out for in the lecture
+to help you solve that problem.
+
+00:01:15.530 --> 00:01:18.710 align:middle line:84%
+So just a little
+piece of advice.
+
+00:01:18.710 --> 00:01:19.710 align:middle line:90%
+And I think that's it.
+
+00:01:19.710 --> 00:01:21.210 align:middle line:90%
+So we're going to go right in.
+
+00:01:21.210 --> 00:01:24.870 align:middle line:84%
+So the outline for today will
+be, what is generalization?
+
+00:01:24.870 --> 00:01:25.970 align:middle line:90%
+That should be review.
+
+00:01:25.970 --> 00:01:28.530 align:middle line:84%
+You've all taken machine
+learning or classes like this
+
+00:01:28.530 --> 00:01:30.390 align:middle line:90%
+before.
+
+00:01:30.390 --> 00:01:34.410 align:middle line:84%
+Then, the next question is,
+do deep nets generalize?
+
+00:01:34.410 --> 00:01:36.650 align:middle line:84%
+Then, we'll see that there's
+some classical theories
+
+00:01:36.650 --> 00:01:39.450 align:middle line:84%
+of generalization, and they
+don't actually work very well
+
+00:01:39.450 --> 00:01:40.630 align:middle line:90%
+for deep learning.
+
+00:01:40.630 --> 00:01:43.850 align:middle line:84%
+So we'll see some failures of
+classical generalization theory
+
+00:01:43.850 --> 00:01:46.970 align:middle line:84%
+at explaining phenomena
+in deep learning.
+
+00:01:46.970 --> 00:01:49.210 align:middle line:84%
+And then I've already
+given away the answer--
+
+00:01:49.210 --> 00:01:52.070 align:middle line:84%
+that, to some degree, deep
+nets, will argue, do generalize.
+
+00:01:52.070 --> 00:01:54.370 align:middle line:90%
+So why do they generalize?
+
+00:01:54.370 --> 00:01:57.830 align:middle line:84%
+What does this tell us
+about their inductive biases
+
+00:01:57.830 --> 00:02:01.750 align:middle line:84%
+and preferences toward solutions
+that will generalize over
+
+00:02:01.750 --> 00:02:06.590 align:middle line:84%
+solutions that simply fit the
+data but don't generalize?
+
+00:02:06.590 --> 00:02:08.830 align:middle line:90%
+So that's the outline.
+
+00:02:08.830 --> 00:02:12.870 align:middle line:84%
+And I should also say that
+the material in this lecture
+
+00:02:12.870 --> 00:02:14.950 align:middle line:90%
+is not really textbook material.
+
+00:02:14.950 --> 00:02:17.450 align:middle line:84%
+We gave a few readings, but
+there are kind of recent papers,
+
+00:02:17.450 --> 00:02:19.870 align:middle line:84%
+so we just listed
+them as optional.
+
+00:02:19.870 --> 00:02:22.950 align:middle line:84%
+This is very much
+ongoing science.
+
+00:02:22.950 --> 00:02:25.590 align:middle line:84%
+This is, to me, maybe
+kind of the biggest,
+
+00:02:25.590 --> 00:02:28.590 align:middle line:84%
+or one of the biggest
+open sets of questions
+
+00:02:28.590 --> 00:02:31.390 align:middle line:84%
+of topics of inquiry in
+the field of deep learning
+
+00:02:31.390 --> 00:02:34.790 align:middle line:84%
+and in AI in general, is exactly
+what are the generalization
+
+00:02:34.790 --> 00:02:36.348 align:middle line:90%
+properties of deep networks?
+
+00:02:36.348 --> 00:02:38.390 align:middle line:84%
+They seem to work a lot
+better than we would have
+
+00:02:38.390 --> 00:02:40.830 align:middle line:90%
+expected from classical theory.
+
+00:02:40.830 --> 00:02:41.370 align:middle line:90%
+So why?
+
+00:02:41.370 --> 00:02:42.410 align:middle line:90%
+We don't actually know.
+
+00:02:42.410 --> 00:02:43.410 align:middle line:90%
+We don't have all the answers.
+
+00:02:43.410 --> 00:02:45.160 align:middle line:84%
+This lecture will just
+pose some questions
+
+00:02:45.160 --> 00:02:47.970 align:middle line:84%
+and give some initial threads
+that you could pull on.
+
+00:02:47.970 --> 00:02:49.470 align:middle line:84%
+But this is going
+to be a topic that
+
+00:02:49.470 --> 00:02:51.345 align:middle line:84%
+will change a lot over
+the next coming years.
+
+00:02:51.345 --> 00:02:54.650 align:middle line:90%
+I think this will develop a lot.
+
+00:02:54.650 --> 00:02:57.160 align:middle line:84%
+So let's go over the
+basics of approximation
+
+00:02:57.160 --> 00:02:58.300 align:middle line:90%
+versus generalization.
+
+00:02:58.300 --> 00:03:00.280 align:middle line:84%
+We've so far talked in
+this course really only
+
+00:03:00.280 --> 00:03:01.920 align:middle line:90%
+about approximation.
+
+00:03:01.920 --> 00:03:04.900 align:middle line:84%
+So approximation is, I
+have some training data.
+
+00:03:04.900 --> 00:03:07.880 align:middle line:84%
+I want to ask how well can
+I fit that training data.
+
+00:03:07.880 --> 00:03:11.000 align:middle line:84%
+And we measure the fit with
+the empirical risk, which
+
+00:03:11.000 --> 00:03:13.020 align:middle line:90%
+is the first equation up here.
+
+00:03:13.020 --> 00:03:15.440 align:middle line:84%
+So we just say,
+what is the loss L
+
+00:03:15.440 --> 00:03:19.092 align:middle line:84%
+incurred over all of my
+training data points?
+
+00:03:19.092 --> 00:03:20.800 align:middle line:84%
+This is a supervised
+setting where I have
+
+00:03:20.800 --> 00:03:23.060 align:middle line:90%
+data points x and outputs y.
+
+00:03:23.060 --> 00:03:26.020 align:middle line:84%
+I'm trying to predict the
+correct output y for a given x.
+
+00:03:26.020 --> 00:03:28.120 align:middle line:84%
+So I just sum up all
+of my prediction errors
+
+00:03:28.120 --> 00:03:30.240 align:middle line:84%
+according to my
+model f and my loss
+
+00:03:30.240 --> 00:03:34.200 align:middle line:84%
+function L. So this
+is just, on average,
+
+00:03:34.200 --> 00:03:37.040 align:middle line:90%
+what is my prediction error.
+
+00:03:37.040 --> 00:03:39.480 align:middle line:84%
+And we had a few lectures,
+and in the problems
+
+00:03:39.480 --> 00:03:41.120 align:middle line:84%
+that you worked
+out, cases where you
+
+00:03:41.120 --> 00:03:46.600 align:middle line:84%
+can find that class of functions
+can minimize that towards 0
+
+00:03:46.600 --> 00:03:50.480 align:middle line:84%
+with sufficient capacity, with
+sufficient width or depth.
+
+00:03:50.480 --> 00:03:53.220 align:middle line:84%
+But that's not actually what we
+care about in machine learning.
+
+00:03:53.220 --> 00:03:56.530 align:middle line:84%
+All we actually care
+about is the test error,
+
+00:03:56.530 --> 00:03:59.090 align:middle line:84%
+which can be called
+the population risk.
+
+00:03:59.090 --> 00:04:03.150 align:middle line:84%
+So the population risk is, on
+new samples from the world,
+
+00:04:03.150 --> 00:04:05.970 align:middle line:84%
+new samples from the data
+generating process p.
+
+00:04:05.970 --> 00:04:08.790 align:middle line:84%
+So new samples, x,
+y, new observations,
+
+00:04:08.790 --> 00:04:11.410 align:middle line:90%
+how well do I do in expectation?
+
+00:04:11.410 --> 00:04:13.570 align:middle line:84%
+And this is like the
+population, because it's
+
+00:04:13.570 --> 00:04:17.610 align:middle line:84%
+over the entire
+population of observations
+
+00:04:17.610 --> 00:04:21.370 align:middle line:84%
+I could get from my world's
+data generating process p.
+
+00:04:21.370 --> 00:04:24.430 align:middle line:84%
+But you could also have
+an empirical test risk,
+
+00:04:24.430 --> 00:04:26.090 align:middle line:84%
+which would just
+be over a sample,
+
+00:04:26.090 --> 00:04:28.310 align:middle line:84%
+like my test set is a
+sample of 10,000 images--
+
+00:04:28.310 --> 00:04:30.170 align:middle line:90%
+how well do I do on them?
+
+00:04:30.170 --> 00:04:34.330 align:middle line:84%
+So we have three
+different kind of topics
+
+00:04:34.330 --> 00:04:37.630 align:middle line:84%
+that we can factorize
+machine learning into.
+
+00:04:37.630 --> 00:04:41.670 align:middle line:84%
+One is, how well can you
+approximate the training data?
+
+00:04:41.670 --> 00:04:44.290 align:middle line:84%
+And that's what we've
+talked about so far.
+
+00:04:44.290 --> 00:04:48.570 align:middle line:84%
+In my family of
+functions I'm considering
+
+00:04:48.570 --> 00:04:52.980 align:middle line:84%
+parameterized by theta,
+what is the best theta
+
+00:04:52.980 --> 00:04:56.140 align:middle line:84%
+star that will achieve
+the lowest empirical risk?
+
+00:04:56.140 --> 00:04:58.780 align:middle line:84%
+And we've said that
+you can get it to go
+
+00:04:58.780 --> 00:05:01.420 align:middle line:90%
+to 0 under some conditions.
+
+00:05:01.420 --> 00:05:03.480 align:middle line:90%
+So we can fit our training data.
+
+00:05:03.480 --> 00:05:07.200 align:middle line:84%
+But then the next
+question is optimization.
+
+00:05:07.200 --> 00:05:09.012 align:middle line:84%
+How do we actually
+find that theta star?
+
+00:05:09.012 --> 00:05:10.720 align:middle line:84%
+And we've talked a
+little bit about that.
+
+00:05:10.720 --> 00:05:11.600 align:middle line:90%
+We saw backprop.
+
+00:05:11.600 --> 00:05:15.500 align:middle line:84%
+And on Thursday's lecture, we'll
+talk more about optimization.
+
+00:05:15.500 --> 00:05:19.332 align:middle line:84%
+But we said that you can often
+find theta star to some degree.
+
+00:05:19.332 --> 00:05:21.040 align:middle line:84%
+And this lecture is,
+well, wait a second.
+
+00:05:21.040 --> 00:05:24.340 align:middle line:84%
+If you find that really good
+parameter vector on the training
+
+00:05:24.340 --> 00:05:26.560 align:middle line:84%
+data, what is the
+population risk?
+
+00:05:26.560 --> 00:05:29.180 align:middle line:84%
+What is the risk
+on the test data?
+
+00:05:29.180 --> 00:05:32.060 align:middle line:84%
+So what is the gap between the
+training error and the test
+
+00:05:32.060 --> 00:05:32.560 align:middle line:90%
+error?
+
+00:05:32.560 --> 00:05:34.000 align:middle line:84%
+And that's the question
+of generalization.
+
+00:05:34.000 --> 00:05:35.542 align:middle line:84%
+And that's all we
+actually care about
+
+00:05:35.542 --> 00:05:37.140 align:middle line:84%
+because we want
+to do well when we
+
+00:05:37.140 --> 00:05:40.100 align:middle line:84%
+deploy the system in the world
+and we see new observations.
+
+00:05:40.100 --> 00:05:41.220 align:middle line:90%
+This should be review.
+
+00:05:41.220 --> 00:05:45.140 align:middle line:90%
+This is like ML 101.
+
+00:05:45.140 --> 00:05:46.320 align:middle line:90%
+Yeah, question?
+
+00:05:46.320 --> 00:05:48.100 align:middle line:84%
+AUDIENCE: If the r
+in approximations
+
+00:05:48.100 --> 00:05:49.840 align:middle line:84%
+supposed to have
+a hat on it, it's
+
+00:05:49.840 --> 00:05:51.900 align:middle line:84%
+the question about
+training data?
+
+00:05:51.900 --> 00:05:55.455 align:middle line:84%
+PHILLIP ISOLA: Yeah, I think
+you could ask the question--
+
+00:05:55.455 --> 00:05:57.580 align:middle line:84%
+so an approximation-- yeah,
+typically, it would be,
+
+00:05:57.580 --> 00:06:00.740 align:middle line:84%
+can I minimize the empirical
+risk on the training data?
+
+00:06:00.740 --> 00:06:02.880 align:middle line:90%
+Yes.
+
+00:06:02.880 --> 00:06:05.280 align:middle line:90%
+Oh, I see.
+
+00:06:05.280 --> 00:06:09.160 align:middle line:84%
+Yeah, we could have
+denoted that with a hat.
+
+00:06:09.160 --> 00:06:12.400 align:middle line:84%
+But I suppose you could
+also ask the question,
+
+00:06:12.400 --> 00:06:15.880 align:middle line:84%
+is the best possible function
+in the hypothesis space
+
+00:06:15.880 --> 00:06:20.473 align:middle line:84%
+going to achieve low risk
+on the population as well?
+
+00:06:20.473 --> 00:06:23.140 align:middle line:84%
+So you could ask-- both of those
+are questions of approximation.
+
+00:06:23.140 --> 00:06:30.620 align:middle line:90%
+
+
+00:06:30.620 --> 00:06:35.480 align:middle line:84%
+So let's go over some intuitive
+ideas about generalization just
+
+00:06:35.480 --> 00:06:40.160 align:middle line:84%
+to get warmed up and get
+you thinking about this.
+
+00:06:40.160 --> 00:06:42.933 align:middle line:90%
+So here's a bad data set.
+
+00:06:42.933 --> 00:06:44.600 align:middle line:84%
+Suppose we have a
+data set which is just
+
+00:06:44.600 --> 00:06:47.280 align:middle line:84%
+a bunch of photos
+of cats, and we
+
+00:06:47.280 --> 00:06:50.090 align:middle line:84%
+want to train a cat
+versus dog classifier.
+
+00:06:50.090 --> 00:06:52.710 align:middle line:84%
+So clearly, this is
+not going to work.
+
+00:06:52.710 --> 00:06:53.790 align:middle line:90%
+You only observe cats.
+
+00:06:53.790 --> 00:06:56.130 align:middle line:84%
+You're not going to get a
+cat versus dog classifier.
+
+00:06:56.130 --> 00:06:58.832 align:middle line:90%
+So what's wrong with this data?
+
+00:06:58.832 --> 00:07:00.290 align:middle line:84%
+What would make
+for better training
+
+00:07:00.290 --> 00:07:04.290 align:middle line:84%
+data for a cat versus
+dog classifier?
+
+00:07:04.290 --> 00:07:05.390 align:middle line:90%
+Some obvious ideas.
+
+00:07:05.390 --> 00:07:05.890 align:middle line:90%
+Yeah?
+
+00:07:05.890 --> 00:07:06.980 align:middle line:90%
+AUDIENCE: [INAUDIBLE]
+
+00:07:06.980 --> 00:07:08.730 align:middle line:84%
+PHILLIP ISOLA: You
+want to have some dogs.
+
+00:07:08.730 --> 00:07:09.950 align:middle line:90%
+Yeah, what else?
+
+00:07:09.950 --> 00:07:12.250 align:middle line:84%
+What if you have just one
+cat, one dog, and then a lot
+
+00:07:12.250 --> 00:07:15.950 align:middle line:90%
+of copies of that image?
+
+00:07:15.950 --> 00:07:16.830 align:middle line:90%
+You want diversity.
+
+00:07:16.830 --> 00:07:17.710 align:middle line:90%
+You want coverage.
+
+00:07:17.710 --> 00:07:19.270 align:middle line:84%
+You want to show all your
+different conditions.
+
+00:07:19.270 --> 00:07:21.510 align:middle line:84%
+So there are certain properties
+of the data that are critical.
+
+00:07:21.510 --> 00:07:23.260 align:middle line:84%
+You can't really
+understand generalization
+
+00:07:23.260 --> 00:07:25.410 align:middle line:84%
+without understanding
+the data distribution
+
+00:07:25.410 --> 00:07:26.730 align:middle line:90%
+that you're training on.
+
+00:07:26.730 --> 00:07:29.050 align:middle line:84%
+And if your training
+set doesn't represent
+
+00:07:29.050 --> 00:07:30.770 align:middle line:84%
+all the interesting
+aspects of variation
+
+00:07:30.770 --> 00:07:32.110 align:middle line:84%
+that you'll encounter
+in the world,
+
+00:07:32.110 --> 00:07:33.830 align:middle line:84%
+then you're not going
+to generalize well.
+
+00:07:33.830 --> 00:07:36.830 align:middle line:84%
+So data is critical
+to generalization.
+
+00:07:36.830 --> 00:07:40.290 align:middle line:84%
+And we have to understand data
+to understand generalization.
+
+00:07:40.290 --> 00:07:44.170 align:middle line:84%
+The other thing that's critical
+to understanding generalization
+
+00:07:44.170 --> 00:07:46.640 align:middle line:84%
+is the model, which will be
+most of what we focus on.
+
+00:07:46.640 --> 00:07:48.890 align:middle line:84%
+I just wanted to start by
+saying that the data is also
+
+00:07:48.890 --> 00:07:52.880 align:middle line:84%
+a critical part of the
+recipe for generalization.
+
+00:07:52.880 --> 00:07:56.500 align:middle line:90%
+So here's a bad model--
+
+00:07:56.500 --> 00:07:58.060 align:middle line:90%
+the filing cabinet.
+
+00:07:58.060 --> 00:08:00.300 align:middle line:84%
+So the filing cabinet
+model is going
+
+00:08:00.300 --> 00:08:02.500 align:middle line:84%
+to be this little
+Python program here,
+
+00:08:02.500 --> 00:08:04.760 align:middle line:84%
+where we have a
+dictionary called cabinet.
+
+00:08:04.760 --> 00:08:09.220 align:middle line:84%
+And if we see a new data point
+x, we put it into our cabinet
+
+00:08:09.220 --> 00:08:13.060 align:middle line:84%
+along with the correct
+prediction y for that x.
+
+00:08:13.060 --> 00:08:14.700 align:middle line:84%
+And if we come
+across that x again,
+
+00:08:14.700 --> 00:08:16.755 align:middle line:90%
+we just hash into that cabinet.
+
+00:08:16.755 --> 00:08:17.880 align:middle line:90%
+We just pull out that file.
+
+00:08:17.880 --> 00:08:19.460 align:middle line:90%
+We see what the answer is.
+
+00:08:19.460 --> 00:08:21.520 align:middle line:84%
+So this is sometimes
+called memorization.
+
+00:08:21.520 --> 00:08:23.620 align:middle line:84%
+I'm just memorizing
+my training data.
+
+00:08:23.620 --> 00:08:26.300 align:middle line:84%
+But the questions
+for you are, well,
+
+00:08:26.300 --> 00:08:28.860 align:middle line:84%
+what will the approximation
+error be of the filing cabinet
+
+00:08:28.860 --> 00:08:30.280 align:middle line:90%
+model?
+
+00:08:30.280 --> 00:08:30.780 align:middle line:90%
+Yeah?
+
+00:08:30.780 --> 00:08:31.420 align:middle line:90%
+AUDIENCE: 0.
+
+00:08:31.420 --> 00:08:32.462 align:middle line:90%
+PHILLIP ISOLA: 0-- right.
+
+00:08:32.462 --> 00:08:34.480 align:middle line:84%
+So the approximation
+error is zero
+
+00:08:34.480 --> 00:08:38.059 align:middle line:84%
+because for every data
+point that I train on,
+
+00:08:38.059 --> 00:08:40.980 align:middle line:84%
+I can retrieve the
+exact memorized answer.
+
+00:08:40.980 --> 00:08:42.520 align:middle line:84%
+What about the
+generalization error?
+
+00:08:42.520 --> 00:08:45.817 align:middle line:84%
+What will the generalization
+error of the filing cabinet be?
+
+00:08:45.817 --> 00:08:47.400 align:middle line:84%
+Generalization error
+is the difference
+
+00:08:47.400 --> 00:08:50.020 align:middle line:84%
+between the empirical risk
+and the population risk.
+
+00:08:50.020 --> 00:08:52.600 align:middle line:90%
+
+
+00:08:52.600 --> 00:08:53.880 align:middle line:90%
+So roughly, what will it be?
+
+00:08:53.880 --> 00:08:55.800 align:middle line:90%
+Will it be good, will it be bad?
+
+00:08:55.800 --> 00:08:56.520 align:middle line:90%
+AUDIENCE: Bad.
+
+00:08:56.520 --> 00:08:57.312 align:middle line:90%
+PHILLIP ISOLA: Bad.
+
+00:08:57.312 --> 00:08:59.560 align:middle line:84%
+Yeah, it'll generally
+be bad unless it happens
+
+00:08:59.560 --> 00:09:02.320 align:middle line:84%
+to be that the true
+function we're modeling
+
+00:09:02.320 --> 00:09:04.000 align:middle line:84%
+is 0 almost
+everywhere, which would
+
+00:09:04.000 --> 00:09:05.680 align:middle line:90%
+be a very strange function.
+
+00:09:05.680 --> 00:09:06.920 align:middle line:90%
+Because we said by--
+
+00:09:06.920 --> 00:09:09.560 align:middle line:84%
+if I don't have my
+file in the cabinet,
+
+00:09:09.560 --> 00:09:12.020 align:middle line:90%
+I will just not know what to do.
+
+00:09:12.020 --> 00:09:15.175 align:middle line:84%
+But maybe I got lucky, and the
+true function is 0 everywhere.
+
+00:09:15.175 --> 00:09:16.800 align:middle line:84%
+So you could have a
+filing cabinet that
+
+00:09:16.800 --> 00:09:18.160 align:middle line:84%
+gets low generalization
+error, but it
+
+00:09:18.160 --> 00:09:20.160 align:middle line:84%
+would be a very strange
+function that you're
+
+00:09:20.160 --> 00:09:23.080 align:middle line:90%
+modeling in that case.
+
+00:09:23.080 --> 00:09:26.060 align:middle line:84%
+So we'll come back to
+the filing cabinet model.
+
+00:09:26.060 --> 00:09:29.160 align:middle line:84%
+And one of the questions is, are
+deep nets like filing cabinets
+
+00:09:29.160 --> 00:09:31.772 align:middle line:90%
+or something else?
+
+00:09:31.772 --> 00:09:33.480 align:middle line:84%
+Do they just memorize
+and not generalize,
+
+00:09:33.480 --> 00:09:34.780 align:middle line:90%
+or do they do something else?
+
+00:09:34.780 --> 00:09:37.600 align:middle line:90%
+
+
+00:09:37.600 --> 00:09:40.920 align:middle line:84%
+Here's another bad model just,
+I guess, a little bit for fun.
+
+00:09:40.920 --> 00:09:43.030 align:middle line:90%
+So this is Paul the Octopus.
+
+00:09:43.030 --> 00:09:45.130 align:middle line:84%
+And Paul can decide
+who's going to win
+
+00:09:45.130 --> 00:09:49.330 align:middle line:84%
+a soccer match between
+two different countries.
+
+00:09:49.330 --> 00:09:53.090 align:middle line:84%
+And Paul was super accurate,
+and people would make their bets
+
+00:09:53.090 --> 00:09:54.230 align:middle line:90%
+based on what Paul said.
+
+00:09:54.230 --> 00:09:57.930 align:middle line:84%
+And what Paul did is just
+went into the tank of the flag
+
+00:09:57.930 --> 00:09:59.990 align:middle line:84%
+that it thought
+would win the match.
+
+00:09:59.990 --> 00:10:03.520 align:middle line:84%
+And it was like it got 6 out
+of 6 correct predictions.
+
+00:10:03.520 --> 00:10:05.770 align:middle line:84%
+So would you trust Paul to
+make the correct prediction
+
+00:10:05.770 --> 00:10:07.770 align:middle line:90%
+next year?
+
+00:10:07.770 --> 00:10:11.205 align:middle line:84%
+Yeah, it's probably like some
+super intelligent octopus.
+
+00:10:11.205 --> 00:10:12.830 align:middle line:84%
+No, obviously, you
+wouldn't trust Paul.
+
+00:10:12.830 --> 00:10:15.970 align:middle line:84%
+It must have just
+generalized-- sorry,
+
+00:10:15.970 --> 00:10:17.350 align:middle line:90%
+it fit the training data well.
+
+00:10:17.350 --> 00:10:18.510 align:middle line:90%
+It's not a filing cabinet.
+
+00:10:18.510 --> 00:10:21.750 align:middle line:84%
+It is making some decision,
+but it happened to get lucky.
+
+00:10:21.750 --> 00:10:23.370 align:middle line:84%
+It's like some
+random function that
+
+00:10:23.370 --> 00:10:24.787 align:middle line:84%
+happened to fit
+the training data,
+
+00:10:24.787 --> 00:10:26.410 align:middle line:84%
+but you'd never
+expect it to actually
+
+00:10:26.410 --> 00:10:30.570 align:middle line:90%
+have a true model of soccer.
+
+00:10:30.570 --> 00:10:33.610 align:middle line:84%
+So you can have
+functions that get lucky
+
+00:10:33.610 --> 00:10:38.610 align:middle line:84%
+and make interesting predictions
+out of sample on the test data,
+
+00:10:38.610 --> 00:10:40.190 align:middle line:90%
+but wrong predictions.
+
+00:10:40.190 --> 00:10:42.940 align:middle line:90%
+And Paul is an example.
+
+00:10:42.940 --> 00:10:45.860 align:middle line:84%
+So our big question in this
+course, in this lecture,
+
+00:10:45.860 --> 00:10:48.980 align:middle line:90%
+is do deep nets generalize?
+
+00:10:48.980 --> 00:10:52.660 align:middle line:90%
+So here's a simple warm-up.
+
+00:10:52.660 --> 00:10:56.760 align:middle line:84%
+Here's the filing cabinet fit
+to these black data points.
+
+00:10:56.760 --> 00:11:00.060 align:middle line:84%
+So my training data
+is the black points.
+
+00:11:00.060 --> 00:11:01.500 align:middle line:90%
+It's a scalar to scalar mapping.
+
+00:11:01.500 --> 00:11:03.700 align:middle line:90%
+I'm predicting y given x.
+
+00:11:03.700 --> 00:11:07.160 align:middle line:84%
+And the red line is
+the fit of my model.
+
+00:11:07.160 --> 00:11:10.700 align:middle line:84%
+And if my model is a filing
+cabinet, what it's saying
+
+00:11:10.700 --> 00:11:15.340 align:middle line:84%
+is that I've memorized that if
+I see one of my training data
+
+00:11:15.340 --> 00:11:17.050 align:middle line:84%
+points, I know exactly
+what to predict.
+
+00:11:17.050 --> 00:11:19.300 align:middle line:84%
+That's the kind of red lines,
+like the delta functions
+
+00:11:19.300 --> 00:11:22.380 align:middle line:84%
+going down to each of those
+dots, or up to the dots.
+
+00:11:22.380 --> 00:11:23.960 align:middle line:84%
+And everywhere else,
+I'll predict 0.
+
+00:11:23.960 --> 00:11:27.880 align:middle line:84%
+So anything that is not
+anything on the x-axis--
+
+00:11:27.880 --> 00:11:30.820 align:middle line:84%
+any point I could sample on the
+x-axis that's not in my training
+
+00:11:30.820 --> 00:11:34.620 align:middle line:84%
+set that's not where the black
+dots lie, I will predict 0 for.
+
+00:11:34.620 --> 00:11:38.180 align:middle line:84%
+So this is a very bad
+kind of generalization.
+
+00:11:38.180 --> 00:11:40.270 align:middle line:84%
+So here's the same data,
+where I've just fit it
+
+00:11:40.270 --> 00:11:43.890 align:middle line:90%
+with a three layer ReLU MLP.
+
+00:11:43.890 --> 00:11:45.230 align:middle line:90%
+Not too surprising.
+
+00:11:45.230 --> 00:11:47.510 align:middle line:84%
+A ReLU MLP can fit data,
+but notice that it fits it
+
+00:11:47.510 --> 00:11:49.070 align:middle line:90%
+in a very different way.
+
+00:11:49.070 --> 00:11:51.303 align:middle line:84%
+So both of these achieve
+0 approximation error.
+
+00:11:51.303 --> 00:11:52.970 align:middle line:84%
+Both of them have fit
+the training data.
+
+00:11:52.970 --> 00:11:54.428 align:middle line:84%
+But if that were
+all that mattered,
+
+00:11:54.428 --> 00:11:56.637 align:middle line:84%
+then we would have to say
+these are equally good.
+
+00:11:56.637 --> 00:11:57.970 align:middle line:90%
+But that's not all that matters.
+
+00:11:57.970 --> 00:12:00.750 align:middle line:84%
+It also matters how you
+interpolate and extrapolate
+
+00:12:00.750 --> 00:12:02.030 align:middle line:90%
+from the training data.
+
+00:12:02.030 --> 00:12:03.790 align:middle line:84%
+And deep nets do
+that in a way that's
+
+00:12:03.790 --> 00:12:07.510 align:middle line:84%
+markedly different
+than a filing cabinet.
+
+00:12:07.510 --> 00:12:10.850 align:middle line:84%
+So memorization is just, what do
+I predict on the training data
+
+00:12:10.850 --> 00:12:11.350 align:middle line:90%
+points?
+
+00:12:11.350 --> 00:12:13.050 align:middle line:84%
+And filing cabinets
+can memorize--
+
+00:12:13.050 --> 00:12:14.270 align:middle line:90%
+deep nets can memorize.
+
+00:12:14.270 --> 00:12:16.830 align:middle line:84%
+And generalization is,
+what do I do on the points
+
+00:12:16.830 --> 00:12:18.430 align:middle line:84%
+where I didn't
+have training data?
+
+00:12:18.430 --> 00:12:21.930 align:middle line:84%
+And we might expect that
+this type of interpolation,
+
+00:12:21.930 --> 00:12:24.890 align:middle line:84%
+this type of generalization is
+better than that other type,
+
+00:12:24.890 --> 00:12:26.630 align:middle line:84%
+because most
+functions in the world
+
+00:12:26.630 --> 00:12:31.702 align:middle line:84%
+are going to be smooth
+as opposed to spiky.
+
+00:12:31.702 --> 00:12:34.410 align:middle line:84%
+You could imagine an adversarial
+world where that's not the case,
+
+00:12:34.410 --> 00:12:37.710 align:middle line:84%
+but our world looks more
+like this on the right.
+
+00:12:37.710 --> 00:12:41.990 align:middle line:90%
+
+
+00:12:41.990 --> 00:12:43.910 align:middle line:84%
+So that's a very
+simple deep net.
+
+00:12:43.910 --> 00:12:45.810 align:middle line:84%
+But the real feats
+of generalization
+
+00:12:45.810 --> 00:12:47.570 align:middle line:84%
+that we get excited
+about these days
+
+00:12:47.570 --> 00:12:51.250 align:middle line:90%
+are with fancy, big modern nets.
+
+00:12:51.250 --> 00:12:55.670 align:middle line:84%
+So Here's a little
+experiment you can do.
+
+00:12:55.670 --> 00:12:58.818 align:middle line:84%
+I just ran this for
+myself this weekend,
+
+00:12:58.818 --> 00:13:00.610 align:middle line:84%
+but I think it might
+be a fun thing for you
+
+00:13:00.610 --> 00:13:03.030 align:middle line:84%
+to play with or maybe
+take into a final project.
+
+00:13:03.030 --> 00:13:07.970 align:middle line:84%
+So let's try to ask,
+are modern deep nets--
+
+00:13:07.970 --> 00:13:10.148 align:middle line:84%
+the best model
+you can think of--
+
+00:13:10.148 --> 00:13:11.690 align:middle line:84%
+are they acting like
+a filing cabinet
+
+00:13:11.690 --> 00:13:14.090 align:middle line:84%
+or are they doing
+something more?
+
+00:13:14.090 --> 00:13:17.290 align:middle line:84%
+It's a little bit hard to say,
+because if you train on enough
+
+00:13:17.290 --> 00:13:19.930 align:middle line:84%
+data-- and these are trained on
+billions or trillions of data
+
+00:13:19.930 --> 00:13:22.290 align:middle line:84%
+points-- if you trained on
+enough data and you just
+
+00:13:22.290 --> 00:13:26.170 align:middle line:84%
+memorize the data, well, your
+test conditions might look
+
+00:13:26.170 --> 00:13:27.930 align:middle line:90%
+identical to your--
+
+00:13:27.930 --> 00:13:29.670 align:middle line:84%
+if I've trained on
+infinite things,
+
+00:13:29.670 --> 00:13:32.930 align:middle line:84%
+then my test cases are just
+the same as my training data.
+
+00:13:32.930 --> 00:13:36.380 align:middle line:84%
+So are they close to that--
+just memorizing nearly infinite
+
+00:13:36.380 --> 00:13:38.660 align:middle line:90%
+things, or are they not?
+
+00:13:38.660 --> 00:13:41.580 align:middle line:84%
+So LLM-- if you don't know,
+this is Large Language Model--
+
+00:13:41.580 --> 00:13:46.620 align:middle line:84%
+ChatGPT, latest greatest
+deep nets are in that family.
+
+00:13:46.620 --> 00:13:50.800 align:middle line:84%
+So big model-- so is it
+acting like a filing cabinet?
+
+00:13:50.800 --> 00:13:54.140 align:middle line:84%
+Can we actually measure if
+it's generalizing or not?
+
+00:13:54.140 --> 00:13:56.620 align:middle line:84%
+So here's the
+question we can ask.
+
+00:13:56.620 --> 00:13:58.380 align:middle line:84%
+How big would the
+filing cabinet have
+
+00:13:58.380 --> 00:14:02.340 align:middle line:84%
+to be in order to do
+the feats of prediction
+
+00:14:02.340 --> 00:14:07.300 align:middle line:84%
+that ChatGPT or
+some big LLM can do?
+
+00:14:07.300 --> 00:14:09.420 align:middle line:84%
+So remember our model
+of the filing cabinet
+
+00:14:09.420 --> 00:14:12.100 align:middle line:84%
+is just, we return 0 if we have
+a data point that we've never
+
+00:14:12.100 --> 00:14:14.340 align:middle line:90%
+seen before.
+
+00:14:14.340 --> 00:14:16.280 align:middle line:84%
+So here's just a simple
+counting experiment.
+
+00:14:16.280 --> 00:14:18.655 align:middle line:84%
+I think you can make more
+sophisticated versions to this,
+
+00:14:18.655 --> 00:14:20.960 align:middle line:90%
+but I found it fun.
+
+00:14:20.960 --> 00:14:23.980 align:middle line:90%
+So we'll sample, a sequence--
+
+00:14:23.980 --> 00:14:27.140 align:middle line:84%
+so language models are deep nets
+that take sequences of words
+
+00:14:27.140 --> 00:14:29.580 align:middle line:84%
+as input and make some
+prediction from them.
+
+00:14:29.580 --> 00:14:33.100 align:middle line:84%
+So we'll sample a
+sequence of n words,
+
+00:14:33.100 --> 00:14:37.850 align:middle line:84%
+and we'll be sampling
+from a vocab of size m.
+
+00:14:37.850 --> 00:14:39.170 align:middle line:90%
+So we have m nouns--
+
+00:14:39.170 --> 00:14:42.150 align:middle line:84%
+1,000 different nouns, and we
+make a sentence of length--
+
+00:14:42.150 --> 00:14:44.450 align:middle line:84%
+or a set of a sequence
+of nouns of length 5.
+
+00:14:44.450 --> 00:14:46.190 align:middle line:90%
+So then n would be 5.
+
+00:14:46.190 --> 00:14:50.790 align:middle line:84%
+So how many unique input
+sequences are there?
+
+00:14:50.790 --> 00:14:55.190 align:middle line:84%
+So just simple
+combinatorics, m to the n.
+
+00:14:55.190 --> 00:14:58.650 align:middle line:84%
+So I have m possible words,
+and I have n of them in a row.
+
+00:14:58.650 --> 00:15:00.550 align:middle line:90%
+I sample independently each one.
+
+00:15:00.550 --> 00:15:02.910 align:middle line:84%
+That's the number
+of such sequences.
+
+00:15:02.910 --> 00:15:06.630 align:middle line:84%
+So now, we can ask, well, if
+we take a random such sequence
+
+00:15:06.630 --> 00:15:08.910 align:middle line:84%
+and we input it into
+our model, did the model
+
+00:15:08.910 --> 00:15:10.352 align:middle line:90%
+make a reasonable prediction?
+
+00:15:10.352 --> 00:15:12.810 align:middle line:84%
+So technically, if this is our
+model of the filing cabinet,
+
+00:15:12.810 --> 00:15:15.018 align:middle line:84%
+we're just asking, did it
+make a non-zero prediction?
+
+00:15:15.018 --> 00:15:18.618 align:middle line:84%
+But did it output a
+correct prediction?
+
+00:15:18.618 --> 00:15:20.410 align:middle line:84%
+So we can take our
+favorite language model.
+
+00:15:20.410 --> 00:15:24.310 align:middle line:84%
+We can ask our favorite question
+about the input sequence
+
+00:15:24.310 --> 00:15:26.690 align:middle line:84%
+and have the language model
+try to solve that question
+
+00:15:26.690 --> 00:15:27.565 align:middle line:90%
+That's how they work.
+
+00:15:27.565 --> 00:15:30.590 align:middle line:84%
+You can prompt them to
+answer different questions
+
+00:15:30.590 --> 00:15:32.190 align:middle line:90%
+about your input sequence.
+
+00:15:32.190 --> 00:15:34.770 align:middle line:84%
+We'll ask how often
+is the output--
+
+00:15:34.770 --> 00:15:38.210 align:middle line:84%
+something that's non-trivial--
+not what a filing cabinet would
+
+00:15:38.210 --> 00:15:39.250 align:middle line:90%
+do.
+
+00:15:39.250 --> 00:15:42.090 align:middle line:84%
+And then we can say that
+the filing cabinet, in order
+
+00:15:42.090 --> 00:15:47.170 align:middle line:84%
+to get a score of s, equals
+the number of unique sequences
+
+00:15:47.170 --> 00:15:49.250 align:middle line:84%
+times the percent of times
+those sequences mapped
+
+00:15:49.250 --> 00:15:50.510 align:middle line:90%
+to something non-trivial.
+
+00:15:50.510 --> 00:15:52.370 align:middle line:90%
+It would have to be that big.
+
+00:15:52.370 --> 00:15:55.290 align:middle line:84%
+It'd have to be taking
+that many unique sequences
+
+00:15:55.290 --> 00:15:58.810 align:middle line:84%
+and achieving this proportion
+of correct predictions
+
+00:15:58.810 --> 00:16:01.050 align:middle line:84%
+would have to have
+that many cabinets.
+
+00:16:01.050 --> 00:16:03.210 align:middle line:84%
+And if that number is
+really, really big--
+
+00:16:03.210 --> 00:16:05.335 align:middle line:84%
+bigger than we think language
+models are, or bigger
+
+00:16:05.335 --> 00:16:07.335 align:middle line:84%
+than the amount of data
+they've been trained on,
+
+00:16:07.335 --> 00:16:09.050 align:middle line:84%
+then we know that
+language models are not
+
+00:16:09.050 --> 00:16:11.250 align:middle line:90%
+doing pure memorization.
+
+00:16:11.250 --> 00:16:15.830 align:middle line:84%
+So you can make up your
+own version of this,
+
+00:16:15.830 --> 00:16:17.950 align:middle line:84%
+but just to convince
+myself, I ran it like this.
+
+00:16:17.950 --> 00:16:20.130 align:middle line:90%
+I took 30 fruit names--
+
+00:16:20.130 --> 00:16:23.430 align:middle line:90%
+apple, orange, pear, whatever.
+
+00:16:23.430 --> 00:16:28.610 align:middle line:84%
+So my vocab is size 30, and
+my sequence length is size 10.
+
+00:16:28.610 --> 00:16:32.180 align:middle line:84%
+So I'm going to sample 10
+random fruits from that list.
+
+00:16:32.180 --> 00:16:39.380 align:middle line:84%
+So there's 10 to the 30th
+possible input sequences.
+
+00:16:39.380 --> 00:16:41.140 align:middle line:84%
+And then I'm going
+to have my language
+
+00:16:41.140 --> 00:16:44.580 align:middle line:84%
+model answer this question
+about those sequences.
+
+00:16:44.580 --> 00:16:46.620 align:middle line:84%
+So we'll talk more
+about language models
+
+00:16:46.620 --> 00:16:47.560 align:middle line:90%
+and prompting later.
+
+00:16:47.560 --> 00:16:50.460 align:middle line:84%
+But just you've all done
+this with things like ChatGPT
+
+00:16:50.460 --> 00:16:52.040 align:middle line:90%
+or Claude and so forth.
+
+00:16:52.040 --> 00:16:53.880 align:middle line:84%
+You can say how
+many citrus fruits--
+
+00:16:53.880 --> 00:16:57.740 align:middle line:84%
+this is just my toy problem I'm
+giving it to try to estimate
+
+00:16:57.740 --> 00:16:58.600 align:middle line:90%
+these probabilities.
+
+00:16:58.600 --> 00:17:00.480 align:middle line:84%
+How many citrus fruits
+are in this list?
+
+00:17:00.480 --> 00:17:02.020 align:middle line:84%
+And I give it this
+random sequence
+
+00:17:02.020 --> 00:17:04.940 align:middle line:84%
+of 10 fruits sampled from
+that vocab of size 30.
+
+00:17:04.940 --> 00:17:06.819 align:middle line:90%
+And it gets it correct.
+
+00:17:06.819 --> 00:17:08.240 align:middle line:90%
+And so I did this 5 times.
+
+00:17:08.240 --> 00:17:10.240 align:middle line:84%
+I'm not saying this is
+like the best experiment,
+
+00:17:10.240 --> 00:17:13.400 align:middle line:84%
+but it got 5 out of 5, so it's
+correct every single time.
+
+00:17:13.400 --> 00:17:15.619 align:middle line:84%
+So my estimate for the
+probability of being correct
+
+00:17:15.619 --> 00:17:17.220 align:middle line:90%
+is 1.
+
+00:17:17.220 --> 00:17:21.980 align:middle line:84%
+So now, we can just estimate--
+you have p times m to the n
+
+00:17:21.980 --> 00:17:24.700 align:middle line:90%
+is going to be 100 trillion.
+
+00:17:24.700 --> 00:17:28.710 align:middle line:84%
+So the filing cabinet would
+have to have 100 trillion files.
+
+00:17:28.710 --> 00:17:31.950 align:middle line:84%
+Also the training data-- the
+way the filing cabinet works
+
+00:17:31.950 --> 00:17:35.292 align:middle line:84%
+is it only inputs a new
+data point into the cabinet
+
+00:17:35.292 --> 00:17:37.250 align:middle line:84%
+if it sees that data
+point in the training set.
+
+00:17:37.250 --> 00:17:38.917 align:middle line:84%
+So it means the
+training set has to have
+
+00:17:38.917 --> 00:17:42.590 align:middle line:84%
+100 million examples for that
+model-- sorry, 100 trillion.
+
+00:17:42.590 --> 00:17:44.310 align:middle line:84%
+And we think that
+ChatGPT and things
+
+00:17:44.310 --> 00:17:47.490 align:middle line:84%
+like this are trained on
+more like tens of trillions.
+
+00:17:47.490 --> 00:17:49.040 align:middle line:90%
+So I think I exceeded that.
+
+00:17:49.040 --> 00:17:50.790 align:middle line:84%
+But you could always
+make this list longer
+
+00:17:50.790 --> 00:17:52.930 align:middle line:84%
+and run the same experiment--
+get it to a quadrillion,
+
+00:17:52.930 --> 00:17:55.388 align:middle line:84%
+and really convince yourself
+that these things are not just
+
+00:17:55.388 --> 00:17:57.510 align:middle line:90%
+memorizing.
+
+00:17:57.510 --> 00:17:59.010 align:middle line:90%
+Another just for fun one.
+
+00:17:59.010 --> 00:18:02.485 align:middle line:84%
+We could do the same thing,
+but we can use a text-to-image
+
+00:18:02.485 --> 00:18:04.110 align:middle line:84%
+model, and now have
+it draw the fruits,
+
+00:18:04.110 --> 00:18:06.910 align:middle line:84%
+and ask how many
+unique different--
+
+00:18:06.910 --> 00:18:09.170 align:middle line:84%
+how often will it be correct
+in drawing the fruits?
+
+00:18:09.170 --> 00:18:10.723 align:middle line:90%
+So I asked that to--
+
+00:18:10.723 --> 00:18:12.390 align:middle line:84%
+ChatGPT can do both
+of these things now.
+
+00:18:12.390 --> 00:18:14.075 align:middle line:84%
+These are kind of
+multimodal models.
+
+00:18:14.075 --> 00:18:15.450 align:middle line:84%
+So you can say
+draw these fruits.
+
+00:18:15.450 --> 00:18:17.470 align:middle line:84%
+I sample a random
+sequence of 10 fruits
+
+00:18:17.470 --> 00:18:20.350 align:middle line:90%
+and I check if it's correct.
+
+00:18:20.350 --> 00:18:21.870 align:middle line:90%
+Is this one correct?
+
+00:18:21.870 --> 00:18:23.710 align:middle line:90%
+AUDIENCE: No.
+
+00:18:23.710 --> 00:18:24.897 align:middle line:90%
+PHILLIP ISOLA: I said no.
+
+00:18:24.897 --> 00:18:25.730 align:middle line:90%
+It's almost correct.
+
+00:18:25.730 --> 00:18:26.780 align:middle line:90%
+I think it got 9 out of 10.
+
+00:18:26.780 --> 00:18:27.980 align:middle line:84%
+I don't think it
+has a passion fruit.
+
+00:18:27.980 --> 00:18:30.272 align:middle line:84%
+But anyway, I don't know what
+passion fruits look like.
+
+00:18:30.272 --> 00:18:32.700 align:middle line:90%
+But I called this one incorrect.
+
+00:18:32.700 --> 00:18:34.000 align:middle line:90%
+And so I estimated--
+
+00:18:34.000 --> 00:18:35.080 align:middle line:90%
+AUDIENCE: [INAUDIBLE]
+
+00:18:35.080 --> 00:18:36.160 align:middle line:84%
+PHILLIP ISOLA: Does have
+another wrong thing?
+
+00:18:36.160 --> 00:18:36.580 align:middle line:90%
+OK.
+
+00:18:36.580 --> 00:18:36.840 align:middle line:90%
+Yeah?
+
+00:18:36.840 --> 00:18:37.560 align:middle line:90%
+AUDIENCE: [INAUDIBLE]
+
+00:18:37.560 --> 00:18:38.560 align:middle line:90%
+PHILLIP ISOLA: Cantaloupe or--
+
+00:18:38.560 --> 00:18:39.185 align:middle line:90%
+AUDIENCE: Yeah.
+
+00:18:39.185 --> 00:18:40.280 align:middle line:90%
+AUDIENCE: Coconut as well.
+
+00:18:40.280 --> 00:18:41.580 align:middle line:84%
+PHILLIP ISOLA: Oh,
+yeah, coconuts missing.
+
+00:18:41.580 --> 00:18:43.247 align:middle line:84%
+Maybe that was a
+passion fruit up there.
+
+00:18:43.247 --> 00:18:45.200 align:middle line:90%
+But anyway, this one's wrong.
+
+00:18:45.200 --> 00:18:48.280 align:middle line:84%
+But I ran this eight times,
+and one out of the eight times
+
+00:18:48.280 --> 00:18:49.540 align:middle line:90%
+I thought it got it correct.
+
+00:18:49.540 --> 00:18:52.040 align:middle line:84%
+I really saw each of
+the fruits represented.
+
+00:18:52.040 --> 00:18:56.520 align:middle line:84%
+So now, our proportion
+p is 0.125, 1 over 8.
+
+00:18:56.520 --> 00:18:58.480 align:middle line:84%
+And that means that you'd
+have to have a filing
+
+00:18:58.480 --> 00:19:00.560 align:middle line:90%
+cabinet of size 12 trillion.
+
+00:19:00.560 --> 00:19:04.280 align:middle line:84%
+So I don't think this has
+been 12 trillion images,
+
+00:19:04.280 --> 00:19:05.520 align:middle line:90%
+but it's hard to know.
+
+00:19:05.520 --> 00:19:07.430 align:middle line:90%
+OpenAI is secretive.
+
+00:19:07.430 --> 00:19:09.180 align:middle line:84%
+But you can do these
+types of experiments,
+
+00:19:09.180 --> 00:19:11.760 align:middle line:84%
+and I think you can pretty
+quickly convince yourself
+
+00:19:11.760 --> 00:19:14.440 align:middle line:84%
+that the way that modern
+deep nets are working
+
+00:19:14.440 --> 00:19:16.100 align:middle line:90%
+is not like a filing cabinet.
+
+00:19:16.100 --> 00:19:17.900 align:middle line:84%
+It has some properties in
+common with the filing cabinet.
+
+00:19:17.900 --> 00:19:19.720 align:middle line:84%
+We'll come back to that,
+but that doesn't fully
+
+00:19:19.720 --> 00:19:20.845 align:middle line:90%
+explain what they're doing.
+
+00:19:20.845 --> 00:19:26.077 align:middle line:90%
+
+
+00:19:26.077 --> 00:19:28.160 align:middle line:84%
+Yeah, and so just a
+suggestion for final project--
+
+00:19:28.160 --> 00:19:29.400 align:middle line:84%
+I think it'd be fun
+to really do that
+
+00:19:29.400 --> 00:19:31.260 align:middle line:84%
+systematically and
+rigorously, and try
+
+00:19:31.260 --> 00:19:34.060 align:middle line:84%
+to actually estimate how many
+unique concepts these things
+
+00:19:34.060 --> 00:19:34.860 align:middle line:90%
+have.
+
+00:19:34.860 --> 00:19:36.540 align:middle line:84%
+I haven't really
+seen very many papers
+
+00:19:36.540 --> 00:19:41.620 align:middle line:84%
+that do this type of experiment,
+but I think it'd be fun.
+
+00:19:41.620 --> 00:19:44.300 align:middle line:84%
+So I got kind of
+excited about the feats
+
+00:19:44.300 --> 00:19:48.260 align:middle line:84%
+of generalization of
+deep nets in this project
+
+00:19:48.260 --> 00:19:50.220 align:middle line:90%
+from a few years ago.
+
+00:19:50.220 --> 00:19:53.780 align:middle line:84%
+And so what we did here
+is we trained a deep net
+
+00:19:53.780 --> 00:19:58.540 align:middle line:84%
+to take as input sketches and
+produces output photos of cats
+
+00:19:58.540 --> 00:20:00.340 align:middle line:90%
+in this case.
+
+00:20:00.340 --> 00:20:02.980 align:middle line:90%
+So a neural net just maps.
+
+00:20:02.980 --> 00:20:05.540 align:middle line:84%
+And we'll talk about
+these generative models
+
+00:20:05.540 --> 00:20:08.200 align:middle line:84%
+and image-to-image models a
+little bit later in the course.
+
+00:20:08.200 --> 00:20:10.500 align:middle line:84%
+But for now, it's
+just a mapping from x
+
+00:20:10.500 --> 00:20:14.740 align:middle line:84%
+to y-- it happens to
+be sketches to photos.
+
+00:20:14.740 --> 00:20:16.740 align:middle line:84%
+And so what we did
+in this project
+
+00:20:16.740 --> 00:20:18.980 align:middle line:84%
+is we didn't use human
+hand-drawn sketches
+
+00:20:18.980 --> 00:20:20.980 align:middle line:84%
+because those were
+expensive to acquire.
+
+00:20:20.980 --> 00:20:23.770 align:middle line:84%
+So instead, we just use
+this thing called HED,
+
+00:20:23.770 --> 00:20:25.170 align:middle line:90%
+which is like an edge detector.
+
+00:20:25.170 --> 00:20:27.503 align:middle line:84%
+And it's like a proxy for
+what a human might have drawn,
+
+00:20:27.503 --> 00:20:30.390 align:middle line:84%
+but it doesn't quite match
+what a human would really draw.
+
+00:20:30.390 --> 00:20:33.690 align:middle line:84%
+So from a kind of naive
+machine learning perspective,
+
+00:20:33.690 --> 00:20:38.670 align:middle line:84%
+you would say, if I train
+this on a ton of examples
+
+00:20:38.670 --> 00:20:41.970 align:middle line:84%
+of edge maps and cats, and
+I give it a new edge map,
+
+00:20:41.970 --> 00:20:44.830 align:middle line:84%
+it should predict a new
+cat because this is just
+
+00:20:44.830 --> 00:20:47.710 align:middle line:84%
+generalization to independently
+and identically sampled
+
+00:20:47.710 --> 00:20:50.330 align:middle line:84%
+data points from
+the same population.
+
+00:20:50.330 --> 00:20:53.510 align:middle line:84%
+So that's like classical
+generalization theory
+
+00:20:53.510 --> 00:20:55.750 align:middle line:90%
+in machine learning.
+
+00:20:55.750 --> 00:20:57.922 align:middle line:84%
+But the really
+interesting thing is
+
+00:20:57.922 --> 00:21:00.130 align:middle line:84%
+it also worked when you give
+it hand-drawn cats which
+
+00:21:00.130 --> 00:21:01.690 align:middle line:90%
+it had never been trained on.
+
+00:21:01.690 --> 00:21:04.430 align:middle line:84%
+So these are inputs that are
+actually out of distribution--
+
+00:21:04.430 --> 00:21:07.310 align:middle line:84%
+systematically different
+than what it was trained on.
+
+00:21:07.310 --> 00:21:12.290 align:middle line:84%
+So in the prehistory
+of deep learning,
+
+00:21:12.290 --> 00:21:15.150 align:middle line:84%
+this was the popular
+thing of the day.
+
+00:21:15.150 --> 00:21:17.570 align:middle line:84%
+Now, of course we've seen
+much more exciting things.
+
+00:21:17.570 --> 00:21:19.790 align:middle line:84%
+But if I sketch a cat,
+it doesn't look anything
+
+00:21:19.790 --> 00:21:20.610 align:middle line:90%
+like an edge map.
+
+00:21:20.610 --> 00:21:25.040 align:middle line:84%
+And it just works, and
+it's still cool even today.
+
+00:21:25.040 --> 00:21:27.820 align:middle line:90%
+So people had a lot of fun.
+
+00:21:27.820 --> 00:21:30.520 align:middle line:90%
+[LAUGHTER]
+
+00:21:30.520 --> 00:21:32.980 align:middle line:90%
+And this is generalization.
+
+00:21:32.980 --> 00:21:35.060 align:middle line:84%
+It's never been trained
+on these types of things.
+
+00:21:35.060 --> 00:21:37.640 align:middle line:84%
+It has some kind of
+creativity almost.
+
+00:21:37.640 --> 00:21:40.060 align:middle line:84%
+We have to be careful not to
+anthropomorphize too much,
+
+00:21:40.060 --> 00:21:43.520 align:middle line:84%
+but there's something here
+which is a little bit magical
+
+00:21:43.520 --> 00:21:45.800 align:middle line:90%
+and not fully understood.
+
+00:21:45.800 --> 00:21:48.080 align:middle line:84%
+But I think we can start
+to get a sense of what's
+
+00:21:48.080 --> 00:21:50.628 align:middle line:84%
+going on with an
+experiment like this.
+
+00:21:50.628 --> 00:21:52.420 align:middle line:84%
+So I'm just trying to
+build up intuitions--
+
+00:21:52.420 --> 00:21:54.340 align:middle line:90%
+do simple kind of experiments.
+
+00:21:54.340 --> 00:21:57.260 align:middle line:84%
+We'll get into some more
+technical theory in a bit.
+
+00:21:57.260 --> 00:21:58.560 align:middle line:90%
+But here we go.
+
+00:21:58.560 --> 00:22:02.048 align:middle line:90%
+I just draw two eyes.
+
+00:22:02.048 --> 00:22:03.340 align:middle line:90%
+Now, what if I draw three eyes?
+
+00:22:03.340 --> 00:22:05.418 align:middle line:90%
+What's going to happen?
+
+00:22:05.418 --> 00:22:07.460 align:middle line:84%
+It's never seen a photo
+of a cat with three eyes.
+
+00:22:07.460 --> 00:22:08.720 align:middle line:90%
+How would it know what to do?
+
+00:22:08.720 --> 00:22:09.780 align:middle line:90%
+But it works.
+
+00:22:09.780 --> 00:22:13.700 align:middle line:84%
+It just puts that eye
+where that eye was drawn.
+
+00:22:13.700 --> 00:22:14.500 align:middle line:90%
+A lot of eyes.
+
+00:22:14.500 --> 00:22:18.305 align:middle line:90%
+
+
+00:22:18.305 --> 00:22:19.520 align:middle line:90%
+You can add the body.
+
+00:22:19.520 --> 00:22:20.940 align:middle line:90%
+That makes sense.
+
+00:22:20.940 --> 00:22:23.800 align:middle line:90%
+So how is it doing this?
+
+00:22:23.800 --> 00:22:25.260 align:middle line:84%
+How is it generalizing
+to more eyes
+
+00:22:25.260 --> 00:22:27.460 align:middle line:84%
+than it ever saw
+at training time?
+
+00:22:27.460 --> 00:22:31.800 align:middle line:84%
+And I think there's not
+a single explanation,
+
+00:22:31.800 --> 00:22:33.620 align:middle line:84%
+but the best one
+I have in mind is
+
+00:22:33.620 --> 00:22:36.980 align:middle line:84%
+it's the inductive biases
+of convolutional nets.
+
+00:22:36.980 --> 00:22:38.653 align:middle line:90%
+So this network was a ConvNet.
+
+00:22:38.653 --> 00:22:39.320 align:middle line:90%
+We've seen that.
+
+00:22:39.320 --> 00:22:41.220 align:middle line:90%
+What do ConvNets do?
+
+00:22:41.220 --> 00:22:47.420 align:middle line:84%
+They take an input, they
+chop it up into patches,
+
+00:22:47.420 --> 00:22:51.220 align:middle line:84%
+and then they independently and
+identically process every patch.
+
+00:22:51.220 --> 00:22:54.260 align:middle line:84%
+So they're factorizing
+the problem
+
+00:22:54.260 --> 00:22:57.020 align:middle line:84%
+into a lot of
+independent decisions.
+
+00:22:57.020 --> 00:23:00.180 align:middle line:84%
+And when you decompose
+something into these independent
+
+00:23:00.180 --> 00:23:02.660 align:middle line:84%
+components, you get what's
+called compositionality,
+
+00:23:02.660 --> 00:23:08.260 align:middle line:84%
+where you can take a new
+composition of things
+
+00:23:08.260 --> 00:23:10.440 align:middle line:84%
+and factor them into these
+independent components,
+
+00:23:10.440 --> 00:23:11.420 align:middle line:90%
+these patches.
+
+00:23:11.420 --> 00:23:14.460 align:middle line:84%
+And it should it
+should know what to do,
+
+00:23:14.460 --> 00:23:18.670 align:middle line:84%
+because it only ever has
+to imitate the training
+
+00:23:18.670 --> 00:23:19.612 align:middle line:90%
+data on these patches.
+
+00:23:19.612 --> 00:23:21.070 align:middle line:84%
+And then the
+combination of patches
+
+00:23:21.070 --> 00:23:24.190 align:middle line:84%
+is just the rule of
+stitch them together.
+
+00:23:24.190 --> 00:23:27.070 align:middle line:84%
+So for every single
+patch, it's doing--
+
+00:23:27.070 --> 00:23:28.830 align:middle line:84%
+in distribution
+generalization, it's
+
+00:23:28.830 --> 00:23:31.965 align:middle line:84%
+seen a lot of things that look
+like ovals, and they match eyes.
+
+00:23:31.965 --> 00:23:33.590 align:middle line:84%
+And then it can
+generalize to more eyes
+
+00:23:33.590 --> 00:23:40.940 align:middle line:84%
+because I've just factorized
+the problem in this simple way.
+
+00:23:40.940 --> 00:23:46.110 align:middle line:84%
+So architectural
+constraints and biases
+
+00:23:46.110 --> 00:23:48.590 align:middle line:84%
+and the way that we enforce
+symmetries and factorization
+
+00:23:48.590 --> 00:23:51.190 align:middle line:84%
+into our models allows
+you to do certain kinds
+
+00:23:51.190 --> 00:23:52.710 align:middle line:90%
+of feats of generalization.
+
+00:23:52.710 --> 00:23:57.230 align:middle line:84%
+And we saw that with the
+ability of graph nets
+
+00:23:57.230 --> 00:24:00.190 align:middle line:84%
+to generalize to new
+permutations of their inputs,
+
+00:24:00.190 --> 00:24:01.870 align:middle line:84%
+because they're
+permutation-invariant or
+
+00:24:01.870 --> 00:24:02.650 align:middle line:90%
+equivariant.
+
+00:24:02.650 --> 00:24:04.697 align:middle line:84%
+So that's just built
+into the architecture.
+
+00:24:04.697 --> 00:24:06.530 align:middle line:84%
+I don't have to have
+seen every permutation.
+
+00:24:06.530 --> 00:24:08.010 align:middle line:84%
+I can just have seen
+some permutations,
+
+00:24:08.010 --> 00:24:09.630 align:middle line:84%
+and then it will generalize
+to other permutations.
+
+00:24:09.630 --> 00:24:11.185 align:middle line:84%
+That's baked into
+the architecture.
+
+00:24:11.185 --> 00:24:13.310 align:middle line:84%
+It's not something you have
+to learn from the data.
+
+00:24:13.310 --> 00:24:15.440 align:middle line:84%
+So architecture is
+one of the main levers
+
+00:24:15.440 --> 00:24:19.080 align:middle line:84%
+we have for these feats
+of generalization that
+
+00:24:19.080 --> 00:24:22.800 align:middle line:84%
+violate just statistical
+learning theory,
+
+00:24:22.800 --> 00:24:25.660 align:middle line:84%
+or that go beyond just naive
+statistical learning theory.
+
+00:24:25.660 --> 00:24:30.320 align:middle line:90%
+
+
+00:24:30.320 --> 00:24:33.760 align:middle line:84%
+So let's get a little bit
+into generalization theory
+
+00:24:33.760 --> 00:24:37.280 align:middle line:84%
+and start with the
+classic picture.
+
+00:24:37.280 --> 00:24:42.800 align:middle line:84%
+So most of generalization
+theory comes from Occam.
+
+00:24:42.800 --> 00:24:44.580 align:middle line:84%
+It comes from the
+Occam's razor idea.
+
+00:24:44.580 --> 00:24:47.020 align:middle line:84%
+It's all variations on
+Occam's razor in some sense.
+
+00:24:47.020 --> 00:24:48.760 align:middle line:84%
+So just to remind
+you, Occam's razor
+
+00:24:48.760 --> 00:24:51.560 align:middle line:84%
+says among competing
+explanations that
+
+00:24:51.560 --> 00:24:55.730 align:middle line:84%
+fit the data equally well,
+you should prefer the simplest
+
+00:24:55.730 --> 00:24:57.480 align:middle line:84%
+And the generalization
+way of stating that
+
+00:24:57.480 --> 00:24:59.720 align:middle line:84%
+is that the simplest
+model that fits the data
+
+00:24:59.720 --> 00:25:01.725 align:middle line:84%
+will be most likely
+to be the true model.
+
+00:25:01.725 --> 00:25:04.100 align:middle line:84%
+Therefore, it will be most
+likely to generalize the best.
+
+00:25:04.100 --> 00:25:07.080 align:middle line:90%
+
+
+00:25:07.080 --> 00:25:10.680 align:middle line:84%
+Just one little note is that I
+think sometimes people forget
+
+00:25:10.680 --> 00:25:13.940 align:middle line:90%
+to add the "fits the data."
+
+00:25:13.940 --> 00:25:16.855 align:middle line:84%
+So it's not true the simplest
+model is most likely to be true,
+
+00:25:16.855 --> 00:25:18.480 align:middle line:84%
+or it's most likely
+to generalize best.
+
+00:25:18.480 --> 00:25:20.438 align:middle line:84%
+It's the simplest model
+that fits the data that
+
+00:25:20.438 --> 00:25:21.900 align:middle line:90%
+actually explains the data.
+
+00:25:21.900 --> 00:25:25.860 align:middle line:84%
+You need that, otherwise you get
+these absurd statements like,
+
+00:25:25.860 --> 00:25:27.920 align:middle line:84%
+oh, well, I should
+use a linear model.
+
+00:25:27.920 --> 00:25:29.280 align:middle line:90%
+But no, it doesn't fit the data.
+
+00:25:29.280 --> 00:25:32.247 align:middle line:84%
+So you have to use a complex
+enough model that fits the data,
+
+00:25:32.247 --> 00:25:34.080 align:middle line:84%
+but then you want to
+prefer the simpler one.
+
+00:25:34.080 --> 00:25:35.740 align:middle line:84%
+And there's a lot of
+deep arguments for why
+
+00:25:35.740 --> 00:25:36.740 align:middle line:90%
+that should be the case.
+
+00:25:36.740 --> 00:25:39.340 align:middle line:84%
+It's intuitively clear from
+the idea of Occam's razor
+
+00:25:39.340 --> 00:25:43.420 align:middle line:84%
+that we learn in grade school
+or whenever we learn it.
+
+00:25:43.420 --> 00:25:44.940 align:middle line:84%
+But also there's
+deep mathematics
+
+00:25:44.940 --> 00:25:46.900 align:middle line:84%
+that can be used to
+derive formal versions
+
+00:25:46.900 --> 00:25:48.020 align:middle line:90%
+of this statement.
+
+00:25:48.020 --> 00:25:50.260 align:middle line:90%
+Yeah, question?
+
+00:25:50.260 --> 00:25:56.940 align:middle line:84%
+AUDIENCE: If someone were
+to compare this [INAUDIBLE]
+
+00:25:56.940 --> 00:25:59.940 align:middle line:90%
+that all models [INAUDIBLE].
+
+00:25:59.940 --> 00:26:01.967 align:middle line:84%
+How would you compare
+this [INAUDIBLE]?
+
+00:26:01.967 --> 00:26:04.300 align:middle line:84%
+PHILLIP ISOLA: The question--
+that's really interesting.
+
+00:26:04.300 --> 00:26:05.920 align:middle line:84%
+There's another quote--
+"all models are wrong,
+
+00:26:05.920 --> 00:26:07.000 align:middle line:90%
+but some are useful."
+
+00:26:07.000 --> 00:26:11.020 align:middle line:90%
+
+
+00:26:11.020 --> 00:26:15.910 align:middle line:84%
+Yeah, that's intriguing
+to think about.
+
+00:26:15.910 --> 00:26:21.870 align:middle line:84%
+I would say that the
+"all models" is--
+
+00:26:21.870 --> 00:26:24.110 align:middle line:84%
+so this is only
+the set of models
+
+00:26:24.110 --> 00:26:27.470 align:middle line:84%
+that are in the equivalence
+class of all equally well
+
+00:26:27.470 --> 00:26:28.950 align:middle line:90%
+fitting the data.
+
+00:26:28.950 --> 00:26:31.190 align:middle line:84%
+So we're not really
+considering models
+
+00:26:31.190 --> 00:26:35.070 align:middle line:84%
+that are wrong in terms of
+only approximating the data.
+
+00:26:35.070 --> 00:26:36.630 align:middle line:84%
+So it's a slightly
+different setting
+
+00:26:36.630 --> 00:26:40.990 align:middle line:90%
+that we're looking at there.
+
+00:26:40.990 --> 00:26:42.310 align:middle line:90%
+But yeah, I don't know.
+
+00:26:42.310 --> 00:26:44.250 align:middle line:84%
+There's probably more
+discussion around that,
+
+00:26:44.250 --> 00:26:46.170 align:middle line:84%
+but I don't have a
+crisp answer right now.
+
+00:26:46.170 --> 00:26:47.390 align:middle line:90%
+Yeah, question?
+
+00:26:47.390 --> 00:26:50.350 align:middle line:84%
+AUDIENCE: Has this statement
+been proven rigorously or is it
+
+00:26:50.350 --> 00:26:51.437 align:middle line:90%
+a heuristic?
+
+00:26:51.437 --> 00:26:53.270 align:middle line:84%
+PHILLIP ISOLA: So I
+would say in this form--
+
+00:26:53.270 --> 00:26:54.770 align:middle line:84%
+so the question--
+has this statement
+
+00:26:54.770 --> 00:26:57.190 align:middle line:84%
+been proven rigorously,
+or is it a heuristic?
+
+00:26:57.190 --> 00:27:00.230 align:middle line:84%
+In this form, it's a
+heuristic because how do we
+
+00:27:00.230 --> 00:27:01.970 align:middle line:90%
+measure simplest?
+
+00:27:01.970 --> 00:27:03.650 align:middle line:84%
+How do we measure
+generalization?
+
+00:27:03.650 --> 00:27:05.150 align:middle line:84%
+We need to make
+these mathematically
+
+00:27:05.150 --> 00:27:06.690 align:middle line:90%
+precise to make it rigorous.
+
+00:27:06.690 --> 00:27:12.040 align:middle line:84%
+But there are rigorous versions
+of the Occam's razor argument.
+
+00:27:12.040 --> 00:27:15.420 align:middle line:84%
+My favorite one is this
+one from various people,
+
+00:27:15.420 --> 00:27:23.320 align:middle line:84%
+including Solomonoff, which is
+that the shortest program that
+
+00:27:23.320 --> 00:27:25.240 align:middle line:84%
+perfectly fits or
+generates the data--
+
+00:27:25.240 --> 00:27:27.960 align:middle line:90%
+that just outputs the data set--
+
+00:27:27.960 --> 00:27:30.720 align:middle line:84%
+is the one that will generalize
+best and make the best
+
+00:27:30.720 --> 00:27:31.510 align:middle line:90%
+predictions.
+
+00:27:31.510 --> 00:27:33.760 align:middle line:84%
+There's an equivalent version
+of this statement, which
+
+00:27:33.760 --> 00:27:37.240 align:middle line:84%
+is that the most compressed
+representation of your data
+
+00:27:37.240 --> 00:27:38.797 align:middle line:90%
+is the best model of your data.
+
+00:27:38.797 --> 00:27:40.880 align:middle line:84%
+There's some equivalency
+between these two things.
+
+00:27:40.880 --> 00:27:44.080 align:middle line:84%
+So I'm not going to get into all
+the technical details of that.
+
+00:27:44.080 --> 00:27:47.220 align:middle line:84%
+But this is the place
+to start reading
+
+00:27:47.220 --> 00:27:50.840 align:middle line:84%
+if you want mathematically
+precise arguments for Occam's
+
+00:27:50.840 --> 00:27:52.400 align:middle line:90%
+razor.
+
+00:27:52.400 --> 00:27:55.600 align:middle line:84%
+And the problem, though, is
+that finding the shortest
+
+00:27:55.600 --> 00:27:57.697 align:middle line:84%
+program that fits
+the data requires
+
+00:27:57.697 --> 00:27:59.780 align:middle line:84%
+searching over the space
+of all possible programs.
+
+00:27:59.780 --> 00:28:03.920 align:middle line:84%
+Imagine searching over the space
+of all possible Python programs.
+
+00:28:03.920 --> 00:28:05.322 align:middle line:90%
+You just can't do that.
+
+00:28:05.322 --> 00:28:07.280 align:middle line:84%
+And deep learning doesn't
+search over the space
+
+00:28:07.280 --> 00:28:08.390 align:middle line:90%
+of all possible programs.
+
+00:28:08.390 --> 00:28:10.765 align:middle line:84%
+It just searches over the
+space of all weights and biases
+
+00:28:10.765 --> 00:28:12.890 align:middle line:84%
+of a particular
+model architecture.
+
+00:28:12.890 --> 00:28:15.090 align:middle line:84%
+So this is completely
+intractable,
+
+00:28:15.090 --> 00:28:17.570 align:middle line:84%
+but it comes up in
+algorithmic information theory
+
+00:28:17.570 --> 00:28:19.130 align:middle line:90%
+and areas like that.
+
+00:28:19.130 --> 00:28:21.010 align:middle line:84%
+So it's good to
+keep in mind, this
+
+00:28:21.010 --> 00:28:23.970 align:middle line:84%
+is kind of like the mathematical
+basis for generalization theory.
+
+00:28:23.970 --> 00:28:28.370 align:middle line:84%
+But actually finding the optimal
+program or the shortest program
+
+00:28:28.370 --> 00:28:30.910 align:middle line:84%
+is intractable, so we're
+not going to quite do that.
+
+00:28:30.910 --> 00:28:33.790 align:middle line:90%
+But this is what we want.
+
+00:28:33.790 --> 00:28:36.610 align:middle line:84%
+We want a way of measuring
+simplicity or complexity
+
+00:28:36.610 --> 00:28:43.810 align:middle line:84%
+of a hypothesis space or
+of a solution to a problem.
+
+00:28:43.810 --> 00:28:47.547 align:middle line:84%
+And this is kind of the
+best notion of simplicity,
+
+00:28:47.547 --> 00:28:48.630 align:middle line:90%
+but we can't quite use it.
+
+00:28:48.630 --> 00:28:51.130 align:middle line:90%
+So what else can we use?
+
+00:28:51.130 --> 00:28:55.370 align:middle line:84%
+So let's do a quick
+review of overfitting--
+
+00:28:55.370 --> 00:28:58.410 align:middle line:84%
+the idea of overfitting and
+the bias variance trade-off.
+
+00:28:58.410 --> 00:29:00.947 align:middle line:84%
+So remember that
+the test error is
+
+00:29:00.947 --> 00:29:03.530 align:middle line:84%
+equal to the train error plus
+the difference between the train
+
+00:29:03.530 --> 00:29:06.870 align:middle line:90%
+error and the test error.
+
+00:29:06.870 --> 00:29:09.162 align:middle line:84%
+And we call the
+training error the bias
+
+00:29:09.162 --> 00:29:10.870 align:middle line:84%
+and the difference
+between the test error
+
+00:29:10.870 --> 00:29:14.830 align:middle line:84%
+and the train
+error the variance.
+
+00:29:14.830 --> 00:29:17.350 align:middle line:84%
+And the kind of classical
+machine learning 101--
+
+00:29:17.350 --> 00:29:18.750 align:middle line:90%
+picture of how things work--
+
+00:29:18.750 --> 00:29:23.130 align:middle line:84%
+is that as I increase
+the kind of capacity,
+
+00:29:23.130 --> 00:29:24.950 align:middle line:84%
+the number of functions
+under consideration
+
+00:29:24.950 --> 00:29:26.967 align:middle line:84%
+in my hypothesis space
+that I'm searching over,
+
+00:29:26.967 --> 00:29:28.550 align:middle line:84%
+as I make bigger and
+bigger and bigger
+
+00:29:28.550 --> 00:29:33.350 align:middle line:84%
+deep nets with more and more and
+more parameters, then eventually
+
+00:29:33.350 --> 00:29:34.950 align:middle line:84%
+I'll get universal
+approximation.
+
+00:29:34.950 --> 00:29:37.530 align:middle line:84%
+If I get width goes to infinity,
+I can fit any function.
+
+00:29:37.530 --> 00:29:40.730 align:middle line:84%
+So I can minimize my loss
+on the training error,
+
+00:29:40.730 --> 00:29:42.870 align:middle line:90%
+so the training risk goes down.
+
+00:29:42.870 --> 00:29:46.230 align:middle line:84%
+But I'll start overfitting, and
+the test risk will eventually
+
+00:29:46.230 --> 00:29:49.670 align:middle line:84%
+go up, because I'm finding
+fits to the data which
+
+00:29:49.670 --> 00:29:52.750 align:middle line:84%
+are kind of fitting to
+properties of the data that
+
+00:29:52.750 --> 00:29:54.410 align:middle line:84%
+don't actually
+generalize, like noise,
+
+00:29:54.410 --> 00:29:57.710 align:middle line:84%
+or the fact that I got this
+particular batch of samples
+
+00:29:57.710 --> 00:30:00.070 align:middle line:84%
+as opposed to a different
+batch of samples.
+
+00:30:00.070 --> 00:30:05.800 align:middle line:84%
+So this is the overfitting
+scenario that you have likely
+
+00:30:05.800 --> 00:30:07.880 align:middle line:90%
+seen before.
+
+00:30:07.880 --> 00:30:10.680 align:middle line:84%
+And one of the ways of measuring
+model capacity-- modeling
+
+00:30:10.680 --> 00:30:15.320 align:middle line:84%
+the x-axis or measuring the
+complexity of a hypothesis space
+
+00:30:15.320 --> 00:30:16.660 align:middle line:90%
+is via number of parameters.
+
+00:30:16.660 --> 00:30:17.760 align:middle line:84%
+And this is one of
+the classical ways
+
+00:30:17.760 --> 00:30:19.093 align:middle line:90%
+that you might have encountered.
+
+00:30:19.093 --> 00:30:21.748 align:middle line:84%
+If I want to find my best
+machine learning model,
+
+00:30:21.748 --> 00:30:23.540 align:middle line:84%
+I need to control the
+number of parameters.
+
+00:30:23.540 --> 00:30:26.040 align:middle line:84%
+If I have too many
+parameters, it will overfit.
+
+00:30:26.040 --> 00:30:28.440 align:middle line:84%
+So let's look at
+what happens if I'm
+
+00:30:28.440 --> 00:30:33.520 align:middle line:84%
+doing some kind of polynomial
+regression onto these red points
+
+00:30:33.520 --> 00:30:34.160 align:middle line:90%
+here.
+
+00:30:34.160 --> 00:30:39.280 align:middle line:84%
+So the orange line is
+my fit to the data.
+
+00:30:39.280 --> 00:30:41.720 align:middle line:84%
+And if I use a
+degree 1 polynomial--
+
+00:30:41.720 --> 00:30:43.220 align:middle line:84%
+I think it's not
+quite polynomials.
+
+00:30:43.220 --> 00:30:45.400 align:middle line:84%
+It's a particular
+family of polynomials.
+
+00:30:45.400 --> 00:30:49.640 align:middle line:84%
+I'm finding the coefficients
+of a weighted sum
+
+00:30:49.640 --> 00:30:52.240 align:middle line:84%
+of a particular family
+of simple functions,
+
+00:30:52.240 --> 00:30:54.620 align:middle line:84%
+like Legendre polynomials,
+I think, in this case.
+
+00:30:54.620 --> 00:30:56.760 align:middle line:90%
+But it doesn't matter too much.
+
+00:30:56.760 --> 00:30:59.080 align:middle line:84%
+So I'm going to
+say with d equals
+
+00:30:59.080 --> 00:31:01.660 align:middle line:84%
+1 is the degree of that
+family of polynomials.
+
+00:31:01.660 --> 00:31:04.330 align:middle line:84%
+It's just d equals
+1 means linear,
+
+00:31:04.330 --> 00:31:06.490 align:middle line:84%
+and a linear fit
+can't do a great job.
+
+00:31:06.490 --> 00:31:08.290 align:middle line:84%
+The truth function
+is the blue line,
+
+00:31:08.290 --> 00:31:12.490 align:middle line:84%
+and the training data
+is the red points.
+
+00:31:12.490 --> 00:31:16.930 align:middle line:84%
+What happens as I increase the
+wiggliness of the polynomials
+
+00:31:16.930 --> 00:31:17.710 align:middle line:90%
+in my family?
+
+00:31:17.710 --> 00:31:19.610 align:middle line:84%
+I include more and
+more polynomials
+
+00:31:19.610 --> 00:31:21.190 align:middle line:84%
+that are higher and
+higher frequency
+
+00:31:21.190 --> 00:31:23.850 align:middle line:84%
+and the kind of wiggles
+that they can express.
+
+00:31:23.850 --> 00:31:27.950 align:middle line:84%
+So if I go up to a quadratic or
+cubic model in this case-- well,
+
+00:31:27.950 --> 00:31:30.250 align:middle line:84%
+the ground truth function
+happened to be cubic
+
+00:31:30.250 --> 00:31:33.770 align:middle line:84%
+or happened to have order
+3 Legendre polynomial,
+
+00:31:33.770 --> 00:31:36.150 align:middle line:90%
+and I get a really good fit.
+
+00:31:36.150 --> 00:31:40.530 align:middle line:84%
+And then overfitting
+is, if I go up to--
+
+00:31:40.530 --> 00:31:42.350 align:middle line:84%
+have too many
+degrees of freedom,
+
+00:31:42.350 --> 00:31:46.910 align:middle line:84%
+I can actually not only
+recover the true data,
+
+00:31:46.910 --> 00:31:48.510 align:middle line:84%
+but I'm also fitting
+to the noise.
+
+00:31:48.510 --> 00:31:51.690 align:middle line:84%
+This deviation from the
+blue line is just noise.
+
+00:31:51.690 --> 00:31:56.010 align:middle line:84%
+And the model is
+wildly deviating
+
+00:31:56.010 --> 00:31:59.450 align:middle line:84%
+in order to capture that
+aspect that doesn't actually
+
+00:31:59.450 --> 00:31:59.950 align:middle line:90%
+generalize.
+
+00:31:59.950 --> 00:32:01.575 align:middle line:84%
+It doesn't actually
+tell them something
+
+00:32:01.575 --> 00:32:03.930 align:middle line:84%
+about the true
+underlying function.
+
+00:32:03.930 --> 00:32:06.050 align:middle line:84%
+So this is our classic
+picture of overfitting,
+
+00:32:06.050 --> 00:32:09.910 align:middle line:84%
+but here's the surprise if
+you haven't seen it before.
+
+00:32:09.910 --> 00:32:14.590 align:middle line:84%
+What happens if I go not to d
+equals 20, but d equals 1,000?
+
+00:32:14.590 --> 00:32:17.000 align:middle line:84%
+I have a really,
+really expressive class
+
+00:32:17.000 --> 00:32:18.750 align:middle line:84%
+of polynomials that
+can fit really, really
+
+00:32:18.750 --> 00:32:20.470 align:middle line:90%
+crazy wiggly functions.
+
+00:32:20.470 --> 00:32:23.790 align:middle line:84%
+Is it going to go more crazy and
+overfit even worse in the sense
+
+00:32:23.790 --> 00:32:27.990 align:middle line:84%
+that these deviations
+will just go to infinity,
+
+00:32:27.990 --> 00:32:29.630 align:middle line:84%
+or will it do
+something different?
+
+00:32:29.630 --> 00:32:31.378 align:middle line:90%
+What do you think?
+
+00:32:31.378 --> 00:32:33.170 align:middle line:84%
+Some of you probably
+have seen this before,
+
+00:32:33.170 --> 00:32:34.050 align:middle line:90%
+but let's go up here.
+
+00:32:34.050 --> 00:32:34.550 align:middle line:90%
+Yeah?
+
+00:32:34.550 --> 00:32:37.470 align:middle line:84%
+AUDIENCE: I mean, you should
+have a large manifold of fits
+
+00:32:37.470 --> 00:32:38.918 align:middle line:90%
+that all fit perfectly, right?
+
+00:32:38.918 --> 00:32:39.710 align:middle line:90%
+PHILLIP ISOLA: Yes.
+
+00:32:39.710 --> 00:32:41.590 align:middle line:84%
+AUDIENCE: So some of them
+could be good, some of them
+
+00:32:41.590 --> 00:32:42.210 align:middle line:90%
+could be bad.
+
+00:32:42.210 --> 00:32:43.690 align:middle line:84%
+PHILLIP ISOLA: Yeah,
+so the answer to--
+
+00:32:43.690 --> 00:32:45.398 align:middle line:84%
+and that's a quite
+sophisticated answer--
+
+00:32:45.398 --> 00:32:48.230 align:middle line:84%
+is you should have a
+large set of functions
+
+00:32:48.230 --> 00:32:50.350 align:middle line:90%
+that all perfectly fit the data.
+
+00:32:50.350 --> 00:32:53.110 align:middle line:84%
+And so some of them should
+be good and some of them
+
+00:32:53.110 --> 00:32:53.715 align:middle line:90%
+should be bad.
+
+00:32:53.715 --> 00:32:55.090 align:middle line:84%
+But which one will
+you arrive at?
+
+00:32:55.090 --> 00:32:56.923 align:middle line:84%
+Well, it's going to
+depend on other factors.
+
+00:32:56.923 --> 00:32:58.430 align:middle line:84%
+It's going to
+depend on how you're
+
+00:32:58.430 --> 00:33:01.020 align:middle line:84%
+searching over that space, or
+what optimizer are you using?
+
+00:33:01.020 --> 00:33:03.298 align:middle line:84%
+How are you minimizing
+your training error?
+
+00:33:03.298 --> 00:33:04.840 align:middle line:84%
+It's going to depend
+on other factors
+
+00:33:04.840 --> 00:33:11.480 align:middle line:84%
+beyond just randomly selecting
+one of the solutions that
+
+00:33:11.480 --> 00:33:14.140 align:middle line:90%
+fits the data.
+
+00:33:14.140 --> 00:33:16.680 align:middle line:84%
+So here's what happens
+for this regression
+
+00:33:16.680 --> 00:33:19.040 align:middle line:90%
+problem with these polynomials.
+
+00:33:19.040 --> 00:33:23.880 align:middle line:84%
+So when d equals 1,000, you
+actually are able to fit this
+
+00:33:23.880 --> 00:33:27.560 align:middle line:84%
+really spiky function, but
+it adheres much more closely
+
+00:33:27.560 --> 00:33:31.760 align:middle line:90%
+to the true smooth solution.
+
+00:33:31.760 --> 00:33:33.960 align:middle line:84%
+And this phenomena
+is called least--
+
+00:33:33.960 --> 00:33:35.400 align:middle line:90%
+is called double descent.
+
+00:33:35.400 --> 00:33:38.220 align:middle line:84%
+So it's the idea that
+overfitting is actually--
+
+00:33:38.220 --> 00:33:39.720 align:middle line:84%
+the classical picture
+of overfitting
+
+00:33:39.720 --> 00:33:41.560 align:middle line:90%
+is a little bit inaccurate.
+
+00:33:41.560 --> 00:33:45.680 align:middle line:84%
+And what actually happens is you
+start overfitting really badly
+
+00:33:45.680 --> 00:33:47.445 align:middle line:90%
+as you add more parameters.
+
+00:33:47.445 --> 00:33:49.320 align:middle line:84%
+But eventually, if you
+add enough parameters,
+
+00:33:49.320 --> 00:33:52.440 align:middle line:84%
+for certain types of
+models, including deep nets
+
+00:33:52.440 --> 00:33:55.680 align:middle line:84%
+and also including these
+polynomial regression problems,
+
+00:33:55.680 --> 00:33:59.130 align:middle line:84%
+you end up getting
+this kind of behavior
+
+00:33:59.130 --> 00:34:01.490 align:middle line:84%
+where you start actually
+getting better generalization
+
+00:34:01.490 --> 00:34:04.250 align:middle line:90%
+error with more parameters.
+
+00:34:04.250 --> 00:34:07.410 align:middle line:84%
+And the basic hypothesis
+here is that--
+
+00:34:07.410 --> 00:34:09.630 align:middle line:84%
+and this is provable for
+certain simple systems,
+
+00:34:09.630 --> 00:34:12.010 align:middle line:84%
+but it's not really
+provable for deep nets.
+
+00:34:12.010 --> 00:34:13.764 align:middle line:84%
+But the basic
+hypothesis for deep nets
+
+00:34:13.764 --> 00:34:15.889 align:middle line:84%
+and the general statement
+is that the learned model
+
+00:34:15.889 --> 00:34:18.730 align:middle line:90%
+has two components.
+
+00:34:18.730 --> 00:34:22.889 align:middle line:84%
+With enough capacity, it will
+find a simple fit to the data.
+
+00:34:22.889 --> 00:34:26.889 align:middle line:84%
+And then it will also use
+little spikes of capacity
+
+00:34:26.889 --> 00:34:29.770 align:middle line:90%
+to fit the outliers.
+
+00:34:29.770 --> 00:34:32.370 align:middle line:84%
+So there's some kind of
+simple component, which
+
+00:34:32.370 --> 00:34:34.929 align:middle line:84%
+is predictive and generalizes
+well to new samples
+
+00:34:34.929 --> 00:34:37.449 align:middle line:84%
+from the population,
+and a spiking component
+
+00:34:37.449 --> 00:34:40.489 align:middle line:84%
+that overfits noise and
+things that don't generalize
+
+00:34:40.489 --> 00:34:41.429 align:middle line:90%
+in the training data.
+
+00:34:41.429 --> 00:34:42.590 align:middle line:90%
+So it's like memorization.
+
+00:34:42.590 --> 00:34:44.449 align:middle line:90%
+Spikiness is like memorization.
+
+00:34:44.449 --> 00:34:47.820 align:middle line:90%
+I'm just memorizing those--
+
+00:34:47.820 --> 00:34:50.270 align:middle line:84%
+when my input is this,
+I memorized what it was.
+
+00:34:50.270 --> 00:34:52.310 align:middle line:84%
+So it's memorization
+plus generalization.
+
+00:34:52.310 --> 00:34:54.739 align:middle line:84%
+It's a really
+interesting combination
+
+00:34:54.739 --> 00:35:00.040 align:middle line:84%
+that, until a few years ago,
+people didn't widely appreciate.
+
+00:35:00.040 --> 00:35:02.460 align:middle line:84%
+There's a nice visualization
+of this with an MLP
+
+00:35:02.460 --> 00:35:04.202 align:middle line:90%
+that you can find at this link.
+
+00:35:04.202 --> 00:35:05.660 align:middle line:84%
+It looks basically
+the same as what
+
+00:35:05.660 --> 00:35:08.920 align:middle line:84%
+I'm showing you, but
+not quite as spiky.
+
+00:35:08.920 --> 00:35:12.980 align:middle line:84%
+So deep nets always are
+a little bit Messier
+
+00:35:12.980 --> 00:35:15.700 align:middle line:84%
+than more classical
+models, so it's easier
+
+00:35:15.700 --> 00:35:18.260 align:middle line:84%
+to see with this polynomial
+regression model.
+
+00:35:18.260 --> 00:35:19.200 align:middle line:90%
+Yeah, question?
+
+00:35:19.200 --> 00:35:20.860 align:middle line:84%
+AUDIENCE: So from
+my understanding,
+
+00:35:20.860 --> 00:35:24.160 align:middle line:84%
+a polynomial regression
+is a closed form solution.
+
+00:35:24.160 --> 00:35:26.220 align:middle line:84%
+So I guess you could
+see that this is always
+
+00:35:26.220 --> 00:35:27.518 align:middle line:90%
+true in this case.
+
+00:35:27.518 --> 00:35:29.060 align:middle line:84%
+But for a neural
+network where you're
+
+00:35:29.060 --> 00:35:31.820 align:middle line:84%
+doing like a stochastic
+optimization process,
+
+00:35:31.820 --> 00:35:34.180 align:middle line:84%
+I'm wondering how you
+can be sure you'll always
+
+00:35:34.180 --> 00:35:38.940 align:middle line:84%
+arrive at this function and not,
+as you said, a function that
+
+00:35:38.940 --> 00:35:40.113 align:middle line:90%
+is wildly inaccurate?
+
+00:35:40.113 --> 00:35:41.780 align:middle line:84%
+PHILLIP ISOLA: Yeah,
+so the question is,
+
+00:35:41.780 --> 00:35:44.080 align:middle line:84%
+for polynomial regression,
+there's a closed form solution,
+
+00:35:44.080 --> 00:35:46.413 align:middle line:84%
+and you can really prove that
+this will be what happens.
+
+00:35:46.413 --> 00:35:49.700 align:middle line:84%
+And that solution will have this
+property if that's the case.
+
+00:35:49.700 --> 00:35:52.860 align:middle line:84%
+For a neural net, the
+solution you arrive at
+
+00:35:52.860 --> 00:35:54.663 align:middle line:84%
+will depend on the
+initialization,
+
+00:35:54.663 --> 00:35:55.580 align:middle line:90%
+which might be random.
+
+00:35:55.580 --> 00:35:57.520 align:middle line:84%
+It will depend on the
+stochastic mini batches,
+
+00:35:57.520 --> 00:35:59.040 align:middle line:90%
+which are going to be random.
+
+00:35:59.040 --> 00:36:01.360 align:middle line:84%
+There's a lot of randomness,
+and it's much harder
+
+00:36:01.360 --> 00:36:04.560 align:middle line:84%
+to make clean statements about
+what solution you'll arrive at.
+
+00:36:04.560 --> 00:36:06.820 align:middle line:84%
+So instead, we can make
+empirical statements.
+
+00:36:06.820 --> 00:36:09.600 align:middle line:84%
+We can say that if we run this
+neural network over and over
+
+00:36:09.600 --> 00:36:12.660 align:middle line:84%
+again with the Adam optimizer,
+or the SGD optimizer,
+
+00:36:12.660 --> 00:36:13.920 align:middle line:90%
+here's what we observe.
+
+00:36:13.920 --> 00:36:15.738 align:middle line:84%
+And I'll show you that
+on the next slide.
+
+00:36:15.738 --> 00:36:17.280 align:middle line:84%
+Or we can make
+theoretical statements
+
+00:36:17.280 --> 00:36:20.240 align:middle line:84%
+like, the distribution
+of solutions
+
+00:36:20.240 --> 00:36:22.240 align:middle line:84%
+that will be arrived at
+under certain conditions
+
+00:36:22.240 --> 00:36:26.240 align:middle line:84%
+will be smooth and spiky
+with high probability, stuff
+
+00:36:26.240 --> 00:36:26.740 align:middle line:90%
+like this.
+
+00:36:26.740 --> 00:36:28.400 align:middle line:90%
+Yep, one more question?
+
+00:36:28.400 --> 00:36:30.400 align:middle line:84%
+AUDIENCE: When would
+you know that you're
+
+00:36:30.400 --> 00:36:34.280 align:middle line:84%
+using the right computational
+resources rather
+
+00:36:34.280 --> 00:36:37.100 align:middle line:90%
+than optimizing to a new model?
+
+00:36:37.100 --> 00:36:42.260 align:middle line:84%
+So if it takes 1,000 to
+make an optimal solution,
+
+00:36:42.260 --> 00:36:45.440 align:middle line:84%
+but it takes a lot of
+computational effort,
+
+00:36:45.440 --> 00:36:50.120 align:middle line:84%
+should you stop at some point,
+or turn to other model that will
+
+00:36:50.120 --> 00:36:52.130 align:middle line:90%
+potentially fit better?
+
+00:36:52.130 --> 00:36:54.970 align:middle line:84%
+PHILLIP ISOLA: Yeah,
+so when should you
+
+00:36:54.970 --> 00:36:59.847 align:middle line:84%
+decide where to stop in
+an optimization process
+
+00:36:59.847 --> 00:37:01.430 align:middle line:84%
+is the question, or
+at least stopping.
+
+00:37:01.430 --> 00:37:04.130 align:middle line:90%
+Yeah, so that's a hard question.
+
+00:37:04.130 --> 00:37:07.650 align:middle line:84%
+And so the number of steps of
+gradient descent that you do
+
+00:37:07.650 --> 00:37:10.790 align:middle line:84%
+is kind of a hyperparameter,
+and it can affect the solution.
+
+00:37:10.790 --> 00:37:13.230 align:middle line:84%
+And if you do too many, then
+you might be overfitting.
+
+00:37:13.230 --> 00:37:14.850 align:middle line:84%
+And that's kind of
+a classical idea.
+
+00:37:14.850 --> 00:37:18.510 align:middle line:84%
+But what we'll see is that
+in this neural net era,
+
+00:37:18.510 --> 00:37:20.190 align:middle line:84%
+it tends to be
+just train forever.
+
+00:37:20.190 --> 00:37:21.690 align:middle line:84%
+And the longer you
+train, the better
+
+00:37:21.690 --> 00:37:24.530 align:middle line:84%
+you do because there's a double
+descent phenomenon, which
+
+00:37:24.530 --> 00:37:27.410 align:middle line:84%
+I'll show in the next slide
+in terms of computation.
+
+00:37:27.410 --> 00:37:29.130 align:middle line:84%
+The longer you train,
+the better you'll
+
+00:37:29.130 --> 00:37:33.190 align:middle line:84%
+do in this particular family of
+models is the general principle.
+
+00:37:33.190 --> 00:37:34.810 align:middle line:84%
+But yeah, of
+course, there's more
+
+00:37:34.810 --> 00:37:38.083 align:middle line:90%
+that can be said about that.
+
+00:37:38.083 --> 00:37:40.250 align:middle line:84%
+So this was a really cool
+paper from a few years ago
+
+00:37:40.250 --> 00:37:43.240 align:middle line:90%
+that got people excited.
+
+00:37:43.240 --> 00:37:45.490 align:middle line:84%
+So the double descent
+phenomenon is just a consequence
+
+00:37:45.490 --> 00:37:46.910 align:middle line:90%
+of what I already showed you.
+
+00:37:46.910 --> 00:37:50.100 align:middle line:84%
+So we have regular
+classical overfitting.
+
+00:37:50.100 --> 00:37:53.405 align:middle line:84%
+As I increase my capacity of my
+hypothesis space, which we're
+
+00:37:53.405 --> 00:37:55.780 align:middle line:84%
+right now naively calculating
+as the number of parameters
+
+00:37:55.780 --> 00:37:59.360 align:middle line:84%
+in the hypothesis space, then
+my training error goes down,
+
+00:37:59.360 --> 00:38:01.080 align:middle line:84%
+but my test error
+eventually goes up.
+
+00:38:01.080 --> 00:38:02.260 align:middle line:90%
+I overfit.
+
+00:38:02.260 --> 00:38:05.180 align:middle line:84%
+But then after
+overfitting, eventually,
+
+00:38:05.180 --> 00:38:08.220 align:middle line:84%
+I learned the simple
+function and the spikes,
+
+00:38:08.220 --> 00:38:13.860 align:middle line:84%
+and so I actually start to
+generalize better again.
+
+00:38:13.860 --> 00:38:17.060 align:middle line:84%
+And there's this thing called
+interpolation threshold, which
+
+00:38:17.060 --> 00:38:18.820 align:middle line:84%
+is the point at
+which I can perfectly
+
+00:38:18.820 --> 00:38:20.820 align:middle line:90%
+memorize all the training data.
+
+00:38:20.820 --> 00:38:22.175 align:middle line:90%
+And I think one intuitive--
+
+00:38:22.175 --> 00:38:24.800 align:middle line:84%
+I'm not sure if this is going to
+turn out to be precisely true,
+
+00:38:24.800 --> 00:38:26.722 align:middle line:84%
+but my intuitive picture
+of what's going on
+
+00:38:26.722 --> 00:38:28.680 align:middle line:84%
+is that you're trying to
+fit the training data,
+
+00:38:28.680 --> 00:38:30.038 align:middle line:90%
+so you have to memorize it.
+
+00:38:30.038 --> 00:38:32.580 align:middle line:84%
+And you have to learn a really
+crazy function to memorize it.
+
+00:38:32.580 --> 00:38:36.380 align:middle line:84%
+But then once you add more
+capacity, where now there
+
+00:38:36.380 --> 00:38:39.500 align:middle line:84%
+are a lot of solutions
+that equally well memorize
+
+00:38:39.500 --> 00:38:42.800 align:middle line:84%
+the data equally well,
+interpolate the data,
+
+00:38:42.800 --> 00:38:46.020 align:middle line:84%
+then you can select within all
+of those set of solutions that
+
+00:38:46.020 --> 00:38:48.960 align:middle line:84%
+fit the data the one
+that is the smoothest
+
+00:38:48.960 --> 00:38:51.240 align:middle line:90%
+or has other nice properties.
+
+00:38:51.240 --> 00:38:54.040 align:middle line:84%
+And the pressures that select
+within the set of things that
+
+00:38:54.040 --> 00:38:55.800 align:middle line:84%
+fit the data the one
+that is the smoothest
+
+00:38:55.800 --> 00:38:57.217 align:middle line:84%
+are sometimes
+called regularizers,
+
+00:38:57.217 --> 00:38:59.380 align:middle line:84%
+or implicit regularizers,
+or inductive biases.
+
+00:38:59.380 --> 00:39:01.140 align:middle line:84%
+And we'll talk more
+about those in a bit.
+
+00:39:01.140 --> 00:39:03.060 align:middle line:84%
+It's like, for a while,
+you're just fitting the data.
+
+00:39:03.060 --> 00:39:04.300 align:middle line:90%
+You have to find a crazy fit.
+
+00:39:04.300 --> 00:39:06.040 align:middle line:84%
+And then once you
+have more capacity,
+
+00:39:06.040 --> 00:39:08.880 align:middle line:84%
+you can search over
+that kind of degeneracy
+
+00:39:08.880 --> 00:39:12.400 align:middle line:84%
+to find the one that is the best
+according to other criteria,
+
+00:39:12.400 --> 00:39:13.380 align:middle line:90%
+like smoothness.
+
+00:39:13.380 --> 00:39:15.748 align:middle line:90%
+
+
+00:39:15.748 --> 00:39:17.040 align:middle line:90%
+Yeah, we'll go with a question.
+
+00:39:17.040 --> 00:39:23.240 align:middle line:84%
+AUDIENCE: For [INAUDIBLE]
+descent, [INAUDIBLE]
+
+00:39:23.240 --> 00:39:25.600 align:middle line:84%
+you should stop at
+the first place spot,
+
+00:39:25.600 --> 00:39:30.160 align:middle line:84%
+or you should train like
+[INAUDIBLE] training
+
+00:39:30.160 --> 00:39:32.640 align:middle line:84%
+until the second
+coverage [INAUDIBLE].
+
+00:39:32.640 --> 00:39:34.240 align:middle line:84%
+PHILLIP ISOLA: Yeah,
+so the question
+
+00:39:34.240 --> 00:39:38.120 align:middle line:84%
+is, should you stop at the first
+minima of the double descent
+
+00:39:38.120 --> 00:39:40.980 align:middle line:84%
+curve, where you have low
+risk on the population,
+
+00:39:40.980 --> 00:39:43.560 align:middle line:84%
+or should you stop at-- or
+should you just train forever?
+
+00:39:43.560 --> 00:39:47.210 align:middle line:84%
+And generally, I
+would say that it
+
+00:39:47.210 --> 00:39:53.890 align:middle line:84%
+will depend on how much capacity
+you have available to you,
+
+00:39:53.890 --> 00:39:56.610 align:middle line:84%
+because this is costly to
+move out in the x-axis.
+
+00:39:56.610 --> 00:39:58.910 align:middle line:84%
+Capacity can be
+measured in parameters,
+
+00:39:58.910 --> 00:40:00.590 align:middle line:84%
+but it could also be
+measured in flops.
+
+00:40:00.590 --> 00:40:03.330 align:middle line:84%
+So there's kind of double
+descent also in compute time.
+
+00:40:03.330 --> 00:40:08.390 align:middle line:84%
+And so it will depend on the
+cost-benefit analysis there.
+
+00:40:08.390 --> 00:40:10.870 align:middle line:84%
+But generally, in deep learning,
+we're out in this regime.
+
+00:40:10.870 --> 00:40:12.610 align:middle line:84%
+We're past the first
+peak, and we're
+
+00:40:12.610 --> 00:40:14.810 align:middle line:84%
+in the part where you just train
+longer, and longer, and longer,
+
+00:40:14.810 --> 00:40:16.150 align:middle line:90%
+and it smoothly will get better.
+
+00:40:16.150 --> 00:40:19.070 align:middle line:84%
+That seems to be the
+empirical property we have.
+
+00:40:19.070 --> 00:40:21.050 align:middle line:84%
+One more, and then
+I'll have to move on.
+
+00:40:21.050 --> 00:40:25.050 align:middle line:84%
+AUDIENCE: What's the
+correlation between doing
+
+00:40:25.050 --> 00:40:29.090 align:middle line:84%
+polynomial regression and
+training for a higher order
+
+00:40:29.090 --> 00:40:29.650 align:middle line:90%
+polynomial?
+
+00:40:29.650 --> 00:40:32.190 align:middle line:84%
+Is it similar to a
+Taylor series as that sum
+
+00:40:32.190 --> 00:40:34.690 align:middle line:84%
+approaches infinity that you
+could approximate any arbitrary
+
+00:40:34.690 --> 00:40:35.667 align:middle line:90%
+function?
+
+00:40:35.667 --> 00:40:38.250 align:middle line:84%
+What's the relationship between
+that and a polynomial function
+
+00:40:38.250 --> 00:40:39.227 align:middle line:90%
+in that [INAUDIBLE]?
+
+00:40:39.227 --> 00:40:40.810 align:middle line:84%
+PHILLIP ISOLA: What's
+the relationship
+
+00:40:40.810 --> 00:40:45.340 align:middle line:84%
+between polynomial
+regression and deep nets--
+
+00:40:45.340 --> 00:40:50.820 align:middle line:84%
+so roughly, you can think
+of the last layer of an MLP
+
+00:40:50.820 --> 00:40:54.140 align:middle line:84%
+as a linear combination
+of some basis functions,
+
+00:40:54.140 --> 00:40:55.320 align:middle line:90%
+of some features.
+
+00:40:55.320 --> 00:40:58.240 align:middle line:84%
+So every neuron on the previous
+layer is a feature of the data.
+
+00:40:58.240 --> 00:41:02.122 align:middle line:84%
+And those features could be like
+polynomial functions of a scalar
+
+00:41:02.122 --> 00:41:04.080 align:middle line:84%
+input, and that would be
+polynomial regression.
+
+00:41:04.080 --> 00:41:06.700 align:middle line:90%
+Or they could be Fourier.
+
+00:41:06.700 --> 00:41:09.380 align:middle line:84%
+They could be sines and cosines
+with different frequencies.
+
+00:41:09.380 --> 00:41:11.560 align:middle line:84%
+And in deep learning,
+they'll be learned functions,
+
+00:41:11.560 --> 00:41:14.060 align:middle line:84%
+but they have the capacity to
+learn those types of functions
+
+00:41:14.060 --> 00:41:16.580 align:middle line:84%
+if those are the
+right ones to learn.
+
+00:41:16.580 --> 00:41:21.020 align:middle line:84%
+So here's an empirical
+result of double descent.
+
+00:41:21.020 --> 00:41:23.240 align:middle line:84%
+And this is training
+an MNIST classifier.
+
+00:41:23.240 --> 00:41:24.840 align:middle line:84%
+And you can see
+this really happens.
+
+00:41:24.840 --> 00:41:28.560 align:middle line:84%
+So the train error just always
+goes down as I add more weights.
+
+00:41:28.560 --> 00:41:30.300 align:middle line:84%
+So I increase the
+width of my model.
+
+00:41:30.300 --> 00:41:34.220 align:middle line:84%
+I get universal approximation,
+but test error spikes
+
+00:41:34.220 --> 00:41:36.940 align:middle line:90%
+and then it goes back down.
+
+00:41:36.940 --> 00:41:39.900 align:middle line:84%
+This stuff is a little finicky
+to actually observe in practice.
+
+00:41:39.900 --> 00:41:42.510 align:middle line:84%
+So I actually tried to make
+my own example of this,
+
+00:41:42.510 --> 00:41:43.860 align:middle line:90%
+and I couldn't get it to work.
+
+00:41:43.860 --> 00:41:45.610 align:middle line:84%
+But if you read the
+double descent papers,
+
+00:41:45.610 --> 00:41:48.670 align:middle line:84%
+you'll realize that it
+only really shows up
+
+00:41:48.670 --> 00:41:49.730 align:middle line:90%
+in certain regimes.
+
+00:41:49.730 --> 00:41:52.397 align:middle line:84%
+And you have to make sure not to
+have momentum in this and that,
+
+00:41:52.397 --> 00:41:53.490 align:middle line:90%
+and weight decay.
+
+00:41:53.490 --> 00:41:55.710 align:middle line:84%
+There's a lot of aspects
+of the optimization process
+
+00:41:55.710 --> 00:41:58.550 align:middle line:90%
+that can make this disappear.
+
+00:41:58.550 --> 00:42:00.790 align:middle line:84%
+But it is a real
+phenomena that does
+
+00:42:00.790 --> 00:42:03.470 align:middle line:90%
+exist in the right conditions.
+
+00:42:03.470 --> 00:42:05.788 align:middle line:84%
+So don't worry if you don't
+see it in your graphs.
+
+00:42:05.788 --> 00:42:07.330 align:middle line:84%
+You might just be
+out in this regime,
+
+00:42:07.330 --> 00:42:08.830 align:middle line:84%
+or you might have
+other effects that
+
+00:42:08.830 --> 00:42:10.210 align:middle line:90%
+are dampening out that spike.
+
+00:42:10.210 --> 00:42:11.290 align:middle line:90%
+Yeah, question over here?
+
+00:42:11.290 --> 00:42:13.682 align:middle line:90%
+AUDIENCE: [INAUDIBLE]
+
+00:42:13.682 --> 00:42:16.662 align:middle line:90%
+
+
+00:42:16.662 --> 00:42:18.370 align:middle line:84%
+PHILLIP ISOLA: Yeah,
+I'll have to think--
+
+00:42:18.370 --> 00:42:19.830 align:middle line:84%
+I'd have to think a bit
+more about the interaction
+
+00:42:19.830 --> 00:42:20.890 align:middle line:90%
+of momentum with this.
+
+00:42:20.890 --> 00:42:24.390 align:middle line:84%
+But I would say that, generally,
+all the tricks that we
+
+00:42:24.390 --> 00:42:27.270 align:middle line:84%
+use in practice are just
+getting rid of that spike
+
+00:42:27.270 --> 00:42:28.970 align:middle line:84%
+and pushing us more
+out to the right.
+
+00:42:28.970 --> 00:42:31.550 align:middle line:84%
+So it's not like we're
+losing that benefit.
+
+00:42:31.550 --> 00:42:33.030 align:middle line:84%
+We're reducing the
+negative effect
+
+00:42:33.030 --> 00:42:35.610 align:middle line:84%
+of having this
+spike in the middle.
+
+00:42:35.610 --> 00:42:39.650 align:middle line:90%
+
+
+00:42:39.650 --> 00:42:42.290 align:middle line:84%
+So one of the
+interesting things that
+
+00:42:42.290 --> 00:42:44.410 align:middle line:84%
+could help explain
+this phenomenon
+
+00:42:44.410 --> 00:42:48.623 align:middle line:84%
+is that the more
+features that you have,
+
+00:42:48.623 --> 00:42:50.290 align:middle line:84%
+that you're regressing
+on top of-- these
+
+00:42:50.290 --> 00:42:54.715 align:middle line:84%
+could be features, like
+the hidden units of an MLP,
+
+00:42:54.715 --> 00:42:57.090 align:middle line:84%
+or in this case, these are
+what are called random Fourier
+
+00:42:57.090 --> 00:43:00.690 align:middle line:84%
+features-- like, random
+sines and cosines,
+
+00:43:00.690 --> 00:43:04.370 align:middle line:84%
+random periodic
+functions to the data.
+
+00:43:04.370 --> 00:43:08.290 align:middle line:84%
+As I have more and
+more features, well--
+
+00:43:08.290 --> 00:43:09.990 align:middle line:90%
+at first, I underfit the data.
+
+00:43:09.990 --> 00:43:12.930 align:middle line:84%
+And then I start using
+all the features.
+
+00:43:12.930 --> 00:43:16.450 align:middle line:84%
+And my weights are assigned
+to those features spike
+
+00:43:16.450 --> 00:43:20.110 align:middle line:84%
+because I have to make a linear
+combination that fits the data.
+
+00:43:20.110 --> 00:43:23.170 align:middle line:90%
+I have to be using all of them.
+
+00:43:23.170 --> 00:43:26.170 align:middle line:84%
+But then what happens is, as
+I add more and more features,
+
+00:43:26.170 --> 00:43:28.958 align:middle line:84%
+the norm of the weight
+vector, or the parameter
+
+00:43:28.958 --> 00:43:31.250 align:middle line:84%
+norm-- the norm of that
+vector, the size of that vector
+
+00:43:31.250 --> 00:43:32.850 align:middle line:90%
+actually decays.
+
+00:43:32.850 --> 00:43:35.530 align:middle line:84%
+So I have more features,
+but the weights
+
+00:43:35.530 --> 00:43:37.850 align:middle line:84%
+I'm applying to
+those features are
+
+00:43:37.850 --> 00:43:39.460 align:middle line:84%
+getting smaller and
+smaller in terms
+
+00:43:39.460 --> 00:43:42.002 align:middle line:84%
+of their overall magnitude--
+the norm of the entire parameter
+
+00:43:42.002 --> 00:43:42.660 align:middle line:90%
+vector.
+
+00:43:42.660 --> 00:43:46.940 align:middle line:84%
+So it's like, more features
+means lower norm parameter
+
+00:43:46.940 --> 00:43:49.300 align:middle line:84%
+solutions, so in some
+sense kind of smoother
+
+00:43:49.300 --> 00:43:51.020 align:middle line:90%
+in a particular sense.
+
+00:43:51.020 --> 00:43:53.912 align:middle line:84%
+And so this is just saying that
+counting number of parameters
+
+00:43:53.912 --> 00:43:55.120 align:middle line:90%
+is not the right thing to do.
+
+00:43:55.120 --> 00:43:57.980 align:middle line:84%
+It might be that the parameter
+norm or some other property
+
+00:43:57.980 --> 00:44:03.180 align:middle line:84%
+of the parameters is what is
+the more meaningful measure
+
+00:44:03.180 --> 00:44:06.200 align:middle line:84%
+of the complexity of the
+solution, or how wiggly it is,
+
+00:44:06.200 --> 00:44:08.420 align:middle line:84%
+or how much it deviates
+from a nice smooth fit
+
+00:44:08.420 --> 00:44:11.100 align:middle line:90%
+to the underlying trend.
+
+00:44:11.100 --> 00:44:11.920 align:middle line:90%
+Yeah, question?
+
+00:44:11.920 --> 00:44:12.980 align:middle line:84%
+AUDIENCE: Did that
+line up-- could that
+
+00:44:12.980 --> 00:44:15.165 align:middle line:84%
+be lined up with the
+interpolation threshold?
+
+00:44:15.165 --> 00:44:17.540 align:middle line:84%
+PHILLIP ISOLA: So the question
+is, does that peak line up
+
+00:44:17.540 --> 00:44:19.300 align:middle line:84%
+with the interpolation
+threshold where you perfectly
+
+00:44:19.300 --> 00:44:19.842 align:middle line:90%
+fit the data?
+
+00:44:19.842 --> 00:44:22.260 align:middle line:84%
+Yes, it's exactly at the
+interpolation threshold.
+
+00:44:22.260 --> 00:44:24.880 align:middle line:84%
+And you can show these
+things for linear models,
+
+00:44:24.880 --> 00:44:26.160 align:middle line:90%
+and it's all provable.
+
+00:44:26.160 --> 00:44:28.205 align:middle line:84%
+But for deep nets,
+it's just empirical.
+
+00:44:28.205 --> 00:44:30.580 align:middle line:84%
+Let me keep going, and we can
+come back to more questions
+
+00:44:30.580 --> 00:44:31.340 align:middle line:90%
+later.
+
+00:44:31.340 --> 00:44:34.140 align:middle line:84%
+So how should we
+measure complexity?
+
+00:44:34.140 --> 00:44:37.810 align:middle line:84%
+So number of neurons, number of
+weights, number of parameters?
+
+00:44:37.810 --> 00:44:41.070 align:middle line:90%
+No, that just doesn't work.
+
+00:44:41.070 --> 00:44:44.910 align:middle line:84%
+So double descent shows
+that, as I increase
+
+00:44:44.910 --> 00:44:47.610 align:middle line:84%
+the number of neurons,
+the number of parameters,
+
+00:44:47.610 --> 00:44:51.230 align:middle line:90%
+I don't necessarily overfit.
+
+00:44:51.230 --> 00:44:52.830 align:middle line:84%
+So number of parameters
+is not really
+
+00:44:52.830 --> 00:44:55.230 align:middle line:84%
+the right notion of
+complexity according
+
+00:44:55.230 --> 00:44:57.470 align:middle line:84%
+to the classical
+theory that having
+
+00:44:57.470 --> 00:45:01.710 align:middle line:84%
+a more expressive, higher
+capacity hypothesis
+
+00:45:01.710 --> 00:45:03.850 align:middle line:90%
+space will cause overfitting.
+
+00:45:03.850 --> 00:45:06.000 align:middle line:90%
+So number of parameters, no.
+
+00:45:06.000 --> 00:45:08.250 align:middle line:84%
+Parameter norm-- maybe that
+seems a little bit better,
+
+00:45:08.250 --> 00:45:12.550 align:middle line:90%
+but it has its own flaws.
+
+00:45:12.550 --> 00:45:18.350 align:middle line:84%
+Just to emphasize this with
+maybe a really obvious example--
+
+00:45:18.350 --> 00:45:23.710 align:middle line:84%
+does the number of
+parameters a deep net has--
+
+00:45:23.710 --> 00:45:25.650 align:middle line:84%
+why would we actually
+expect that to matter?
+
+00:45:25.650 --> 00:45:28.990 align:middle line:84%
+So consider these two
+deep nets, f and g.
+
+00:45:28.990 --> 00:45:33.870 align:middle line:84%
+And f has a lot of
+parameters, a lot of edges.
+
+00:45:33.870 --> 00:45:36.953 align:middle line:84%
+And g has only a few
+parameters, a few edges.
+
+00:45:36.953 --> 00:45:38.870 align:middle line:84%
+And we're going to
+consider a new function, h,
+
+00:45:38.870 --> 00:45:41.970 align:middle line:84%
+which is just a combination
+of a tiny, tiny bit of f--
+
+00:45:41.970 --> 00:45:44.250 align:middle line:84%
+10 to the negative
+100 worth of f.
+
+00:45:44.250 --> 00:45:49.250 align:middle line:84%
+And then almost entirely
+we're going to use g.
+
+00:45:49.250 --> 00:45:53.730 align:middle line:84%
+And now, we're going to ask
+how many parameters would it
+
+00:45:53.730 --> 00:45:59.370 align:middle line:84%
+take to fit h to some epsilon
+degree of approximation?
+
+00:45:59.370 --> 00:46:05.325 align:middle line:84%
+And the point here is that
+if I just fit h with g,
+
+00:46:05.325 --> 00:46:06.950 align:middle line:84%
+I would only be using
+a few parameters,
+
+00:46:06.950 --> 00:46:10.530 align:middle line:84%
+but get within epsilon
+is 10 to the negative 100
+
+00:46:10.530 --> 00:46:12.450 align:middle line:90%
+of the correct solution.
+
+00:46:12.450 --> 00:46:16.670 align:middle line:84%
+So it's kind of the count of
+parameters is not what matters.
+
+00:46:16.670 --> 00:46:18.810 align:middle line:84%
+Something about the
+size has to also
+
+00:46:18.810 --> 00:46:20.770 align:middle line:84%
+be what matters in
+terms of how well I'm
+
+00:46:20.770 --> 00:46:24.610 align:middle line:84%
+able to approximate
+different types of functions.
+
+00:46:24.610 --> 00:46:27.250 align:middle line:90%
+
+
+00:46:27.250 --> 00:46:29.330 align:middle line:84%
+So parameter norm,
+size of the parameters
+
+00:46:29.330 --> 00:46:31.330 align:middle line:90%
+matters more than count.
+
+00:46:31.330 --> 00:46:34.220 align:middle line:84%
+But parameter norm is
+also not everything.
+
+00:46:34.220 --> 00:46:38.080 align:middle line:90%
+
+
+00:46:38.080 --> 00:46:42.540 align:middle line:84%
+So let's try another idea from
+classical theory, which is--
+
+00:46:42.540 --> 00:46:44.020 align:middle line:84%
+OK, it's not number
+of parameters
+
+00:46:44.020 --> 00:46:46.980 align:middle line:84%
+that is the proper
+measure of the complexity
+
+00:46:46.980 --> 00:46:51.220 align:middle line:84%
+of a hypothesis space or
+a neural architecture.
+
+00:46:51.220 --> 00:46:54.380 align:middle line:84%
+How about the number
+of unique functions
+
+00:46:54.380 --> 00:46:57.860 align:middle line:90%
+in the hypothesis space?
+
+00:46:57.860 --> 00:47:01.520 align:middle line:84%
+It's another
+measure of capacity.
+
+00:47:01.520 --> 00:47:08.768 align:middle line:84%
+And this is related to a theory
+that Vapnik and Chervonenkis--
+
+00:47:08.768 --> 00:47:11.060 align:middle line:84%
+I don't know if I got the
+pronunciation right-- anyway,
+
+00:47:11.060 --> 00:47:11.960 align:middle line:90%
+VC theory.
+
+00:47:11.960 --> 00:47:14.500 align:middle line:90%
+
+
+00:47:14.500 --> 00:47:16.365 align:middle line:84%
+So remember,
+generalization error
+
+00:47:16.365 --> 00:47:18.740 align:middle line:84%
+is the difference between the
+training error and the test
+
+00:47:18.740 --> 00:47:22.300 align:middle line:84%
+error, or the training error
+and the population error.
+
+00:47:22.300 --> 00:47:24.500 align:middle line:84%
+And the basic argument
+of this theory
+
+00:47:24.500 --> 00:47:28.060 align:middle line:84%
+says that if the
+number of training data
+
+00:47:28.060 --> 00:47:32.190 align:middle line:84%
+points I fit to is much larger
+than the number of functions
+
+00:47:32.190 --> 00:47:34.550 align:middle line:84%
+under consideration
+in my hypothesis space
+
+00:47:34.550 --> 00:47:38.630 align:middle line:84%
+I'm searching over, then you
+can guarantee to some degree
+
+00:47:38.630 --> 00:47:43.310 align:middle line:84%
+that the population error
+matches the training error.
+
+00:47:43.310 --> 00:47:46.450 align:middle line:84%
+So something about the size of
+the training data and the size--
+
+00:47:46.450 --> 00:47:49.750 align:middle line:84%
+the number of distinct functions
+that I'm searching over--
+
+00:47:49.750 --> 00:47:51.910 align:middle line:84%
+something about the ratio
+between these things.
+
+00:47:51.910 --> 00:47:55.012 align:middle line:90%
+So the intuition is like this.
+
+00:47:55.012 --> 00:47:57.470 align:middle line:84%
+So we could define something
+called a false positive, which
+
+00:47:57.470 --> 00:47:59.430 align:middle line:84%
+would be a function that
+fits the training data
+
+00:47:59.430 --> 00:48:02.870 align:middle line:90%
+but has high population risk--
+
+00:48:02.870 --> 00:48:04.330 align:middle line:90%
+a function that just gets lucky.
+
+00:48:04.330 --> 00:48:07.230 align:middle line:90%
+It fits but doesn't generalize.
+
+00:48:07.230 --> 00:48:09.690 align:middle line:84%
+So what is the chance of
+getting a false positive
+
+00:48:09.690 --> 00:48:13.710 align:middle line:84%
+if I'm searching over all
+of the different candidate
+
+00:48:13.710 --> 00:48:16.750 align:middle line:90%
+functions in my function class?
+
+00:48:16.750 --> 00:48:18.830 align:middle line:84%
+So the chance of
+getting a false positive
+
+00:48:18.830 --> 00:48:23.610 align:middle line:84%
+will be high if we just have
+more candidate functions.
+
+00:48:23.610 --> 00:48:27.130 align:middle line:84%
+Like, if I just have
+more candidate functions,
+
+00:48:27.130 --> 00:48:29.840 align:middle line:84%
+there's more random ones
+that will get lucky--
+
+00:48:29.840 --> 00:48:32.160 align:middle line:90%
+so that intuition.
+
+00:48:32.160 --> 00:48:37.460 align:middle line:84%
+And then it should be lower
+if I have more data points,
+
+00:48:37.460 --> 00:48:40.297 align:middle line:84%
+because every additional
+data point rules out
+
+00:48:40.297 --> 00:48:41.880 align:middle line:84%
+certain candidate
+functions from being
+
+00:48:41.880 --> 00:48:42.980 align:middle line:90%
+able to fit the data right.
+
+00:48:42.980 --> 00:48:44.688 align:middle line:84%
+Every new data point
+is a new constraint.
+
+00:48:44.688 --> 00:48:46.800 align:middle line:84%
+And it says there
+are fewer functions
+
+00:48:46.800 --> 00:48:49.240 align:middle line:84%
+in my hypothesis
+space, in my function
+
+00:48:49.240 --> 00:48:51.400 align:middle line:90%
+class that can fit the data.
+
+00:48:51.400 --> 00:48:53.760 align:middle line:84%
+So therefore, if the
+function class is small
+
+00:48:53.760 --> 00:48:56.320 align:middle line:84%
+and the training data is big,
+the chance of a false positive,
+
+00:48:56.320 --> 00:48:58.298 align:middle line:90%
+of just getting lucky, is low.
+
+00:48:58.298 --> 00:48:59.840 align:middle line:84%
+And therefore, I
+have a higher chance
+
+00:48:59.840 --> 00:49:02.140 align:middle line:84%
+that I really found a
+solution that generalizes.
+
+00:49:02.140 --> 00:49:03.820 align:middle line:84%
+That's kind of the
+rough argument.
+
+00:49:03.820 --> 00:49:05.900 align:middle line:84%
+And you can make this
+mathematically precise.
+
+00:49:05.900 --> 00:49:08.960 align:middle line:90%
+
+
+00:49:08.960 --> 00:49:11.520 align:middle line:84%
+I have one more picture
+to make this argument just
+
+00:49:11.520 --> 00:49:13.420 align:middle line:90%
+in case that wasn't clear.
+
+00:49:13.420 --> 00:49:16.980 align:middle line:84%
+But let's imagine that I have
+this very simple setting.
+
+00:49:16.980 --> 00:49:20.320 align:middle line:84%
+I have a hypothesis space, which
+is a discrete set of candidate
+
+00:49:20.320 --> 00:49:21.920 align:middle line:90%
+functions, these circles.
+
+00:49:21.920 --> 00:49:24.320 align:middle line:84%
+So every circle is a
+candidate function.
+
+00:49:24.320 --> 00:49:26.840 align:middle line:84%
+The purple circles
+are the functions
+
+00:49:26.840 --> 00:49:29.020 align:middle line:90%
+that fit my training data.
+
+00:49:29.020 --> 00:49:31.292 align:middle line:84%
+And the true
+function is in green.
+
+00:49:31.292 --> 00:49:33.000 align:middle line:84%
+And we're going to
+make some assumptions.
+
+00:49:33.000 --> 00:49:34.260 align:middle line:84%
+We're going to
+assume that there's
+
+00:49:34.260 --> 00:49:35.510 align:middle line:90%
+no noise in the training data.
+
+00:49:35.510 --> 00:49:39.720 align:middle line:84%
+We're going to assume that the
+true function is in this set.
+
+00:49:39.720 --> 00:49:42.980 align:middle line:84%
+So it's not like I have
+a chance of finding it.
+
+00:49:42.980 --> 00:49:47.500 align:middle line:84%
+And we'll assume that my way
+of selecting from this set
+
+00:49:47.500 --> 00:49:50.680 align:middle line:84%
+is just I pick at random
+one of the purple points.
+
+00:49:50.680 --> 00:49:52.347 align:middle line:84%
+And the true function
+is also one of--
+
+00:49:52.347 --> 00:49:54.680 align:middle line:84%
+the true function also perfectly
+fits the training data.
+
+00:49:54.680 --> 00:49:57.900 align:middle line:84%
+So my optimization algorithm
+is just pick at random one
+
+00:49:57.900 --> 00:50:01.020 align:middle line:84%
+of the points that
+fits the training data.
+
+00:50:01.020 --> 00:50:05.780 align:middle line:84%
+So what happens as I
+increase the training data?
+
+00:50:05.780 --> 00:50:08.500 align:middle line:84%
+As I increase the training data,
+some of those purple points
+
+00:50:08.500 --> 00:50:10.880 align:middle line:84%
+turn off, because if I
+add a new data point,
+
+00:50:10.880 --> 00:50:14.140 align:middle line:84%
+some of the functions that fit
+the data previously no longer
+
+00:50:14.140 --> 00:50:16.560 align:middle line:84%
+will fit the new data because
+there's more constraints.
+
+00:50:16.560 --> 00:50:19.300 align:middle line:84%
+Every new data point
+adds new constraints
+
+00:50:19.300 --> 00:50:22.160 align:middle line:90%
+that you might violate.
+
+00:50:22.160 --> 00:50:23.940 align:middle line:84%
+So as I increase
+data, I strictly
+
+00:50:23.940 --> 00:50:27.390 align:middle line:84%
+will decrease, or at
+least not increase,
+
+00:50:27.390 --> 00:50:29.543 align:middle line:84%
+the number of these
+purple points.
+
+00:50:29.543 --> 00:50:31.210 align:middle line:84%
+So what happened is
+I add training data.
+
+00:50:31.210 --> 00:50:35.790 align:middle line:84%
+Right now, I have a 1 out
+of 6 chance of if I randomly
+
+00:50:35.790 --> 00:50:39.250 align:middle line:84%
+sample one of the purple or
+green points, 1 out of 6 times
+
+00:50:39.250 --> 00:50:40.950 align:middle line:90%
+I will get the true function.
+
+00:50:40.950 --> 00:50:44.790 align:middle line:84%
+But if I add more data
+now, it's 1 out of 4 times.
+
+00:50:44.790 --> 00:50:46.790 align:middle line:84%
+So adding data will
+increase my chance
+
+00:50:46.790 --> 00:50:50.973 align:middle line:84%
+of getting the true function
+under this procedure.
+
+00:50:50.973 --> 00:50:52.890 align:middle line:84%
+If I reduce the capacity,
+what does that mean?
+
+00:50:52.890 --> 00:50:54.670 align:middle line:84%
+That just means
+removing circles.
+
+00:50:54.670 --> 00:50:58.210 align:middle line:84%
+So the capacity is the number of
+functions in my function class.
+
+00:50:58.210 --> 00:51:00.750 align:middle line:84%
+If I just remove
+circles at random--
+
+00:51:00.750 --> 00:51:03.250 align:middle line:84%
+it's not necessarily how you
+would normally reduce capacity,
+
+00:51:03.250 --> 00:51:06.950 align:middle line:84%
+but this is one model
+of reducing capacity--
+
+00:51:06.950 --> 00:51:09.790 align:middle line:84%
+while still making sure
+that the true function is
+
+00:51:09.790 --> 00:51:13.790 align:middle line:84%
+within my hypothesis
+space, then I
+
+00:51:13.790 --> 00:51:16.950 align:middle line:84%
+will remove some of the
+purple spurious fits,
+
+00:51:16.950 --> 00:51:20.190 align:middle line:84%
+and I'll increase
+the probability of,
+
+00:51:20.190 --> 00:51:22.810 align:middle line:84%
+if I just select a random
+function, getting the right one.
+
+00:51:22.810 --> 00:51:25.720 align:middle line:84%
+So there's these two
+things that are happening.
+
+00:51:25.720 --> 00:51:27.920 align:middle line:84%
+Control capacity--
+add more data.
+
+00:51:27.920 --> 00:51:30.543 align:middle line:84%
+They'll both end up
+increasing my probability
+
+00:51:30.543 --> 00:51:32.460 align:middle line:84%
+of getting the true
+function that generalizes.
+
+00:51:32.460 --> 00:51:35.900 align:middle line:90%
+
+
+00:51:35.900 --> 00:51:41.140 align:middle line:90%
+So a few more technical details.
+
+00:51:41.140 --> 00:51:44.440 align:middle line:84%
+How do you count the number of
+functions in a function class?
+
+00:51:44.440 --> 00:51:46.440 align:middle line:84%
+I said we could have a
+discrete set of functions
+
+00:51:46.440 --> 00:51:47.920 align:middle line:90%
+under consideration.
+
+00:51:47.920 --> 00:51:50.460 align:middle line:84%
+But with a neural net,
+it's a continuous thing.
+
+00:51:50.460 --> 00:51:53.480 align:middle line:84%
+So it turns out that
+for the VC theory,
+
+00:51:53.480 --> 00:51:55.300 align:middle line:90%
+it suffices to do the following.
+
+00:51:55.300 --> 00:52:04.200 align:middle line:84%
+You simply count up how many
+discrete outputs your function
+
+00:52:04.200 --> 00:52:06.440 align:middle line:90%
+can apply to the training data.
+
+00:52:06.440 --> 00:52:10.360 align:middle line:84%
+So the simple version
+of this is I'm
+
+00:52:10.360 --> 00:52:14.420 align:middle line:84%
+going to assume that my
+function is outputting--
+
+00:52:14.420 --> 00:52:16.260 align:middle line:90%
+it's a binary output.
+
+00:52:16.260 --> 00:52:18.280 align:middle line:84%
+So it's going to
+output negative 1 or 1.
+
+00:52:18.280 --> 00:52:22.420 align:middle line:84%
+So it's like binary
+classifications of my data.
+
+00:52:22.420 --> 00:52:24.380 align:middle line:90%
+These are called dichotomies.
+
+00:52:24.380 --> 00:52:27.120 align:middle line:84%
+And let's say I'm doing an
+image classification system.
+
+00:52:27.120 --> 00:52:28.740 align:middle line:90%
+So I have some number of images.
+
+00:52:28.740 --> 00:52:32.380 align:middle line:84%
+And one unique dichotomy is
+plus 1 to the first image,
+
+00:52:32.380 --> 00:52:33.900 align:middle line:84%
+plus 1 to the next
+image, negative 1
+
+00:52:33.900 --> 00:52:36.700 align:middle line:84%
+to the thousandth
+image, and so forth.
+
+00:52:36.700 --> 00:52:40.420 align:middle line:84%
+And I can count up how
+many unique dichotomies
+
+00:52:40.420 --> 00:52:43.660 align:middle line:84%
+I can apply to my data,
+and that will be called
+
+00:52:43.660 --> 00:52:49.060 align:middle line:90%
+the VC dimension of that model.
+
+00:52:49.060 --> 00:52:49.840 align:middle line:90%
+Just one sec.
+
+00:52:49.840 --> 00:52:54.660 align:middle line:84%
+So VC dimension is the number of
+dichotomies over my n training
+
+00:52:54.660 --> 00:52:55.240 align:middle line:90%
+points.
+
+00:52:55.240 --> 00:52:58.140 align:middle line:90%
+
+
+00:52:58.140 --> 00:53:02.020 align:middle line:84%
+And you can prove, under some
+assumptions, this generalization
+
+00:53:02.020 --> 00:53:05.340 align:middle line:84%
+bound that the
+population risk will
+
+00:53:05.340 --> 00:53:11.140 align:middle line:84%
+be bounded by something related
+to this square root of d over n.
+
+00:53:11.140 --> 00:53:14.980 align:middle line:84%
+So if my model class can
+represent more dichotomies,
+
+00:53:14.980 --> 00:53:19.980 align:middle line:84%
+can classify the training
+data in more different ways,
+
+00:53:19.980 --> 00:53:22.230 align:middle line:84%
+then my generalization
+bound will increase,
+
+00:53:22.230 --> 00:53:24.270 align:middle line:84%
+and I will not be able
+to say how well I'll
+
+00:53:24.270 --> 00:53:25.250 align:middle line:90%
+do on the test data.
+
+00:53:25.250 --> 00:53:27.990 align:middle line:84%
+It's like, more functions under
+consideration, so decreasing.
+
+00:53:27.990 --> 00:53:30.990 align:middle line:84%
+But as I add more
+data, n, then that
+
+00:53:30.990 --> 00:53:34.110 align:middle line:84%
+will rule out more and
+more of the spurious fits.
+
+00:53:34.110 --> 00:53:35.830 align:middle line:84%
+And so we have
+this ratio, and we
+
+00:53:35.830 --> 00:53:39.870 align:middle line:84%
+say that our population error
+will be bounded by this ratio.
+
+00:53:39.870 --> 00:53:43.270 align:middle line:84%
+So the cartoon
+argument is the same,
+
+00:53:43.270 --> 00:53:45.230 align:middle line:84%
+but you can prove
+under some conditions
+
+00:53:45.230 --> 00:53:49.390 align:middle line:84%
+that this is the exact
+bound that you get.
+
+00:53:49.390 --> 00:53:54.470 align:middle line:84%
+Let me finish this argument, and
+then we'll go a few questions.
+
+00:53:54.470 --> 00:53:59.630 align:middle line:90%
+So here's the interesting thing.
+
+00:53:59.630 --> 00:54:05.870 align:middle line:84%
+Neural nets can basically fit
+any dichotomy over regular data
+
+00:54:05.870 --> 00:54:06.450 align:middle line:90%
+sets.
+
+00:54:06.450 --> 00:54:08.310 align:middle line:84%
+So given a data set
+of cats versus dogs
+
+00:54:08.310 --> 00:54:11.670 align:middle line:84%
+I'm trying to classify, I
+can train the neural net,
+
+00:54:11.670 --> 00:54:13.610 align:middle line:84%
+and it will correctly
+classify cats and dogs.
+
+00:54:13.610 --> 00:54:15.330 align:middle line:84%
+But I can do the
+following thing.
+
+00:54:15.330 --> 00:54:18.210 align:middle line:84%
+I can randomly
+shuffle the labels.
+
+00:54:18.210 --> 00:54:20.680 align:middle line:84%
+So I take my data set where
+the cats are labeled cat
+
+00:54:20.680 --> 00:54:24.240 align:middle line:84%
+and dogs are labeled
+dog, and now I'll just
+
+00:54:24.240 --> 00:54:28.280 align:middle line:90%
+randomly permute the labels--
+
+00:54:28.280 --> 00:54:30.220 align:middle line:84%
+assign each image
+a random label--
+
+00:54:30.220 --> 00:54:32.480 align:middle line:84%
+just choose different
+random ordering.
+
+00:54:32.480 --> 00:54:36.060 align:middle line:84%
+So now, some dogs are labeled
+cats, some cats are labeled dog,
+
+00:54:36.060 --> 00:54:37.300 align:middle line:90%
+some cats are labeled cats.
+
+00:54:37.300 --> 00:54:39.360 align:middle line:90%
+It's completely random labels.
+
+00:54:39.360 --> 00:54:42.760 align:middle line:84%
+And it turns out that,
+in practice, the neural
+
+00:54:42.760 --> 00:54:45.560 align:middle line:84%
+nets we use can fit
+any random labeling.
+
+00:54:45.560 --> 00:54:48.480 align:middle line:84%
+So in other words, they
+can achieve any dichotomy.
+
+00:54:48.480 --> 00:54:51.640 align:middle line:84%
+So in other words,
+the VC dimension
+
+00:54:51.640 --> 00:54:56.560 align:middle line:84%
+is the total possible numbers
+of dichotomies of n points.
+
+00:54:56.560 --> 00:55:02.680 align:middle line:84%
+So how many different ways can
+I binarily classify n points?
+
+00:55:02.680 --> 00:55:07.000 align:middle line:90%
+2 to the n possible ways.
+
+00:55:07.000 --> 00:55:10.150 align:middle line:84%
+So every single point I can
+assign either a plus 1 or minus
+
+00:55:10.150 --> 00:55:12.850 align:middle line:84%
+1, and then I can do that
+for every other point-- for n
+
+00:55:12.850 --> 00:55:14.160 align:middle line:90%
+points.
+
+00:55:14.160 --> 00:55:18.515 align:middle line:84%
+And so the VC dimension
+d is equal to 2 to the n.
+
+00:55:18.515 --> 00:55:20.890 align:middle line:84%
+And the generalization bound
+is exponential in the number
+
+00:55:20.890 --> 00:55:22.515 align:middle line:84%
+of data training
+points-- is 2 to the n
+
+00:55:22.515 --> 00:55:24.690 align:middle line:90%
+over square root of that.
+
+00:55:24.690 --> 00:55:27.630 align:middle line:84%
+And it turns out that this
+is just extremely loose.
+
+00:55:27.630 --> 00:55:29.270 align:middle line:84%
+And in practice,
+it's just vacuous.
+
+00:55:29.270 --> 00:55:34.070 align:middle line:84%
+It says that my population
+error will be greater than 100%
+
+00:55:34.070 --> 00:55:38.370 align:middle line:84%
+if this is a classifier,
+or my population error
+
+00:55:38.370 --> 00:55:44.470 align:middle line:84%
+is less than 10 billion
+percent or something like this.
+
+00:55:44.470 --> 00:55:46.850 align:middle line:84%
+So as n becomes large,
+this scales exponentially,
+
+00:55:46.850 --> 00:55:48.910 align:middle line:90%
+and it becomes a vacuous bound.
+
+00:55:48.910 --> 00:55:54.170 align:middle line:84%
+It tells us nothing about how
+well the system will generalize.
+
+00:55:54.170 --> 00:56:01.730 align:middle line:84%
+So the VC theory doesn't
+explain deep learning.
+
+00:56:01.730 --> 00:56:04.930 align:middle line:84%
+It has the right,
+I think, paradigm
+
+00:56:04.930 --> 00:56:07.690 align:middle line:84%
+of thinking about the size of
+the hypothesis space, the number
+
+00:56:07.690 --> 00:56:10.890 align:middle line:84%
+of constraints, how many
+functions could fit the data
+
+00:56:10.890 --> 00:56:12.450 align:middle line:90%
+without generalizing well.
+
+00:56:12.450 --> 00:56:14.557 align:middle line:84%
+But the assumptions
+it makes are violated
+
+00:56:14.557 --> 00:56:16.390 align:middle line:84%
+and don't take into
+account the full picture
+
+00:56:16.390 --> 00:56:20.230 align:middle line:84%
+of all of the factors that
+are affecting deep learning.
+
+00:56:20.230 --> 00:56:22.690 align:middle line:84%
+One of the main ones is
+that, in deep learning,
+
+00:56:22.690 --> 00:56:25.290 align:middle line:84%
+we're not just picking a random
+hypothesis that fits the data.
+
+00:56:25.290 --> 00:56:26.870 align:middle line:84%
+We're using gradient
+descent, and that's
+
+00:56:26.870 --> 00:56:29.230 align:middle line:84%
+going to pick certain hypotheses
+and prefer certain hypotheses
+
+00:56:29.230 --> 00:56:29.910 align:middle line:90%
+over others.
+
+00:56:29.910 --> 00:56:32.490 align:middle line:84%
+Among all hypotheses
+that fit the data,
+
+00:56:32.490 --> 00:56:34.410 align:middle line:84%
+it might prefer simple
+ones over complex ones,
+
+00:56:34.410 --> 00:56:35.577 align:middle line:90%
+which we'll see in a minute.
+
+00:56:35.577 --> 00:56:38.690 align:middle line:90%
+
+
+00:56:38.690 --> 00:56:40.550 align:middle line:84%
+And this is one of
+the optional readings.
+
+00:56:40.550 --> 00:56:44.270 align:middle line:84%
+There's a nice paper from a few
+years ago called "Understanding
+
+00:56:44.270 --> 00:56:46.750 align:middle line:84%
+Deep Learning Requires
+Rethinking Generalization."
+
+00:56:46.750 --> 00:56:48.430 align:middle line:90%
+It ran that experiment.
+
+00:56:48.430 --> 00:56:51.810 align:middle line:84%
+It took MNIST, and CIFAR, and
+some of the classic data sets,
+
+00:56:51.810 --> 00:56:53.850 align:middle line:84%
+and it randomly
+shuffled the labels.
+
+00:56:53.850 --> 00:56:56.670 align:middle line:84%
+And it showed that you can
+get 100% training accuracy
+
+00:56:56.670 --> 00:56:59.150 align:middle line:84%
+on any random shuffling
+of the labels.
+
+00:56:59.150 --> 00:57:03.510 align:middle line:84%
+But if you use the true
+labels, then your test accuracy
+
+00:57:03.510 --> 00:57:04.210 align:middle line:90%
+will be high.
+
+00:57:04.210 --> 00:57:07.790 align:middle line:84%
+But if you just randomly
+shuffle the labels,
+
+00:57:07.790 --> 00:57:10.330 align:middle line:84%
+now, there's no ability
+to generalize at all.
+
+00:57:10.330 --> 00:57:12.310 align:middle line:90%
+Your test accuracy will be low.
+
+00:57:12.310 --> 00:57:17.160 align:middle line:84%
+And VC theory would say that
+the generalization bound
+
+00:57:17.160 --> 00:57:18.300 align:middle line:90%
+is completely vacuous.
+
+00:57:18.300 --> 00:57:20.058 align:middle line:84%
+It doesn't tell us
+anything about how well
+
+00:57:20.058 --> 00:57:21.600 align:middle line:84%
+one or the other of
+these things will
+
+00:57:21.600 --> 00:57:22.660 align:middle line:90%
+generalize to the test data.
+
+00:57:22.660 --> 00:57:24.480 align:middle line:84%
+So there must be
+something more about what
+
+00:57:24.480 --> 00:57:27.260 align:middle line:84%
+neural nets are doing that's
+not explained by VC theory.
+
+00:57:27.260 --> 00:57:30.260 align:middle line:90%
+
+
+00:57:30.260 --> 00:57:34.000 align:middle line:84%
+So neural nets can
+fit random labels,
+
+00:57:34.000 --> 00:57:38.320 align:middle line:84%
+yet when they're trained on
+real labels, they generalize.
+
+00:57:38.320 --> 00:57:41.520 align:middle line:84%
+This is the violation
+of classical theory.
+
+00:57:41.520 --> 00:57:44.392 align:middle line:90%
+Any questions there?
+
+00:57:44.392 --> 00:57:46.600 align:middle line:84%
+I think we had a few, so we
+can go back to the slides
+
+00:57:46.600 --> 00:57:49.560 align:middle line:84%
+where you had them if
+you still have them.
+
+00:57:49.560 --> 00:57:50.200 align:middle line:90%
+Yeah?
+
+00:57:50.200 --> 00:57:55.000 align:middle line:84%
+AUDIENCE: So a dichotomy
+is just [INAUDIBLE].
+
+00:57:55.000 --> 00:57:59.200 align:middle line:84%
+PHILLIP ISOLA: Yeah, dichotomy
+is a binary labeling of all
+
+00:57:59.200 --> 00:58:02.880 align:middle line:84%
+of the training data
+points, so a vector
+
+00:58:02.880 --> 00:58:07.960 align:middle line:84%
+of assignments of the
+training points to 0 or 1--
+
+00:58:07.960 --> 00:58:08.980 align:middle line:90%
+negative 1 or 1.
+
+00:58:08.980 --> 00:58:15.830 align:middle line:90%
+
+
+00:58:15.830 --> 00:58:19.410 align:middle line:84%
+So how should we
+measure model complexity
+
+00:58:19.410 --> 00:58:20.887 align:middle line:90%
+in the deep learning era?
+
+00:58:20.887 --> 00:58:22.970 align:middle line:84%
+Should it just be the
+number of distinct functions
+
+00:58:22.970 --> 00:58:24.530 align:middle line:90%
+the model can represent?
+
+00:58:24.530 --> 00:58:27.570 align:middle line:84%
+No, because deep
+nets can represent
+
+00:58:27.570 --> 00:58:30.410 align:middle line:84%
+a huge number of functions,
+and so many functions
+
+00:58:30.410 --> 00:58:32.730 align:middle line:90%
+that the classical bounds on--
+
+00:58:32.730 --> 00:58:35.810 align:middle line:84%
+that tell us how capacity
+relates to generalization
+
+00:58:35.810 --> 00:58:36.590 align:middle line:90%
+don't hold.
+
+00:58:36.590 --> 00:58:39.290 align:middle line:84%
+They would say that this is
+way too high capacity a model.
+
+00:58:39.290 --> 00:58:40.595 align:middle line:90%
+There must be some other thing.
+
+00:58:40.595 --> 00:58:41.970 align:middle line:84%
+There must be
+something else that
+
+00:58:41.970 --> 00:58:45.590 align:middle line:84%
+is helping us to find
+solutions that generalize
+
+00:58:45.590 --> 00:58:47.470 align:middle line:84%
+rather than solutions
+that don't generalize.
+
+00:58:47.470 --> 00:58:51.090 align:middle line:90%
+
+
+00:58:51.090 --> 00:58:53.790 align:middle line:84%
+And unfortunately, I have to
+say that for deep learning,
+
+00:58:53.790 --> 00:58:55.543 align:middle line:90%
+we really don't know what it is.
+
+00:58:55.543 --> 00:58:56.710 align:middle line:90%
+It's still an open question.
+
+00:58:56.710 --> 00:58:57.710 align:middle line:90%
+There's a lot of papers.
+
+00:58:57.710 --> 00:58:59.450 align:middle line:84%
+There's a lot of
+new ideas on this.
+
+00:58:59.450 --> 00:59:01.410 align:middle line:84%
+I'm not saying that we
+don't know anything,
+
+00:59:01.410 --> 00:59:05.430 align:middle line:84%
+but a lot of the classical tools
+aren't working in this era.
+
+00:59:05.430 --> 00:59:10.490 align:middle line:84%
+And it's a great thing for us
+to try to make progress on.
+
+00:59:10.490 --> 00:59:15.270 align:middle line:84%
+So I'm going to use the final
+section to talk about some
+
+00:59:15.270 --> 00:59:17.590 align:middle line:84%
+of the inductive biases
+and pressures that
+
+00:59:17.590 --> 00:59:21.990 align:middle line:84%
+do lead deep nets to find
+solutions that generalize,
+
+00:59:21.990 --> 00:59:26.270 align:middle line:84%
+that give us some inkling
+of where the theory might go
+
+00:59:26.270 --> 00:59:27.530 align:middle line:90%
+and some practical tips.
+
+00:59:27.530 --> 00:59:30.370 align:middle line:84%
+But the recap so far
+is that, empirically,
+
+00:59:30.370 --> 00:59:32.430 align:middle line:90%
+deep nets generalize.
+
+00:59:32.430 --> 00:59:34.850 align:middle line:84%
+They can make
+reasonable predictions,
+
+00:59:34.850 --> 00:59:37.270 align:middle line:84%
+often accurate
+predictions on inputs that
+
+00:59:37.270 --> 00:59:38.730 align:middle line:90%
+are not in their training data.
+
+00:59:38.730 --> 00:59:42.230 align:middle line:84%
+And you can even show this
+for large language models
+
+00:59:42.230 --> 00:59:44.610 align:middle line:84%
+and things where they've
+been trained on so much data.
+
+00:59:44.610 --> 00:59:46.630 align:middle line:84%
+But you can just make
+a counting argument
+
+00:59:46.630 --> 00:59:50.250 align:middle line:84%
+that they still can't
+possibly be just memorizing.
+
+00:59:50.250 --> 00:59:54.190 align:middle line:84%
+They have to be doing
+some generalization.
+
+00:59:54.190 --> 00:59:56.990 align:middle line:84%
+And generalization, just
+from first principles,
+
+00:59:56.990 --> 00:59:58.930 align:middle line:84%
+requires some kind
+of inductive bias.
+
+00:59:58.930 --> 01:00:02.430 align:middle line:84%
+You have to have something that
+rules out the filing cabinet.
+
+01:00:02.430 --> 01:00:05.190 align:middle line:84%
+Only fitting the training
+data cannot fully explain
+
+01:00:05.190 --> 01:00:08.000 align:middle line:84%
+generalization, because you can
+fit the training data by just
+
+01:00:08.000 --> 01:00:11.360 align:middle line:84%
+memorizing the training
+points, but not having--
+
+01:00:11.360 --> 01:00:13.880 align:middle line:84%
+saying anything about
+the samples in between
+
+01:00:13.880 --> 01:00:18.350 align:middle line:84%
+the out-of-distribution samples
+in between the training points--
+
+01:00:18.350 --> 01:00:22.260 align:middle line:84%
+or sorry, the out-of-sample
+samples in the test set.
+
+01:00:22.260 --> 01:00:25.320 align:middle line:90%
+
+
+01:00:25.320 --> 01:00:28.600 align:middle line:84%
+So the inductive biases
+can't really just
+
+01:00:28.600 --> 01:00:31.780 align:middle line:84%
+be about classical
+notions of model capacity,
+
+01:00:31.780 --> 01:00:34.220 align:middle line:84%
+like number of parameters
+or VC dimension,
+
+01:00:34.220 --> 01:00:36.480 align:middle line:84%
+which is number of functions
+that can be represented
+
+01:00:36.480 --> 01:00:38.200 align:middle line:90%
+by that hypothesis space.
+
+01:00:38.200 --> 01:00:41.160 align:middle line:84%
+So we need to understand what
+are the inductive biases,
+
+01:00:41.160 --> 01:00:43.600 align:middle line:84%
+and how do they relate
+to meaningful controls
+
+01:00:43.600 --> 01:00:45.780 align:middle line:84%
+on the expressivity and
+the capacity of the model?
+
+01:00:45.780 --> 01:00:48.680 align:middle line:84%
+How do they prefer simple
+or smooth solutions
+
+01:00:48.680 --> 01:00:51.720 align:middle line:84%
+over other solutions, and
+how do we measure that?
+
+01:00:51.720 --> 01:00:55.040 align:middle line:84%
+And this is very much
+open and ongoing research.
+
+01:00:55.040 --> 01:00:58.868 align:middle line:84%
+So deep nets must have
+some nice inductive biases.
+
+01:00:58.868 --> 01:01:01.160 align:middle line:84%
+They must control the complexity
+in ways we don't fully
+
+01:01:01.160 --> 01:01:03.280 align:middle line:90%
+know how to characterize.
+
+01:01:03.280 --> 01:01:04.840 align:middle line:84%
+So what are these
+inductive biases
+
+01:01:04.840 --> 01:01:07.730 align:middle line:84%
+that deep nets have that
+allow them to generalize?
+
+01:01:07.730 --> 01:01:10.570 align:middle line:90%
+
+
+01:01:10.570 --> 01:01:13.215 align:middle line:84%
+So why do deep nets learn
+functions that generalize?
+
+01:01:13.215 --> 01:01:15.090 align:middle line:84%
+And the basic question
+is, other than fitting
+
+01:01:15.090 --> 01:01:16.290 align:middle line:84%
+the training data--
+we understand that.
+
+01:01:16.290 --> 01:01:17.165 align:middle line:90%
+That's approximation.
+
+01:01:17.165 --> 01:01:19.540 align:middle line:84%
+We understand that fitting
+the training data is critical.
+
+01:01:19.540 --> 01:01:21.470 align:middle line:84%
+That's part of the recipe
+for generalization,
+
+01:01:21.470 --> 01:01:22.930 align:middle line:84%
+but there has to
+be something else.
+
+01:01:22.930 --> 01:01:24.230 align:middle line:84%
+Other than fitting
+the training data,
+
+01:01:24.230 --> 01:01:26.170 align:middle line:84%
+what are the other pressures
+that affect the solution
+
+01:01:26.170 --> 01:01:27.230 align:middle line:90%
+that deep nets arrive at?
+
+01:01:27.230 --> 01:01:29.050 align:middle line:84%
+There must be some
+other pressures
+
+01:01:29.050 --> 01:01:31.970 align:middle line:84%
+that affect which of the two
+solutions that both perfectly
+
+01:01:31.970 --> 01:01:34.942 align:middle line:84%
+fit the training data
+does the deep net choose?
+
+01:01:34.942 --> 01:01:36.650 align:middle line:84%
+And why does it choose
+the one that works
+
+01:01:36.650 --> 01:01:39.370 align:middle line:84%
+and not the filing cabinet
+one, which potentially it
+
+01:01:39.370 --> 01:01:41.430 align:middle line:84%
+would have the capacity
+to do in some cases?
+
+01:01:41.430 --> 01:01:44.417 align:middle line:90%
+
+
+01:01:44.417 --> 01:01:46.750 align:middle line:84%
+So if we fit the training
+data, what's left to consider?
+
+01:01:46.750 --> 01:01:50.182 align:middle line:84%
+So this purple space is meant
+to be-- it's the same space as I
+
+01:01:50.182 --> 01:01:51.390 align:middle line:90%
+showed in purple dots before.
+
+01:01:51.390 --> 01:01:53.765 align:middle line:84%
+But now, I'm going to give it
+this name, "version space."
+
+01:01:53.765 --> 01:01:57.690 align:middle line:84%
+So the version space is
+the set of all hypotheses
+
+01:01:57.690 --> 01:02:01.770 align:middle line:84%
+in the hypothesis space
+that fit the training data.
+
+01:02:01.770 --> 01:02:04.110 align:middle line:84%
+So in neural nets,
+if I have an MLP,
+
+01:02:04.110 --> 01:02:08.450 align:middle line:84%
+the version space is the set of
+all settings of the parameters,
+
+01:02:08.450 --> 01:02:11.350 align:middle line:84%
+the weights and the biases,
+that perfectly interpolate,
+
+01:02:11.350 --> 01:02:15.270 align:middle line:84%
+that perfectly fit my training
+data that achieves zero training
+
+01:02:15.270 --> 01:02:16.150 align:middle line:90%
+error.
+
+01:02:16.150 --> 01:02:20.450 align:middle line:84%
+So some blob within the set of
+functions I'm searching over,
+
+01:02:20.450 --> 01:02:23.650 align:middle line:84%
+which is the set of weights
+and biases of the MLP,
+
+01:02:23.650 --> 01:02:24.650 align:middle line:90%
+if that is my model.
+
+01:02:24.650 --> 01:02:28.150 align:middle line:90%
+
+
+01:02:28.150 --> 01:02:31.807 align:middle line:84%
+So basically, the point is
+that some points in this set
+
+01:02:31.807 --> 01:02:33.390 align:middle line:84%
+are bad and don't
+generalize, and some
+
+01:02:33.390 --> 01:02:34.515 align:middle line:90%
+are good and do generalize.
+
+01:02:34.515 --> 01:02:37.590 align:middle line:84%
+Why do deep nets find the ones
+that are good and do generalize
+
+01:02:37.590 --> 01:02:40.690 align:middle line:90%
+to some degree?
+
+01:02:40.690 --> 01:02:42.990 align:middle line:84%
+So these are all kind of
+ideas that are out there
+
+01:02:42.990 --> 01:02:47.710 align:middle line:84%
+but are not yet completely
+standard or proven.
+
+01:02:47.710 --> 01:02:50.850 align:middle line:84%
+But I think that they're
+fun to think about.
+
+01:02:50.850 --> 01:02:54.110 align:middle line:84%
+So the first one is
+the idea that there's
+
+01:02:54.110 --> 01:02:56.870 align:middle line:84%
+a simplicity bias in what's
+called the parameter function
+
+01:02:56.870 --> 01:02:58.950 align:middle line:90%
+map.
+
+01:02:58.950 --> 01:03:01.410 align:middle line:84%
+The parameter function
+map is-- remember
+
+01:03:01.410 --> 01:03:03.660 align:middle line:84%
+that we're trying to find
+functions that fit the data,
+
+01:03:03.660 --> 01:03:07.400 align:middle line:84%
+but we're trying to find them by
+searching over parametrization
+
+01:03:07.400 --> 01:03:08.238 align:middle line:90%
+of those functions.
+
+01:03:08.238 --> 01:03:10.280 align:middle line:84%
+So we have access to the
+parameters-- the weights
+
+01:03:10.280 --> 01:03:11.020 align:middle line:90%
+and biases.
+
+01:03:11.020 --> 01:03:13.520 align:middle line:84%
+But every setting of the weights
+and biases defines actually
+
+01:03:13.520 --> 01:03:16.080 align:middle line:90%
+some mathematical mapping f.
+
+01:03:16.080 --> 01:03:20.400 align:middle line:84%
+And there might be some
+parameter vectors--
+
+01:03:20.400 --> 01:03:23.840 align:middle line:84%
+two parameter vectors
+could define the same f.
+
+01:03:23.840 --> 01:03:30.042 align:middle line:84%
+Like, if I have a network
+which just adds a bias of one
+
+01:03:30.042 --> 01:03:32.000 align:middle line:84%
+on one layer and then
+subtracts the bias of one
+
+01:03:32.000 --> 01:03:34.800 align:middle line:84%
+on the next layer, and
+otherwise it is an identity,
+
+01:03:34.800 --> 01:03:39.000 align:middle line:84%
+well, that is equivalent to just
+a network that adds a bias of 0
+
+01:03:39.000 --> 01:03:41.420 align:middle line:90%
+and then adds a bias of 0.
+
+01:03:41.420 --> 01:03:43.020 align:middle line:90%
+So plus 1 minus 1 equals 0.
+
+01:03:43.020 --> 01:03:46.420 align:middle line:84%
+There are a multiplicity--
+this is a many-to-one mapping.
+
+01:03:46.420 --> 01:03:49.003 align:middle line:84%
+There's a multiplicity
+of parameter vectors
+
+01:03:49.003 --> 01:03:50.420 align:middle line:84%
+that all map to
+the same function.
+
+01:03:50.420 --> 01:03:52.742 align:middle line:84%
+So the parameters and
+the function space
+
+01:03:52.742 --> 01:03:53.700 align:middle line:90%
+are not the same thing.
+
+01:03:53.700 --> 01:03:57.200 align:middle line:84%
+And we can look at the
+parameter function map.
+
+01:03:57.200 --> 01:04:00.130 align:middle line:84%
+And this is what was observed
+by these authors a few years ago
+
+01:04:00.130 --> 01:04:00.790 align:middle line:90%
+empirically.
+
+01:04:00.790 --> 01:04:04.170 align:middle line:84%
+They didn't prove this, but
+they observed it empirically.
+
+01:04:04.170 --> 01:04:08.410 align:middle line:84%
+If you just sample a
+random set of parameters
+
+01:04:08.410 --> 01:04:12.450 align:middle line:84%
+in an MLP or some other
+neural net models,
+
+01:04:12.450 --> 01:04:16.450 align:middle line:84%
+most of them will
+map to functions f
+
+01:04:16.450 --> 01:04:19.655 align:middle line:90%
+that are simple according to--
+
+01:04:19.655 --> 01:04:21.030 align:middle line:84%
+this is not number
+of parameters.
+
+01:04:21.030 --> 01:04:22.890 align:middle line:90%
+This is not number of distinct--
+
+01:04:22.890 --> 01:04:23.990 align:middle line:90%
+this is not VC dimension.
+
+01:04:23.990 --> 01:04:25.782 align:middle line:84%
+This is another one,
+Lempel-Ziv complexity.
+
+01:04:25.782 --> 01:04:28.890 align:middle line:84%
+It's like saying Lempel-Ziv
+is one of these compression
+
+01:04:28.890 --> 01:04:29.390 align:middle line:90%
+algorithms.
+
+01:04:29.390 --> 01:04:30.932 align:middle line:84%
+And I think this is
+saying like, if I
+
+01:04:30.932 --> 01:04:32.310 align:middle line:84%
+run that function
+f on some data,
+
+01:04:32.310 --> 01:04:34.410 align:middle line:84%
+how well can I compress
+it with this algorithm?
+
+01:04:34.410 --> 01:04:37.020 align:middle line:84%
+So another crazy
+complexity measure
+
+01:04:37.020 --> 01:04:38.770 align:middle line:84%
+that's hard to understand
+exactly how that
+
+01:04:38.770 --> 01:04:42.690 align:middle line:84%
+would relate to generalization,
+but they tried that one.
+
+01:04:42.690 --> 01:04:44.810 align:middle line:90%
+And so they're saying that--
+
+01:04:44.810 --> 01:04:47.360 align:middle line:84%
+this is like a probability
+distribution, I believe.
+
+01:04:47.360 --> 01:04:49.110 align:middle line:84%
+It's a little hard to
+interpret this plot,
+
+01:04:49.110 --> 01:04:54.170 align:middle line:84%
+but there is high
+probability of finding--
+
+01:04:54.170 --> 01:04:55.670 align:middle line:84%
+if I take a random
+parameter vector,
+
+01:04:55.670 --> 01:04:57.420 align:middle line:84%
+a random setting of
+the weights and biases
+
+01:04:57.420 --> 01:05:00.420 align:middle line:84%
+in a network, most random
+settings will be down here.
+
+01:05:00.420 --> 01:05:02.260 align:middle line:84%
+It'll be higher
+probability, and only a few
+
+01:05:02.260 --> 01:05:04.260 align:middle line:84%
+will be functions--
+will define functions
+
+01:05:04.260 --> 01:05:07.500 align:middle line:84%
+that are really
+uncompressable and complex
+
+01:05:07.500 --> 01:05:09.700 align:middle line:90%
+in that particular sense.
+
+01:05:09.700 --> 01:05:13.060 align:middle line:84%
+So here's a way to
+look at-- an intuitive
+
+01:05:13.060 --> 01:05:14.460 align:middle line:90%
+way of looking at this.
+
+01:05:14.460 --> 01:05:17.300 align:middle line:84%
+So if we randomly pick
+a point in the parameter
+
+01:05:17.300 --> 01:05:20.140 align:middle line:84%
+space of the neural
+network, this
+
+01:05:20.140 --> 01:05:22.800 align:middle line:84%
+will tend to map towards
+simple functions.
+
+01:05:22.800 --> 01:05:25.100 align:middle line:84%
+So imagine that we're
+organizing this hypothesis space
+
+01:05:25.100 --> 01:05:26.960 align:middle line:90%
+by the simple functions.
+
+01:05:26.960 --> 01:05:29.780 align:middle line:84%
+The smooth compressible
+functions are down at the left,
+
+01:05:29.780 --> 01:05:32.060 align:middle line:84%
+and more complex, wiggly,
+incompressible functions
+
+01:05:32.060 --> 01:05:34.020 align:middle line:90%
+are up at the right.
+
+01:05:34.020 --> 01:05:37.188 align:middle line:84%
+So most random samples
+will be simple.
+
+01:05:37.188 --> 01:05:38.480 align:middle line:90%
+And then what does learning do?
+
+01:05:38.480 --> 01:05:40.462 align:middle line:84%
+Learning just moves
+our parameters
+
+01:05:40.462 --> 01:05:42.420 align:middle line:84%
+and, therefore, moves
+the functions they map to
+
+01:05:42.420 --> 01:05:44.440 align:middle line:90%
+toward the version space.
+
+01:05:44.440 --> 01:05:46.600 align:middle line:84%
+It moves you toward the
+space that fits the data.
+
+01:05:46.600 --> 01:05:48.500 align:middle line:84%
+And so we'll end up
+in this little section
+
+01:05:48.500 --> 01:05:51.420 align:middle line:84%
+where we're at the corner
+of the version space
+
+01:05:51.420 --> 01:05:53.460 align:middle line:84%
+where we have simple
+functions just by chance,
+
+01:05:53.460 --> 01:05:58.680 align:middle line:84%
+because most random
+initializations of my parameters
+
+01:05:58.680 --> 01:06:00.200 align:middle line:90%
+map to simple functions.
+
+01:06:00.200 --> 01:06:03.000 align:middle line:84%
+And most of the volume, as I
+walk through parameter space,
+
+01:06:03.000 --> 01:06:04.700 align:middle line:84%
+will also map to
+simple functions.
+
+01:06:04.700 --> 01:06:08.320 align:middle line:84%
+And so just by chance,
+we will find a solution
+
+01:06:08.320 --> 01:06:09.860 align:middle line:90%
+that is simple in that sense.
+
+01:06:09.860 --> 01:06:14.193 align:middle line:90%
+
+
+01:06:14.193 --> 01:06:20.700 align:middle line:84%
+So I was involved in another
+paper that looked at that,
+
+01:06:20.700 --> 01:06:24.300 align:middle line:84%
+but looked particularly at
+a measure of simplicity,
+
+01:06:24.300 --> 01:06:26.432 align:middle line:90%
+which is the rank of the kernel.
+
+01:06:26.432 --> 01:06:28.140 align:middle line:84%
+So I'm going to describe
+what that means.
+
+01:06:28.140 --> 01:06:30.880 align:middle line:84%
+But we found that there's also
+this bias in the parameter
+
+01:06:30.880 --> 01:06:34.120 align:middle line:84%
+function map toward
+solutions that are
+
+01:06:34.120 --> 01:06:37.960 align:middle line:90%
+low rank in a certain sense.
+
+01:06:37.960 --> 01:06:45.440 align:middle line:84%
+So here's a MLP, W, ReLU,
+W. And here's a deeper MLP.
+
+01:06:45.440 --> 01:06:46.783 align:middle line:90%
+And one of the classic stories--
+
+01:06:46.783 --> 01:06:49.200 align:middle line:84%
+And we'll come back to this
+in the representation learning
+
+01:06:49.200 --> 01:06:49.700 align:middle line:90%
+lectures.
+
+01:06:49.700 --> 01:06:53.400 align:middle line:84%
+But one of the classical
+stories is that shallow nets--
+
+01:06:53.400 --> 01:06:56.730 align:middle line:84%
+let's say I'm trying to classify
+between 10 different classes
+
+01:06:56.730 --> 01:06:58.290 align:middle line:90%
+indicated by the colors.
+
+01:06:58.290 --> 01:07:00.712 align:middle line:84%
+I'm trying to take
+my data and map them
+
+01:07:00.712 --> 01:07:02.670 align:middle line:84%
+to a space where they're
+all linearly separable
+
+01:07:02.670 --> 01:07:03.630 align:middle line:90%
+so I can classify them.
+
+01:07:03.630 --> 01:07:07.410 align:middle line:84%
+So the classic story is that
+deeper nets with more parameters
+
+01:07:07.410 --> 01:07:09.050 align:middle line:84%
+have more capacity
+to organize the data
+
+01:07:09.050 --> 01:07:10.550 align:middle line:90%
+and separate all those classes.
+
+01:07:10.550 --> 01:07:13.150 align:middle line:90%
+
+
+01:07:13.150 --> 01:07:14.770 align:middle line:90%
+So that's the picture here.
+
+01:07:14.770 --> 01:07:17.810 align:middle line:84%
+We get better linear
+separation of all these classes
+
+01:07:17.810 --> 01:07:20.290 align:middle line:90%
+at the top of the network.
+
+01:07:20.290 --> 01:07:23.490 align:middle line:84%
+Now, I'm going to
+characterize that distribution
+
+01:07:23.490 --> 01:07:26.970 align:middle line:84%
+at the top of the network
+with a kernel matrix, which
+
+01:07:26.970 --> 01:07:32.130 align:middle line:84%
+is going to be the
+similarity between every data
+
+01:07:32.130 --> 01:07:33.750 align:middle line:84%
+point and every
+other data point.
+
+01:07:33.750 --> 01:07:37.170 align:middle line:84%
+So this creates a matrix,
+a bivariate function.
+
+01:07:37.170 --> 01:07:41.570 align:middle line:84%
+And it's called the
+kernel of my embeddings
+
+01:07:41.570 --> 01:07:44.090 align:middle line:84%
+that the neural
+network arrives at.
+
+01:07:44.090 --> 01:07:48.450 align:middle line:90%
+So every row and column is--
+
+01:07:48.450 --> 01:07:50.130 align:middle line:84%
+every row is a data
+point and the column
+
+01:07:50.130 --> 01:07:51.230 align:middle line:90%
+is another data point.
+
+01:07:51.230 --> 01:07:54.220 align:middle line:84%
+And the blue value
+is the similarity
+
+01:07:54.220 --> 01:07:58.300 align:middle line:84%
+in the representational vectors
+at the output of that network.
+
+01:07:58.300 --> 01:08:00.720 align:middle line:84%
+So we'll see these kinds
+of kernels a few times.
+
+01:08:00.720 --> 01:08:03.300 align:middle line:84%
+This is a kernel that
+characterizes the representation
+
+01:08:03.300 --> 01:08:06.340 align:middle line:84%
+at the output of the
+network over the input data.
+
+01:08:06.340 --> 01:08:08.420 align:middle line:84%
+And if it's kind
+of block-structured
+
+01:08:08.420 --> 01:08:12.860 align:middle line:84%
+like it is here, that means
+that it's found clusters.
+
+01:08:12.860 --> 01:08:18.300 align:middle line:84%
+So that's like all the red
+points have grouped together
+
+01:08:18.300 --> 01:08:20.368 align:middle line:84%
+into one block, and
+all the purple points
+
+01:08:20.368 --> 01:08:21.160 align:middle line:90%
+into another block.
+
+01:08:21.160 --> 01:08:22.080 align:middle line:90%
+And that's good.
+
+01:08:22.080 --> 01:08:23.740 align:middle line:84%
+So that's kind of
+what we're looking
+
+01:08:23.740 --> 01:08:25.819 align:middle line:84%
+for if we want a good
+organization of my data
+
+01:08:25.819 --> 01:08:27.526 align:middle line:90%
+that's easy to classify.
+
+01:08:27.526 --> 01:08:28.359 align:middle line:90%
+It's very clustered.
+
+01:08:28.359 --> 01:08:32.380 align:middle line:84%
+It will look
+block-structured like this.
+
+01:08:32.380 --> 01:08:35.700 align:middle line:84%
+So the common understanding
+is that deeper nets
+
+01:08:35.700 --> 01:08:37.220 align:middle line:84%
+have greater
+capacity to organize
+
+01:08:37.220 --> 01:08:39.380 align:middle line:84%
+the data into this
+clustered structure that's
+
+01:08:39.380 --> 01:08:43.308 align:middle line:84%
+easy to then make a prediction
+on top of to classify.
+
+01:08:43.308 --> 01:08:45.100 align:middle line:84%
+But the interesting
+thing is if you get rid
+
+01:08:45.100 --> 01:08:47.939 align:middle line:84%
+of the nonlinearities, you
+actually get the same effect.
+
+01:08:47.939 --> 01:08:52.600 align:middle line:84%
+So just a linear network-- just
+a stack of linear layers also
+
+01:08:52.600 --> 01:08:56.439 align:middle line:84%
+will result in a
+deeper linear net--
+
+01:08:56.439 --> 01:09:00.960 align:middle line:90%
+results in more blocky kernels.
+
+01:09:00.960 --> 01:09:04.620 align:middle line:84%
+So we're going to characterize
+now the kernel with its rank.
+
+01:09:04.620 --> 01:09:07.960 align:middle line:84%
+So the rank of that
+matrix is how many
+
+01:09:07.960 --> 01:09:11.200 align:middle line:84%
+linearly independent rows
+and columns there are.
+
+01:09:11.200 --> 01:09:15.040 align:middle line:84%
+So blockier matrices
+have lower rank.
+
+01:09:15.040 --> 01:09:17.359 align:middle line:84%
+Lower rank is like,
+I have clustered
+
+01:09:17.359 --> 01:09:20.319 align:middle line:90%
+the data into a simpler format.
+
+01:09:20.319 --> 01:09:23.680 align:middle line:84%
+And that's useful
+for classification.
+
+01:09:23.680 --> 01:09:26.560 align:middle line:84%
+So you get the same phenomenon
+with deep linear nets.
+
+01:09:26.560 --> 01:09:29.760 align:middle line:84%
+And deep linear nets
+are equivalent to one
+
+01:09:29.760 --> 01:09:31.060 align:middle line:90%
+linear transformation.
+
+01:09:31.060 --> 01:09:32.920 align:middle line:84%
+So you can't explain
+this phenomena
+
+01:09:32.920 --> 01:09:38.479 align:middle line:84%
+as the deeper nets have more
+capacity to organize the data.
+
+01:09:38.479 --> 01:09:39.535 align:middle line:90%
+So what's going on?
+
+01:09:39.535 --> 01:09:41.160 align:middle line:84%
+The argument that we
+make in this paper
+
+01:09:41.160 --> 01:09:46.120 align:middle line:84%
+is that products of matrices
+tend to be low rank.
+
+01:09:46.120 --> 01:09:50.130 align:middle line:84%
+So again, it's like a
+parameter function map.
+
+01:09:50.130 --> 01:09:53.290 align:middle line:84%
+If I have a random set
+of weight matrices,
+
+01:09:53.290 --> 01:09:58.810 align:middle line:84%
+if I have more of them, just
+it will be higher probability
+
+01:09:58.810 --> 01:10:04.170 align:middle line:84%
+that I will output vectors
+whose kernel is lower rank.
+
+01:10:04.170 --> 01:10:07.010 align:middle line:84%
+So this is a property
+of random matrix theory
+
+01:10:07.010 --> 01:10:09.490 align:middle line:84%
+that products of random
+Gaussian matrices
+
+01:10:09.490 --> 01:10:12.570 align:middle line:84%
+will result in a
+low rank matrix.
+
+01:10:12.570 --> 01:10:17.690 align:middle line:84%
+Now, deep nets are not
+products of random matrices,
+
+01:10:17.690 --> 01:10:21.090 align:middle line:84%
+but the full argument is that
+if I'm looking at the weight
+
+01:10:21.090 --> 01:10:23.690 align:middle line:84%
+space of a neural network and
+I'm sampling a random point,
+
+01:10:23.690 --> 01:10:25.650 align:middle line:84%
+if I have a shallow
+network, then
+
+01:10:25.650 --> 01:10:29.370 align:middle line:84%
+most random points
+will be full rank.
+
+01:10:29.370 --> 01:10:31.650 align:middle line:84%
+If I have a deeper
+network, whether it's
+
+01:10:31.650 --> 01:10:34.730 align:middle line:84%
+a linear net or a
+nonlinear net, I
+
+01:10:34.730 --> 01:10:39.250 align:middle line:84%
+will tend to map to lower
+rank solutions just by chance.
+
+01:10:39.250 --> 01:10:41.845 align:middle line:84%
+Now, optimization will pick
+out which of the parameter
+
+01:10:41.845 --> 01:10:43.970 align:middle line:84%
+vectors actually is in the
+version space-- actually
+
+01:10:43.970 --> 01:10:45.130 align:middle line:90%
+fits the data.
+
+01:10:45.130 --> 01:10:47.600 align:middle line:84%
+But because most of the
+volume of parameter space is
+
+01:10:47.600 --> 01:10:49.860 align:middle line:90%
+mapping to low rank solutions--
+
+01:10:49.860 --> 01:10:55.030 align:middle line:84%
+low rank representations of the
+data, when the network is deep,
+
+01:10:55.030 --> 01:10:56.280 align:middle line:90%
+there'll be this kind of bias.
+
+01:10:56.280 --> 01:10:58.420 align:middle line:84%
+There'll be the bias
+that if I'm just
+
+01:10:58.420 --> 01:11:00.120 align:middle line:84%
+searching over some
+random location,
+
+01:11:00.120 --> 01:11:02.820 align:middle line:84%
+I'll tend to be more likely
+to find low rank solutions
+
+01:11:02.820 --> 01:11:04.220 align:middle line:90%
+than high rank solutions.
+
+01:11:04.220 --> 01:11:05.980 align:middle line:84%
+And empirically,
+this is what happens.
+
+01:11:05.980 --> 01:11:07.420 align:middle line:84%
+So a lot of these
+things are only
+
+01:11:07.420 --> 01:11:11.440 align:middle line:84%
+kind of provable and
+analyzable in linear models.
+
+01:11:11.440 --> 01:11:15.420 align:middle line:84%
+But then we can show
+empirically in real deep nets.
+
+01:11:15.420 --> 01:11:18.395 align:middle line:84%
+And what I'm showing
+here is the rank--
+
+01:11:18.395 --> 01:11:19.520 align:middle line:90%
+it's called effective rank.
+
+01:11:19.520 --> 01:11:21.437 align:middle line:84%
+It's just kind of like
+the rank of the matrix,
+
+01:11:21.437 --> 01:11:24.260 align:middle line:84%
+but a slightly
+different version of it.
+
+01:11:24.260 --> 01:11:29.178 align:middle line:84%
+So higher rank means you
+have these representations
+
+01:11:29.178 --> 01:11:30.720 align:middle line:84%
+of your data that
+are less clustered,
+
+01:11:30.720 --> 01:11:34.540 align:middle line:84%
+and lower rank means this
+more clustered-like structure.
+
+01:11:34.540 --> 01:11:37.738 align:middle line:84%
+And on the y-axis
+is the probability.
+
+01:11:37.738 --> 01:11:39.280 align:middle line:84%
+These are like
+probability densities.
+
+01:11:39.280 --> 01:11:41.020 align:middle line:90%
+So this is empirical PDFs--
+
+01:11:41.020 --> 01:11:45.060 align:middle line:84%
+Probability Densities--
+of if I randomly
+
+01:11:45.060 --> 01:11:48.767 align:middle line:84%
+sample parameters of a neural
+network of different depths.
+
+01:11:48.767 --> 01:11:50.350 align:middle line:84%
+So if I randomly
+sample the parameters
+
+01:11:50.350 --> 01:11:56.150 align:middle line:84%
+of a depth-16 network, the
+functions that it maps to
+
+01:11:56.150 --> 01:12:01.190 align:middle line:84%
+will be these functions that
+map to low rank embeddings.
+
+01:12:01.190 --> 01:12:03.430 align:middle line:84%
+I know there's a lot
+of moving pieces here,
+
+01:12:03.430 --> 01:12:05.830 align:middle line:84%
+but basically
+deeper nets will be
+
+01:12:05.830 --> 01:12:10.510 align:middle line:84%
+biased toward functions that are
+simpler in the sense of having
+
+01:12:10.510 --> 01:12:12.130 align:middle line:90%
+lower rank structure.
+
+01:12:12.130 --> 01:12:16.230 align:middle line:90%
+
+
+01:12:16.230 --> 01:12:18.310 align:middle line:84%
+So one more way of
+looking at it-- so this
+
+01:12:18.310 --> 01:12:26.310 align:middle line:84%
+is the rank which is
+in color and in height.
+
+01:12:26.310 --> 01:12:31.150 align:middle line:84%
+If I'm navigating two different
+dimensions of my hypothesis
+
+01:12:31.150 --> 01:12:33.810 align:middle line:84%
+space-- so my hypothesis
+space is parameterized by--
+
+01:12:33.810 --> 01:12:36.730 align:middle line:84%
+my parameter space has a million
+parameters, weights and biases,
+
+01:12:36.730 --> 01:12:38.510 align:middle line:84%
+but I'm going to look
+at just two of them.
+
+01:12:38.510 --> 01:12:42.830 align:middle line:84%
+And I'm going to chart out as
+I walk around that space what
+
+01:12:42.830 --> 01:12:44.050 align:middle line:90%
+is the effective rank.
+
+01:12:44.050 --> 01:12:47.530 align:middle line:84%
+And the point here is
+that as I add depth--
+
+01:12:47.530 --> 01:12:51.010 align:middle line:84%
+so with a single
+layer model, I will
+
+01:12:51.010 --> 01:12:56.050 align:middle line:84%
+have this kind of narrow
+ridge of low rank functions
+
+01:12:56.050 --> 01:12:58.390 align:middle line:84%
+as I navigate my
+parameter space.
+
+01:12:58.390 --> 01:13:01.110 align:middle line:84%
+But a two-layer model,
+I'll pull that ridge apart.
+
+01:13:01.110 --> 01:13:04.170 align:middle line:84%
+And so more volume of
+the parameter space
+
+01:13:04.170 --> 01:13:06.570 align:middle line:90%
+will map to low rank functions.
+
+01:13:06.570 --> 01:13:10.050 align:middle line:84%
+And if I combine this with
+optimization, I'll just--
+
+01:13:10.050 --> 01:13:12.830 align:middle line:84%
+more of the solutions will lie
+in the low rank space as well.
+
+01:13:12.830 --> 01:13:20.325 align:middle line:90%
+
+
+01:13:20.325 --> 01:13:22.450 align:middle line:84%
+Yeah, one set of ideas is
+that deep nets are biased
+
+01:13:22.450 --> 01:13:24.750 align:middle line:84%
+toward simplicity
+according to Lempel-Ziv
+
+01:13:24.750 --> 01:13:27.730 align:middle line:84%
+or according to the rank of the
+functions that they learn just
+
+01:13:27.730 --> 01:13:30.650 align:middle line:84%
+because most parameterizations--
+most settings of the parameters
+
+01:13:30.650 --> 01:13:33.050 align:middle line:90%
+map to these simple functions.
+
+01:13:33.050 --> 01:13:36.290 align:middle line:84%
+Another idea is that actually
+the optimization dynamics really
+
+01:13:36.290 --> 01:13:40.210 align:middle line:84%
+play a big role here,
+and that I'm not just
+
+01:13:40.210 --> 01:13:43.240 align:middle line:84%
+picking a random solution
+in my version space.
+
+01:13:43.240 --> 01:13:46.060 align:middle line:84%
+I'm actually using an optimizer,
+which will prefer some solutions
+
+01:13:46.060 --> 01:13:48.540 align:middle line:90%
+over other solutions.
+
+01:13:48.540 --> 01:13:52.820 align:middle line:84%
+And sometimes, I'll have
+explicit regularizers
+
+01:13:52.820 --> 01:13:55.860 align:middle line:84%
+that prefer simple
+solutions in my optimizer
+
+01:13:55.860 --> 01:13:57.608 align:middle line:90%
+or in my objective function.
+
+01:13:57.608 --> 01:13:59.400 align:middle line:84%
+And so one of those is
+called weight decay.
+
+01:13:59.400 --> 01:14:02.400 align:middle line:84%
+It's just saying
+that, as I optimize,
+
+01:14:02.400 --> 01:14:07.380 align:middle line:84%
+I'll tend to shrink the
+weights a little bit
+
+01:14:07.380 --> 01:14:09.160 align:middle line:90%
+on each update step.
+
+01:14:09.160 --> 01:14:11.540 align:middle line:84%
+And this tends to make
+weights that aren't actually
+
+01:14:11.540 --> 01:14:13.560 align:middle line:90%
+being used go to 0.
+
+01:14:13.560 --> 01:14:17.628 align:middle line:84%
+And so I'll end up
+learning a set of weights
+
+01:14:17.628 --> 01:14:19.420 align:middle line:84%
+of my neural network,
+which have lower norm
+
+01:14:19.420 --> 01:14:20.800 align:middle line:90%
+and are simple in that sense.
+
+01:14:20.800 --> 01:14:23.340 align:middle line:90%
+
+
+01:14:23.340 --> 01:14:25.740 align:middle line:84%
+Often, we initialize
+our weights and biases
+
+01:14:25.740 --> 01:14:27.420 align:middle line:90%
+of our networks near 0.
+
+01:14:27.420 --> 01:14:30.980 align:middle line:84%
+And this acts like a bias toward
+finding solutions that have,
+
+01:14:30.980 --> 01:14:37.780 align:middle line:84%
+again, low norm solutions--
+low norm parameter vectors.
+
+01:14:37.780 --> 01:14:39.540 align:middle line:84%
+And then there's a lot
+of interesting work
+
+01:14:39.540 --> 01:14:41.790 align:middle line:84%
+on the implicit biases
+of gradient descent
+
+01:14:41.790 --> 01:14:43.690 align:middle line:90%
+and stochastic gradient descent.
+
+01:14:43.690 --> 01:14:47.710 align:middle line:84%
+And so one idea here is that
+stochastic gradient descent--
+
+01:14:47.710 --> 01:14:49.670 align:middle line:84%
+well, gradient descent
+with a fixed step size
+
+01:14:49.670 --> 01:14:50.850 align:middle line:90%
+kind of descend down.
+
+01:14:50.850 --> 01:14:54.830 align:middle line:84%
+But let's say that I have
+a really, really sharp well
+
+01:14:54.830 --> 01:14:57.550 align:middle line:84%
+in my objective function,
+in my energy landscape.
+
+01:14:57.550 --> 01:15:00.130 align:middle line:84%
+Well, gradient descent can't
+go into a really sharp well
+
+01:15:00.130 --> 01:15:01.900 align:middle line:90%
+if I'm using fixed step sizes.
+
+01:15:01.900 --> 01:15:03.150 align:middle line:90%
+It'll just jump right over it.
+
+01:15:03.150 --> 01:15:05.258 align:middle line:90%
+That well will be too small.
+
+01:15:05.258 --> 01:15:07.550 align:middle line:84%
+So what gradient descent with
+a fixed step size will do
+
+01:15:07.550 --> 01:15:11.230 align:middle line:84%
+is it will tend to find these,
+what are called, flat minima.
+
+01:15:11.230 --> 01:15:14.510 align:middle line:84%
+So kind of basins
+that are low loss, but
+
+01:15:14.510 --> 01:15:19.590 align:middle line:84%
+are low loss over kind of a
+large region of the parameter
+
+01:15:19.590 --> 01:15:21.550 align:middle line:90%
+space that I'm searching over.
+
+01:15:21.550 --> 01:15:25.190 align:middle line:84%
+And these flat minima can be
+argued to generalize better
+
+01:15:25.190 --> 01:15:26.530 align:middle line:90%
+than these narrow minima.
+
+01:15:26.530 --> 01:15:29.968 align:middle line:84%
+The narrow minima might be more
+like just a weird solution that
+
+01:15:29.968 --> 01:15:31.510 align:middle line:84%
+got lucky, but the
+flat minima is one
+
+01:15:31.510 --> 01:15:33.610 align:middle line:90%
+that will generalize better.
+
+01:15:33.610 --> 01:15:36.110 align:middle line:84%
+So I'm not going to go into all
+the arguments for why that's
+
+01:15:36.110 --> 01:15:39.610 align:middle line:84%
+the case, but you can see these
+papers if you're interested.
+
+01:15:39.610 --> 01:15:43.030 align:middle line:84%
+But the optimizer is a critical
+part of the recipe too,
+
+01:15:43.030 --> 01:15:46.743 align:middle line:84%
+and it can affect the
+generalization properties.
+
+01:15:46.743 --> 01:15:48.410 align:middle line:84%
+But I think all of
+what I've said so far
+
+01:15:48.410 --> 01:15:50.210 align:middle line:84%
+is not actually
+the most important.
+
+01:15:50.210 --> 01:15:53.370 align:middle line:84%
+I think the most important is
+the following two slides-- is
+
+01:15:53.370 --> 01:15:55.450 align:middle line:90%
+the architectural symmetries.
+
+01:15:55.450 --> 01:15:57.523 align:middle line:84%
+And we saw these in
+ConvNets and graph nets,
+
+01:15:57.523 --> 01:15:59.690 align:middle line:84%
+and we'll see these in
+transformers and other models
+
+01:15:59.690 --> 01:16:00.190 align:middle line:90%
+too.
+
+01:16:00.190 --> 01:16:02.770 align:middle line:90%
+
+
+01:16:02.770 --> 01:16:06.970 align:middle line:84%
+So our architectures are built
+to have certain invariances.
+
+01:16:06.970 --> 01:16:10.330 align:middle line:84%
+Like, if I'm pooling
+over channels
+
+01:16:10.330 --> 01:16:13.090 align:middle line:84%
+with a max pooling
+operation, I'll be invariant.
+
+01:16:13.090 --> 01:16:15.830 align:middle line:84%
+And my filters are
+like edge detectors.
+
+01:16:15.830 --> 01:16:19.890 align:middle line:84%
+I'll be invariant to the
+orientation of that bird's beak.
+
+01:16:19.890 --> 01:16:22.810 align:middle line:84%
+I'll fire regardless of what the
+orientation of that bird's beak
+
+01:16:22.810 --> 01:16:23.310 align:middle line:90%
+is.
+
+01:16:23.310 --> 01:16:26.570 align:middle line:84%
+So max pooling achieves this
+invariance over the dimension
+
+01:16:26.570 --> 01:16:27.710 align:middle line:90%
+we're maxing over.
+
+01:16:27.710 --> 01:16:31.370 align:middle line:90%
+
+
+01:16:31.370 --> 01:16:33.570 align:middle line:84%
+Equivariances-- so
+graph nets and ConvNets
+
+01:16:33.570 --> 01:16:34.750 align:middle line:90%
+have these equivariances.
+
+01:16:34.750 --> 01:16:37.960 align:middle line:84%
+If I permute the
+labeling of the nodes,
+
+01:16:37.960 --> 01:16:41.340 align:middle line:84%
+then I will permute
+the predictions.
+
+01:16:41.340 --> 01:16:45.620 align:middle line:84%
+Translation equivariance--
+if I have a filter,
+
+01:16:45.620 --> 01:16:49.340 align:middle line:84%
+and I slide it across
+the image, then
+
+01:16:49.340 --> 01:16:51.360 align:middle line:84%
+if I shift the image
+by some amount,
+
+01:16:51.360 --> 01:16:55.300 align:middle line:84%
+I'll shift my predictions
+by that same amount.
+
+01:16:55.300 --> 01:16:58.860 align:middle line:84%
+So these are symmetries
+that are kind of built
+
+01:16:58.860 --> 01:17:02.620 align:middle line:84%
+into our architectures
+that cause them to exhibit
+
+01:17:02.620 --> 01:17:07.100 align:middle line:84%
+out-of-sample generalization,
+because I know
+
+01:17:07.100 --> 01:17:10.660 align:middle line:84%
+if I just shift my
+image, it will respond
+
+01:17:10.660 --> 01:17:13.360 align:middle line:84%
+in the way it was trained to
+respond on the unshifted image.
+
+01:17:13.360 --> 01:17:16.397 align:middle line:84%
+That's what the
+symmetry gives you.
+
+01:17:16.397 --> 01:17:17.980 align:middle line:84%
+And then this kind
+of compositionality
+
+01:17:17.980 --> 01:17:19.730 align:middle line:84%
+I was mentioning
+before-- that the ConvNet
+
+01:17:19.730 --> 01:17:22.680 align:middle line:84%
+and a lot of architectures,
+they factor this input signal.
+
+01:17:22.680 --> 01:17:25.037 align:middle line:84%
+They maybe chop it up
+into little components.
+
+01:17:25.037 --> 01:17:27.120 align:middle line:84%
+They learn something about
+every little component,
+
+01:17:27.120 --> 01:17:29.340 align:middle line:84%
+but then the conjunction
+of components
+
+01:17:29.340 --> 01:17:30.993 align:middle line:84%
+is just given by
+something that's
+
+01:17:30.993 --> 01:17:32.160 align:middle line:90%
+defined by the architecture.
+
+01:17:32.160 --> 01:17:33.140 align:middle line:90%
+It's not learned.
+
+01:17:33.140 --> 01:17:35.990 align:middle line:84%
+The conjunction
+of the outputs of
+
+01:17:35.990 --> 01:17:39.750 align:middle line:84%
+these little patch-wise
+filters, patch-wise predictors
+
+01:17:39.750 --> 01:17:40.610 align:middle line:90%
+is not learned.
+
+01:17:40.610 --> 01:17:44.890 align:middle line:84%
+It's just you stitch
+them all back together.
+
+01:17:44.890 --> 01:17:48.110 align:middle line:84%
+So I think this is where
+really the real power
+
+01:17:48.110 --> 01:17:49.750 align:middle line:84%
+and the real explanation
+of why things
+
+01:17:49.750 --> 01:17:52.440 align:middle line:84%
+like ChatGPT, why
+they actually do
+
+01:17:52.440 --> 01:17:53.690 align:middle line:90%
+these feats of generalization.
+
+01:17:53.690 --> 01:17:56.350 align:middle line:84%
+It's not so much in
+my-- well, I don't know.
+
+01:17:56.350 --> 01:17:59.273 align:middle line:84%
+But I think it's a lot about
+it factorizes the world.
+
+01:17:59.273 --> 01:18:00.690 align:middle line:84%
+It carves the world
+at its joints.
+
+01:18:00.690 --> 01:18:03.610 align:middle line:84%
+It factors its
+world into parcels,
+
+01:18:03.610 --> 01:18:05.670 align:middle line:84%
+which are words, and
+sentences, and paragraphs.
+
+01:18:05.670 --> 01:18:07.630 align:middle line:84%
+And then compositions
+of these things
+
+01:18:07.630 --> 01:18:12.690 align:middle line:84%
+will be arrived at
+not from learning,
+
+01:18:12.690 --> 01:18:18.150 align:middle line:84%
+but from just how the
+architecture is built.
+
+01:18:18.150 --> 01:18:20.575 align:middle line:84%
+And then a lot of
+neural networks
+
+01:18:20.575 --> 01:18:22.450 align:middle line:84%
+have domain knowledge
+that's baked into them.
+
+01:18:22.450 --> 01:18:26.910 align:middle line:84%
+For example, Sarah gave the
+example of the NeRF model, which
+
+01:18:26.910 --> 01:18:29.550 align:middle line:84%
+is a neural architecture,
+but it uses equations
+
+01:18:29.550 --> 01:18:32.230 align:middle line:84%
+of perspective
+projection, and it uses
+
+01:18:32.230 --> 01:18:33.958 align:middle line:90%
+equations of light transport.
+
+01:18:33.958 --> 01:18:35.500 align:middle line:84%
+And these are built
+into the process,
+
+01:18:35.500 --> 01:18:38.080 align:middle line:84%
+and so it will generalize
+to new viewpoints
+
+01:18:38.080 --> 01:18:41.130 align:middle line:90%
+because it's using structures.
+
+01:18:41.130 --> 01:18:42.380 align:middle line:90%
+It's not just fitting to data.
+
+01:18:42.380 --> 01:18:44.760 align:middle line:84%
+It's data plus structure,
+data plus constraints.
+
+01:18:44.760 --> 01:18:49.160 align:middle line:84%
+And this is a drug discovery,
+drug prediction problem, where
+
+01:18:49.160 --> 01:18:50.300 align:middle line:90%
+they've baked in structure.
+
+01:18:50.300 --> 01:18:52.333 align:middle line:84%
+They know about how
+drugs are supposed
+
+01:18:52.333 --> 01:18:53.500 align:middle line:90%
+to interact with each other.
+
+01:18:53.500 --> 01:18:56.200 align:middle line:84%
+And the conjunction
+of fitting to data
+
+01:18:56.200 --> 01:18:57.800 align:middle line:84%
+under structural
+constraints is what
+
+01:18:57.800 --> 01:19:00.700 align:middle line:90%
+can allow you to generalize.
+
+01:19:00.700 --> 01:19:05.105 align:middle line:84%
+So I want to end with one final
+point, which is, well, maybe we
+
+01:19:05.105 --> 01:19:06.480 align:middle line:84%
+can actually go
+back, ultimately,
+
+01:19:06.480 --> 01:19:07.560 align:middle line:90%
+to this theory answer.
+
+01:19:07.560 --> 01:19:09.560 align:middle line:84%
+The theory answer
+is that the shortest
+
+01:19:09.560 --> 01:19:12.880 align:middle line:84%
+program that fits the data will
+be the one that generalizes.
+
+01:19:12.880 --> 01:19:14.762 align:middle line:84%
+I said it's intractable,
+but what if we say,
+
+01:19:14.762 --> 01:19:16.220 align:middle line:84%
+we don't have to
+find the shortest?
+
+01:19:16.220 --> 01:19:18.445 align:middle line:84%
+Finding the shortest
+is intractable.
+
+01:19:18.445 --> 01:19:20.820 align:middle line:84%
+Maybe we don't have to optimize
+for the shortest program,
+
+01:19:20.820 --> 01:19:22.920 align:middle line:84%
+but we can just say a
+short enough program that
+
+01:19:22.920 --> 01:19:25.520 align:middle line:90%
+fits the data will generalize.
+
+01:19:25.520 --> 01:19:28.840 align:middle line:84%
+And so this is something that
+I've just kind come back to
+
+01:19:28.840 --> 01:19:31.300 align:middle line:90%
+over the years.
+
+01:19:31.300 --> 01:19:33.360 align:middle line:84%
+This is a conversation I
+had with Ilya Sutskever,
+
+01:19:33.360 --> 01:19:37.620 align:middle line:84%
+who's well-known as one
+of the founders of OpenAI.
+
+01:19:37.620 --> 01:19:39.480 align:middle line:84%
+And so he had this
+thing he said,
+
+01:19:39.480 --> 01:19:41.560 align:middle line:84%
+which is deep-- this
+is not a direct quote.
+
+01:19:41.560 --> 01:19:42.920 align:middle line:90%
+This is just the rough memory.
+
+01:19:42.920 --> 01:19:45.620 align:middle line:84%
+"Deep nets generalize because
+they find small circuits that
+
+01:19:45.620 --> 01:19:47.210 align:middle line:90%
+fit the data."
+
+01:19:47.210 --> 01:19:48.960 align:middle line:84%
+And so at the time, I
+didn't quite get it.
+
+01:19:48.960 --> 01:19:50.240 align:middle line:90%
+I was like, small circuits?
+
+01:19:50.240 --> 01:19:50.880 align:middle line:90%
+What are you talking about?
+
+01:19:50.880 --> 01:19:51.672 align:middle line:90%
+Deep nets are huge.
+
+01:19:51.672 --> 01:19:54.100 align:middle line:84%
+Don't we need all of
+these inductive biases,
+
+01:19:54.100 --> 01:19:56.545 align:middle line:84%
+and regularizers, and
+simplicity biases?
+
+01:19:56.545 --> 01:19:58.920 align:middle line:84%
+Like, that seems critical to
+understanding deep learning.
+
+01:19:58.920 --> 01:20:00.128 align:middle line:90%
+And we need to bake those in.
+
+01:20:00.128 --> 01:20:02.860 align:middle line:84%
+We need to put
+those in our models.
+
+01:20:02.860 --> 01:20:04.560 align:middle line:84%
+And he said, "no,
+no, no, it's OK.
+
+01:20:04.560 --> 01:20:05.560 align:middle line:90%
+Deep nets are finite.
+
+01:20:05.560 --> 01:20:07.260 align:middle line:90%
+That's enough.
+
+01:20:07.260 --> 01:20:08.160 align:middle line:90%
+Finite is small.
+
+01:20:08.160 --> 01:20:11.100 align:middle line:84%
+Anything finite will look
+small if you have enough data."
+
+01:20:11.100 --> 01:20:12.860 align:middle line:84%
+And I think that
+was a deep insight
+
+01:20:12.860 --> 01:20:15.080 align:middle line:84%
+and maybe led to some of
+the success that he's had.
+
+01:20:15.080 --> 01:20:16.660 align:middle line:90%
+So I'll end there.
+
+01:20:16.660 --> 01:20:18.490 align:middle line:90%
+Thank you.
+
+01:20:18.490 --> 01:20:30.000 align:middle line:90%

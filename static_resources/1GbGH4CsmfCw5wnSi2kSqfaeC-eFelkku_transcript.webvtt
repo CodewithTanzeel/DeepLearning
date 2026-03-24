@@ -1,0 +1,7091 @@
+WEBVTT
+
+00:00:00.000 --> 00:00:01.961 align:middle line:90%
+[SQUEAKING]
+
+00:00:01.961 --> 00:00:03.909 align:middle line:90%
+[RUSTLING]
+
+00:00:03.909 --> 00:00:05.370 align:middle line:90%
+[CLICKING]
+
+00:00:05.370 --> 00:00:13.120 align:middle line:90%
+
+
+00:00:13.120 --> 00:00:15.600 align:middle line:90%
+PHILLIP ISOLA: So welcome.
+
+00:00:15.600 --> 00:00:17.920 align:middle line:90%
+Happy Halloween.
+
+00:00:17.920 --> 00:00:20.480 align:middle line:84%
+Nice to see a few
+little costumes.
+
+00:00:20.480 --> 00:00:23.425 align:middle line:84%
+So today, we're going to
+talk about generative models.
+
+00:00:23.425 --> 00:00:25.800 align:middle line:84%
+Again, this will be our third
+in the sequence of lectures
+
+00:00:25.800 --> 00:00:27.880 align:middle line:90%
+on generative models.
+
+00:00:27.880 --> 00:00:31.280 align:middle line:84%
+And last lecture was a little
+bit math-heavy, a little bit
+
+00:00:31.280 --> 00:00:33.840 align:middle line:84%
+notation-heavy, a
+little bit of a slog.
+
+00:00:33.840 --> 00:00:36.440 align:middle line:84%
+This one, I hope, will be a
+bit more fun and lightweight.
+
+00:00:36.440 --> 00:00:40.840 align:middle line:84%
+We're going to get to see some
+applications of that math.
+
+00:00:40.840 --> 00:00:45.020 align:middle line:84%
+So here is the topics that
+we'll cover in this lecture.
+
+00:00:45.020 --> 00:00:48.520 align:middle line:84%
+We'll talk about the idea
+of structured prediction.
+
+00:00:48.520 --> 00:00:50.800 align:middle line:84%
+And I will go through a
+few different examples
+
+00:00:50.800 --> 00:00:52.760 align:middle line:90%
+in different domains.
+
+00:00:52.760 --> 00:00:54.700 align:middle line:84%
+All the domains will
+be images and text
+
+00:00:54.700 --> 00:00:56.325 align:middle line:84%
+because those are
+the two domains where
+
+00:00:56.325 --> 00:00:58.640 align:middle line:84%
+this kind of technology
+is best developed.
+
+00:00:58.640 --> 00:01:01.250 align:middle line:84%
+But this technology
+will, in the future,
+
+00:01:01.250 --> 00:01:04.489 align:middle line:84%
+and is currently starting to
+be used in other domains, too.
+
+00:01:04.489 --> 00:01:07.710 align:middle line:84%
+But I'll talk about mapping
+images to images, text to text,
+
+00:01:07.710 --> 00:01:10.650 align:middle line:90%
+image to text, text to image.
+
+00:01:10.650 --> 00:01:13.530 align:middle line:84%
+And then I'll end with
+a short section on,
+
+00:01:13.530 --> 00:01:15.990 align:middle line:84%
+can we do these mappings
+without having paired data,
+
+00:01:15.990 --> 00:01:19.970 align:middle line:84%
+without having supervision
+of the form of paired data--
+
+00:01:19.970 --> 00:01:21.150 align:middle line:90%
+in the form of paired data?
+
+00:01:21.150 --> 00:01:23.930 align:middle line:90%
+
+
+00:01:23.930 --> 00:01:29.430 align:middle line:84%
+So when I first encountered
+generative models,
+
+00:01:29.430 --> 00:01:31.130 align:middle line:84%
+it took me a little
+while to understand
+
+00:01:31.130 --> 00:01:35.010 align:middle line:84%
+why they are an important
+thing, especially
+
+00:01:35.010 --> 00:01:37.250 align:middle line:84%
+if you come across them
+in this generative AI
+
+00:01:37.250 --> 00:01:39.737 align:middle line:90%
+era when it was like--
+
+00:01:39.737 --> 00:01:41.570 align:middle line:84%
+your first experience
+might have been you're
+
+00:01:41.570 --> 00:01:45.930 align:middle line:84%
+making up beautiful images
+or writing funny stories.
+
+00:01:45.930 --> 00:01:49.810 align:middle line:84%
+And that feels like it might be
+very useful for entertainment
+
+00:01:49.810 --> 00:01:51.950 align:middle line:84%
+or there's some kind
+of frivolous art form.
+
+00:01:51.950 --> 00:01:53.825 align:middle line:84%
+But really, I think
+they're just fundamental.
+
+00:01:53.825 --> 00:01:55.530 align:middle line:84%
+They're core to
+almost everything.
+
+00:01:55.530 --> 00:01:58.030 align:middle line:84%
+I think I've made that point
+in the previous lectures.
+
+00:01:58.030 --> 00:02:01.210 align:middle line:84%
+But I think it will be most
+obvious in this lecture, where
+
+00:02:01.210 --> 00:02:04.850 align:middle line:84%
+I'll frame all problems
+that are predicting
+
+00:02:04.850 --> 00:02:09.410 align:middle line:84%
+high-dimensional structured data
+or information out of a network
+
+00:02:09.410 --> 00:02:11.570 align:middle line:84%
+as being appropriate
+to be treated
+
+00:02:11.570 --> 00:02:13.170 align:middle line:90%
+with generative modeling.
+
+00:02:13.170 --> 00:02:16.530 align:middle line:84%
+So we can call these data
+prediction problems--
+
+00:02:16.530 --> 00:02:18.662 align:middle line:84%
+in statistics and other
+areas, this is sometimes
+
+00:02:18.662 --> 00:02:19.870 align:middle line:90%
+called structured prediction.
+
+00:02:19.870 --> 00:02:22.120 align:middle line:84%
+So the problem of outputting
+something that's not just
+
+00:02:22.120 --> 00:02:24.450 align:middle line:84%
+a single number or
+a single decision,
+
+00:02:24.450 --> 00:02:26.490 align:middle line:84%
+but is actually some
+high-dimensional structured
+
+00:02:26.490 --> 00:02:27.730 align:middle line:90%
+object--
+
+00:02:27.730 --> 00:02:30.410 align:middle line:84%
+this is the problem that
+generative models are well
+
+00:02:30.410 --> 00:02:31.290 align:middle line:90%
+suited to.
+
+00:02:31.290 --> 00:02:33.750 align:middle line:84%
+And this is the problem,
+which is basically ubiquitous.
+
+00:02:33.750 --> 00:02:36.570 align:middle line:84%
+It's hard to imagine almost any
+problem that you'll come across
+
+00:02:36.570 --> 00:02:39.990 align:middle line:84%
+in your own work which would
+not be structured prediction.
+
+00:02:39.990 --> 00:02:44.753 align:middle line:84%
+It's a weird historical
+artifact that we had this term,
+
+00:02:44.753 --> 00:02:45.670 align:middle line:90%
+structured prediction.
+
+00:02:45.670 --> 00:02:47.210 align:middle line:90%
+This is just everything.
+
+00:02:47.210 --> 00:02:49.585 align:middle line:84%
+But I'll define it
+on the next slide.
+
+00:02:49.585 --> 00:02:50.710 align:middle line:90%
+But here are some examples.
+
+00:02:50.710 --> 00:02:53.210 align:middle line:84%
+So imagine in and
+image out-- so this
+
+00:02:53.210 --> 00:02:55.500 align:middle line:84%
+is like the problem
+of detecting objects.
+
+00:02:55.500 --> 00:02:57.220 align:middle line:84%
+It's a high-dimensional
+structured object
+
+00:02:57.220 --> 00:02:59.140 align:middle line:84%
+which you're trying
+to predict, which
+
+00:02:59.140 --> 00:03:02.300 align:middle line:84%
+is an array of pixels that
+have a class assignment
+
+00:03:02.300 --> 00:03:04.940 align:middle line:90%
+for every input pixel.
+
+00:03:04.940 --> 00:03:07.720 align:middle line:84%
+Audio-- and it's structured
+data in, structured data out.
+
+00:03:07.720 --> 00:03:08.800 align:middle line:90%
+The output is a sentence.
+
+00:03:08.800 --> 00:03:11.760 align:middle line:84%
+It's not just a number or
+a single decision, a class.
+
+00:03:11.760 --> 00:03:13.660 align:middle line:90%
+It's a whole sentence.
+
+00:03:13.660 --> 00:03:19.180 align:middle line:84%
+This is speech recognition or
+automatic speech transcription.
+
+00:03:19.180 --> 00:03:23.400 align:middle line:84%
+Another one that's quite popular
+is describing an image in text,
+
+00:03:23.400 --> 00:03:26.420 align:middle line:84%
+or maybe a video in text, and
+outputting the entire image
+
+00:03:26.420 --> 00:03:27.420 align:middle line:90%
+or video--
+
+00:03:27.420 --> 00:03:29.620 align:middle line:84%
+so text-to-photo,
+which you may have
+
+00:03:29.620 --> 00:03:32.620 align:middle line:84%
+played with in things like
+Stable Diffusion or Midjourney
+
+00:03:32.620 --> 00:03:35.020 align:middle line:90%
+or Dall-E.
+
+00:03:35.020 --> 00:03:39.980 align:middle line:84%
+Another example is a input
+sequence of some kind of protein
+
+00:03:39.980 --> 00:03:42.440 align:middle line:84%
+sequence and output the 3D
+structure of that protein.
+
+00:03:42.440 --> 00:03:45.300 align:middle line:84%
+So again, you're not just
+trying to give one label to,
+
+00:03:45.300 --> 00:03:46.640 align:middle line:90%
+what is this protein?
+
+00:03:46.640 --> 00:03:48.640 align:middle line:84%
+You're trying to output
+a structured object.
+
+00:03:48.640 --> 00:03:50.700 align:middle line:84%
+The entire geometry is a
+high-dimensional object.
+
+00:03:50.700 --> 00:03:52.545 align:middle line:84%
+And it's an object
+that has structure.
+
+00:03:52.545 --> 00:03:54.170 align:middle line:84%
+And what do I mean
+by having structure?
+
+00:03:54.170 --> 00:03:55.587 align:middle line:84%
+This is going to
+be the definition
+
+00:03:55.587 --> 00:03:56.990 align:middle line:90%
+of structured prediction.
+
+00:03:56.990 --> 00:04:00.808 align:middle line:84%
+It means that I'm modeling
+a high-dimensional object X.
+
+00:04:00.808 --> 00:04:03.350 align:middle line:84%
+So my output that I'm trying to
+predict is a high-dimensional
+
+00:04:03.350 --> 00:04:07.150 align:middle line:84%
+object X. And it's an object
+which doesn't factorize
+
+00:04:07.150 --> 00:04:09.790 align:middle line:90%
+into independent--
+
+00:04:09.790 --> 00:04:11.590 align:middle line:90%
+a product of these marginals.
+
+00:04:11.590 --> 00:04:13.550 align:middle line:84%
+So unstructured
+prediction was if I
+
+00:04:13.550 --> 00:04:16.430 align:middle line:84%
+want to model some
+high-dimensional data,
+
+00:04:16.430 --> 00:04:18.070 align:middle line:84%
+I will assume that
+all the dimensions
+
+00:04:18.070 --> 00:04:19.550 align:middle line:90%
+are independent statistically.
+
+00:04:19.550 --> 00:04:24.030 align:middle line:84%
+So independent random variables
+means that the probabilities
+
+00:04:24.030 --> 00:04:25.250 align:middle line:90%
+factorize as a product.
+
+00:04:25.250 --> 00:04:29.455 align:middle line:84%
+So the joint distribution equals
+a product over each dimension.
+
+00:04:29.455 --> 00:04:30.830 align:middle line:84%
+And if I don't
+have independence,
+
+00:04:30.830 --> 00:04:32.010 align:middle line:90%
+I don't have a product.
+
+00:04:32.010 --> 00:04:34.170 align:middle line:84%
+And then we call it
+structured prediction.
+
+00:04:34.170 --> 00:04:36.990 align:middle line:84%
+And of course, you-- it's hard
+to imagine any setting where you
+
+00:04:36.990 --> 00:04:39.248 align:middle line:84%
+really have independence
+over your dimensions
+
+00:04:39.248 --> 00:04:40.790 align:middle line:84%
+of your high-dimensional
+structured--
+
+00:04:40.790 --> 00:04:43.165 align:middle line:84%
+of your high-dimensional object
+you're trying to predict,
+
+00:04:43.165 --> 00:04:46.712 align:middle line:84%
+like text or, if it's
+a robot, the trajectory
+
+00:04:46.712 --> 00:04:47.670 align:middle line:90%
+it has to move its arm.
+
+00:04:47.670 --> 00:04:49.545 align:middle line:84%
+And these are all
+high-dimensional structured
+
+00:04:49.545 --> 00:04:50.550 align:middle line:90%
+objects.
+
+00:04:50.550 --> 00:04:54.270 align:middle line:84%
+If I'm a self-driving car, how
+I navigate the city-- it's like,
+
+00:04:54.270 --> 00:04:56.457 align:middle line:84%
+every decision is not
+independent of all
+
+00:04:56.457 --> 00:04:57.290 align:middle line:90%
+the other decisions.
+
+00:04:57.290 --> 00:04:59.415 align:middle line:84%
+There's joint dependencies
+between those decisions.
+
+00:04:59.415 --> 00:05:02.790 align:middle line:84%
+If I turned left, that affects
+what my next decision should be.
+
+00:05:02.790 --> 00:05:05.810 align:middle line:90%
+
+
+00:05:05.810 --> 00:05:08.270 align:middle line:84%
+So this is the
+setting that we're in.
+
+00:05:08.270 --> 00:05:11.790 align:middle line:84%
+But let's first go back and see
+how people approached these data
+
+00:05:11.790 --> 00:05:14.170 align:middle line:84%
+prediction problems
+with unstructured models
+
+00:05:14.170 --> 00:05:16.830 align:middle line:84%
+because even though it
+seems like a crazy idea now,
+
+00:05:16.830 --> 00:05:17.730 align:middle line:90%
+it was simple.
+
+00:05:17.730 --> 00:05:19.510 align:middle line:90%
+And it's not terrible.
+
+00:05:19.510 --> 00:05:21.170 align:middle line:84%
+There's reasons
+why that can work.
+
+00:05:21.170 --> 00:05:24.034 align:middle line:90%
+
+
+00:05:24.034 --> 00:05:28.430 align:middle line:84%
+So here's the unstructured
+way of modeling
+
+00:05:28.430 --> 00:05:29.970 align:middle line:90%
+the colorization problem.
+
+00:05:29.970 --> 00:05:31.870 align:middle line:84%
+So I love this
+problem because it
+
+00:05:31.870 --> 00:05:35.528 align:middle line:84%
+captures all the key concepts in
+machine learning, in my opinion.
+
+00:05:35.528 --> 00:05:37.070 align:middle line:84%
+I don't actually
+care that much about
+
+00:05:37.070 --> 00:05:38.887 align:middle line:84%
+colorization as a
+graphics problem.
+
+00:05:38.887 --> 00:05:40.470 align:middle line:84%
+But I've often used
+this as an example
+
+00:05:40.470 --> 00:05:43.170 align:middle line:84%
+because it just has all
+the right properties.
+
+00:05:43.170 --> 00:05:46.170 align:middle line:84%
+So this is trying to predict
+the color of this shirt here.
+
+00:05:46.170 --> 00:05:49.310 align:middle line:84%
+So what color do
+you think it is?
+
+00:05:49.310 --> 00:05:50.580 align:middle line:90%
+Who has the answer?
+
+00:05:50.580 --> 00:05:51.080 align:middle line:90%
+No one.
+
+00:05:51.080 --> 00:05:52.580 align:middle line:90%
+You don't know-- could be red.
+
+00:05:52.580 --> 00:05:53.740 align:middle line:90%
+It could be orange.
+
+00:05:53.740 --> 00:05:55.700 align:middle line:84%
+This is the grayscale
+version of the shirt.
+
+00:05:55.700 --> 00:05:57.000 align:middle line:90%
+So what color is it?
+
+00:05:57.000 --> 00:05:59.800 align:middle line:84%
+Well, maybe I know that
+this shirt is manufactured
+
+00:05:59.800 --> 00:06:02.720 align:middle line:84%
+by some company, and this shirt
+comes in two different colors.
+
+00:06:02.720 --> 00:06:05.500 align:middle line:90%
+
+
+00:06:05.500 --> 00:06:08.920 align:middle line:84%
+I am going to imagine that
+the true probability of color
+
+00:06:08.920 --> 00:06:10.680 align:middle line:84%
+of this grayscale
+shirt conditioned
+
+00:06:10.680 --> 00:06:13.480 align:middle line:84%
+on the luminance value,
+the grayscale value--
+
+00:06:13.480 --> 00:06:15.800 align:middle line:84%
+this is going to be the
+data distribution that
+
+00:06:15.800 --> 00:06:18.340 align:middle line:84%
+is the way the actual
+universe works.
+
+00:06:18.340 --> 00:06:21.540 align:middle line:84%
+So this is the true distribution
+that describes this data.
+
+00:06:21.540 --> 00:06:24.240 align:middle line:84%
+I take shirts that
+are teal and shirts
+
+00:06:24.240 --> 00:06:26.440 align:middle line:84%
+that are pink with
+equal probability.
+
+00:06:26.440 --> 00:06:27.940 align:middle line:84%
+I convert them to
+a grayscale image.
+
+00:06:27.940 --> 00:06:31.320 align:middle line:90%
+And that's my observation.
+
+00:06:31.320 --> 00:06:35.120 align:middle line:84%
+So if I just try to
+predict the color using
+
+00:06:35.120 --> 00:06:39.480 align:middle line:84%
+the classical regression
+method, which is just
+
+00:06:39.480 --> 00:06:42.608 align:middle line:84%
+output a single number for--
+a single continuous number,
+
+00:06:42.608 --> 00:06:44.400 align:middle line:84%
+what color do I think
+that shirt is-- let's
+
+00:06:44.400 --> 00:06:46.840 align:middle line:84%
+imagine color is a
+one-dimensional space that
+
+00:06:46.840 --> 00:06:49.080 align:middle line:90%
+goes from teal to pink.
+
+00:06:49.080 --> 00:06:52.880 align:middle line:84%
+Well, with this point
+prediction method,
+
+00:06:52.880 --> 00:06:57.640 align:middle line:84%
+you can interpret that, if
+you want to, as a posterior
+
+00:06:57.640 --> 00:06:59.650 align:middle line:84%
+distribution over all
+the possible colors
+
+00:06:59.650 --> 00:07:00.900 align:middle line:90%
+that this shirt could take on.
+
+00:07:00.900 --> 00:07:03.000 align:middle line:84%
+But you're outputting
+a delta function.
+
+00:07:03.000 --> 00:07:05.920 align:middle line:84%
+And it doesn't express
+anything about your uncertainty
+
+00:07:05.920 --> 00:07:08.300 align:middle line:84%
+over what the range
+of colors could be.
+
+00:07:08.300 --> 00:07:11.800 align:middle line:84%
+And it can't capture this
+multimodal distribution.
+
+00:07:11.800 --> 00:07:15.120 align:middle line:84%
+So in particular,
+if you are doing
+
+00:07:15.120 --> 00:07:18.360 align:middle line:84%
+least squares regression to
+output a scalar value, which
+
+00:07:18.360 --> 00:07:20.920 align:middle line:84%
+is going to be your
+prediction of color,
+
+00:07:20.920 --> 00:07:26.023 align:middle line:84%
+the minimizer of the least
+squared objective over a data--
+
+00:07:26.023 --> 00:07:27.440 align:middle line:84%
+a training
+distribution that looks
+
+00:07:27.440 --> 00:07:31.980 align:middle line:84%
+like this is going to be the
+average of the two colors.
+
+00:07:31.980 --> 00:07:36.640 align:middle line:84%
+So the average is the
+minimizer of the sum
+
+00:07:36.640 --> 00:07:41.400 align:middle line:90%
+of squared deviations from a--
+
+00:07:41.400 --> 00:07:43.080 align:middle line:84%
+the average of a
+set of data points
+
+00:07:43.080 --> 00:07:45.960 align:middle line:84%
+is a minimizer of the squared
+deviation from all the data
+
+00:07:45.960 --> 00:07:47.730 align:middle line:90%
+points.
+
+00:07:47.730 --> 00:07:52.210 align:middle line:90%
+So that's something to lock--
+
+00:07:52.210 --> 00:07:53.350 align:middle line:90%
+slot away in your brain.
+
+00:07:53.350 --> 00:07:55.790 align:middle line:84%
+It's an important property
+that comes up a lot.
+
+00:07:55.790 --> 00:08:00.430 align:middle line:84%
+The mean or the expected value
+of the data distribution,
+
+00:08:00.430 --> 00:08:02.090 align:middle line:84%
+the mean of that
+data distribution,
+
+00:08:02.090 --> 00:08:06.450 align:middle line:84%
+is going to be the minimizer
+of the least squares objective
+
+00:08:06.450 --> 00:08:07.850 align:middle line:90%
+regression problem.
+
+00:08:07.850 --> 00:08:11.810 align:middle line:84%
+But notice the problem
+is that the mean
+
+00:08:11.810 --> 00:08:14.510 align:middle line:84%
+has zero density under the
+true data distribution.
+
+00:08:14.510 --> 00:08:18.370 align:middle line:84%
+So the mean is a terrible
+estimate of the color.
+
+00:08:18.370 --> 00:08:22.090 align:middle line:84%
+Yes, if you predict the
+color, then your error
+
+00:08:22.090 --> 00:08:24.850 align:middle line:84%
+will-- that's a single
+prediction that minimizes
+
+00:08:24.850 --> 00:08:26.750 align:middle line:90%
+the difference from the truth.
+
+00:08:26.750 --> 00:08:29.730 align:middle line:84%
+Just say, well, if I'm here,
+I would sometimes get it wrong
+
+00:08:29.730 --> 00:08:30.810 align:middle line:90%
+because I would have--
+
+00:08:30.810 --> 00:08:33.070 align:middle line:84%
+it would have been teal,
+and I predicted pink.
+
+00:08:33.070 --> 00:08:35.789 align:middle line:84%
+So I'll get half the time
+right, half the time wrong.
+
+00:08:35.789 --> 00:08:39.370 align:middle line:84%
+But if I square the distance,
+then the wrong answers
+
+00:08:39.370 --> 00:08:40.230 align:middle line:90%
+will dominate.
+
+00:08:40.230 --> 00:08:43.730 align:middle line:84%
+So halfway in between
+is going to be the best
+
+00:08:43.730 --> 00:08:46.060 align:middle line:90%
+answer for minimizing my error.
+
+00:08:46.060 --> 00:08:48.620 align:middle line:84%
+But it's a terrible
+answer because that
+
+00:08:48.620 --> 00:08:51.160 align:middle line:84%
+has zero probability under
+the data distribution.
+
+00:08:51.160 --> 00:08:53.585 align:middle line:90%
+
+
+00:08:53.585 --> 00:08:55.460 align:middle line:84%
+So we could do a little
+bit better by saying,
+
+00:08:55.460 --> 00:08:57.680 align:middle line:84%
+no, let me try to
+model some uncertainty.
+
+00:08:57.680 --> 00:08:59.920 align:middle line:84%
+So I'm not going to have a
+true probabilistic model.
+
+00:08:59.920 --> 00:09:02.580 align:middle line:84%
+I'll try to have
+a max likelihood
+
+00:09:02.580 --> 00:09:06.420 align:middle line:84%
+density fit to my data
+distribution, my training data.
+
+00:09:06.420 --> 00:09:08.700 align:middle line:84%
+And it will be a
+Gaussian in shape.
+
+00:09:08.700 --> 00:09:10.900 align:middle line:84%
+And that's great
+because now I am
+
+00:09:10.900 --> 00:09:13.900 align:middle line:84%
+modeling the variance,
+the uncertainty over what
+
+00:09:13.900 --> 00:09:14.887 align:middle line:90%
+the range of colors is.
+
+00:09:14.887 --> 00:09:17.220 align:middle line:84%
+But this is-- this Gaussian
+is insufficient because it's
+
+00:09:17.220 --> 00:09:18.928 align:middle line:90%
+unimodal distribution.
+
+00:09:18.928 --> 00:09:21.220 align:middle line:84%
+And the true data distribution
+that I'm trying to model
+
+00:09:21.220 --> 00:09:21.955 align:middle line:90%
+is bimodal.
+
+00:09:21.955 --> 00:09:23.580 align:middle line:84%
+So you can't fit a
+bimodal distribution
+
+00:09:23.580 --> 00:09:27.060 align:middle line:90%
+with a unimodal distribution.
+
+00:09:27.060 --> 00:09:32.260 align:middle line:84%
+So one very common trick
+is to simply switch
+
+00:09:32.260 --> 00:09:33.760 align:middle line:90%
+to a categorical distribution.
+
+00:09:33.760 --> 00:09:36.580 align:middle line:84%
+So this is the hack
+that I mentioned
+
+00:09:36.580 --> 00:09:38.720 align:middle line:84%
+in the hacker's guide
+lecture-- that oftentimes,
+
+00:09:38.720 --> 00:09:41.580 align:middle line:84%
+if you just quantize
+your data, chop it up
+
+00:09:41.580 --> 00:09:44.260 align:middle line:84%
+into discrete classes,
+and then model
+
+00:09:44.260 --> 00:09:48.300 align:middle line:84%
+a categorical distribution over
+the probability of each class,
+
+00:09:48.300 --> 00:09:49.720 align:middle line:90%
+it will work really well.
+
+00:09:49.720 --> 00:09:52.260 align:middle line:84%
+And here's one of the reasons
+why it works really well--
+
+00:09:52.260 --> 00:09:55.480 align:middle line:84%
+because the categorical
+distribution,
+
+00:09:55.480 --> 00:09:59.140 align:middle line:84%
+which is just a set of
+numbers that sum to 1,
+
+00:09:59.140 --> 00:10:02.643 align:middle line:84%
+can express bimodal
+distributions.
+
+00:10:02.643 --> 00:10:04.060 align:middle line:84%
+So the categorical
+distribution is
+
+00:10:04.060 --> 00:10:06.500 align:middle line:84%
+fully expressive over
+this quantized space.
+
+00:10:06.500 --> 00:10:09.553 align:middle line:84%
+You can represent
+any number of bumps.
+
+00:10:09.553 --> 00:10:11.220 align:middle line:84%
+So the categorical
+distribution actually
+
+00:10:11.220 --> 00:10:14.180 align:middle line:84%
+completely worked for
+solving this problem up
+
+00:10:14.180 --> 00:10:15.240 align:middle line:90%
+to quantization error.
+
+00:10:15.240 --> 00:10:18.400 align:middle line:84%
+So the only issue is that I
+had to quantize my colors.
+
+00:10:18.400 --> 00:10:20.980 align:middle line:84%
+So now I don't have a
+continuous exact, precise color
+
+00:10:20.980 --> 00:10:21.660 align:middle line:90%
+I'm outputting.
+
+00:10:21.660 --> 00:10:24.540 align:middle line:84%
+I'm outputting that
+it's the teal class.
+
+00:10:24.540 --> 00:10:26.140 align:middle line:84%
+And there's some
+quantization error.
+
+00:10:26.140 --> 00:10:28.660 align:middle line:90%
+
+
+00:10:28.660 --> 00:10:31.340 align:middle line:84%
+So the categorical
+distribution is pretty good.
+
+00:10:31.340 --> 00:10:34.220 align:middle line:84%
+And that's one reason why we
+often use softmax regression,
+
+00:10:34.220 --> 00:10:37.060 align:middle line:84%
+because that models a
+categorical distribution
+
+00:10:37.060 --> 00:10:40.740 align:middle line:90%
+over a set of classes.
+
+00:10:40.740 --> 00:10:44.290 align:middle line:84%
+So that solved the
+problem of multimodality.
+
+00:10:44.290 --> 00:10:46.790 align:middle line:84%
+So one problem
+with prediction is
+
+00:10:46.790 --> 00:10:50.110 align:middle line:84%
+that there could be a multimodal
+distribution over outcomes,
+
+00:10:50.110 --> 00:10:51.730 align:middle line:90%
+meaning more than one bump.
+
+00:10:51.730 --> 00:10:54.310 align:middle line:84%
+And if that's the case, then
+regression-- least squares
+
+00:10:54.310 --> 00:10:55.770 align:middle line:90%
+regression does not work.
+
+00:10:55.770 --> 00:10:57.270 align:middle line:90%
+Point prediction does not work.
+
+00:10:57.270 --> 00:11:00.015 align:middle line:84%
+But actually,
+classification does work.
+
+00:11:00.015 --> 00:11:01.390 align:middle line:84%
+But there's another
+problem which
+
+00:11:01.390 --> 00:11:04.070 align:middle line:90%
+classification suffers from.
+
+00:11:04.070 --> 00:11:06.687 align:middle line:84%
+So this was only to
+predict one color.
+
+00:11:06.687 --> 00:11:08.770 align:middle line:84%
+And if I really want to
+colorize that whole shirt,
+
+00:11:08.770 --> 00:11:10.910 align:middle line:84%
+I need to predict the
+color of every single pixel
+
+00:11:10.910 --> 00:11:12.310 align:middle line:90%
+in that shirt.
+
+00:11:12.310 --> 00:11:15.430 align:middle line:84%
+So my output is actually
+a high-dimensional object.
+
+00:11:15.430 --> 00:11:19.130 align:middle line:84%
+It's not just one value in
+this colorization problem.
+
+00:11:19.130 --> 00:11:22.950 align:middle line:84%
+It's going to be one value
+per pixel in the input image.
+
+00:11:22.950 --> 00:11:25.670 align:middle line:84%
+So here's where
+classification fails.
+
+00:11:25.670 --> 00:11:28.850 align:middle line:84%
+So classification,
+meaning outputting a--
+
+00:11:28.850 --> 00:11:32.710 align:middle line:84%
+the-- my softmax distribution
+over the possible classes,
+
+00:11:32.710 --> 00:11:36.750 align:middle line:84%
+will give me, in this
+case, equal probability
+
+00:11:36.750 --> 00:11:38.960 align:middle line:90%
+of teal and pink.
+
+00:11:38.960 --> 00:11:42.120 align:middle line:84%
+And at this pixel,
+I'll say, it's
+
+00:11:42.120 --> 00:11:43.700 align:middle line:90%
+slightly more likely to be teal.
+
+00:11:43.700 --> 00:11:45.120 align:middle line:84%
+Maybe this-- the
+picture actually
+
+00:11:45.120 --> 00:11:47.880 align:middle line:84%
+has a little bit of shading and
+there's just 51% probability
+
+00:11:47.880 --> 00:11:50.653 align:middle line:84%
+of being teal at this
+location, for whatever reason,
+
+00:11:50.653 --> 00:11:53.320 align:middle line:84%
+because there's a little shading
+right there that indicates it's
+
+00:11:53.320 --> 00:11:56.600 align:middle line:90%
+a little darker, in some sense.
+
+00:11:56.600 --> 00:11:59.180 align:middle line:84%
+Over here, maybe it's a
+bit brighter illumination.
+
+00:11:59.180 --> 00:12:02.940 align:middle line:84%
+But I now say it's-- well, it's
+slightly more likely to be pink.
+
+00:12:02.940 --> 00:12:05.480 align:middle line:84%
+There's some kind of dependency
+between the brightness
+
+00:12:05.480 --> 00:12:07.040 align:middle line:90%
+of the shirt and the color.
+
+00:12:07.040 --> 00:12:08.820 align:middle line:84%
+And that means it
+could be either color,
+
+00:12:08.820 --> 00:12:10.880 align:middle line:84%
+but it's slightly more
+likely to be pink.
+
+00:12:10.880 --> 00:12:12.580 align:middle line:84%
+And this will just
+always happen.
+
+00:12:12.580 --> 00:12:15.840 align:middle line:84%
+You'll always have your
+conditional distribution
+
+00:12:15.840 --> 00:12:17.880 align:middle line:84%
+over your predictions
+being spatially
+
+00:12:17.880 --> 00:12:21.360 align:middle line:84%
+varying to some degree if I
+actually have underlying--
+
+00:12:21.360 --> 00:12:24.683 align:middle line:84%
+the truth is almost equal
+probability, or in this case,
+
+00:12:24.683 --> 00:12:26.600 align:middle line:84%
+I said the truth is
+exactly equal probability,
+
+00:12:26.600 --> 00:12:28.102 align:middle line:90%
+of teal and pink.
+
+00:12:28.102 --> 00:12:29.560 align:middle line:84%
+So my estimates of
+that probability
+
+00:12:29.560 --> 00:12:30.700 align:middle line:90%
+will be a little bit noisy.
+
+00:12:30.700 --> 00:12:32.580 align:middle line:84%
+And they'll vary
+from pixel to pixel.
+
+00:12:32.580 --> 00:12:36.400 align:middle line:84%
+And what will happen then
+is I won't have consistency
+
+00:12:36.400 --> 00:12:38.320 align:middle line:84%
+between how I colorize
+the top of the shirt
+
+00:12:38.320 --> 00:12:41.160 align:middle line:84%
+and the bottom of the shirt
+because the probabilities
+
+00:12:41.160 --> 00:12:42.100 align:middle line:90%
+smoothly varied.
+
+00:12:42.100 --> 00:12:45.160 align:middle line:84%
+But they crossed this threshold
+where the argmax probability
+
+00:12:45.160 --> 00:12:47.000 align:middle line:90%
+changed.
+
+00:12:47.000 --> 00:12:48.760 align:middle line:84%
+So this means that
+I'm basically failing
+
+00:12:48.760 --> 00:12:51.160 align:middle line:84%
+to capture the joint dependency
+between this prediction
+
+00:12:51.160 --> 00:12:52.380 align:middle line:90%
+and that prediction.
+
+00:12:52.380 --> 00:12:54.980 align:middle line:84%
+The joint dependency says that
+they should be the same color.
+
+00:12:54.980 --> 00:12:57.600 align:middle line:84%
+But if I were to classify
+each pixel independently,
+
+00:12:57.600 --> 00:12:59.020 align:middle line:90%
+I would fail to capture that.
+
+00:12:59.020 --> 00:13:01.920 align:middle line:90%
+
+
+00:13:01.920 --> 00:13:04.300 align:middle line:84%
+So generative models
+get around this.
+
+00:13:04.300 --> 00:13:06.560 align:middle line:84%
+The set of generative
+models we've talked about
+
+00:13:06.560 --> 00:13:09.120 align:middle line:84%
+get around this because they
+have two important properties.
+
+00:13:09.120 --> 00:13:13.173 align:middle line:84%
+One is-- well, this is
+almost like the definition--
+
+00:13:13.173 --> 00:13:15.340 align:middle line:84%
+when we talk about generative
+AI, generative models,
+
+00:13:15.340 --> 00:13:15.980 align:middle line:90%
+this is what we mean.
+
+00:13:15.980 --> 00:13:17.600 align:middle line:84%
+These are the two
+properties we mean.
+
+00:13:17.600 --> 00:13:20.080 align:middle line:84%
+They can model a
+multimodal distribution.
+
+00:13:20.080 --> 00:13:23.320 align:middle line:84%
+So it's not just one
+Gaussian, but they can
+
+00:13:23.320 --> 00:13:25.640 align:middle line:90%
+model a complicated posterior.
+
+00:13:25.640 --> 00:13:27.980 align:middle line:84%
+And two is they model
+joint dependency.
+
+00:13:27.980 --> 00:13:30.240 align:middle line:84%
+So it's a high-dimensional
+multimodal distribution
+
+00:13:30.240 --> 00:13:32.880 align:middle line:84%
+where the dimensions all have
+dependencies between them.
+
+00:13:32.880 --> 00:13:34.660 align:middle line:84%
+And if you have a
+model that can do this,
+
+00:13:34.660 --> 00:13:37.930 align:middle line:84%
+then we usually will think of
+that as a generative model.
+
+00:13:37.930 --> 00:13:41.610 align:middle line:84%
+And the VAEs and GANs
+and diffusion models
+
+00:13:41.610 --> 00:13:43.690 align:middle line:90%
+all can do this.
+
+00:13:43.690 --> 00:13:45.990 align:middle line:90%
+So that's the motivation.
+
+00:13:45.990 --> 00:13:47.510 align:middle line:90%
+Any questions about that?
+
+00:13:47.510 --> 00:13:51.650 align:middle line:90%
+
+
+00:13:51.650 --> 00:13:54.050 align:middle line:90%
+So to me, it's just strange--
+
+00:13:54.050 --> 00:13:55.530 align:middle line:84%
+it was only in
+the last few years
+
+00:13:55.530 --> 00:13:57.370 align:middle line:84%
+that people really
+had models that
+
+00:13:57.370 --> 00:14:00.530 align:middle line:84%
+can do both of these
+things in practice.
+
+00:14:00.530 --> 00:14:03.170 align:middle line:84%
+In theory, we've thought
+about this for decades.
+
+00:14:03.170 --> 00:14:05.470 align:middle line:90%
+But this is just so important.
+
+00:14:05.470 --> 00:14:07.390 align:middle line:84%
+Every problem has
+this characteristic.
+
+00:14:07.390 --> 00:14:08.970 align:middle line:84%
+So these generative
+models are just
+
+00:14:08.970 --> 00:14:11.530 align:middle line:84%
+the thing that you really
+want to use for, I think,
+
+00:14:11.530 --> 00:14:14.740 align:middle line:90%
+almost everything.
+
+00:14:14.740 --> 00:14:17.730 align:middle line:84%
+So now that you
+saw those two flaws
+
+00:14:17.730 --> 00:14:21.090 align:middle line:84%
+with unstructured prediction,
+treating every pixel
+
+00:14:21.090 --> 00:14:23.890 align:middle line:84%
+independently and outputting
+a continuous real number
+
+00:14:23.890 --> 00:14:26.290 align:middle line:84%
+for the-- those
+pixels, let's look
+
+00:14:26.290 --> 00:14:29.230 align:middle line:84%
+at some photos that
+might be a real photo,
+
+00:14:29.230 --> 00:14:32.210 align:middle line:84%
+or it might be a colorized
+black and white photo that was--
+
+00:14:32.210 --> 00:14:33.590 align:middle line:90%
+an AI system added color to.
+
+00:14:33.590 --> 00:14:36.610 align:middle line:90%
+And so I want you to guess.
+
+00:14:36.610 --> 00:14:39.090 align:middle line:84%
+So raise your hand if
+you think that this is
+
+00:14:39.090 --> 00:14:42.770 align:middle line:90%
+a real photo with real colors.
+
+00:14:42.770 --> 00:14:43.450 align:middle line:90%
+A few people.
+
+00:14:43.450 --> 00:14:44.825 align:middle line:84%
+Raise your hand
+if you think it's
+
+00:14:44.825 --> 00:14:46.990 align:middle line:84%
+a fake photo with
+AI-generated colors.
+
+00:14:46.990 --> 00:14:47.870 align:middle line:90%
+A lot of people.
+
+00:14:47.870 --> 00:14:50.690 align:middle line:84%
+So somebody who said
+fake, tell me, what
+
+00:14:50.690 --> 00:14:55.690 align:middle line:84%
+artifact, what failure mode do
+you see that's giving that away?
+
+00:14:55.690 --> 00:14:57.490 align:middle line:90%
+Let's go here.
+
+00:14:57.490 --> 00:15:00.778 align:middle line:84%
+AUDIENCE: It has pink
+down the paint-- the cup.
+
+00:15:00.778 --> 00:15:01.570 align:middle line:90%
+PHILLIP ISOLA: Yes.
+
+00:15:01.570 --> 00:15:03.970 align:middle line:84%
+AUDIENCE: So it might not
+know what color its should be.
+
+00:15:03.970 --> 00:15:04.630 align:middle line:84%
+PHILLIP ISOLA: So
+it doesn't know.
+
+00:15:04.630 --> 00:15:05.670 align:middle line:90%
+So it's oscillating.
+
+00:15:05.670 --> 00:15:06.170 align:middle line:90%
+Exactly.
+
+00:15:06.170 --> 00:15:07.128 align:middle line:90%
+There's pink down here.
+
+00:15:07.128 --> 00:15:08.330 align:middle line:90%
+And there's blue here.
+
+00:15:08.330 --> 00:15:11.730 align:middle line:90%
+And that's exactly this effect.
+
+00:15:11.730 --> 00:15:14.250 align:middle line:84%
+This system is making
+independent predictions
+
+00:15:14.250 --> 00:15:15.290 align:middle line:90%
+per pixel.
+
+00:15:15.290 --> 00:15:17.910 align:middle line:84%
+And it crossed the
+threshold of probability.
+
+00:15:17.910 --> 00:15:19.500 align:middle line:84%
+And it switched
+to the other mode.
+
+00:15:19.500 --> 00:15:21.750 align:middle line:84%
+It thinks this is maybe red
+paint or maybe blue paint.
+
+00:15:21.750 --> 00:15:23.630 align:middle line:84%
+It's pretty sure it's one or
+the other of those things,
+
+00:15:23.630 --> 00:15:25.213 align:middle line:84%
+but it doesn't know
+exactly which one.
+
+00:15:25.213 --> 00:15:27.450 align:middle line:84%
+And then it just
+chaotically oscillates
+
+00:15:27.450 --> 00:15:32.140 align:middle line:84%
+when the probability
+is very, very slightly.
+
+00:15:32.140 --> 00:15:36.620 align:middle line:84%
+Anyone see any other issues
+that may-- that give it away?
+
+00:15:36.620 --> 00:15:37.280 align:middle line:90%
+Let's go here.
+
+00:15:37.280 --> 00:15:37.780 align:middle line:90%
+Yeah?
+
+00:15:37.780 --> 00:15:40.238 align:middle line:84%
+AUDIENCE: There's a colored
+shadow underneath it.
+
+00:15:40.238 --> 00:15:41.780 align:middle line:84%
+PHILLIP ISOLA: So
+I think that's just
+
+00:15:41.780 --> 00:15:46.060 align:middle line:84%
+the resolution of the
+convolutional network that ran.
+
+00:15:46.060 --> 00:15:49.200 align:middle line:84%
+It just output a
+low-resolution prediction.
+
+00:15:49.200 --> 00:15:52.020 align:middle line:84%
+So there's other
+artifacts like that, too.
+
+00:15:52.020 --> 00:15:53.100 align:middle line:90%
+How about this one?
+
+00:15:53.100 --> 00:15:56.660 align:middle line:84%
+This is Margaret Hamilton,
+who was working at MIT doing
+
+00:15:56.660 --> 00:15:59.980 align:middle line:84%
+programming in the '60s
+for the Apollo project.
+
+00:15:59.980 --> 00:16:03.820 align:middle line:84%
+So is this a real photo of
+her or a colorized photo
+
+00:16:03.820 --> 00:16:07.160 align:middle line:84%
+of her, a real color
+photo or synthetic?
+
+00:16:07.160 --> 00:16:09.700 align:middle line:90%
+So real-- raise your hand.
+
+00:16:09.700 --> 00:16:12.297 align:middle line:90%
+A few more people-- fake.
+
+00:16:12.297 --> 00:16:13.880 align:middle line:84%
+Actually, this is
+split half and half.
+
+00:16:13.880 --> 00:16:15.420 align:middle line:90%
+Good.
+
+00:16:15.420 --> 00:16:17.220 align:middle line:90%
+It was fake, it turns out.
+
+00:16:17.220 --> 00:16:18.600 align:middle line:90%
+It was a black and white photo.
+
+00:16:18.600 --> 00:16:21.980 align:middle line:84%
+So who sees some issues
+that might give that away?
+
+00:16:21.980 --> 00:16:22.700 align:middle line:90%
+Over here?
+
+00:16:22.700 --> 00:16:24.457 align:middle line:84%
+AUDIENCE: Were
+there [INAUDIBLE]?
+
+00:16:24.457 --> 00:16:25.540 align:middle line:90%
+PHILLIP ISOLA: There were.
+
+00:16:25.540 --> 00:16:27.740 align:middle line:84%
+There were color
+pictures in the '60s.
+
+00:16:27.740 --> 00:16:29.660 align:middle line:90%
+So it was only 1960s.
+
+00:16:29.660 --> 00:16:31.750 align:middle line:90%
+Sorry.
+
+00:16:31.750 --> 00:16:32.932 align:middle line:90%
+Way in the back over here?
+
+00:16:32.932 --> 00:16:35.390 align:middle line:84%
+AUDIENCE: There's a watermark
+in the bottom right that says
+
+00:16:35.390 --> 00:16:36.182 align:middle line:90%
+"COLOR_BYANGELINA."
+
+00:16:36.182 --> 00:16:38.230 align:middle line:90%
+[LAUGHTER]
+
+00:16:38.230 --> 00:16:39.730 align:middle line:84%
+PHILLIP ISOLA: That
+I didn't notice.
+
+00:16:39.730 --> 00:16:40.230 align:middle line:90%
+Good.
+
+00:16:40.230 --> 00:16:41.830 align:middle line:90%
+So there's a watermark.
+
+00:16:41.830 --> 00:16:42.790 align:middle line:90%
+Any others?
+
+00:16:42.790 --> 00:16:44.450 align:middle line:90%
+And then way back?
+
+00:16:44.450 --> 00:16:50.050 align:middle line:84%
+AUDIENCE: The door has some
+weird dark coloring on it.
+
+00:16:50.050 --> 00:16:51.550 align:middle line:84%
+PHILLIP ISOLA: So
+it's a little hard
+
+00:16:51.550 --> 00:16:53.490 align:middle line:90%
+to see from-- on this projector.
+
+00:16:53.490 --> 00:16:55.510 align:middle line:84%
+But the door, and also
+the background here,
+
+00:16:55.510 --> 00:16:58.270 align:middle line:90%
+is this mottled white-to-blue.
+
+00:16:58.270 --> 00:17:01.630 align:middle line:84%
+And this is, again, that
+flipping around the probability
+
+00:17:01.630 --> 00:17:03.150 align:middle line:90%
+thresholds.
+
+00:17:03.150 --> 00:17:05.910 align:middle line:84%
+So it's not realizing
+that a white surface,
+
+00:17:05.910 --> 00:17:08.012 align:middle line:84%
+like the paint on the
+wall, isn't-- is--
+
+00:17:08.012 --> 00:17:08.970 align:middle line:90%
+has a joint dependency.
+
+00:17:08.970 --> 00:17:11.190 align:middle line:84%
+If part of the paint is
+white, the rest of the paint
+
+00:17:11.190 --> 00:17:13.310 align:middle line:90%
+should probably be white, too.
+
+00:17:13.310 --> 00:17:14.869 align:middle line:90%
+There's one other issue that--
+
+00:17:14.869 --> 00:17:17.670 align:middle line:90%
+so this is the issue of that.
+
+00:17:17.670 --> 00:17:25.230 align:middle line:84%
+But there's one other issue,
+which is this issue here.
+
+00:17:25.230 --> 00:17:29.190 align:middle line:84%
+So that issue is also
+showing up in this problem.
+
+00:17:29.190 --> 00:17:31.990 align:middle line:84%
+So notice that all the colors
+look a little desaturated.
+
+00:17:31.990 --> 00:17:37.070 align:middle line:84%
+It's because we're basically
+doing some averaging that
+
+00:17:37.070 --> 00:17:39.072 align:middle line:84%
+is saying for all
+the possible colors,
+
+00:17:39.072 --> 00:17:41.030 align:middle line:84%
+we'll collapse the
+distribution toward the mean
+
+00:17:41.030 --> 00:17:43.070 align:middle line:84%
+because we're not
+sure what to output.
+
+00:17:43.070 --> 00:17:46.830 align:middle line:84%
+So you would only know that the
+system is doing that if you know
+
+00:17:46.830 --> 00:17:48.870 align:middle line:84%
+how that neural net
+is trained and what
+
+00:17:48.870 --> 00:17:50.470 align:middle line:90%
+its objective function is.
+
+00:17:50.470 --> 00:17:51.530 align:middle line:90%
+I happen to know that.
+
+00:17:51.530 --> 00:17:56.110 align:middle line:84%
+But this is just one of the
+things you'll see all the time
+
+00:17:56.110 --> 00:17:59.310 align:middle line:84%
+in AI-generated work, at
+least from a few years ago--
+
+00:17:59.310 --> 00:18:01.210 align:middle line:84%
+that things look a
+little bit blurry,
+
+00:18:01.210 --> 00:18:03.670 align:middle line:90%
+a little bit desaturated.
+
+00:18:03.670 --> 00:18:05.410 align:middle line:84%
+And if you're in
+an audio domain,
+
+00:18:05.410 --> 00:18:06.830 align:middle line:90%
+it might be everything looks--
+
+00:18:06.830 --> 00:18:09.630 align:middle line:84%
+the music that's being generated
+sounds a little bit fuzzy.
+
+00:18:09.630 --> 00:18:11.230 align:middle line:90%
+It's not crisp.
+
+00:18:11.230 --> 00:18:13.190 align:middle line:84%
+These are the
+effect of averaging
+
+00:18:13.190 --> 00:18:17.550 align:middle line:84%
+that you get when you're fitting
+a distribution that doesn't have
+
+00:18:17.550 --> 00:18:20.570 align:middle line:84%
+the capacity to approximate
+the true distribution
+
+00:18:20.570 --> 00:18:24.150 align:middle line:84%
+and averages between all of
+the different possibilities
+
+00:18:24.150 --> 00:18:25.370 align:middle line:90%
+in the true distribution.
+
+00:18:25.370 --> 00:18:28.840 align:middle line:90%
+
+
+00:18:28.840 --> 00:18:31.660 align:middle line:90%
+So let's go back to 2012.
+
+00:18:31.660 --> 00:18:35.040 align:middle line:84%
+This is when deep learning
+really took off, became popular.
+
+00:18:35.040 --> 00:18:38.520 align:middle line:84%
+And I think that
+the story in 2012
+
+00:18:38.520 --> 00:18:41.760 align:middle line:84%
+was very much about deep
+learning as a new hypothesis
+
+00:18:41.760 --> 00:18:44.080 align:middle line:90%
+space with high capacity.
+
+00:18:44.080 --> 00:18:45.920 align:middle line:84%
+So remember that in
+machine learning,
+
+00:18:45.920 --> 00:18:48.863 align:middle line:84%
+we always have my objective
+function, the hypothesis space
+
+00:18:48.863 --> 00:18:50.280 align:middle line:84%
+I search over, and
+how do I search
+
+00:18:50.280 --> 00:18:54.040 align:middle line:84%
+over that hypothesis space,
+which is called optimization.
+
+00:18:54.040 --> 00:18:55.488 align:middle line:84%
+So you would have
+seen this slide.
+
+00:18:55.488 --> 00:18:56.780 align:middle line:90%
+Maybe some of you have seen it.
+
+00:18:56.780 --> 00:19:00.360 align:middle line:84%
+I think it still shows
+up in various AI courses.
+
+00:19:00.360 --> 00:19:02.960 align:middle line:84%
+This was a very popular
+slide in 2012 or a little bit
+
+00:19:02.960 --> 00:19:04.720 align:middle line:90%
+after from Andrew Ng.
+
+00:19:04.720 --> 00:19:09.040 align:middle line:84%
+And he was pointing out that
+learning algorithms pre-deep
+
+00:19:09.040 --> 00:19:12.000 align:middle line:84%
+learning-- in those days, it
+might have been a linear support
+
+00:19:12.000 --> 00:19:12.740 align:middle line:90%
+vector machine.
+
+00:19:12.740 --> 00:19:15.700 align:middle line:84%
+Something that's linear is
+going to have less capacity.
+
+00:19:15.700 --> 00:19:20.440 align:middle line:84%
+It's just a hypothesis space
+that can't fit nonlinear data.
+
+00:19:20.440 --> 00:19:22.340 align:middle line:84%
+And that means that
+as I get more data,
+
+00:19:22.340 --> 00:19:23.980 align:middle line:84%
+then I'll find the
+best linear fit.
+
+00:19:23.980 --> 00:19:27.570 align:middle line:84%
+But then I won't ever be
+able to model the nonlinear
+
+00:19:27.570 --> 00:19:28.332 align:middle line:90%
+parts of the data.
+
+00:19:28.332 --> 00:19:30.790 align:middle line:84%
+And so deep learning will just
+keep scaling with more data,
+
+00:19:30.790 --> 00:19:32.930 align:middle line:90%
+but other methods don't.
+
+00:19:32.930 --> 00:19:36.070 align:middle line:84%
+So this is an argument
+about the hypothesis space.
+
+00:19:36.070 --> 00:19:38.770 align:middle line:90%
+
+
+00:19:38.770 --> 00:19:42.450 align:middle line:84%
+But I want to make an argument
+about the objective function.
+
+00:19:42.450 --> 00:19:45.330 align:middle line:84%
+So let's go to this problem
+now, which is going to be,
+
+00:19:45.330 --> 00:19:48.270 align:middle line:84%
+assign a class per
+pixel in an image.
+
+00:19:48.270 --> 00:19:49.990 align:middle line:90%
+So recognize, is it the sky?
+
+00:19:49.990 --> 00:19:50.550 align:middle line:90%
+Is it a bird?
+
+00:19:50.550 --> 00:19:52.690 align:middle line:90%
+What is going on in this image?
+
+00:19:52.690 --> 00:20:01.050 align:middle line:84%
+And we're just going to do
+the per-pixel classification.
+
+00:20:01.050 --> 00:20:05.750 align:middle line:90%
+So let's see.
+
+00:20:05.750 --> 00:20:08.870 align:middle line:90%
+
+
+00:20:08.870 --> 00:20:09.670 align:middle line:90%
+So it works.
+
+00:20:09.670 --> 00:20:11.990 align:middle line:84%
+But actually, let me
+go to this example.
+
+00:20:11.990 --> 00:20:13.970 align:middle line:84%
+I think this will--
+this is the better one.
+
+00:20:13.970 --> 00:20:16.490 align:middle line:84%
+So let's suppose
+that I am trying
+
+00:20:16.490 --> 00:20:20.490 align:middle line:84%
+to take a map of the
+world and predict,
+
+00:20:20.490 --> 00:20:23.130 align:middle line:84%
+what does the landscape
+look like at that location
+
+00:20:23.130 --> 00:20:24.090 align:middle line:90%
+in the world?
+
+00:20:24.090 --> 00:20:25.230 align:middle line:90%
+So this is a Google Map.
+
+00:20:25.230 --> 00:20:28.810 align:middle line:84%
+And this is a satellite photo
+from Google Maps as well.
+
+00:20:28.810 --> 00:20:30.083 align:middle line:90%
+So I have paired data.
+
+00:20:30.083 --> 00:20:31.750 align:middle line:84%
+I can just predict
+the y's from the x's.
+
+00:20:31.750 --> 00:20:34.930 align:middle line:84%
+But I'm regressing or
+outputting an entire image.
+
+00:20:34.930 --> 00:20:38.170 align:middle line:84%
+And now let's say that I use
+my unstructured prediction
+
+00:20:38.170 --> 00:20:40.810 align:middle line:84%
+objective, which is to just
+minimize the squared error
+
+00:20:40.810 --> 00:20:42.610 align:middle line:90%
+between my output.
+
+00:20:42.610 --> 00:20:45.870 align:middle line:84%
+I can just take my output image,
+flatten it into a big vector,
+
+00:20:45.870 --> 00:20:48.090 align:middle line:84%
+and just take the squared
+error between that vector
+
+00:20:48.090 --> 00:20:50.063 align:middle line:90%
+and the ground truth vector.
+
+00:20:50.063 --> 00:20:51.730 align:middle line:84%
+So this is like least
+squares regression
+
+00:20:51.730 --> 00:20:53.690 align:middle line:84%
+for outputting a
+high-dimensional object.
+
+00:20:53.690 --> 00:21:00.610 align:middle line:84%
+And this is implicitly treating
+all of the output dimensions as
+
+00:21:00.610 --> 00:21:01.270 align:middle line:90%
+independent.
+
+00:21:01.270 --> 00:21:03.270 align:middle line:84%
+That's basically what
+this sum is doing.
+
+00:21:03.270 --> 00:21:06.370 align:middle line:84%
+So squared error-- remember,
+it's like log probability
+
+00:21:06.370 --> 00:21:08.650 align:middle line:84%
+under a Gaussian
+probability model.
+
+00:21:08.650 --> 00:21:11.470 align:middle line:84%
+Sum of logs is like the
+product of those probabilities.
+
+00:21:11.470 --> 00:21:17.010 align:middle line:84%
+So this is implicitly a
+unstructured objective
+
+00:21:17.010 --> 00:21:20.410 align:middle line:84%
+where I've assumed that the
+world factorizes independently
+
+00:21:20.410 --> 00:21:22.700 align:middle line:84%
+over dimensions of the
+output space, independently
+
+00:21:22.700 --> 00:21:24.540 align:middle line:90%
+over each pixel.
+
+00:21:24.540 --> 00:21:26.000 align:middle line:90%
+So I could do that.
+
+00:21:26.000 --> 00:21:30.820 align:middle line:84%
+And then I could run my
+greatest neural network of 2012
+
+00:21:30.820 --> 00:21:32.380 align:middle line:90%
+on this data.
+
+00:21:32.380 --> 00:21:34.180 align:middle line:84%
+I can make the biggest,
+highest capacity
+
+00:21:34.180 --> 00:21:35.600 align:middle line:90%
+convolutional network I want.
+
+00:21:35.600 --> 00:21:38.440 align:middle line:90%
+I can use SGD to optimize it.
+
+00:21:38.440 --> 00:21:40.300 align:middle line:90%
+And here's the input.
+
+00:21:40.300 --> 00:21:41.440 align:middle line:90%
+And here's the output.
+
+00:21:41.440 --> 00:21:44.126 align:middle line:90%
+
+
+00:21:44.126 --> 00:21:46.820 align:middle line:90%
+So it looks OK.
+
+00:21:46.820 --> 00:21:49.040 align:middle line:90%
+This is some buildings.
+
+00:21:49.040 --> 00:21:52.260 align:middle line:84%
+And they're getting colored
+a nice, bright paint
+
+00:21:52.260 --> 00:21:53.820 align:middle line:90%
+like a city might have.
+
+00:21:53.820 --> 00:21:56.340 align:middle line:84%
+And the roads are
+asphalt. And they're gray.
+
+00:21:56.340 --> 00:21:57.475 align:middle line:90%
+But it looks blurry.
+
+00:21:57.475 --> 00:21:58.600 align:middle line:90%
+So why does it look blurry?
+
+00:21:58.600 --> 00:22:00.860 align:middle line:90%
+Exactly the same reason again.
+
+00:22:00.860 --> 00:22:03.220 align:middle line:90%
+This park has trees in it.
+
+00:22:03.220 --> 00:22:05.480 align:middle line:84%
+Now, I don't know if it's
+an oak tree or a pine tree.
+
+00:22:05.480 --> 00:22:06.400 align:middle line:84%
+I don't know where
+the trees are.
+
+00:22:06.400 --> 00:22:08.140 align:middle line:84%
+If I average over all the
+different trees and all
+
+00:22:08.140 --> 00:22:10.307 align:middle line:84%
+the different grass and all
+the different locations,
+
+00:22:10.307 --> 00:22:13.540 align:middle line:84%
+I'm just going to make an
+average green in the park.
+
+00:22:13.540 --> 00:22:20.310 align:middle line:84%
+So by not modeling the joint
+dependencies between this region
+
+00:22:20.310 --> 00:22:23.810 align:middle line:90%
+and this region, I have to--
+
+00:22:23.810 --> 00:22:26.193 align:middle line:84%
+or basically, by not
+modeling the distribution
+
+00:22:26.193 --> 00:22:28.110 align:middle line:84%
+over possibilities, I
+have to take the average
+
+00:22:28.110 --> 00:22:29.068 align:middle line:90%
+over all possibilities.
+
+00:22:29.068 --> 00:22:31.230 align:middle line:90%
+And that's a blurry image.
+
+00:22:31.230 --> 00:22:37.350 align:middle line:84%
+So that was deep
+learning 2012 to 2016.
+
+00:22:37.350 --> 00:22:41.510 align:middle line:84%
+And then deep
+learning 2016 to 2024
+
+00:22:41.510 --> 00:22:44.830 align:middle line:84%
+has been about that, to some
+degree, but more about modifying
+
+00:22:44.830 --> 00:22:46.170 align:middle line:90%
+now the objective function.
+
+00:22:46.170 --> 00:22:48.830 align:middle line:84%
+And that's where the
+generative AI comes in.
+
+00:22:48.830 --> 00:22:50.850 align:middle line:84%
+So we need an
+objective function,
+
+00:22:50.850 --> 00:22:54.910 align:middle line:84%
+some way of penalizing
+my predictions, that
+
+00:22:54.910 --> 00:22:58.150 align:middle line:84%
+can represent and model and
+penalize errors in structure,
+
+00:22:58.150 --> 00:23:02.230 align:middle line:84%
+in high joint structure between
+pixels and the deviations
+
+00:23:02.230 --> 00:23:09.710 align:middle line:84%
+from a multimodal posterior,
+both those kinds of structure
+
+00:23:09.710 --> 00:23:14.650 align:middle line:84%
+So let's look at how to model
+that structure with a GAN.
+
+00:23:14.650 --> 00:23:17.710 align:middle line:84%
+And then we'll look at how to
+model that structure with a VAE.
+
+00:23:17.710 --> 00:23:20.510 align:middle line:84%
+And I'm going to talk about
+image-to-image problems
+
+00:23:20.510 --> 00:23:25.990 align:middle line:84%
+in this section-- so input
+image, output predicted image.
+
+00:23:25.990 --> 00:23:29.030 align:middle line:84%
+So first, we'll talk about GANs
+that are conditioned on an input
+
+00:23:29.030 --> 00:23:30.670 align:middle line:90%
+image.
+
+00:23:30.670 --> 00:23:33.590 align:middle line:84%
+So here is one way
+that you can do this.
+
+00:23:33.590 --> 00:23:35.910 align:middle line:84%
+I'm switching the
+problem now to be--
+
+00:23:35.910 --> 00:23:39.450 align:middle line:84%
+let's say that I have an
+architectural layout diagram.
+
+00:23:39.450 --> 00:23:41.110 align:middle line:84%
+Each different color
+in the left image
+
+00:23:41.110 --> 00:23:43.150 align:middle line:84%
+there is going to
+be indicating what
+
+00:23:43.150 --> 00:23:45.050 align:middle line:84%
+is the architectural
+element-- is it a door,
+
+00:23:45.050 --> 00:23:46.790 align:middle line:90%
+is it a window, and so forth.
+
+00:23:46.790 --> 00:23:51.590 align:middle line:84%
+And my output prediction is what
+that building would look like.
+
+00:23:51.590 --> 00:23:53.990 align:middle line:84%
+So I could be an architect
+trying to design new buildings
+
+00:23:53.990 --> 00:23:55.670 align:middle line:90%
+and use this tool.
+
+00:23:55.670 --> 00:23:57.150 align:middle line:90%
+I'll use a neural net.
+
+00:23:57.150 --> 00:23:59.610 align:middle line:84%
+It could be a ConvNet
+in this project.
+
+00:23:59.610 --> 00:24:02.710 align:middle line:84%
+But it could be a ViT
+in the modern era.
+
+00:24:02.710 --> 00:24:05.350 align:middle line:90%
+And I will make my prediction.
+
+00:24:05.350 --> 00:24:08.813 align:middle line:90%
+So I told you about GANs.
+
+00:24:08.813 --> 00:24:10.230 align:middle line:84%
+When I told you
+about GANs, I said
+
+00:24:10.230 --> 00:24:12.815 align:middle line:84%
+that we're going to take a
+random latent variable that's
+
+00:24:12.815 --> 00:24:15.190 align:middle line:84%
+Gaussian-distributed, pass it
+through a generator, output
+
+00:24:15.190 --> 00:24:18.120 align:middle line:84%
+an image such that a
+discriminator network can't
+
+00:24:18.120 --> 00:24:20.060 align:middle line:84%
+tell whether that
+image is a real image
+
+00:24:20.060 --> 00:24:23.840 align:middle line:84%
+or a synthetic image
+generated by the generator.
+
+00:24:23.840 --> 00:24:27.920 align:middle line:84%
+Here, the noise is replaced
+with a conditioning variable.
+
+00:24:27.920 --> 00:24:29.900 align:middle line:84%
+So there doesn't
+have to be noise.
+
+00:24:29.900 --> 00:24:33.600 align:middle line:84%
+In this example, there is just
+a mapping from an x to a y
+
+00:24:33.600 --> 00:24:35.140 align:middle line:90%
+as opposed to a z to an x.
+
+00:24:35.140 --> 00:24:38.250 align:middle line:90%
+
+
+00:24:38.250 --> 00:24:41.900 align:middle line:84%
+So it's the same
+exact math as the GAN.
+
+00:24:41.900 --> 00:24:44.760 align:middle line:84%
+G tries to synthesize
+fake images that fool d.
+
+00:24:44.760 --> 00:24:46.940 align:middle line:90%
+D tries to identify the fakes.
+
+00:24:46.940 --> 00:24:48.920 align:middle line:90%
+They play this adversarial game.
+
+00:24:48.920 --> 00:24:51.200 align:middle line:84%
+And at equilibrium,
+you're outputting
+
+00:24:51.200 --> 00:24:52.800 align:middle line:84%
+images that are
+indistinguishable
+
+00:24:52.800 --> 00:24:55.600 align:middle line:84%
+to the discriminator
+from real images.
+
+00:24:55.600 --> 00:24:57.082 align:middle line:90%
+So let's go through the math.
+
+00:24:57.082 --> 00:24:59.540 align:middle line:84%
+I showed this very briefly in
+one of the previous lectures.
+
+00:24:59.540 --> 00:25:03.160 align:middle line:84%
+But let's go through it again
+in the conditional setting.
+
+00:25:03.160 --> 00:25:07.000 align:middle line:84%
+So here's the game from the
+perspective of the discriminator
+
+00:25:07.000 --> 00:25:07.942 align:middle line:90%
+network.
+
+00:25:07.942 --> 00:25:09.400 align:middle line:84%
+What it's going to
+try to do-- it's
+
+00:25:09.400 --> 00:25:15.240 align:middle line:84%
+going to try to assign-- it's a
+binary cross-entropy objective.
+
+00:25:15.240 --> 00:25:18.240 align:middle line:84%
+So that means it's going
+to try to assign high log
+
+00:25:18.240 --> 00:25:21.680 align:middle line:90%
+probability to--
+
+00:25:21.680 --> 00:25:23.720 align:middle line:84%
+this is going to be like
+a fakeness classifier,
+
+00:25:23.720 --> 00:25:26.200 align:middle line:84%
+or it is a synthetic
+data classifier--
+
+00:25:26.200 --> 00:25:29.260 align:middle line:84%
+will try to classify
+fake data as synthetic.
+
+00:25:29.260 --> 00:25:34.960 align:middle line:84%
+So it'll try to assign high
+log probability to data which
+
+00:25:34.960 --> 00:25:36.743 align:middle line:90%
+is output by the generator.
+
+00:25:36.743 --> 00:25:37.660 align:middle line:90%
+That's the definition.
+
+00:25:37.660 --> 00:25:40.120 align:middle line:84%
+Synthetic data is data
+output by the generator.
+
+00:25:40.120 --> 00:25:43.080 align:middle line:84%
+And it'll try to assign
+low log probability, 1
+
+00:25:43.080 --> 00:25:47.080 align:middle line:84%
+minus the probability,
+to real data, y.
+
+00:25:47.080 --> 00:25:49.100 align:middle line:84%
+So the training
+data, y, is real.
+
+00:25:49.100 --> 00:25:49.860 align:middle line:90%
+The inputs are x.
+
+00:25:49.860 --> 00:25:50.610 align:middle line:90%
+The outputs are y.
+
+00:25:50.610 --> 00:25:51.640 align:middle line:90%
+That's the real data.
+
+00:25:51.640 --> 00:25:53.782 align:middle line:84%
+I'm trying to
+distinguish between data
+
+00:25:53.782 --> 00:25:55.240 align:middle line:84%
+that's created by
+g and data that's
+
+00:25:55.240 --> 00:25:57.680 align:middle line:90%
+created by the true world, y.
+
+00:25:57.680 --> 00:25:59.900 align:middle line:84%
+So this should be
+assigned high probability.
+
+00:25:59.900 --> 00:26:06.220 align:middle line:84%
+It's just a binary classifier
+using cross-entropy objective.
+
+00:26:06.220 --> 00:26:12.810 align:middle line:84%
+So that's the job of d, just
+classify synthetic or real.
+
+00:26:12.810 --> 00:26:17.510 align:middle line:84%
+The job of g is to try to make
+synthetic images that look real
+
+00:26:17.510 --> 00:26:19.690 align:middle line:90%
+according to d, that fool d.
+
+00:26:19.690 --> 00:26:25.370 align:middle line:84%
+So d is trying to maximize
+the log probability
+
+00:26:25.370 --> 00:26:28.370 align:middle line:84%
+that it places on the true
+data under this cross-entropy
+
+00:26:28.370 --> 00:26:29.570 align:middle line:90%
+objective.
+
+00:26:29.570 --> 00:26:32.230 align:middle line:84%
+And g is trying to do
+exactly the opposite,
+
+00:26:32.230 --> 00:26:37.170 align:middle line:84%
+minimize the log probability
+that-- of a synthetic image
+
+00:26:37.170 --> 00:26:39.090 align:middle line:90%
+being called synthetic.
+
+00:26:39.090 --> 00:26:41.970 align:middle line:84%
+So it's basically trying to
+say, I want my synthetic data
+
+00:26:41.970 --> 00:26:44.330 align:middle line:90%
+to cause d to be wrong--
+
+00:26:44.330 --> 00:26:49.370 align:middle line:84%
+so minimizing as
+opposed to maximizing.
+
+00:26:49.370 --> 00:26:56.010 align:middle line:84%
+So then we will backprop from
+d through the parameters of g,
+
+00:26:56.010 --> 00:26:57.910 align:middle line:84%
+update g to make a
+more realistic photo.
+
+00:26:57.910 --> 00:27:00.150 align:middle line:84%
+Now it becomes a
+real-looking photo.
+
+00:27:00.150 --> 00:27:01.670 align:middle line:84%
+It doesn't have
+as many artifacts.
+
+00:27:01.670 --> 00:27:04.310 align:middle line:90%
+
+
+00:27:04.310 --> 00:27:07.190 align:middle line:84%
+So the GAN objective
+is this minimax game,
+
+00:27:07.190 --> 00:27:11.700 align:middle line:84%
+this adversarial game where I'm
+trying to find the parameters
+
+00:27:11.700 --> 00:27:15.300 align:middle line:84%
+of the data generator that
+will create outputs that
+
+00:27:15.300 --> 00:27:18.360 align:middle line:84%
+a discriminator cannot tell
+whether they're real or fake.
+
+00:27:18.360 --> 00:27:23.340 align:middle line:84%
+The discriminator will
+get a score of 0 or--
+
+00:27:23.340 --> 00:27:25.120 align:middle line:84%
+as low a score as
+it possibly can.
+
+00:27:25.120 --> 00:27:27.850 align:middle line:90%
+
+
+00:27:27.850 --> 00:27:30.960 align:middle line:84%
+And we don't want to fool just
+any old random discriminator.
+
+00:27:30.960 --> 00:27:32.960 align:middle line:84%
+We want to fool the best
+possible discriminator.
+
+00:27:32.960 --> 00:27:34.780 align:middle line:84%
+So the discriminator is learning
+to get better and better
+
+00:27:34.780 --> 00:27:35.983 align:middle line:90%
+at detecting the fakes.
+
+00:27:35.983 --> 00:27:37.900 align:middle line:84%
+And the generator is
+getting better and better
+
+00:27:37.900 --> 00:27:39.120 align:middle line:90%
+at fooling the discriminator.
+
+00:27:39.120 --> 00:27:41.100 align:middle line:84%
+And at equilibrium,
+you can prove
+
+00:27:41.100 --> 00:27:43.100 align:middle line:84%
+that this will converge
+to being-- samples
+
+00:27:43.100 --> 00:27:46.960 align:middle line:84%
+from g are identically
+distributed as samples from y,
+
+00:27:46.960 --> 00:27:49.580 align:middle line:84%
+the true
+data-generating process.
+
+00:27:49.580 --> 00:27:51.220 align:middle line:84%
+So that's provable
+under the condition
+
+00:27:51.220 --> 00:27:54.060 align:middle line:84%
+of the network has actually
+found the equilibrium-- the Nash
+
+00:27:54.060 --> 00:27:56.020 align:middle line:84%
+equilibrium of this
+game and that there's
+
+00:27:56.020 --> 00:27:57.800 align:middle line:84%
+sufficient capacity,
+and so forth.
+
+00:27:57.800 --> 00:27:59.920 align:middle line:84%
+But the Nash equilibrium
+has that characteristic.
+
+00:27:59.920 --> 00:28:02.850 align:middle line:90%
+
+
+00:28:02.850 --> 00:28:06.620 align:middle line:84%
+So the perspective that I
+want to give in this lecture
+
+00:28:06.620 --> 00:28:13.580 align:middle line:84%
+is that from g's perspective,
+d is like a loss function.
+
+00:28:13.580 --> 00:28:14.760 align:middle line:90%
+It is some kind of penalty.
+
+00:28:14.760 --> 00:28:16.135 align:middle line:84%
+It's a critic or
+a discriminator.
+
+00:28:16.135 --> 00:28:18.400 align:middle line:84%
+It's a penalty that looks
+at the outputs and says,
+
+00:28:18.400 --> 00:28:20.640 align:middle line:84%
+are they-- how good are
+they or how bad are they?
+
+00:28:20.640 --> 00:28:23.380 align:middle line:84%
+And then you can
+backprop and cause g
+
+00:28:23.380 --> 00:28:25.420 align:middle line:84%
+to update to make
+better outputs.
+
+00:28:25.420 --> 00:28:27.200 align:middle line:90%
+So it's like a loss function.
+
+00:28:27.200 --> 00:28:29.122 align:middle line:84%
+It's like the squared
+error loss function,
+
+00:28:29.122 --> 00:28:30.580 align:middle line:84%
+except it has a
+new property, which
+
+00:28:30.580 --> 00:28:33.340 align:middle line:84%
+is that it's learned as
+opposed to being hand-defined.
+
+00:28:33.340 --> 00:28:36.060 align:middle line:84%
+So it's a loss function that can
+look at structure in the output
+
+00:28:36.060 --> 00:28:38.678 align:middle line:84%
+and not just say,
+did I get every pixel
+
+00:28:38.678 --> 00:28:41.220 align:middle line:84%
+independently correct, but also,
+did I get the edges correct?
+
+00:28:41.220 --> 00:28:43.180 align:middle line:84%
+And did I get the higher
+order statistics of the output
+
+00:28:43.180 --> 00:28:43.900 align:middle line:90%
+correct?
+
+00:28:43.900 --> 00:28:46.180 align:middle line:84%
+And this is what
+makes it powerful.
+
+00:28:46.180 --> 00:28:48.180 align:middle line:84%
+And it's very hard to
+hand-define such a loss
+
+00:28:48.180 --> 00:28:48.680 align:middle line:90%
+function.
+
+00:28:48.680 --> 00:28:50.760 align:middle line:84%
+But it can be learned
+via this game.
+
+00:28:50.760 --> 00:28:54.920 align:middle line:90%
+
+
+00:28:54.920 --> 00:28:58.420 align:middle line:84%
+So you might have noticed
+that there's one little error
+
+00:28:58.420 --> 00:28:59.680 align:middle line:90%
+with this formulation.
+
+00:28:59.680 --> 00:29:02.360 align:middle line:90%
+So I gave you the GAN objective.
+
+00:29:02.360 --> 00:29:05.220 align:middle line:84%
+But for a conditional GAN,
+there's actually a problem.
+
+00:29:05.220 --> 00:29:11.630 align:middle line:84%
+So if I output this photo,
+should d in this setting call
+
+00:29:11.630 --> 00:29:16.670 align:middle line:84%
+that a real photo or
+a fake, synthetic--
+
+00:29:16.670 --> 00:29:19.310 align:middle line:90%
+is it real, basically?
+
+00:29:19.310 --> 00:29:20.450 align:middle line:90%
+So it is a real photo.
+
+00:29:20.450 --> 00:29:21.450 align:middle line:90%
+I'll just tell you that.
+
+00:29:21.450 --> 00:29:22.590 align:middle line:90%
+This is a real photo.
+
+00:29:22.590 --> 00:29:25.148 align:middle line:90%
+But it doesn't match the input.
+
+00:29:25.148 --> 00:29:27.190 align:middle line:84%
+So the one little trick
+to make a GAN conditional
+
+00:29:27.190 --> 00:29:28.950 align:middle line:84%
+is you need to let
+the discriminator
+
+00:29:28.950 --> 00:29:31.930 align:middle line:84%
+look at not only
+is the output real,
+
+00:29:31.930 --> 00:29:34.370 align:middle line:84%
+but does the output
+match the input?
+
+00:29:34.370 --> 00:29:39.270 align:middle line:84%
+So it's, is the pair
+x, y a real pair
+
+00:29:39.270 --> 00:29:43.132 align:middle line:84%
+sampled from the data-generating
+process P data x, y?
+
+00:29:43.132 --> 00:29:45.090 align:middle line:84%
+D has to look at both
+the input and the output.
+
+00:29:45.090 --> 00:29:46.798 align:middle line:84%
+Now it can penalize
+whether the output is
+
+00:29:46.798 --> 00:29:48.210 align:middle line:90%
+blurry and unrealistic-looking.
+
+00:29:48.210 --> 00:29:50.212 align:middle line:84%
+But it can also penalize
+whether the output has
+
+00:29:50.212 --> 00:29:51.670 align:middle line:84%
+the windows in the
+wrong place that
+
+00:29:51.670 --> 00:29:55.850 align:middle line:84%
+don't match where the architect
+has drawn the windows here.
+
+00:29:55.850 --> 00:29:58.570 align:middle line:84%
+So that's a very simple
+modification to the objective.
+
+00:29:58.570 --> 00:30:01.750 align:middle line:84%
+D just has to be conditioned
+on-- it has to take as input
+
+00:30:01.750 --> 00:30:03.470 align:middle line:90%
+the data x.
+
+00:30:03.470 --> 00:30:07.480 align:middle line:84%
+And it's asking, did g of
+x create a realistic output
+
+00:30:07.480 --> 00:30:08.420 align:middle line:90%
+that looks like y?
+
+00:30:08.420 --> 00:30:12.100 align:middle line:84%
+And also, did g of x
+conform to the input
+
+00:30:12.100 --> 00:30:15.320 align:middle line:84%
+so that the relationship
+between the input and the output
+
+00:30:15.320 --> 00:30:19.360 align:middle line:84%
+matches the true
+data distribution?
+
+00:30:19.360 --> 00:30:21.160 align:middle line:90%
+Question?
+
+00:30:21.160 --> 00:30:23.983 align:middle line:84%
+AUDIENCE: What is the definition
+of x for the ground truth label?
+
+00:30:23.983 --> 00:30:25.400 align:middle line:84%
+Are you assuming
+you have some way
+
+00:30:25.400 --> 00:30:29.643 align:middle line:84%
+of generating one of those
+diagrams for [INAUDIBLE]?
+
+00:30:29.643 --> 00:30:31.560 align:middle line:84%
+PHILLIP ISOLA: So what
+is the definition of x?
+
+00:30:31.560 --> 00:30:32.620 align:middle line:90%
+X is given.
+
+00:30:32.620 --> 00:30:34.600 align:middle line:84%
+So these diagrams--
+you have a data
+
+00:30:34.600 --> 00:30:37.460 align:middle line:90%
+set of diagrams with photos.
+
+00:30:37.460 --> 00:30:38.460 align:middle line:90%
+So you have paired data.
+
+00:30:38.460 --> 00:30:41.320 align:middle line:84%
+You have supervised
+data, x, y pairs.
+
+00:30:41.320 --> 00:30:41.960 align:middle line:90%
+Yeah, question?
+
+00:30:41.960 --> 00:30:43.502 align:middle line:84%
+AUDIENCE: Conceptually,
+at what point
+
+00:30:43.502 --> 00:30:45.097 align:middle line:90%
+are we doing the loss function?
+
+00:30:45.097 --> 00:30:46.680 align:middle line:84%
+Is it like we generate
+the whole image
+
+00:30:46.680 --> 00:30:49.880 align:middle line:84%
+and then we see that, oh, it's
+real or fake, or at what point
+
+00:30:49.880 --> 00:30:52.423 align:middle line:84%
+is this game of
+adversarial happening?
+
+00:30:52.423 --> 00:30:53.840 align:middle line:84%
+PHILLIP ISOLA: So
+at what point is
+
+00:30:53.840 --> 00:30:57.160 align:middle line:84%
+this-- are we applying
+the loss function?
+
+00:30:57.160 --> 00:30:59.937 align:middle line:84%
+So the key idea
+is I'm not trying
+
+00:30:59.937 --> 00:31:01.020 align:middle line:90%
+to say real or fake photo.
+
+00:31:01.020 --> 00:31:04.400 align:middle line:84%
+I'm trying to say real
+or fake pair of photos.
+
+00:31:04.400 --> 00:31:07.835 align:middle line:84%
+So what you actually do when
+you run this is you take x.
+
+00:31:07.835 --> 00:31:09.460 align:middle line:84%
+You run it through
+your neural network.
+
+00:31:09.460 --> 00:31:10.860 align:middle line:90%
+It outputs a prediction.
+
+00:31:10.860 --> 00:31:14.260 align:middle line:84%
+And then you run that prediction
+through another neural network,
+
+00:31:14.260 --> 00:31:15.440 align:middle line:90%
+the discriminator.
+
+00:31:15.440 --> 00:31:16.960 align:middle line:90%
+And that scores your prediction.
+
+00:31:16.960 --> 00:31:19.460 align:middle line:84%
+And then you backprop through
+that entire computation graph.
+
+00:31:19.460 --> 00:31:25.400 align:middle line:84%
+So the computation
+graph is d of g of x.
+
+00:31:25.400 --> 00:31:27.400 align:middle line:84%
+This slide is just
+saying that I can also
+
+00:31:27.400 --> 00:31:30.760 align:middle line:84%
+add a regular old
+regression objective, which
+
+00:31:30.760 --> 00:31:33.760 align:middle line:84%
+is just-- this is what regular
+regression would do-- would say,
+
+00:31:33.760 --> 00:31:37.160 align:middle line:84%
+is the output close to
+the ground truth label
+
+00:31:37.160 --> 00:31:41.600 align:middle line:84%
+y, or the ground truth image
+y, in a squared error sense?
+
+00:31:41.600 --> 00:31:44.510 align:middle line:84%
+And that will produce these
+blurry outputs because it
+
+00:31:44.510 --> 00:31:46.880 align:middle line:84%
+doesn't-- it treats every
+pixel as independent,
+
+00:31:46.880 --> 00:31:48.600 align:middle line:90%
+conditioned on the input.
+
+00:31:48.600 --> 00:31:53.000 align:middle line:84%
+But it can be added to this
+GAN objective for a little bit
+
+00:31:53.000 --> 00:31:55.735 align:middle line:84%
+better performance because
+the big issue with GANs--
+
+00:31:55.735 --> 00:31:56.860 align:middle line:90%
+they're not as popular now.
+
+00:31:56.860 --> 00:31:59.408 align:middle line:84%
+And the main reason was
+they weren't very stable.
+
+00:31:59.408 --> 00:32:00.700 align:middle line:90%
+They didn't converge very well.
+
+00:32:00.700 --> 00:32:03.450 align:middle line:84%
+This adversarial game is
+very hard to optimize.
+
+00:32:03.450 --> 00:32:06.290 align:middle line:84%
+But this regular regression
+loss can very much
+
+00:32:06.290 --> 00:32:07.590 align:middle line:90%
+stabilize that process.
+
+00:32:07.590 --> 00:32:12.390 align:middle line:90%
+
+
+00:32:12.390 --> 00:32:13.270 align:middle line:90%
+So that works.
+
+00:32:13.270 --> 00:32:15.370 align:middle line:90%
+But this is not impressive.
+
+00:32:15.370 --> 00:32:17.410 align:middle line:84%
+By now, we've seen
+that you can generate
+
+00:32:17.410 --> 00:32:20.810 align:middle line:84%
+all kinds of photos conditioned
+on all kinds of things.
+
+00:32:20.810 --> 00:32:22.730 align:middle line:84%
+But a few years
+ago, it was magic.
+
+00:32:22.730 --> 00:32:26.330 align:middle line:90%
+But anyway, this works.
+
+00:32:26.330 --> 00:32:29.970 align:middle line:84%
+So I want to mention one of
+the interesting considerations
+
+00:32:29.970 --> 00:32:37.110 align:middle line:84%
+in using discriminators to
+penalize structure in your data,
+
+00:32:37.110 --> 00:32:39.310 align:middle line:84%
+to penalize errors in the
+structure of your outputs.
+
+00:32:39.310 --> 00:32:41.490 align:middle line:84%
+And that is that
+the architecture
+
+00:32:41.490 --> 00:32:46.970 align:middle line:84%
+of the discriminator critically
+matters in what types of errors
+
+00:32:46.970 --> 00:32:48.910 align:middle line:84%
+it is sensitive to and
+what types of errors
+
+00:32:48.910 --> 00:32:51.370 align:middle line:90%
+it's not sensitive to.
+
+00:32:51.370 --> 00:32:55.330 align:middle line:84%
+So one of the things that worked
+really well in this project that
+
+00:32:55.330 --> 00:32:59.010 align:middle line:84%
+made these images
+look good for that era
+
+00:32:59.010 --> 00:33:02.930 align:middle line:84%
+was that we used this
+discriminator architecture
+
+00:33:02.930 --> 00:33:05.610 align:middle line:90%
+called a patch discriminator.
+
+00:33:05.610 --> 00:33:07.690 align:middle line:84%
+What that means is that
+rather than just looking
+
+00:33:07.690 --> 00:33:09.148 align:middle line:84%
+at-- having a neural
+net that looks
+
+00:33:09.148 --> 00:33:12.130 align:middle line:84%
+at the entire photo at once
+and says, is it real or fake,
+
+00:33:12.130 --> 00:33:14.650 align:middle line:84%
+we look at every
+patch of the photo
+
+00:33:14.650 --> 00:33:17.730 align:middle line:84%
+and say whether that patch
+looks like a real patch
+
+00:33:17.730 --> 00:33:20.152 align:middle line:90%
+or a fake patch.
+
+00:33:20.152 --> 00:33:21.610 align:middle line:84%
+So this means that
+discriminator is
+
+00:33:21.610 --> 00:33:23.610 align:middle line:84%
+going to slide-- it's
+going to be convolutional.
+
+00:33:23.610 --> 00:33:25.550 align:middle line:84%
+So it'll just slide
+across the input image.
+
+00:33:25.550 --> 00:33:27.930 align:middle line:84%
+And for every patch, it
+will be making a prediction.
+
+00:33:27.930 --> 00:33:32.590 align:middle line:84%
+And this gives you-- you can use
+a very small network to do that.
+
+00:33:32.590 --> 00:33:33.710 align:middle line:90%
+So that's one advantage.
+
+00:33:33.710 --> 00:33:36.130 align:middle line:84%
+And additionally, you
+have more supervision
+
+00:33:36.130 --> 00:33:39.770 align:middle line:84%
+because you have a-- your
+discriminator's being trained
+
+00:33:39.770 --> 00:33:42.030 align:middle line:90%
+on a data set of patches.
+
+00:33:42.030 --> 00:33:44.530 align:middle line:84%
+And there's much-- many more
+patches than there are images.
+
+00:33:44.530 --> 00:33:48.090 align:middle line:84%
+So if I have 10 images, I
+might have 10 million patches.
+
+00:33:48.090 --> 00:33:50.730 align:middle line:90%
+And that's just more data.
+
+00:33:50.730 --> 00:33:53.930 align:middle line:84%
+So one question
+that you can ask--
+
+00:33:53.930 --> 00:33:57.900 align:middle line:84%
+but this is-- that was just
+the architecture of that time.
+
+00:33:57.900 --> 00:34:00.820 align:middle line:84%
+One fun note is I think that
+this architecture is still
+
+00:34:00.820 --> 00:34:02.382 align:middle line:84%
+part of Stable
+Diffusion to this day.
+
+00:34:02.382 --> 00:34:04.340 align:middle line:84%
+But maybe in the very
+latest Stable Diffusions,
+
+00:34:04.340 --> 00:34:04.965 align:middle line:90%
+it disappeared.
+
+00:34:04.965 --> 00:34:06.340 align:middle line:84%
+But it was for
+quite a few years.
+
+00:34:06.340 --> 00:34:08.382 align:middle line:84%
+So if you have ever played
+with Stable Diffusion,
+
+00:34:08.382 --> 00:34:10.540 align:middle line:84%
+you had the patch GAN
+discriminator in there.
+
+00:34:10.540 --> 00:34:14.520 align:middle line:84%
+But anyway, this
+architecture could change.
+
+00:34:14.520 --> 00:34:17.460 align:middle line:84%
+But the important point is
+that this architecture defines
+
+00:34:17.460 --> 00:34:20.400 align:middle line:84%
+the properties of the loss
+and how it looks at structure.
+
+00:34:20.400 --> 00:34:23.717 align:middle line:84%
+So what happens if I make the
+receptive field, the patch
+
+00:34:23.717 --> 00:34:25.800 align:middle line:84%
+size that the discriminator
+is looking at, really,
+
+00:34:25.800 --> 00:34:27.219 align:middle line:90%
+really small?
+
+00:34:27.219 --> 00:34:30.659 align:middle line:84%
+So if I make it really, really
+small, just 1 pixel by 1 pixel,
+
+00:34:30.659 --> 00:34:33.219 align:middle line:84%
+I get back to almost
+the same thing
+
+00:34:33.219 --> 00:34:37.860 align:middle line:84%
+as least squares regression
+that-- because I'm
+
+00:34:37.860 --> 00:34:40.420 align:middle line:84%
+letting my discriminator only
+look at one pixel at a time
+
+00:34:40.420 --> 00:34:41.679 align:middle line:84%
+to decide whether
+it's real or fake.
+
+00:34:41.679 --> 00:34:42.739 align:middle line:84%
+And then it looks
+at the next pixel
+
+00:34:42.739 --> 00:34:44.120 align:middle line:84%
+and decides if
+it's real or fake.
+
+00:34:44.120 --> 00:34:46.460 align:middle line:84%
+It just takes a sum
+over all the errors.
+
+00:34:46.460 --> 00:34:51.060 align:middle line:84%
+And that is, essentially,
+factorizing my model
+
+00:34:51.060 --> 00:34:54.139 align:middle line:84%
+into a set of
+independent predictions
+
+00:34:54.139 --> 00:34:58.350 align:middle line:90%
+that are not jointly penalized.
+
+00:34:58.350 --> 00:35:02.060 align:middle line:84%
+If I make the patch 16-by-16,
+now I can say, look,
+
+00:35:02.060 --> 00:35:04.310 align:middle line:84%
+each of these predictions
+might have been pretty good,
+
+00:35:04.310 --> 00:35:05.730 align:middle line:90%
+but it's blurry.
+
+00:35:05.730 --> 00:35:07.730 align:middle line:84%
+Blurriness cannot be
+seen in a single pixel.
+
+00:35:07.730 --> 00:35:10.890 align:middle line:84%
+You can only see blurriness with
+two pixels, two measurements.
+
+00:35:10.890 --> 00:35:12.510 align:middle line:84%
+You say that it's
+not sharp enough.
+
+00:35:12.510 --> 00:35:14.427 align:middle line:84%
+The difference between
+them is not big enough.
+
+00:35:14.427 --> 00:35:16.630 align:middle line:84%
+It's the second-order
+statistic of the data.
+
+00:35:16.630 --> 00:35:19.502 align:middle line:84%
+And if I make it even bigger,
+I can model higher and higher
+
+00:35:19.502 --> 00:35:21.710 align:middle line:84%
+order statistics, statistics
+that depend on the joint
+
+00:35:21.710 --> 00:35:24.270 align:middle line:84%
+configuration of many,
+many measurements,
+
+00:35:24.270 --> 00:35:27.350 align:middle line:90%
+70-by-70 measurements.
+
+00:35:27.350 --> 00:35:31.190 align:middle line:84%
+And then in this era, if I-- if
+we make the patch size too big,
+
+00:35:31.190 --> 00:35:35.510 align:middle line:84%
+the whole image size, it
+worked worse because--
+
+00:35:35.510 --> 00:35:38.750 align:middle line:84%
+essentially for the reason
+that the model-- discriminator
+
+00:35:38.750 --> 00:35:41.370 align:middle line:84%
+had too many parameters relative
+to the number of data points.
+
+00:35:41.370 --> 00:35:43.750 align:middle line:84%
+But in the more modern
+era, this might not
+
+00:35:43.750 --> 00:35:45.945 align:middle line:84%
+be such an issue because
+we just have infinite data.
+
+00:35:45.945 --> 00:35:47.570 align:middle line:84%
+But back then, we
+only had finite data.
+
+00:35:47.570 --> 00:35:49.250 align:middle line:90%
+This was trained on 400 images.
+
+00:35:49.250 --> 00:35:52.330 align:middle line:90%
+
+
+00:35:52.330 --> 00:35:55.350 align:middle line:84%
+So the story in 2012
+was that deep learning
+
+00:35:55.350 --> 00:35:58.150 align:middle line:84%
+is a high-capacity
+hypothesis space that
+
+00:35:58.150 --> 00:36:01.750 align:middle line:84%
+can-- that many, many functions
+are in the hypothesis space.
+
+00:36:01.750 --> 00:36:04.370 align:middle line:84%
+And older algorithms
+had low capacity.
+
+00:36:04.370 --> 00:36:08.510 align:middle line:84%
+So they just could not find
+complicated nonlinear functions.
+
+00:36:08.510 --> 00:36:11.670 align:middle line:84%
+What I want to point out
+with the last few slides
+
+00:36:11.670 --> 00:36:14.910 align:middle line:84%
+is that deep learning with
+unstructured objectives
+
+00:36:14.910 --> 00:36:16.227 align:middle line:90%
+actually does saturate.
+
+00:36:16.227 --> 00:36:18.310 align:middle line:84%
+So it could be that, yes,
+in the hypothesis space,
+
+00:36:18.310 --> 00:36:19.670 align:middle line:90%
+there's the correct answer.
+
+00:36:19.670 --> 00:36:23.010 align:middle line:90%
+It's a universal approximator.
+
+00:36:23.010 --> 00:36:25.670 align:middle line:84%
+I just make it big enough,
+wide enough, deep enough.
+
+00:36:25.670 --> 00:36:29.590 align:middle line:84%
+But if I'm only incentivizing
+with my objective function
+
+00:36:29.590 --> 00:36:32.110 align:middle line:84%
+that it's good
+enough just to model
+
+00:36:32.110 --> 00:36:34.950 align:middle line:84%
+the factorized
+distribution, treating
+
+00:36:34.950 --> 00:36:37.315 align:middle line:84%
+every different dimension of
+the output as independent--
+
+00:36:37.315 --> 00:36:38.690 align:middle line:84%
+if that's considered
+good enough,
+
+00:36:38.690 --> 00:36:41.150 align:middle line:84%
+there'll be no incentive to
+model the joint dependencies.
+
+00:36:41.150 --> 00:36:46.710 align:middle line:84%
+And you won't get a good result.
+But with objective functions,
+
+00:36:46.710 --> 00:36:50.910 align:middle line:84%
+and all generative models have
+this objective function that
+
+00:36:50.910 --> 00:36:53.020 align:middle line:84%
+can model joint
+dependencies in the output,
+
+00:36:53.020 --> 00:36:56.440 align:middle line:90%
+you get better performance.
+
+00:36:56.440 --> 00:36:57.340 align:middle line:90%
+This is a cartoon.
+
+00:36:57.340 --> 00:37:01.000 align:middle line:84%
+But these little
+swaps of the ordering
+
+00:37:01.000 --> 00:37:02.720 align:middle line:84%
+are meant to be
+indicative of the fact
+
+00:37:02.720 --> 00:37:05.900 align:middle line:84%
+that with more capacity,
+you might require more data.
+
+00:37:05.900 --> 00:37:09.920 align:middle line:84%
+So less capacity and a simpler
+set of modeling assumptions
+
+00:37:09.920 --> 00:37:13.377 align:middle line:84%
+might mean that you can use
+less data to get a good result.
+
+00:37:13.377 --> 00:37:14.960 align:middle line:84%
+But if you have more
+data, then you'll
+
+00:37:14.960 --> 00:37:18.680 align:middle line:84%
+get better results if you
+have more capacity and a more
+
+00:37:18.680 --> 00:37:22.960 align:middle line:90%
+flexible model class.
+
+00:37:22.960 --> 00:37:27.740 align:middle line:84%
+So here's where we were with
+just unstructured prediction.
+
+00:37:27.740 --> 00:37:30.440 align:middle line:84%
+Each pixel is independent,
+penalized with a least--
+
+00:37:30.440 --> 00:37:32.400 align:middle line:90%
+an L1 loss per pixel.
+
+00:37:32.400 --> 00:37:35.200 align:middle line:84%
+And here's where we
+are with the patch GAN
+
+00:37:35.200 --> 00:37:37.040 align:middle line:84%
+discriminator and
+the conditional GAN,
+
+00:37:37.040 --> 00:37:38.780 align:middle line:84%
+where now it says,
+it was blurry.
+
+00:37:38.780 --> 00:37:39.780 align:middle line:90%
+That looked unrealistic.
+
+00:37:39.780 --> 00:37:40.697 align:middle line:90%
+That's obviously fake.
+
+00:37:40.697 --> 00:37:42.720 align:middle line:90%
+I better add a bunch of trees.
+
+00:37:42.720 --> 00:37:44.800 align:middle line:84%
+But we enter into the
+regime of hallucination,
+
+00:37:44.800 --> 00:37:47.080 align:middle line:84%
+where these trees
+are just a guess.
+
+00:37:47.080 --> 00:37:49.120 align:middle line:84%
+They're just a sample
+from the true distribution
+
+00:37:49.120 --> 00:37:50.890 align:middle line:90%
+over where the trees might be.
+
+00:37:50.890 --> 00:37:54.010 align:middle line:84%
+So it's not necessarily
+those trees are actually
+
+00:37:54.010 --> 00:37:54.790 align:middle line:90%
+at that location.
+
+00:37:54.790 --> 00:37:57.290 align:middle line:84%
+It's just this is one of the
+modes of the distribution
+
+00:37:57.290 --> 00:37:58.270 align:middle line:90%
+that I'm modeling.
+
+00:37:58.270 --> 00:38:02.210 align:middle line:90%
+
+
+00:38:02.210 --> 00:38:03.030 align:middle line:90%
+Questions?
+
+00:38:03.030 --> 00:38:04.963 align:middle line:90%
+Yeah?
+
+00:38:04.963 --> 00:38:06.630 align:middle line:84%
+AUDIENCE: I don't
+know if you know this.
+
+00:38:06.630 --> 00:38:09.250 align:middle line:84%
+But what would happen if
+you did an L2 loss that's
+
+00:38:09.250 --> 00:38:12.250 align:middle line:84%
+like a Gaussian, but with
+covariance, where you enforce
+
+00:38:12.250 --> 00:38:14.730 align:middle line:90%
+some structure in the data?
+
+00:38:14.730 --> 00:38:16.930 align:middle line:84%
+PHILLIP ISOLA: Covariance
+over the full joint--
+
+00:38:16.930 --> 00:38:19.410 align:middle line:90%
+just the full vector?
+
+00:38:19.410 --> 00:38:21.630 align:middle line:84%
+AUDIENCE: Two pixels are
+close or pressed together,
+
+00:38:21.630 --> 00:38:22.568 align:middle line:90%
+and that somehow--
+
+00:38:22.568 --> 00:38:24.610 align:middle line:84%
+PHILLIP ISOLA: Like some
+kind of Gaussian process
+
+00:38:24.610 --> 00:38:26.510 align:middle line:84%
+over the entire set
+of measurements,
+
+00:38:26.510 --> 00:38:29.370 align:middle line:84%
+something like that, or
+just one big Gaussian?
+
+00:38:29.370 --> 00:38:30.690 align:middle line:90%
+I think it will--
+
+00:38:30.690 --> 00:38:33.090 align:middle line:84%
+it'll improve things
+over this result.
+
+00:38:33.090 --> 00:38:35.210 align:middle line:84%
+But I would be pretty
+surprised if it
+
+00:38:35.210 --> 00:38:37.130 align:middle line:90%
+makes a dramatic difference.
+
+00:38:37.130 --> 00:38:40.550 align:middle line:84%
+I think that that still can
+only model Gaussian structure.
+
+00:38:40.550 --> 00:38:44.290 align:middle line:84%
+And there might be other
+structures that you're missing.
+
+00:38:44.290 --> 00:38:46.810 align:middle line:84%
+AUDIENCE: So the
+L1 prediction seems
+
+00:38:46.810 --> 00:38:49.430 align:middle line:84%
+to very faithfully
+represent the map.
+
+00:38:49.430 --> 00:38:52.330 align:middle line:84%
+But the-- looking carefully
+at the GAN representation
+
+00:38:52.330 --> 00:38:54.910 align:middle line:84%
+seems to have eliminated its--
+some of the details that are
+
+00:38:54.910 --> 00:38:55.410 align:middle line:90%
+[INAUDIBLE].
+
+00:38:55.410 --> 00:38:56.557 align:middle line:90%
+So is this a common thing?
+
+00:38:56.557 --> 00:38:58.890 align:middle line:84%
+PHILLIP ISOLA: So the question
+is, the L1 reconstruction
+
+00:38:58.890 --> 00:38:59.990 align:middle line:90%
+is very faithful.
+
+00:38:59.990 --> 00:39:02.770 align:middle line:84%
+And the GAN-- actually,
+the-- some of the paths
+
+00:39:02.770 --> 00:39:04.610 align:middle line:84%
+might not quite
+match, like maybe
+
+00:39:04.610 --> 00:39:06.530 align:middle line:90%
+this road disappeared here.
+
+00:39:06.530 --> 00:39:10.353 align:middle line:84%
+So this is a common trade-off--
+that the L1 prediction
+
+00:39:10.353 --> 00:39:11.270 align:middle line:90%
+is taking the average.
+
+00:39:11.270 --> 00:39:12.228 align:middle line:90%
+It's very conservative.
+
+00:39:12.228 --> 00:39:14.850 align:middle line:84%
+It's very robust in
+that particular sense
+
+00:39:14.850 --> 00:39:17.970 align:middle line:84%
+that we can be pretty
+sure that there's
+
+00:39:17.970 --> 00:39:20.450 align:middle line:90%
+going to be some road here.
+
+00:39:20.450 --> 00:39:23.890 align:middle line:84%
+And all the modes
+of the distribution
+
+00:39:23.890 --> 00:39:25.810 align:middle line:84%
+must share that so that
+the average will also
+
+00:39:25.810 --> 00:39:28.510 align:middle line:84%
+share that road, whereas,
+again, we'll select a mode.
+
+00:39:28.510 --> 00:39:29.830 align:middle line:90%
+And the mode should share it.
+
+00:39:29.830 --> 00:39:34.810 align:middle line:84%
+But essentially,
+maybe this just--
+
+00:39:34.810 --> 00:39:37.167 align:middle line:84%
+this mode is a little
+deviated from--
+
+00:39:37.167 --> 00:39:38.750 align:middle line:84%
+I think it's kind
+of like an ensemble.
+
+00:39:38.750 --> 00:39:40.850 align:middle line:84%
+An ensemble might be a
+more robust prediction
+
+00:39:40.850 --> 00:39:45.463 align:middle line:84%
+of the truth than one
+of the modes that might
+
+00:39:45.463 --> 00:39:46.630 align:middle line:90%
+be a little low probability.
+
+00:39:46.630 --> 00:39:50.020 align:middle line:84%
+And maybe this is low
+probability in that region.
+
+00:39:50.020 --> 00:39:53.940 align:middle line:84%
+So the rough idea is that the
+problem with generative AI stuff
+
+00:39:53.940 --> 00:39:57.140 align:middle line:84%
+is that you often will get these
+hallucinations that are samples
+
+00:39:57.140 --> 00:40:00.540 align:middle line:84%
+from how something might be, but
+not all aspects of that sample
+
+00:40:00.540 --> 00:40:02.033 align:middle line:84%
+might actually be
+high-probability.
+
+00:40:02.033 --> 00:40:04.200 align:middle line:84%
+And I think that's what
+you're seeing here, roughly.
+
+00:40:04.200 --> 00:40:07.880 align:middle line:90%
+
+
+00:40:07.880 --> 00:40:09.818 align:middle line:84%
+So let's go on to
+conditional VAEs.
+
+00:40:09.818 --> 00:40:11.860 align:middle line:84%
+So every generative model
+that we've talked about
+
+00:40:11.860 --> 00:40:12.960 align:middle line:90%
+can be made conditional.
+
+00:40:12.960 --> 00:40:15.085 align:middle line:84%
+Oftentimes, it's quite easy
+to make it conditional.
+
+00:40:15.085 --> 00:40:17.460 align:middle line:84%
+So let's see how to
+make a VAE conditional
+
+00:40:17.460 --> 00:40:20.380 align:middle line:90%
+for the same problem.
+
+00:40:20.380 --> 00:40:24.380 align:middle line:84%
+So one of the issues
+with the GAN formulation
+
+00:40:24.380 --> 00:40:26.660 align:middle line:84%
+is that this generator
+function tends
+
+00:40:26.660 --> 00:40:29.700 align:middle line:84%
+to exhibit what's called mode
+collapse, which is that, yes, it
+
+00:40:29.700 --> 00:40:31.620 align:middle line:84%
+will output one mode of
+the distribution that
+
+00:40:31.620 --> 00:40:32.860 align:middle line:90%
+looks realistic.
+
+00:40:32.860 --> 00:40:35.327 align:middle line:84%
+But it won't-- it will
+maybe miss other modes
+
+00:40:35.327 --> 00:40:36.160 align:middle line:90%
+of the distribution.
+
+00:40:36.160 --> 00:40:37.380 align:middle line:84%
+It's not great at
+actually capturing
+
+00:40:37.380 --> 00:40:38.980 align:middle line:84%
+the full posterior,
+just maybe at one
+
+00:40:38.980 --> 00:40:41.140 align:middle line:90%
+or a few modes of the posterior.
+
+00:40:41.140 --> 00:40:43.580 align:middle line:84%
+So conditional VAEs
+are a method that
+
+00:40:43.580 --> 00:40:45.140 align:middle line:84%
+is a little better
+at maybe capturing
+
+00:40:45.140 --> 00:40:47.340 align:middle line:90%
+all the modes of the posterior.
+
+00:40:47.340 --> 00:40:49.500 align:middle line:90%
+And here's how they work.
+
+00:40:49.500 --> 00:40:52.420 align:middle line:84%
+So what I meant to show
+here is that this schematic
+
+00:40:52.420 --> 00:40:53.732 align:middle line:90%
+could match that building.
+
+00:40:53.732 --> 00:40:55.440 align:middle line:84%
+But it also could
+match a brick building.
+
+00:40:55.440 --> 00:40:57.178 align:middle line:84%
+I have no idea what
+the material is.
+
+00:40:57.178 --> 00:40:59.220 align:middle line:84%
+It's not told to me in
+this schematic, just where
+
+00:40:59.220 --> 00:41:02.260 align:middle line:90%
+the windows and doors are.
+
+00:41:02.260 --> 00:41:04.940 align:middle line:84%
+So what I'll do is I'll simply
+use this VAE trick where
+
+00:41:04.940 --> 00:41:07.340 align:middle line:84%
+I'm going to have some latent
+variable z that will get
+
+00:41:07.340 --> 00:41:10.220 align:middle line:84%
+injected into the
+network in order
+
+00:41:10.220 --> 00:41:14.460 align:middle line:84%
+to model all of the uncertainty
+over the possible variations
+
+00:41:14.460 --> 00:41:17.920 align:middle line:90%
+in the predictions.
+
+00:41:17.920 --> 00:41:21.180 align:middle line:84%
+So let me go to this
+very simple example.
+
+00:41:21.180 --> 00:41:23.620 align:middle line:90%
+We have a pink square here.
+
+00:41:23.620 --> 00:41:26.220 align:middle line:84%
+And it's moving up and
+to the right over time.
+
+00:41:26.220 --> 00:41:28.552 align:middle line:84%
+So you can see that
+as I go to the right,
+
+00:41:28.552 --> 00:41:31.260 align:middle line:84%
+the square is actually getting a
+little bit closer to the corner.
+
+00:41:31.260 --> 00:41:33.047 align:middle line:90%
+And if I do--
+
+00:41:33.047 --> 00:41:35.130 align:middle line:84%
+if I try to predict the
+future given the past-- so
+
+00:41:35.130 --> 00:41:36.797 align:middle line:84%
+I'm going to take
+this frame of a video.
+
+00:41:36.797 --> 00:41:37.820 align:middle line:90%
+This is a moving object.
+
+00:41:37.820 --> 00:41:40.300 align:middle line:90%
+Where will it go next?
+
+00:41:40.300 --> 00:41:43.350 align:middle line:84%
+If I do that with the
+least squares objective,
+
+00:41:43.350 --> 00:41:46.610 align:middle line:84%
+then I am going
+to get averaging.
+
+00:41:46.610 --> 00:41:48.110 align:middle line:84%
+So there's eight
+possible directions
+
+00:41:48.110 --> 00:41:50.550 align:middle line:84%
+this square could go
+in this little demo.
+
+00:41:50.550 --> 00:41:53.750 align:middle line:84%
+So here are the eight possible
+directions it could go.
+
+00:41:53.750 --> 00:41:55.670 align:middle line:84%
+And my prediction
+will be an average
+
+00:41:55.670 --> 00:41:57.990 align:middle line:84%
+of all eight possible
+directions, average of the eight
+
+00:41:57.990 --> 00:41:59.910 align:middle line:90%
+modes.
+
+00:41:59.910 --> 00:42:03.433 align:middle line:84%
+So we want to somehow
+be able to model
+
+00:42:03.433 --> 00:42:05.350 align:middle line:84%
+each of the modes and
+sample each of the modes
+
+00:42:05.350 --> 00:42:07.268 align:middle line:90%
+and not just sample the average.
+
+00:42:07.268 --> 00:42:09.810 align:middle line:84%
+The average has zero probability
+under the data distribution.
+
+00:42:09.810 --> 00:42:13.230 align:middle line:90%
+So that's a very bad prediction.
+
+00:42:13.230 --> 00:42:17.390 align:middle line:84%
+So we're going to build up
+something that looks like a VAE.
+
+00:42:17.390 --> 00:42:21.070 align:middle line:84%
+So first, we have what looks
+like an autoencoder or an--
+
+00:42:21.070 --> 00:42:22.870 align:middle line:90%
+the VAEs we saw last class.
+
+00:42:22.870 --> 00:42:25.470 align:middle line:84%
+We just are going
+to take my target.
+
+00:42:25.470 --> 00:42:27.330 align:middle line:84%
+This is the prediction
+of the future.
+
+00:42:27.330 --> 00:42:30.910 align:middle line:84%
+We're going to try to compress
+it into a bottleneck, a Gaussian
+
+00:42:30.910 --> 00:42:36.470 align:middle line:84%
+variable z, and then
+reconstruct that prediction.
+
+00:42:36.470 --> 00:42:38.830 align:middle line:84%
+So I'm trying to
+predict y given x.
+
+00:42:38.830 --> 00:42:40.110 align:middle line:90%
+This is x.
+
+00:42:40.110 --> 00:42:41.070 align:middle line:90%
+And this is y.
+
+00:42:41.070 --> 00:42:44.400 align:middle line:84%
+Here, I'm just
+running a VAE on y.
+
+00:42:44.400 --> 00:42:46.820 align:middle line:84%
+Now, to make it a
+conditional VAE,
+
+00:42:46.820 --> 00:42:50.460 align:middle line:84%
+I'm going to simply let
+my reconstruction network,
+
+00:42:50.460 --> 00:42:54.320 align:middle line:90%
+my decoder, observe the data x.
+
+00:42:54.320 --> 00:42:55.940 align:middle line:84%
+What it's going to
+try to do is say,
+
+00:42:55.940 --> 00:43:01.600 align:middle line:84%
+I want to predict y,
+the future, from x.
+
+00:43:01.600 --> 00:43:04.320 align:middle line:84%
+But I'm also going to
+tell you the answer.
+
+00:43:04.320 --> 00:43:07.280 align:middle line:84%
+But I'm going to
+force the answer, y,
+
+00:43:07.280 --> 00:43:11.080 align:middle line:84%
+to go through an
+information bottleneck, z.
+
+00:43:11.080 --> 00:43:15.600 align:middle line:84%
+So what's going to happen is
+this arrow here is going to say,
+
+00:43:15.600 --> 00:43:18.000 align:middle line:84%
+well, I don't know what
+direction it will go.
+
+00:43:18.000 --> 00:43:20.840 align:middle line:84%
+That information
+has to come from z.
+
+00:43:20.840 --> 00:43:24.320 align:middle line:84%
+So z will learn to encode what
+direction this thing goes.
+
+00:43:24.320 --> 00:43:25.683 align:middle line:90%
+But z is compressed.
+
+00:43:25.683 --> 00:43:27.100 align:middle line:84%
+Z is trying to be
+a unit Gaussian.
+
+00:43:27.100 --> 00:43:28.780 align:middle line:84%
+So it's trying to
+remove information.
+
+00:43:28.780 --> 00:43:32.600 align:middle line:84%
+And so rather than
+encoding the color in z,
+
+00:43:32.600 --> 00:43:33.940 align:middle line:90%
+the color can be given by x.
+
+00:43:33.940 --> 00:43:37.618 align:middle line:84%
+And there's higher information
+capacity in this arrow.
+
+00:43:37.618 --> 00:43:39.160 align:middle line:84%
+So what will happen
+is this is trying
+
+00:43:39.160 --> 00:43:40.720 align:middle line:84%
+to learn as little
+as possible in order
+
+00:43:40.720 --> 00:43:41.820 align:middle line:90%
+to make the correct prediction.
+
+00:43:41.820 --> 00:43:43.320 align:middle line:84%
+So I don't need to
+encode the color,
+
+00:43:43.320 --> 00:43:45.780 align:middle line:84%
+since that's given
+in my observation.
+
+00:43:45.780 --> 00:43:49.200 align:middle line:84%
+So z ends up only
+encoding the direction
+
+00:43:49.200 --> 00:43:54.340 align:middle line:84%
+of motion, which is
+unobserved in the observation.
+
+00:43:54.340 --> 00:44:01.140 align:middle line:84%
+So if z sees this target, it
+will compress that into, oh,
+
+00:44:01.140 --> 00:44:04.040 align:middle line:90%
+it-- the box should go down.
+
+00:44:04.040 --> 00:44:06.760 align:middle line:84%
+So z learns to encode
+whatever information
+
+00:44:06.760 --> 00:44:08.920 align:middle line:84%
+is missing from the
+observation in order
+
+00:44:08.920 --> 00:44:10.740 align:middle line:90%
+to make a correct prediction.
+
+00:44:10.740 --> 00:44:13.400 align:middle line:90%
+
+
+00:44:13.400 --> 00:44:17.720 align:middle line:84%
+Now, at sampling time, I
+can sample from this model
+
+00:44:17.720 --> 00:44:20.360 align:middle line:90%
+by replacing my encoding--
+
+00:44:20.360 --> 00:44:24.340 align:middle line:84%
+my inference of z given a target
+image with z as a unit Gaussian
+
+00:44:24.340 --> 00:44:26.000 align:middle line:84%
+because I've
+trained it as a VAE.
+
+00:44:26.000 --> 00:44:28.500 align:middle line:84%
+And I've imposed that it should
+be close to a unit Gaussian.
+
+00:44:28.500 --> 00:44:30.160 align:middle line:90%
+So I can just sample from z.
+
+00:44:30.160 --> 00:44:31.420 align:middle line:90%
+And now I'll sample from z.
+
+00:44:31.420 --> 00:44:33.920 align:middle line:84%
+Maybe I sample
+the down z vector.
+
+00:44:33.920 --> 00:44:36.498 align:middle line:84%
+That will cause me to predict
+that the object goes down.
+
+00:44:36.498 --> 00:44:38.040 align:middle line:84%
+So I'm sampling all
+the possible ways
+
+00:44:38.040 --> 00:44:40.050 align:middle line:90%
+it can move by sampling from z.
+
+00:44:40.050 --> 00:44:40.910 align:middle line:90%
+Now I sample up.
+
+00:44:40.910 --> 00:44:41.470 align:middle line:90%
+It goes up.
+
+00:44:41.470 --> 00:44:45.290 align:middle line:90%
+
+
+00:44:45.290 --> 00:44:46.850 align:middle line:90%
+It goes right.
+
+00:44:46.850 --> 00:44:50.030 align:middle line:84%
+So you can train this
+for all kinds of data.
+
+00:44:50.030 --> 00:44:53.090 align:middle line:84%
+On this example, I'm introducing
+these latent variables
+
+00:44:53.090 --> 00:44:56.850 align:middle line:84%
+that specify everything that's
+unspecified by the input x.
+
+00:44:56.850 --> 00:45:00.290 align:middle line:84%
+So z learns to model everything
+that's necessary in order
+
+00:45:00.290 --> 00:45:02.850 align:middle line:84%
+to pin down what
+the output should
+
+00:45:02.850 --> 00:45:07.670 align:middle line:84%
+look like that's not explicitly
+given in x, all the uncertainty.
+
+00:45:07.670 --> 00:45:10.242 align:middle line:90%
+So P of y given x is uncertain.
+
+00:45:10.242 --> 00:45:12.450 align:middle line:84%
+So I'm going to add a latent
+variable z, just like we
+
+00:45:12.450 --> 00:45:16.770 align:middle line:84%
+did with VAEs, where we're
+trying to learn all--
+
+00:45:16.770 --> 00:45:19.490 align:middle line:84%
+in unconditional VAEs, z
+has to encode everything
+
+00:45:19.490 --> 00:45:20.430 align:middle line:90%
+about the data.
+
+00:45:20.430 --> 00:45:22.410 align:middle line:84%
+In conditional
+VAEs, z only encodes
+
+00:45:22.410 --> 00:45:25.270 align:middle line:84%
+information that's not given in
+the conditioning variable, x.
+
+00:45:25.270 --> 00:45:30.380 align:middle line:90%
+
+
+00:45:30.380 --> 00:45:35.570 align:middle line:84%
+So one concept to
+give you here is now
+
+00:45:35.570 --> 00:45:36.980 align:middle line:84%
+we really have
+two different ways
+
+00:45:36.980 --> 00:45:39.738 align:middle line:84%
+of controlling the outputs
+of a generative model.
+
+00:45:39.738 --> 00:45:42.280 align:middle line:84%
+In the previous lectures, we
+just had the latent variables z.
+
+00:45:42.280 --> 00:45:43.820 align:middle line:84%
+And there were
+knobs that specify
+
+00:45:43.820 --> 00:45:45.380 align:middle line:90%
+all the attributes of the data.
+
+00:45:45.380 --> 00:45:48.100 align:middle line:84%
+And those knobs are
+here, controlling
+
+00:45:48.100 --> 00:45:49.900 align:middle line:90%
+the lighting and the materials.
+
+00:45:49.900 --> 00:45:52.460 align:middle line:84%
+But now we also have
+conditioning variables, x.
+
+00:45:52.460 --> 00:45:55.060 align:middle line:90%
+
+
+00:45:55.060 --> 00:45:58.260 align:middle line:84%
+And these also can control
+the way that the data looks.
+
+00:45:58.260 --> 00:46:01.042 align:middle line:84%
+And for a lot of modern
+generative models,
+
+00:46:01.042 --> 00:46:03.500 align:middle line:84%
+actually, the latent variables
+might play a very small role
+
+00:46:03.500 --> 00:46:06.100 align:middle line:84%
+because you're just conditioning
+on more and more data.
+
+00:46:06.100 --> 00:46:08.980 align:middle line:84%
+So in text-to-image
+models, if you tell it
+
+00:46:08.980 --> 00:46:10.900 align:middle line:84%
+a whole string of
+text, now you don't
+
+00:46:10.900 --> 00:46:14.340 align:middle line:84%
+need a lot of latent variables
+because the string almost-- very
+
+00:46:14.340 --> 00:46:17.300 align:middle line:84%
+precisely could pin down
+what you're going to see.
+
+00:46:17.300 --> 00:46:21.620 align:middle line:84%
+So let's look at
+text models next.
+
+00:46:21.620 --> 00:46:24.760 align:middle line:84%
+So first, we'll talk
+about text-to-text.
+
+00:46:24.760 --> 00:46:28.020 align:middle line:84%
+Luckily, text-to-text
+is basically nothing new
+
+00:46:28.020 --> 00:46:31.660 align:middle line:84%
+because text models,
+language models,
+
+00:46:31.660 --> 00:46:33.320 align:middle line:90%
+are typically autoregressive.
+
+00:46:33.320 --> 00:46:36.540 align:middle line:84%
+Let's look at the autoregressive
+class of language models.
+
+00:46:36.540 --> 00:46:38.260 align:middle line:84%
+Autoregressive
+models are already,
+
+00:46:38.260 --> 00:46:41.540 align:middle line:84%
+by construction,
+conditional generative
+
+00:46:41.540 --> 00:46:43.980 align:middle line:84%
+models because an
+autoregressive model--
+
+00:46:43.980 --> 00:46:46.620 align:middle line:84%
+if you recall, we model
+the data as a sequence
+
+00:46:46.620 --> 00:46:48.780 align:middle line:90%
+of conditional predictions.
+
+00:46:48.780 --> 00:46:51.300 align:middle line:84%
+The probability is a product
+over all of the conditionals P
+
+00:46:51.300 --> 00:46:56.780 align:middle line:84%
+of x2 given x1, P of x3 given
+x1 and x2, and so forth.
+
+00:46:56.780 --> 00:47:00.560 align:middle line:84%
+So autoregressive models
+are natively conditional.
+
+00:47:00.560 --> 00:47:04.660 align:middle line:84%
+And you don't have to modify
+them or do something new to turn
+
+00:47:04.660 --> 00:47:06.980 align:middle line:90%
+them into conditional models.
+
+00:47:06.980 --> 00:47:09.820 align:middle line:84%
+So let's look at this with a
+conditional language prediction
+
+00:47:09.820 --> 00:47:10.320 align:middle line:90%
+problem.
+
+00:47:10.320 --> 00:47:12.360 align:middle line:84%
+So conditional prediction
+is take text as input,
+
+00:47:12.360 --> 00:47:16.140 align:middle line:84%
+predict some other text
+as output So the way
+
+00:47:16.140 --> 00:47:18.563 align:middle line:84%
+you train it is the way
+we've always described
+
+00:47:18.563 --> 00:47:19.480 align:middle line:90%
+training these things.
+
+00:47:19.480 --> 00:47:21.700 align:middle line:84%
+You just do
+next-word prediction.
+
+00:47:21.700 --> 00:47:24.380 align:middle line:84%
+"Colorless green ideas sleep"--
+what's the next character
+
+00:47:24.380 --> 00:47:25.580 align:middle line:90%
+or next word?
+
+00:47:25.580 --> 00:47:28.260 align:middle line:90%
+"Furiously."
+
+00:47:28.260 --> 00:47:33.550 align:middle line:84%
+And now I can use this to solve
+conditional prediction problems
+
+00:47:33.550 --> 00:47:38.330 align:middle line:84%
+by simply giving the language
+model whatever input I want.
+
+00:47:38.330 --> 00:47:40.590 align:middle line:84%
+And that's the
+conditioning variable, x.
+
+00:47:40.590 --> 00:47:43.227 align:middle line:84%
+The stochasticity of the latent
+variables of this model--
+
+00:47:43.227 --> 00:47:44.810 align:middle line:84%
+there's not explicit
+latent variables.
+
+00:47:44.810 --> 00:47:47.710 align:middle line:84%
+But it's stochastic because
+every next word I predict
+
+00:47:47.710 --> 00:47:50.870 align:middle line:84%
+will be sampled from a
+categorical distribution
+
+00:47:50.870 --> 00:47:55.070 align:middle line:84%
+over the next word if I'm doing
+a autoregressive model where
+
+00:47:55.070 --> 00:47:58.450 align:middle line:84%
+every conditional density is
+a categorical distribution.
+
+00:47:58.450 --> 00:48:00.150 align:middle line:90%
+So it's still stochastic.
+
+00:48:00.150 --> 00:48:02.590 align:middle line:84%
+But these conditioning
+variables are now made explicit
+
+00:48:02.590 --> 00:48:04.270 align:middle line:90%
+in the training process.
+
+00:48:04.270 --> 00:48:06.290 align:middle line:84%
+And you can do all
+kinds of things.
+
+00:48:06.290 --> 00:48:08.550 align:middle line:84%
+And this is often
+called prompting
+
+00:48:08.550 --> 00:48:11.855 align:middle line:84%
+language models, which I'm sure
+most of you have played with.
+
+00:48:11.855 --> 00:48:13.230 align:middle line:84%
+This is what you
+do when you just
+
+00:48:13.230 --> 00:48:16.790 align:middle line:84%
+talk with your favorite
+LLM, Claude or ChatGPT.
+
+00:48:16.790 --> 00:48:20.310 align:middle line:84%
+So let's say I want to turn my
+language model into a classifier
+
+00:48:20.310 --> 00:48:22.370 align:middle line:90%
+of the sentiment of a review.
+
+00:48:22.370 --> 00:48:23.390 align:middle line:90%
+I have a product review.
+
+00:48:23.390 --> 00:48:25.870 align:middle line:84%
+I want to now predict
+conditionally,
+
+00:48:25.870 --> 00:48:27.990 align:middle line:84%
+conditioned on
+the review, what--
+
+00:48:27.990 --> 00:48:30.030 align:middle line:90%
+did the user like it or not?
+
+00:48:30.030 --> 00:48:32.840 align:middle line:84%
+So here's how you do it with an
+autoregressive language model.
+
+00:48:32.840 --> 00:48:34.180 align:middle line:90%
+You simply take the review.
+
+00:48:34.180 --> 00:48:39.340 align:middle line:84%
+You concatenate, you prefix that
+onto the input to your question.
+
+00:48:39.340 --> 00:48:41.720 align:middle line:84%
+So that's like conditioning
+on x the review.
+
+00:48:41.720 --> 00:48:43.760 align:middle line:84%
+And then you add whatever
+question you want,
+
+00:48:43.760 --> 00:48:45.760 align:middle line:84%
+like this-- what's the
+sentiment in this review,
+
+00:48:45.760 --> 00:48:47.320 align:middle line:84%
+or the sentiment
+in this review is,
+
+00:48:47.320 --> 00:48:48.760 align:middle line:84%
+and then the
+next-word prediction
+
+00:48:48.760 --> 00:48:50.300 align:middle line:90%
+should be your predicted y.
+
+00:48:50.300 --> 00:48:52.400 align:middle line:84%
+So it's P of y given x,
+where x is the review
+
+00:48:52.400 --> 00:48:55.960 align:middle line:90%
+and y is the sentiment--
+
+00:48:55.960 --> 00:49:00.760 align:middle line:84%
+so really easy way to do all
+kinds of conditional predictions
+
+00:49:00.760 --> 00:49:02.880 align:middle line:90%
+with language models.
+
+00:49:02.880 --> 00:49:08.960 align:middle line:84%
+This became evident, I
+would say, in the GPT-3 era.
+
+00:49:08.960 --> 00:49:11.198 align:middle line:84%
+Now this is-- people use
+language models this way
+
+00:49:11.198 --> 00:49:11.740 align:middle line:90%
+all the time.
+
+00:49:11.740 --> 00:49:13.600 align:middle line:84%
+But it was-- it took
+a while for folks
+
+00:49:13.600 --> 00:49:16.280 align:middle line:84%
+to realize that
+language models are not
+
+00:49:16.280 --> 00:49:18.940 align:middle line:84%
+just about writing
+paragraphs from scratch,
+
+00:49:18.940 --> 00:49:20.620 align:middle line:84%
+like writing funny
+stories from scratch.
+
+00:49:20.620 --> 00:49:23.140 align:middle line:84%
+They're actually most powerful
+for conditional prediction.
+
+00:49:23.140 --> 00:49:25.420 align:middle line:84%
+Given an instruction or
+a prompt or a question,
+
+00:49:25.420 --> 00:49:27.020 align:middle line:84%
+they can answer that
+question for you.
+
+00:49:27.020 --> 00:49:28.603 align:middle line:84%
+It's a conditional
+prediction problem.
+
+00:49:28.603 --> 00:49:30.800 align:middle line:84%
+And that's where they
+really became powerful.
+
+00:49:30.800 --> 00:49:31.840 align:middle line:90%
+So here, I gave Chat--
+
+00:49:31.840 --> 00:49:34.820 align:middle line:90%
+I gave GPT-3 this review.
+
+00:49:34.820 --> 00:49:36.597 align:middle line:84%
+And then it says
+the next character--
+
+00:49:36.597 --> 00:49:38.180 align:middle line:84%
+or the next word
+should be "negative."
+
+00:49:38.180 --> 00:49:41.620 align:middle line:84%
+And that's a prediction of
+the sentiment in the review.
+
+00:49:41.620 --> 00:49:45.000 align:middle line:90%
+
+
+00:49:45.000 --> 00:49:46.640 align:middle line:90%
+Question, yeah?
+
+00:49:46.640 --> 00:49:48.106 align:middle line:84%
+AUDIENCE: Is there
+a reason "five"
+
+00:49:48.106 --> 00:49:50.410 align:middle line:90%
+has underscores [INAUDIBLE] it?
+
+00:49:50.410 --> 00:49:52.190 align:middle line:90%
+
+
+00:49:52.190 --> 00:49:52.940 align:middle line:90%
+PHILLIP ISOLA: No.
+
+00:49:52.940 --> 00:49:56.960 align:middle line:84%
+I think that just people put
+italics with two underscores.
+
+00:49:56.960 --> 00:49:58.738 align:middle line:84%
+Just, it was how that
+review was written.
+
+00:49:58.738 --> 00:49:59.280 align:middle line:90%
+I don't know.
+
+00:49:59.280 --> 00:50:01.300 align:middle line:84%
+I think I probably made
+this one up myself.
+
+00:50:01.300 --> 00:50:04.520 align:middle line:84%
+So I was just
+indicating italics.
+
+00:50:04.520 --> 00:50:05.680 align:middle line:90%
+It doesn't really matter.
+
+00:50:05.680 --> 00:50:06.400 align:middle line:90%
+Yep?
+
+00:50:06.400 --> 00:50:10.440 align:middle line:84%
+AUDIENCE: Is this similar to
+retrieval-augmented generation?
+
+00:50:10.440 --> 00:50:13.200 align:middle line:84%
+PHILLIP ISOLA: So
+retrieval-augmented generation
+
+00:50:13.200 --> 00:50:15.360 align:middle line:90%
+would--
+
+00:50:15.360 --> 00:50:16.220 align:middle line:90%
+is related to this.
+
+00:50:16.220 --> 00:50:21.160 align:middle line:84%
+But I would say for now, treat
+that as a separate concept.
+
+00:50:21.160 --> 00:50:25.140 align:middle line:84%
+There's no explicit retrieval
+in what I've shown so far.
+
+00:50:25.140 --> 00:50:25.640 align:middle line:90%
+Yeah?
+
+00:50:25.640 --> 00:50:27.598 align:middle line:84%
+AUDIENCE: In this case,
+for training, do I just
+
+00:50:27.598 --> 00:50:29.610 align:middle line:84%
+generate a bunch of
+instructions and try
+
+00:50:29.610 --> 00:50:33.298 align:middle line:84%
+to make the GPT answer
+to these instructions?
+
+00:50:33.298 --> 00:50:35.090 align:middle line:84%
+PHILLIP ISOLA: How do
+you train this thing?
+
+00:50:35.090 --> 00:50:36.550 align:middle line:90%
+So there's two ways.
+
+00:50:36.550 --> 00:50:38.610 align:middle line:90%
+So one is that you just--
+
+00:50:38.610 --> 00:50:42.650 align:middle line:84%
+you're modeling all of the words
+that any human has ever spoken
+
+00:50:42.650 --> 00:50:45.610 align:middle line:84%
+or all the words on the
+internet or some huge corpus
+
+00:50:45.610 --> 00:50:46.930 align:middle line:90%
+of sentences.
+
+00:50:46.930 --> 00:50:52.370 align:middle line:84%
+And probability of
+sentiment given review
+
+00:50:52.370 --> 00:50:56.050 align:middle line:84%
+might be somewhere in that space
+of all possible things people
+
+00:50:56.050 --> 00:50:58.410 align:middle line:90%
+have ever talked about.
+
+00:50:58.410 --> 00:51:00.350 align:middle line:84%
+When I'm just training
+a language model,
+
+00:51:00.350 --> 00:51:02.225 align:middle line:84%
+it will learn all these
+different conditional
+
+00:51:02.225 --> 00:51:04.610 align:middle line:84%
+distributions if they
+exist in the data.
+
+00:51:04.610 --> 00:51:07.330 align:middle line:84%
+So this is one
+conditional that exists
+
+00:51:07.330 --> 00:51:10.690 align:middle line:84%
+in the data, the conditional of
+predicting the next sentiment
+
+00:51:10.690 --> 00:51:15.370 align:middle line:90%
+given the previous paragraph.
+
+00:51:15.370 --> 00:51:19.530 align:middle line:84%
+But now if your conditional
+distribution you want to model
+
+00:51:19.530 --> 00:51:22.530 align:middle line:84%
+is not just implicit
+in the data,
+
+00:51:22.530 --> 00:51:25.290 align:middle line:84%
+then you can collect your
+own data set of reviews
+
+00:51:25.290 --> 00:51:27.728 align:middle line:90%
+and sentiment labels.
+
+00:51:27.728 --> 00:51:29.270 align:middle line:84%
+And then you could
+fine-tune on that.
+
+00:51:29.270 --> 00:51:32.970 align:middle line:90%
+
+
+00:51:32.970 --> 00:51:33.470 align:middle line:90%
+Cool.
+
+00:51:33.470 --> 00:51:36.010 align:middle line:84%
+So we'll have another
+lecture on language models
+
+00:51:36.010 --> 00:51:38.552 align:middle line:84%
+where we go a little bit more
+into all the different ways you
+
+00:51:38.552 --> 00:51:40.930 align:middle line:84%
+can prompt and tune
+and adapt these things.
+
+00:51:40.930 --> 00:51:42.450 align:middle line:84%
+But basically,
+autoregressive models
+
+00:51:42.450 --> 00:51:45.890 align:middle line:90%
+are just conditional by default.
+
+00:51:45.890 --> 00:51:47.730 align:middle line:84%
+So now let's look at
+an autoregressive model
+
+00:51:47.730 --> 00:51:48.928 align:middle line:90%
+for image-to-text.
+
+00:51:48.928 --> 00:51:50.470 align:middle line:84%
+So again, it should
+be pretty simple.
+
+00:51:50.470 --> 00:51:53.010 align:middle line:84%
+But we need to make sure we can
+map between two different data
+
+00:51:53.010 --> 00:51:53.510 align:middle line:90%
+types.
+
+00:51:53.510 --> 00:51:55.590 align:middle line:84%
+And the way we do that
+is we use transformers,
+
+00:51:55.590 --> 00:51:58.330 align:middle line:84%
+which are a way of
+putting all data types
+
+00:51:58.330 --> 00:51:59.630 align:middle line:90%
+onto the same equal footing.
+
+00:51:59.630 --> 00:52:01.005 align:middle line:84%
+Just turn everything
+into tokens,
+
+00:52:01.005 --> 00:52:03.610 align:middle line:84%
+and then just do
+token-to-token mappings.
+
+00:52:03.610 --> 00:52:05.610 align:middle line:90%
+So I'm showing images.
+
+00:52:05.610 --> 00:52:06.430 align:middle line:90%
+I'm showing text.
+
+00:52:06.430 --> 00:52:08.610 align:middle line:84%
+But whatever data format
+you want to work with--
+
+00:52:08.610 --> 00:52:11.930 align:middle line:84%
+molecules, financial
+data, spreadsheets--
+
+00:52:11.930 --> 00:52:15.570 align:middle line:84%
+if you just can
+convert it to tokens,
+
+00:52:15.570 --> 00:52:18.310 align:middle line:84%
+little bundles of information
+with an embedding,
+
+00:52:18.310 --> 00:52:21.560 align:middle line:84%
+a token vector, then
+you'll be able to work--
+
+00:52:21.560 --> 00:52:23.810 align:middle line:84%
+you'll be able to run all
+the same technology that I'm
+
+00:52:23.810 --> 00:52:25.060 align:middle line:90%
+showing you here.
+
+00:52:25.060 --> 00:52:29.260 align:middle line:84%
+So here's an architecture
+for how to map from an image
+
+00:52:29.260 --> 00:52:30.245 align:middle line:90%
+to a sentence.
+
+00:52:30.245 --> 00:52:31.620 align:middle line:84%
+Sometimes, this
+problem is called
+
+00:52:31.620 --> 00:52:34.100 align:middle line:84%
+image captioning if I'm
+trying to take an image
+
+00:52:34.100 --> 00:52:36.412 align:middle line:84%
+and train the system
+to output the caption
+
+00:52:36.412 --> 00:52:38.620 align:middle line:84%
+that somebody would have
+written underneath the image
+
+00:52:38.620 --> 00:52:42.340 align:middle line:84%
+online, on websites, or maybe
+the alt text of the image.
+
+00:52:42.340 --> 00:52:46.420 align:middle line:84%
+So here's how to do
+that with a transformer.
+
+00:52:46.420 --> 00:52:50.280 align:middle line:84%
+I have my branch down here,
+which is the image encoder.
+
+00:52:50.280 --> 00:52:52.130 align:middle line:90%
+It will take an image.
+
+00:52:52.130 --> 00:52:54.380 align:middle line:84%
+And we talked about this in
+the transformers lecture--
+
+00:52:54.380 --> 00:52:57.220 align:middle line:84%
+that typically, we use these
+vision transformers, which
+
+00:52:57.220 --> 00:52:59.420 align:middle line:84%
+chop up the image
+into a set of patches,
+
+00:52:59.420 --> 00:53:01.580 align:middle line:84%
+embed each patch into
+a vector, and then just
+
+00:53:01.580 --> 00:53:05.640 align:middle line:84%
+run a transformer
+over those tokens
+
+00:53:05.640 --> 00:53:08.300 align:middle line:84%
+now and get an
+output set of tokens.
+
+00:53:08.300 --> 00:53:10.380 align:middle line:84%
+So now I've tokenized
+the input into
+
+00:53:10.380 --> 00:53:12.060 align:middle line:84%
+these nice, abstracted
+representations
+
+00:53:12.060 --> 00:53:14.740 align:middle line:84%
+of the-- of what's
+going on in that image.
+
+00:53:14.740 --> 00:53:19.740 align:middle line:84%
+So now this part here
+is just a GPT regular--
+
+00:53:19.740 --> 00:53:20.920 align:middle line:90%
+GPT is one name for it.
+
+00:53:20.920 --> 00:53:23.950 align:middle line:84%
+But it's just an
+autoregressive language model
+
+00:53:23.950 --> 00:53:25.630 align:middle line:90%
+with a transformer.
+
+00:53:25.630 --> 00:53:27.850 align:middle line:90%
+So what is that doing?
+
+00:53:27.850 --> 00:53:30.478 align:middle line:84%
+It's taking in the
+prefix to a sentence
+
+00:53:30.478 --> 00:53:32.270 align:middle line:84%
+and predicting the next
+word, or predicting
+
+00:53:32.270 --> 00:53:36.750 align:middle line:84%
+the next-- with causal
+attention, for every prefix,
+
+00:53:36.750 --> 00:53:38.470 align:middle line:84%
+I have a causal
+dependency between that
+
+00:53:38.470 --> 00:53:41.270 align:middle line:84%
+and the next token
+in the sequence.
+
+00:53:41.270 --> 00:53:45.470 align:middle line:84%
+So this word here, "sitting,"
+only depends on all the previous
+
+00:53:45.470 --> 00:53:46.010 align:middle line:90%
+stuff.
+
+00:53:46.010 --> 00:53:47.370 align:middle line:84%
+"Bird" does not
+depend on "sitting."
+
+00:53:47.370 --> 00:53:48.530 align:middle line:84%
+It only depends on
+the previous stuff.
+
+00:53:48.530 --> 00:53:50.190 align:middle line:84%
+That's the causal
+attention trick.
+
+00:53:50.190 --> 00:53:53.110 align:middle line:84%
+And I just train with
+this next-token prediction
+
+00:53:53.110 --> 00:53:57.350 align:middle line:84%
+objective with self-attention,
+but causal masked.
+
+00:53:57.350 --> 00:53:59.670 align:middle line:84%
+Now, to stick them together,
+all I have to do is--
+
+00:53:59.670 --> 00:54:01.170 align:middle line:84%
+they're all just
+in token space now.
+
+00:54:01.170 --> 00:54:05.310 align:middle line:84%
+So all I have to do is prefix
+the set of language tokens
+
+00:54:05.310 --> 00:54:06.770 align:middle line:90%
+with the set of image tokens.
+
+00:54:06.770 --> 00:54:09.590 align:middle line:84%
+And now I will be
+basically reading off a--
+
+00:54:09.590 --> 00:54:12.108 align:middle line:84%
+given this token, this
+token, this token of vision,
+
+00:54:12.108 --> 00:54:14.650 align:middle line:84%
+what is going to be the next
+word after this word, this word,
+
+00:54:14.650 --> 00:54:15.830 align:middle line:90%
+this word?
+
+00:54:15.830 --> 00:54:18.870 align:middle line:84%
+And one of the very simple ways
+of stitching these networks
+
+00:54:18.870 --> 00:54:22.950 align:middle line:84%
+together is what's called
+cross-attention, which is just
+
+00:54:22.950 --> 00:54:27.390 align:middle line:84%
+to say, this GPT
+language model is
+
+00:54:27.390 --> 00:54:31.590 align:middle line:84%
+going to simply be prefixed
+with additional tokens that
+
+00:54:31.590 --> 00:54:38.370 align:middle line:84%
+can submit keys and values that
+are queried by these tokens.
+
+00:54:38.370 --> 00:54:42.690 align:middle line:84%
+So the query is emitted
+from the word "yellow."
+
+00:54:42.690 --> 00:54:45.590 align:middle line:84%
+That will then match the key for
+the bird because it's yellow.
+
+00:54:45.590 --> 00:54:47.390 align:middle line:84%
+Potentially, that would
+be a good strategy.
+
+00:54:47.390 --> 00:54:50.630 align:middle line:84%
+That will submit a value
+that gets integrated
+
+00:54:50.630 --> 00:54:53.990 align:middle line:84%
+into the token representation at
+this layer of the network, which
+
+00:54:53.990 --> 00:54:56.750 align:middle line:84%
+is now like a multi-modal
+representation of both
+
+00:54:56.750 --> 00:55:00.050 align:middle line:90%
+the words and the images.
+
+00:55:00.050 --> 00:55:04.950 align:middle line:84%
+So cross-attention is just
+attention, but going--
+
+00:55:04.950 --> 00:55:06.990 align:middle line:84%
+taking keys from--
+and values from one
+
+00:55:06.990 --> 00:55:10.790 align:middle line:84%
+set and queries from
+a different set.
+
+00:55:10.790 --> 00:55:14.150 align:middle line:84%
+Any questions about that
+mechanism, a really easy way
+
+00:55:14.150 --> 00:55:17.310 align:middle line:90%
+to stitch things together?
+
+00:55:17.310 --> 00:55:17.990 align:middle line:90%
+Yeah?
+
+00:55:17.990 --> 00:55:22.240 align:middle line:84%
+AUDIENCE: Question on the text--
+a yellow bird-- are they--
+
+00:55:22.240 --> 00:55:26.067 align:middle line:90%
+at what point are they provided?
+
+00:55:26.067 --> 00:55:28.400 align:middle line:84%
+PHILLIP ISOLA: So this would
+be, if I have training data
+
+00:55:28.400 --> 00:55:30.880 align:middle line:84%
+of the form x, y-- we're
+still in that setting--
+
+00:55:30.880 --> 00:55:33.520 align:middle line:84%
+the x is the image, and
+the y is the caption.
+
+00:55:33.520 --> 00:55:38.640 align:middle line:84%
+And I'm always going
+to be extracting tokens
+
+00:55:38.640 --> 00:55:39.800 align:middle line:90%
+from the image.
+
+00:55:39.800 --> 00:55:42.080 align:middle line:84%
+And then I will be
+autoregressively predicting
+
+00:55:42.080 --> 00:55:44.640 align:middle line:84%
+the next word, given the
+words I've so far predicted
+
+00:55:44.640 --> 00:55:46.200 align:middle line:90%
+in the caption.
+
+00:55:46.200 --> 00:55:47.880 align:middle line:90%
+Does that answer your question?
+
+00:55:47.880 --> 00:55:49.338 align:middle line:84%
+AUDIENCE: So at
+the very beginning,
+
+00:55:49.338 --> 00:55:50.380 align:middle line:90%
+there will be no text?
+
+00:55:50.380 --> 00:55:51.440 align:middle line:90%
+PHILLIP ISOLA: Yeah.
+
+00:55:51.440 --> 00:55:55.400 align:middle line:84%
+This is, like, three steps
+of autoregression in.
+
+00:55:55.400 --> 00:55:58.160 align:middle line:90%
+But you train it all--
+
+00:55:58.160 --> 00:56:00.468 align:middle line:84%
+you-- at inference time,
+you do it sequentially.
+
+00:56:00.468 --> 00:56:02.260 align:middle line:84%
+But you do it in parallel
+at training time.
+
+00:56:02.260 --> 00:56:03.420 align:middle line:90%
+This is like training time.
+
+00:56:03.420 --> 00:56:04.800 align:middle line:90%
+Yeah, question?
+
+00:56:04.800 --> 00:56:09.000 align:middle line:84%
+AUDIENCE: At the cross-attention
+layer, if you use a--
+
+00:56:09.000 --> 00:56:13.720 align:middle line:84%
+say if you use the embeddings
+of the text as a query instead
+
+00:56:13.720 --> 00:56:16.890 align:middle line:84%
+of just the token-- so a learned
+representation-- would that
+
+00:56:16.890 --> 00:56:21.850 align:middle line:84%
+make the learning quicker,
+or it doesn't matter?
+
+00:56:21.850 --> 00:56:25.030 align:middle line:84%
+Instead of using the
+tokens of the text,
+
+00:56:25.030 --> 00:56:28.130 align:middle line:84%
+you use them and learn
+embedding another model,
+
+00:56:28.130 --> 00:56:30.930 align:middle line:84%
+and you use cross-attention to
+learn embeddings of the text
+
+00:56:30.930 --> 00:56:34.670 align:middle line:84%
+and learn the image versus just
+the tokens that were not used.
+
+00:56:34.670 --> 00:56:36.905 align:middle line:84%
+Does that accelerate
+the learning?
+
+00:56:36.905 --> 00:56:39.030 align:middle line:84%
+PHILLIP ISOLA: So I'm not
+sure I'm fully following.
+
+00:56:39.030 --> 00:56:40.488 align:middle line:84%
+Maybe we can talk
+about it offline.
+
+00:56:40.488 --> 00:56:42.530 align:middle line:84%
+But there's a lot of
+different strategies for how
+
+00:56:42.530 --> 00:56:45.330 align:middle line:90%
+to integrate this information.
+
+00:56:45.330 --> 00:56:48.290 align:middle line:90%
+Do I learn the--
+
+00:56:48.290 --> 00:56:50.610 align:middle line:84%
+typically, you
+have a query matrix
+
+00:56:50.610 --> 00:56:53.410 align:middle line:84%
+which applies to the text
+and another query matrix that
+
+00:56:53.410 --> 00:56:56.330 align:middle line:90%
+applies to the visual data.
+
+00:56:56.330 --> 00:56:59.770 align:middle line:84%
+And then you can submit
+keys, values, and queries
+
+00:56:59.770 --> 00:57:01.490 align:middle line:90%
+from both modalities.
+
+00:57:01.490 --> 00:57:04.770 align:middle line:90%
+
+
+00:57:04.770 --> 00:57:10.410 align:middle line:84%
+So one of the trending
+industrial things this year
+
+00:57:10.410 --> 00:57:13.450 align:middle line:90%
+is multimodal chatbots.
+
+00:57:13.450 --> 00:57:15.902 align:middle line:84%
+So now all of the
+language models actually
+
+00:57:15.902 --> 00:57:17.110 align:middle line:90%
+are not just language models.
+
+00:57:17.110 --> 00:57:18.390 align:middle line:90%
+They take images as inputs.
+
+00:57:18.390 --> 00:57:20.410 align:middle line:84%
+Some of them even
+take videos as input.
+
+00:57:20.410 --> 00:57:21.690 align:middle line:90%
+This is ChatGPT.
+
+00:57:21.690 --> 00:57:22.770 align:middle line:90%
+And here's the slide.
+
+00:57:22.770 --> 00:57:23.868 align:middle line:90%
+I just take a screenshot.
+
+00:57:23.868 --> 00:57:25.410 align:middle line:84%
+I think some of you
+pointed out to me
+
+00:57:25.410 --> 00:57:27.077 align:middle line:84%
+that you can interpret
+our slides better
+
+00:57:27.077 --> 00:57:28.430 align:middle line:90%
+by just doing this.
+
+00:57:28.430 --> 00:57:30.410 align:middle line:84%
+And in fact, it actually
+works decently well.
+
+00:57:30.410 --> 00:57:32.910 align:middle line:84%
+So go ahead and
+do it if you want.
+
+00:57:32.910 --> 00:57:34.210 align:middle line:90%
+So what is this slide showing?
+
+00:57:34.210 --> 00:57:37.050 align:middle line:84%
+And how does it relate
+to how I work ChatGPT?
+
+00:57:37.050 --> 00:57:38.050 align:middle line:90%
+And it's pretty good.
+
+00:57:38.050 --> 00:57:41.010 align:middle line:84%
+You have an image encoder,
+cross-attention layer.
+
+00:57:41.010 --> 00:57:43.430 align:middle line:90%
+But it did get this wrong.
+
+00:57:43.430 --> 00:57:45.330 align:middle line:84%
+So how does it
+relate to how I work?
+
+00:57:45.330 --> 00:57:47.107 align:middle line:84%
+It says, well, I'm
+not a language--
+
+00:57:47.107 --> 00:57:48.190 align:middle line:90%
+I'm only a language model.
+
+00:57:48.190 --> 00:57:49.570 align:middle line:90%
+I don't process visual data.
+
+00:57:49.570 --> 00:57:52.790 align:middle line:84%
+And unless OpenAI is
+doing some crazy hackery--
+
+00:57:52.790 --> 00:57:54.770 align:middle line:84%
+it was looking at
+the visual data.
+
+00:57:54.770 --> 00:57:56.990 align:middle line:84%
+It had to be in order to
+make the correct assessment.
+
+00:57:56.990 --> 00:57:58.032 align:middle line:90%
+So I think this is wrong.
+
+00:57:58.032 --> 00:58:00.490 align:middle line:90%
+It doesn't know how it works.
+
+00:58:00.490 --> 00:58:02.790 align:middle line:84%
+It doesn't know how its
+own brain or itself works.
+
+00:58:02.790 --> 00:58:05.193 align:middle line:90%
+
+
+00:58:05.193 --> 00:58:06.610 align:middle line:84%
+So let's go in the
+other direction
+
+00:58:06.610 --> 00:58:09.955 align:middle line:90%
+now and look at text-to-image.
+
+00:58:09.955 --> 00:58:11.330 align:middle line:84%
+And the interesting
+thing here is
+
+00:58:11.330 --> 00:58:14.940 align:middle line:84%
+that text-to-image models of the
+current generation, or maybe one
+
+00:58:14.940 --> 00:58:18.580 align:middle line:84%
+generation back, actually are
+a combination of GANs, VAEs,
+
+00:58:18.580 --> 00:58:20.420 align:middle line:90%
+and diffusion models.
+
+00:58:20.420 --> 00:58:21.740 align:middle line:90%
+They're all three.
+
+00:58:21.740 --> 00:58:24.128 align:middle line:84%
+So it's a nice-- people
+call them diffusion models.
+
+00:58:24.128 --> 00:58:25.920 align:middle line:84%
+But they have all three
+components in them.
+
+00:58:25.920 --> 00:58:28.100 align:middle line:90%
+So I'll tell you about that.
+
+00:58:28.100 --> 00:58:32.288 align:middle line:84%
+So here's the more
+general strategy
+
+00:58:32.288 --> 00:58:34.580 align:middle line:84%
+for translating between two
+different modalities or two
+
+00:58:34.580 --> 00:58:35.470 align:middle line:90%
+domains.
+
+00:58:35.470 --> 00:58:37.220 align:middle line:84%
+It's just a general
+conditional prediction
+
+00:58:37.220 --> 00:58:40.700 align:middle line:84%
+of one type of data from
+another type of data.
+
+00:58:40.700 --> 00:58:42.940 align:middle line:84%
+So now we have our
+data distribution.
+
+00:58:42.940 --> 00:58:45.680 align:middle line:84%
+That goes from encoder to
+this latent distribution.
+
+00:58:45.680 --> 00:58:49.540 align:middle line:84%
+And then if it's a-- if it's
+in the VAE autoencoder style,
+
+00:58:49.540 --> 00:58:51.940 align:middle line:84%
+then I decode from
+that latent space
+
+00:58:51.940 --> 00:58:54.900 align:middle line:84%
+now not back to in autoencoding,
+like back to x, but back
+
+00:58:54.900 --> 00:58:55.880 align:middle line:90%
+to another domain, y.
+
+00:58:55.880 --> 00:58:58.860 align:middle line:84%
+And I penalize the difference
+between my prediction and my--
+
+00:58:58.860 --> 00:59:00.960 align:middle line:90%
+the ground truth, y.
+
+00:59:00.960 --> 00:59:03.780 align:middle line:84%
+So this is just a general
+way to think about it.
+
+00:59:03.780 --> 00:59:06.800 align:middle line:84%
+So here's what that looks
+like in text-to-image,
+
+00:59:06.800 --> 00:59:08.120 align:middle line:90%
+which we talked about before.
+
+00:59:08.120 --> 00:59:14.820 align:middle line:84%
+So I go from image space to
+latent space to text space.
+
+00:59:14.820 --> 00:59:21.780 align:middle line:84%
+And that would map onto this,
+image space to latent space,
+
+00:59:21.780 --> 00:59:23.100 align:middle line:90%
+and then also text space.
+
+00:59:23.100 --> 00:59:24.500 align:middle line:84%
+Where do you define the
+latents is not clear
+
+00:59:24.500 --> 00:59:25.875 align:middle line:84%
+because it's
+autoregressive here.
+
+00:59:25.875 --> 00:59:27.500 align:middle line:90%
+That's not explicit latents.
+
+00:59:27.500 --> 00:59:29.940 align:middle line:84%
+But this would be more like
+the VAE way of doing it.
+
+00:59:29.940 --> 00:59:32.600 align:middle line:84%
+But now let's look at the
+text-to-image problem.
+
+00:59:32.600 --> 00:59:34.940 align:middle line:84%
+So go from text, "A yellow
+bird sitting on a branch,"
+
+00:59:34.940 --> 00:59:36.780 align:middle line:90%
+to the image.
+
+00:59:36.780 --> 00:59:40.220 align:middle line:84%
+And this one is going to follow
+this diagram a little bit more
+
+00:59:40.220 --> 00:59:42.580 align:middle line:90%
+precisely.
+
+00:59:42.580 --> 00:59:45.640 align:middle line:84%
+So I already told you about
+how to train a conditional VAE.
+
+00:59:45.640 --> 00:59:47.740 align:middle line:84%
+So how do you train
+a conditional VAE
+
+00:59:47.740 --> 00:59:49.740 align:middle line:84%
+when you're
+conditioning on text?
+
+00:59:49.740 --> 00:59:55.340 align:middle line:84%
+So rather than conditioning on
+the observation of that moving
+
+00:59:55.340 --> 00:59:57.260 align:middle line:84%
+pink block, I'm
+going to condition
+
+00:59:57.260 --> 01:00:01.020 align:middle line:84%
+on a scarlet macaw
+sitting on a perch.
+
+01:00:01.020 --> 01:00:03.100 align:middle line:84%
+So what's going to
+happen is the decoder
+
+01:00:03.100 --> 01:00:05.500 align:middle line:84%
+is going to be informed
+by the observation
+
+01:00:05.500 --> 01:00:07.200 align:middle line:84%
+as well as my
+latent variable, z,
+
+01:00:07.200 --> 01:00:09.790 align:middle line:84%
+that explains everything--
+that has to explain everything
+
+01:00:09.790 --> 01:00:12.910 align:middle line:84%
+about the data to make this
+a deterministic process.
+
+01:00:12.910 --> 01:00:14.290 align:middle line:90%
+So the decoder is deterministic.
+
+01:00:14.290 --> 01:00:18.350 align:middle line:84%
+So this latent variable has to
+model all the random factors
+
+01:00:18.350 --> 01:00:23.110 align:middle line:84%
+that could affect the output
+appearance given the input.
+
+01:00:23.110 --> 01:00:25.830 align:middle line:84%
+So this input does not
+say that the scarlet macaw
+
+01:00:25.830 --> 01:00:27.535 align:middle line:90%
+is facing to the left.
+
+01:00:27.535 --> 01:00:28.910 align:middle line:84%
+So therefore, the
+latent variable
+
+01:00:28.910 --> 01:00:31.810 align:middle line:84%
+has to learn to encode that the
+macaw is facing to the left.
+
+01:00:31.810 --> 01:00:36.150 align:middle line:84%
+The latent variable is trained
+by inferring the latent variable
+
+01:00:36.150 --> 01:00:38.570 align:middle line:90%
+from the target prediction.
+
+01:00:38.570 --> 01:00:41.310 align:middle line:84%
+So this is like a VAE,
+and then conditioning.
+
+01:00:41.310 --> 01:00:43.270 align:middle line:84%
+It's a conditional
+VAE-- so same idea
+
+01:00:43.270 --> 01:00:46.030 align:middle line:84%
+that I showed on
+the previous slides.
+
+01:00:46.030 --> 01:00:47.950 align:middle line:84%
+And now the only
+new thing is I need
+
+01:00:47.950 --> 01:00:51.190 align:middle line:84%
+this to be a language model, f,
+that encodes text into tokens.
+
+01:00:51.190 --> 01:00:55.350 align:middle line:84%
+And I need this to be a
+model that could be a ViT.
+
+01:00:55.350 --> 01:00:57.550 align:middle line:84%
+A transformer decoder
+takes a set of tokens.
+
+01:00:57.550 --> 01:01:01.870 align:middle line:84%
+And the latent variables
+might also be tokens.
+
+01:01:01.870 --> 01:01:04.890 align:middle line:84%
+And at inference time, I simply
+sample from the unit Gaussian
+
+01:01:04.890 --> 01:01:07.920 align:middle line:84%
+because the VAE is trained to
+make the latent distribution
+
+01:01:07.920 --> 01:01:09.620 align:middle line:90%
+dense and compact.
+
+01:01:09.620 --> 01:01:13.000 align:middle line:84%
+And therefore, samples from the
+Gaussian are going to all map
+
+01:01:13.000 --> 01:01:16.680 align:middle line:84%
+to valid predictions that
+are all in distribution
+
+01:01:16.680 --> 01:01:19.920 align:middle line:84%
+with respect to how
+the model was trained.
+
+01:01:19.920 --> 01:01:21.320 align:middle line:90%
+Yeah, question?
+
+01:01:21.320 --> 01:01:24.680 align:middle line:84%
+AUDIENCE: If you go back to
+the previous slide, what's
+
+01:01:24.680 --> 01:01:28.620 align:middle line:84%
+the optimal strategy to
+incorporate this information?
+
+01:01:28.620 --> 01:01:32.640 align:middle line:84%
+Is it just, for example, to
+sum the two embedding vectors
+
+01:01:32.640 --> 01:01:35.000 align:middle line:84%
+or, for example, to
+concatenate and then
+
+01:01:35.000 --> 01:01:37.840 align:middle line:84%
+process through an
+MLP to have something
+
+01:01:37.840 --> 01:01:40.060 align:middle line:90%
+in low-dimension space?
+
+01:01:40.060 --> 01:01:42.560 align:middle line:84%
+PHILLIP ISOLA: The question is,
+what is the optimal strategy
+
+01:01:42.560 --> 01:01:44.440 align:middle line:84%
+for how to combine
+this information
+
+01:01:44.440 --> 01:01:46.000 align:middle line:84%
+with this information,
+I believe?
+
+01:01:46.000 --> 01:01:49.520 align:middle line:84%
+And I would say the vanilla,
+most standard thing right now
+
+01:01:49.520 --> 01:01:51.720 align:middle line:84%
+seems to be concatenation,
+like convert everything
+
+01:01:51.720 --> 01:01:54.480 align:middle line:84%
+into a set of tokens or a
+set of embedding vectors,
+
+01:01:54.480 --> 01:01:57.760 align:middle line:84%
+and then just concatenate
+and do more cross-attention
+
+01:01:57.760 --> 01:01:59.540 align:middle line:90%
+between them, and then repeat.
+
+01:01:59.540 --> 01:02:04.400 align:middle line:84%
+So what I showed on this slide
+is the current standard way
+
+01:02:04.400 --> 01:02:07.475 align:middle line:84%
+of combining between
+different streams of data.
+
+01:02:07.475 --> 01:02:08.600 align:middle line:90%
+Now, it's not the only way.
+
+01:02:08.600 --> 01:02:11.400 align:middle line:84%
+You could also sum them
+together, take an average,
+
+01:02:11.400 --> 01:02:11.900 align:middle line:90%
+multiply.
+
+01:02:11.900 --> 01:02:13.233 align:middle line:90%
+There's all kinds of other ways.
+
+01:02:13.233 --> 01:02:15.420 align:middle line:84%
+But I would say this
+is the current one.
+
+01:02:15.420 --> 01:02:18.920 align:middle line:90%
+
+
+01:02:18.920 --> 01:02:20.600 align:middle line:84%
+And how do you combine
+different streams
+
+01:02:20.600 --> 01:02:22.580 align:middle line:84%
+in a transformer in a
+more intelligent way?
+
+01:02:22.580 --> 01:02:24.100 align:middle line:84%
+That is an active
+area of research--
+
+01:02:24.100 --> 01:02:26.308 align:middle line:84%
+so maybe a good final project,
+compare different ways
+
+01:02:26.308 --> 01:02:29.040 align:middle line:90%
+of combining these things.
+
+01:02:29.040 --> 01:02:35.160 align:middle line:84%
+So that's how a conditional VAE
+can solve language-to-image.
+
+01:02:35.160 --> 01:02:38.340 align:middle line:84%
+And this is roughly the way
+that the Dall-E 1 model works.
+
+01:02:38.340 --> 01:02:43.200 align:middle line:84%
+So the Dall-E 1 was probably
+the first text-to-image model
+
+01:02:43.200 --> 01:02:46.120 align:middle line:90%
+that made a splash.
+
+01:02:46.120 --> 01:02:49.240 align:middle line:84%
+But then Stable
+Diffusion, Dall-E 2,
+
+01:02:49.240 --> 01:02:52.160 align:middle line:84%
+Midjourney, all these
+other things came out.
+
+01:02:52.160 --> 01:02:55.060 align:middle line:84%
+And they switched to
+using a diffusion model.
+
+01:02:55.060 --> 01:03:00.417 align:middle line:84%
+So how do I make a diffusion
+model do text/image generation?
+
+01:03:00.417 --> 01:03:02.000 align:middle line:84%
+So it turns out with
+diffusion models,
+
+01:03:02.000 --> 01:03:03.640 align:middle line:90%
+it's really, really simple.
+
+01:03:03.640 --> 01:03:05.070 align:middle line:90%
+So here's my diffusion model.
+
+01:03:05.070 --> 01:03:07.810 align:middle line:84%
+I start with random noise,
+unit Gaussian noise.
+
+01:03:07.810 --> 01:03:09.890 align:middle line:90%
+I try to predict step by step.
+
+01:03:09.890 --> 01:03:13.570 align:middle line:84%
+And I've supervised it with
+the opposite direction.
+
+01:03:13.570 --> 01:03:14.570 align:middle line:90%
+My data point is here.
+
+01:03:14.570 --> 01:03:15.250 align:middle line:90%
+I add noise.
+
+01:03:15.250 --> 01:03:17.850 align:middle line:84%
+And that's my supervision
+for how to denoise.
+
+01:03:17.850 --> 01:03:20.950 align:middle line:90%
+I try to undo the noise I added.
+
+01:03:20.950 --> 01:03:23.370 align:middle line:84%
+So each step is a
+supervised learning problem
+
+01:03:23.370 --> 01:03:26.970 align:middle line:84%
+of, here's the target,
+the less noisy-- here's
+
+01:03:26.970 --> 01:03:28.390 align:middle line:90%
+my generated noisy image.
+
+01:03:28.390 --> 01:03:29.850 align:middle line:84%
+I try to invert
+that by predicting
+
+01:03:29.850 --> 01:03:31.790 align:middle line:84%
+what the less noisy
+image would look like,
+
+01:03:31.790 --> 01:03:33.410 align:middle line:90%
+given the more noisy image.
+
+01:03:33.410 --> 01:03:36.650 align:middle line:84%
+And to make it conditional
+on text, all I have to do
+
+01:03:36.650 --> 01:03:40.290 align:middle line:84%
+is let my denoiser
+observe the text.
+
+01:03:40.290 --> 01:03:41.228 align:middle line:90%
+Why does that work?
+
+01:03:41.228 --> 01:03:42.770 align:middle line:84%
+That works for the
+following reason--
+
+01:03:42.770 --> 01:03:47.770 align:middle line:84%
+because the text will be
+informative toward what
+
+01:03:47.770 --> 01:03:51.410 align:middle line:84%
+the true image I
+started with is.
+
+01:03:51.410 --> 01:03:54.755 align:middle line:84%
+So if the text says "A robin
+on a yellow background," well,
+
+01:03:54.755 --> 01:03:55.630 align:middle line:90%
+here's a noisy image.
+
+01:03:55.630 --> 01:03:56.070 align:middle line:90%
+I don't know.
+
+01:03:56.070 --> 01:03:57.050 align:middle line:84%
+It looks like it
+might be a little bit
+
+01:03:57.050 --> 01:03:58.592 align:middle line:84%
+of a yellow background,
+or maybe it's
+
+01:03:58.592 --> 01:04:00.370 align:middle line:84%
+a white background
+or a pink background.
+
+01:04:00.370 --> 01:04:06.132 align:middle line:84%
+The text disambiguates
+that if the text is a--
+
+01:04:06.132 --> 01:04:08.700 align:middle line:84%
+is actually-- if there is a
+dependency in the training
+
+01:04:08.700 --> 01:04:12.140 align:middle line:84%
+data between the text and the
+image, which there should be.
+
+01:04:12.140 --> 01:04:14.800 align:middle line:84%
+So to the degree to which
+there is that dependency,
+
+01:04:14.800 --> 01:04:17.240 align:middle line:84%
+the text will help you make
+a more correct prediction.
+
+01:04:17.240 --> 01:04:19.380 align:middle line:84%
+Therefore, f will
+learn to use the text
+
+01:04:19.380 --> 01:04:22.580 align:middle line:84%
+and learn to denoise in the
+direction guided by the text.
+
+01:04:22.580 --> 01:04:24.920 align:middle line:84%
+If the text were "A robin
+on a pink background,"
+
+01:04:24.920 --> 01:04:27.170 align:middle line:84%
+that would be a hint as to
+what the correct answer is.
+
+01:04:27.170 --> 01:04:30.180 align:middle line:84%
+And therefore, my denoiser
+would head more toward pink.
+
+01:04:30.180 --> 01:04:33.260 align:middle line:84%
+So the text will
+guide how the denoiser
+
+01:04:33.260 --> 01:04:37.460 align:middle line:84%
+maps to different attributes
+of the data to the degree
+
+01:04:37.460 --> 01:04:41.080 align:middle line:84%
+to which the text actually does
+describe the image content.
+
+01:04:41.080 --> 01:04:44.365 align:middle line:90%
+
+
+01:04:44.365 --> 01:04:45.240 align:middle line:90%
+Does that make sense?
+
+01:04:45.240 --> 01:04:47.180 align:middle line:84%
+So it's really easy to
+make a diffusion model
+
+01:04:47.180 --> 01:04:49.140 align:middle line:84%
+into a conditional
+diffusion model.
+
+01:04:49.140 --> 01:04:52.460 align:middle line:84%
+Just let the denoiser
+take text as input.
+
+01:04:52.460 --> 01:04:55.240 align:middle line:84%
+It's really easy to make a
+GAN into a conditional GAN.
+
+01:04:55.240 --> 01:04:57.680 align:middle line:84%
+Just let the discriminator
+take the text as the input.
+
+01:04:57.680 --> 01:04:59.740 align:middle line:84%
+It's really easy to make
+an autoregressive model
+
+01:04:59.740 --> 01:05:00.940 align:middle line:90%
+into a conditional model.
+
+01:05:00.940 --> 01:05:02.420 align:middle line:84%
+It already is a
+conditional model.
+
+01:05:02.420 --> 01:05:04.760 align:middle line:84%
+The VAE was the only one
+that was a little bit tricky.
+
+01:05:04.760 --> 01:05:09.100 align:middle line:90%
+
+
+01:05:09.100 --> 01:05:11.513 align:middle line:84%
+Here's how Stable Diffusion
+from a few years ago worked.
+
+01:05:11.513 --> 01:05:13.680 align:middle line:84%
+Stable Diffusion has five
+or six different versions.
+
+01:05:13.680 --> 01:05:15.263 align:middle line:84%
+So I don't know which
+version this is.
+
+01:05:15.263 --> 01:05:17.780 align:middle line:84%
+But this was one
+of the versions.
+
+01:05:17.780 --> 01:05:20.680 align:middle line:84%
+So what it did is at
+every step of denoising,
+
+01:05:20.680 --> 01:05:23.400 align:middle line:84%
+the denoising network was a
+neural net called a U-Net.
+
+01:05:23.400 --> 01:05:26.700 align:middle line:84%
+It's just like a ConvNet
+with these skip connections.
+
+01:05:26.700 --> 01:05:28.680 align:middle line:84%
+So it was a convolutional
+architecture.
+
+01:05:28.680 --> 01:05:31.580 align:middle line:84%
+Now people are-- use what's
+called diffusion transformers,
+
+01:05:31.580 --> 01:05:32.720 align:middle line:90%
+where this is a ViT.
+
+01:05:32.720 --> 01:05:35.120 align:middle line:90%
+This is a transformer model.
+
+01:05:35.120 --> 01:05:38.300 align:middle line:84%
+But back a few years ago,
+this was a-- called a U-Net.
+
+01:05:38.300 --> 01:05:41.820 align:middle line:84%
+And the text information
+comes into the network
+
+01:05:41.820 --> 01:05:43.600 align:middle line:84%
+now not by just
+concatenating tokens,
+
+01:05:43.600 --> 01:05:45.558 align:middle line:84%
+because this was not like
+a token architecture.
+
+01:05:45.558 --> 01:05:48.020 align:middle line:84%
+This was a architecture
+before transformers.
+
+01:05:48.020 --> 01:05:49.660 align:middle line:84%
+And so you actually
+took the vectors
+
+01:05:49.660 --> 01:05:51.460 align:middle line:90%
+coming out of the text encoder.
+
+01:05:51.460 --> 01:05:55.540 align:middle line:84%
+And I think you
+modulated the batch
+
+01:05:55.540 --> 01:05:56.920 align:middle line:90%
+normalization or something.
+
+01:05:56.920 --> 01:05:59.030 align:middle line:90%
+There's ways of integrating--
+
+01:05:59.030 --> 01:06:01.030 align:middle line:84%
+scaling each of
+the activations by,
+
+01:06:01.030 --> 01:06:03.835 align:middle line:84%
+somehow, the outcoming
+vectors here.
+
+01:06:03.835 --> 01:06:05.210 align:middle line:84%
+So you could look
+up the details.
+
+01:06:05.210 --> 01:06:08.003 align:middle line:84%
+But I don't know if
+it matters that much.
+
+01:06:08.003 --> 01:06:10.670 align:middle line:84%
+But there's a lot of interesting
+ways of integrating information
+
+01:06:10.670 --> 01:06:13.290 align:middle line:84%
+from one data stream
+to another data stream.
+
+01:06:13.290 --> 01:06:17.150 align:middle line:90%
+
+
+01:06:17.150 --> 01:06:19.870 align:middle line:84%
+And of course, once you have
+this ability to plug together
+
+01:06:19.870 --> 01:06:23.310 align:middle line:84%
+different modalities and solve
+general conditional prediction
+
+01:06:23.310 --> 01:06:27.350 align:middle line:84%
+problems, it's-- this
+is a very general thing.
+
+01:06:27.350 --> 01:06:29.870 align:middle line:84%
+I think that's clear
+from ChatGPT and language
+
+01:06:29.870 --> 01:06:33.390 align:middle line:84%
+models, where you can use
+them for so many purposes.
+
+01:06:33.390 --> 01:06:35.390 align:middle line:84%
+But here's just an
+example for what's
+
+01:06:35.390 --> 01:06:37.630 align:middle line:84%
+called the Visual Question
+Answering problem, where
+
+01:06:37.630 --> 01:06:40.680 align:middle line:84%
+I have a text encoder that
+takes a question as input,
+
+01:06:40.680 --> 01:06:41.930 align:middle line:90%
+turns it into a set of tokens.
+
+01:06:41.930 --> 01:06:42.870 align:middle line:90%
+I have an image encoder.
+
+01:06:42.870 --> 01:06:44.810 align:middle line:84%
+That turns it into a set
+of tokens across a tent.
+
+01:06:44.810 --> 01:06:46.560 align:middle line:84%
+And I have a decoder
+that tries to predict
+
+01:06:46.560 --> 01:06:48.050 align:middle line:90%
+the answer to the question.
+
+01:06:48.050 --> 01:06:51.230 align:middle line:84%
+And if this is trained on tuples
+of the form question, image,
+
+01:06:51.230 --> 01:06:54.390 align:middle line:84%
+answer, then it will
+learn to maximize
+
+01:06:54.390 --> 01:06:56.670 align:middle line:84%
+the conditional
+probability of the answer,
+
+01:06:56.670 --> 01:06:59.100 align:middle line:84%
+given the question
+and the image.
+
+01:06:59.100 --> 01:07:02.420 align:middle line:84%
+And that's general-purpose
+image understanding.
+
+01:07:02.420 --> 01:07:07.120 align:middle line:84%
+Whatever question you want to
+ask can be framed in this way.
+
+01:07:07.120 --> 01:07:11.400 align:middle line:84%
+So this is a very
+general-purpose technology.
+
+01:07:11.400 --> 01:07:13.170 align:middle line:84%
+And just to show
+you that I'm not--
+
+01:07:13.170 --> 01:07:15.420 align:middle line:84%
+I don't think I'm hiding too
+much under the hood here,
+
+01:07:15.420 --> 01:07:20.980 align:middle line:84%
+this is one of the current
+popular image-to-text--
+
+01:07:20.980 --> 01:07:25.258 align:middle line:84%
+or this is one of the current
+popular VQA models-- so image
+
+01:07:25.258 --> 01:07:27.300 align:middle line:84%
+question answering, or
+visual question answering.
+
+01:07:27.300 --> 01:07:28.720 align:middle line:90%
+It's called LLaVa.
+
+01:07:28.720 --> 01:07:31.940 align:middle line:84%
+So here's my image
+encoder, a set of tokens.
+
+01:07:31.940 --> 01:07:34.342 align:middle line:84%
+Here's my question
+encoder, or they
+
+01:07:34.342 --> 01:07:36.800 align:middle line:84%
+call it instruction because it
+could be an instruction, not
+
+01:07:36.800 --> 01:07:38.320 align:middle line:90%
+just a question.
+
+01:07:38.320 --> 01:07:39.520 align:middle line:90%
+That's a set of tokens.
+
+01:07:39.520 --> 01:07:40.460 align:middle line:90%
+They cross-attend.
+
+01:07:40.460 --> 01:07:42.480 align:middle line:84%
+And they out-- threw
+a transformer, a GPT,
+
+01:07:42.480 --> 01:07:44.800 align:middle line:84%
+and the output of
+language response.
+
+01:07:44.800 --> 01:07:45.780 align:middle line:90%
+That's pretty simple.
+
+01:07:45.780 --> 01:07:50.420 align:middle line:90%
+
+
+01:07:50.420 --> 01:07:53.700 align:middle line:84%
+And I said that in the
+text-to-image direction,
+
+01:07:53.700 --> 01:07:55.520 align:middle line:84%
+actually, you're
+combining a lot of tricks.
+
+01:07:55.520 --> 01:07:57.223 align:middle line:84%
+All these models
+are very related.
+
+01:07:57.223 --> 01:07:58.640 align:middle line:84%
+And often, the
+tricks are actually
+
+01:07:58.640 --> 01:08:00.760 align:middle line:90%
+being shuffled between them.
+
+01:08:00.760 --> 01:08:04.440 align:middle line:84%
+So this was one of the
+important text-to-image models
+
+01:08:04.440 --> 01:08:05.540 align:middle line:90%
+from a few years ago.
+
+01:08:05.540 --> 01:08:09.840 align:middle line:84%
+This is still the core of the
+Stable Diffusion line of work,
+
+01:08:09.840 --> 01:08:12.160 align:middle line:84%
+at least up until they
+might now be doing things
+
+01:08:12.160 --> 01:08:16.500 align:middle line:84%
+with these flow-based models--
+but just up to 2023, let's say.
+
+01:08:16.500 --> 01:08:19.540 align:middle line:84%
+So you actually first trained
+what's called a VQGAN.
+
+01:08:19.540 --> 01:08:23.120 align:middle line:84%
+That's a VAE with a
+patch GAN discriminator
+
+01:08:23.120 --> 01:08:25.143 align:middle line:84%
+that tries to make
+the output look sharp.
+
+01:08:25.143 --> 01:08:26.060 align:middle line:90%
+So it's like, I take--
+
+01:08:26.060 --> 01:08:27.120 align:middle line:90%
+I encode.
+
+01:08:27.120 --> 01:08:27.962 align:middle line:90%
+I decode.
+
+01:08:27.962 --> 01:08:29.420 align:middle line:84%
+I put that through
+a discriminator.
+
+01:08:29.420 --> 01:08:32.240 align:middle line:84%
+So it's like a combination
+of a VAE and a GAN.
+
+01:08:32.240 --> 01:08:36.680 align:middle line:84%
+And then in the latent space, I
+have either a diffusion model,
+
+01:08:36.680 --> 01:08:38.600 align:middle line:84%
+or here it's actually
+an autoregressive model
+
+01:08:38.600 --> 01:08:40.200 align:middle line:90%
+over the latent variables.
+
+01:08:40.200 --> 01:08:42.720 align:middle line:84%
+So you can just combine all
+of these things together.
+
+01:08:42.720 --> 01:08:45.120 align:middle line:84%
+And that sometimes gives
+you better results.
+
+01:08:45.120 --> 01:08:49.080 align:middle line:90%
+
+
+01:08:49.080 --> 01:08:49.660 align:middle line:90%
+Question?
+
+01:08:49.660 --> 01:08:50.453 align:middle line:90%
+Yeah?
+
+01:08:50.453 --> 01:08:52.120 align:middle line:84%
+AUDIENCE: How do you
+creates these GANs?
+
+01:08:52.120 --> 01:08:57.029 align:middle line:84%
+It sounds like a [INAUDIBLE]
+separately, all together,
+
+01:08:57.029 --> 01:08:57.870 align:middle line:90%
+or [INAUDIBLE]?
+
+01:08:57.870 --> 01:08:58.750 align:middle line:90%
+PHILLIP ISOLA: Great question.
+
+01:08:58.750 --> 01:09:00.189 align:middle line:90%
+How do you train such a system?
+
+01:09:00.189 --> 01:09:02.590 align:middle line:84%
+It looks complicated--
+backprop work.
+
+01:09:02.590 --> 01:09:05.630 align:middle line:84%
+So you can potentially backprop
+through the whole system.
+
+01:09:05.630 --> 01:09:07.029 align:middle line:90%
+That's one approach.
+
+01:09:07.029 --> 01:09:09.529 align:middle line:84%
+You can also pre-train
+subcomponents separately
+
+01:09:09.529 --> 01:09:12.450 align:middle line:84%
+if you have data for-- if
+you have some data which
+
+01:09:12.450 --> 01:09:15.170 align:middle line:84%
+is text paired with
+images and other data
+
+01:09:15.170 --> 01:09:18.189 align:middle line:84%
+that's just raw, unlabeled
+images, raw images without text,
+
+01:09:18.189 --> 01:09:21.410 align:middle line:84%
+you might pre-train the
+image-only part of the system.
+
+01:09:21.410 --> 01:09:25.290 align:middle line:84%
+You might pre-train this
+VQGAN with just the images
+
+01:09:25.290 --> 01:09:31.170 align:middle line:84%
+and then backprop through a
+interface with a language model
+
+01:09:31.170 --> 01:09:32.310 align:middle line:90%
+only on the paired data.
+
+01:09:32.310 --> 01:09:34.090 align:middle line:84%
+So there's a lot of
+ways of doing this.
+
+01:09:34.090 --> 01:09:35.670 align:middle line:84%
+I'm not going to go
+into this detail.
+
+01:09:35.670 --> 01:09:37.689 align:middle line:84%
+But there is what's
+called vector quantization
+
+01:09:37.689 --> 01:09:39.930 align:middle line:84%
+in the latent space in this
+particular model, which
+
+01:09:39.930 --> 01:09:41.510 align:middle line:90%
+makes backprop hard.
+
+01:09:41.510 --> 01:09:44.310 align:middle line:84%
+And so you have to deal with
+this vector quantization.
+
+01:09:44.310 --> 01:09:47.250 align:middle line:84%
+But I think-- I won't
+go into that today.
+
+01:09:47.250 --> 01:09:48.649 align:middle line:90%
+Yeah, question?
+
+01:09:48.649 --> 01:09:51.330 align:middle line:84%
+AUDIENCE: We have seen
+example of generating
+
+01:09:51.330 --> 01:09:52.950 align:middle line:90%
+an image or a text.
+
+01:09:52.950 --> 01:09:55.050 align:middle line:84%
+But what if-- for
+example, on ChatGPT, we
+
+01:09:55.050 --> 01:09:58.890 align:middle line:84%
+have this interaction of, given
+a text, generate image and text.
+
+01:09:58.890 --> 01:10:01.310 align:middle line:84%
+Do they go through
+one model, or actually
+
+01:10:01.310 --> 01:10:04.902 align:middle line:84%
+it's an engineering trick that
+[INAUDIBLE] give you two models?
+
+01:10:04.902 --> 01:10:06.110 align:middle line:90%
+PHILLIP ISOLA: Good question.
+
+01:10:06.110 --> 01:10:09.930 align:middle line:84%
+So in modern chatbots,
+usually, they
+
+01:10:09.930 --> 01:10:12.653 align:middle line:84%
+take image and text as input
+and output image and text.
+
+01:10:12.653 --> 01:10:14.570 align:middle line:84%
+And now some of them
+take audio as input, too.
+
+01:10:14.570 --> 01:10:15.670 align:middle line:90%
+And they'll output audio.
+
+01:10:15.670 --> 01:10:18.128 align:middle line:84%
+Eventually, they'll take all
+modalities as input and output
+
+01:10:18.128 --> 01:10:21.503 align:middle line:84%
+all modalities that
+we can think of.
+
+01:10:21.503 --> 01:10:23.170 align:middle line:84%
+I don't know how they
+work because these
+
+01:10:23.170 --> 01:10:26.650 align:middle line:84%
+are all now companies that
+don't tell us how they work.
+
+01:10:26.650 --> 01:10:28.990 align:middle line:84%
+There's one-- Llama
+3.2, I believe--
+
+01:10:28.990 --> 01:10:33.690 align:middle line:84%
+which takes at least images and
+text, and maybe audio as well.
+
+01:10:33.690 --> 01:10:35.990 align:middle line:84%
+And that does have a paper
+that describes the details.
+
+01:10:35.990 --> 01:10:39.210 align:middle line:84%
+So I would look at that
+if you're interested.
+
+01:10:39.210 --> 01:10:41.870 align:middle line:84%
+So I don't remember how that
+one integrates information.
+
+01:10:41.870 --> 01:10:45.590 align:middle line:90%
+
+
+01:10:45.590 --> 01:10:50.580 align:middle line:84%
+So any more questions on
+conditional generative models
+
+01:10:50.580 --> 01:10:55.828 align:middle line:84%
+for learning from
+paired data x, y?
+
+01:10:55.828 --> 01:10:56.332 align:middle line:90%
+Yeah?
+
+01:10:56.332 --> 01:10:58.040 align:middle line:84%
+AUDIENCE: As you
+increase the modalities,
+
+01:10:58.040 --> 01:11:00.683 align:middle line:84%
+it seems that they probably
+get increasingly data-hungry.
+
+01:11:00.683 --> 01:11:02.600 align:middle line:84%
+PHILLIP ISOLA: As you
+increase the modalities,
+
+01:11:02.600 --> 01:11:04.280 align:middle line:84%
+you would get
+increasingly data-hungry?
+
+01:11:04.280 --> 01:11:05.488 align:middle line:90%
+AUDIENCE: It seems like that.
+
+01:11:05.488 --> 01:11:07.780 align:middle line:84%
+Is that a problem
+we're running into?
+
+01:11:07.780 --> 01:11:10.540 align:middle line:84%
+PHILLIP ISOLA: That's a
+really interesting question.
+
+01:11:10.540 --> 01:11:13.160 align:middle line:84%
+I think it can go in either
+direction, in some sense.
+
+01:11:13.160 --> 01:11:16.220 align:middle line:84%
+So as you get more
+modalities, maybe there's
+
+01:11:16.220 --> 01:11:18.100 align:middle line:90%
+a more complicated--
+
+01:11:18.100 --> 01:11:21.940 align:middle line:90%
+maybe the mapping from x to y--
+
+01:11:21.940 --> 01:11:27.660 align:middle line:84%
+if I'm trying to map from input
+image to both sound and text,
+
+01:11:27.660 --> 01:11:30.617 align:middle line:84%
+maybe that's a function
+that just is more wiggly,
+
+01:11:30.617 --> 01:11:32.200 align:middle line:84%
+is more complicated
+function to learn.
+
+01:11:32.200 --> 01:11:33.533 align:middle line:90%
+So I need more data to learn it.
+
+01:11:33.533 --> 01:11:34.820 align:middle line:90%
+That's one possibility.
+
+01:11:34.820 --> 01:11:36.220 align:middle line:84%
+But it's also
+possible that there
+
+01:11:36.220 --> 01:11:39.500 align:middle line:84%
+are-- there's shared
+information between modalities.
+
+01:11:39.500 --> 01:11:44.570 align:middle line:84%
+So if I have more than one
+modality, then they can--
+
+01:11:44.570 --> 01:11:47.212 align:middle line:84%
+a pure language model that
+is just trained on language
+
+01:11:47.212 --> 01:11:48.670 align:middle line:84%
+might be worse at
+language modeling
+
+01:11:48.670 --> 01:11:52.032 align:middle line:84%
+than a language model that's
+trained on language and videos
+
+01:11:52.032 --> 01:11:53.990 align:middle line:84%
+because there's shared
+information in the video
+
+01:11:53.990 --> 01:11:55.813 align:middle line:90%
+about language information.
+
+01:11:55.813 --> 01:11:57.230 align:middle line:84%
+So that's a sense
+in which you get
+
+01:11:57.230 --> 01:11:59.370 align:middle line:84%
+an advantage, a
+statistical advantage,
+
+01:11:59.370 --> 01:12:00.810 align:middle line:90%
+by modeling more modalities.
+
+01:12:00.810 --> 01:12:04.170 align:middle line:90%
+
+
+01:12:04.170 --> 01:12:07.350 align:middle line:84%
+So in this last little section,
+I want to say, wait a second.
+
+01:12:07.350 --> 01:12:12.830 align:middle line:84%
+So far, all of this lecture is
+about P Y given X for arbitrary
+
+01:12:12.830 --> 01:12:16.163 align:middle line:84%
+high-dimensional X and Y.
+And I've said that you can--
+
+01:12:16.163 --> 01:12:18.330 align:middle line:84%
+but the thing that I haven't
+really explicitly said,
+
+01:12:18.330 --> 01:12:20.030 align:middle line:84%
+but has been the
+underlying assumption,
+
+01:12:20.030 --> 01:12:23.290 align:middle line:84%
+is that you have data
+that comes paired.
+
+01:12:23.290 --> 01:12:29.102 align:middle line:84%
+So my P data distribution
+is over x, y pairs.
+
+01:12:29.102 --> 01:12:31.310 align:middle line:84%
+And I can sample from that,
+get pairs, and then model
+
+01:12:31.310 --> 01:12:32.990 align:middle line:90%
+the conditionals.
+
+01:12:32.990 --> 01:12:39.110 align:middle line:84%
+So what happens if I actually
+just have data x and data y,
+
+01:12:39.110 --> 01:12:42.270 align:middle line:84%
+but I have no examples
+of x paired with y?
+
+01:12:42.270 --> 01:12:43.790 align:middle line:90%
+Can I do anything?
+
+01:12:43.790 --> 01:12:46.270 align:middle line:90%
+And it turns out you can.
+
+01:12:46.270 --> 01:12:48.910 align:middle line:84%
+And oftentimes, you can
+do conditional modeling
+
+01:12:48.910 --> 01:12:50.390 align:middle line:90%
+with unpaired data.
+
+01:12:50.390 --> 01:12:53.590 align:middle line:84%
+And this is sometimes
+called unpaired translation.
+
+01:12:53.590 --> 01:12:59.630 align:middle line:84%
+So can I translate this cartoon
+into this more nice Valentine?
+
+01:12:59.630 --> 01:13:05.030 align:middle line:90%
+This is from 1968, this cartoon.
+
+01:13:05.030 --> 01:13:06.510 align:middle line:90%
+So here's the setting.
+
+01:13:06.510 --> 01:13:08.950 align:middle line:84%
+So paired data for a
+colorization problem--
+
+01:13:08.950 --> 01:13:10.802 align:middle line:84%
+I have black and
+white and color.
+
+01:13:10.802 --> 01:13:12.010 align:middle line:90%
+That's really easy to obtain.
+
+01:13:12.010 --> 01:13:12.990 align:middle line:90%
+I just take a color image.
+
+01:13:12.990 --> 01:13:14.170 align:middle line:90%
+I remove the color channels.
+
+01:13:14.170 --> 01:13:15.087 align:middle line:90%
+I get black and white.
+
+01:13:15.087 --> 01:13:16.323 align:middle line:90%
+It's paired data.
+
+01:13:16.323 --> 01:13:17.990 align:middle line:84%
+I can model the
+conditional distribution
+
+01:13:17.990 --> 01:13:19.910 align:middle line:84%
+of color given black
+and white using
+
+01:13:19.910 --> 01:13:22.610 align:middle line:90%
+the techniques that we saw.
+
+01:13:22.610 --> 01:13:26.710 align:middle line:84%
+But what if I want to
+predict, what would Cézanne
+
+01:13:26.710 --> 01:13:29.590 align:middle line:84%
+have painted if he had been
+standing at this river?
+
+01:13:29.590 --> 01:13:31.670 align:middle line:84%
+I can't ask Cézanne
+to go and paint
+
+01:13:31.670 --> 01:13:32.850 align:middle line:90%
+a million different rivers.
+
+01:13:32.850 --> 01:13:34.172 align:middle line:90%
+And I don't even know.
+
+01:13:34.172 --> 01:13:35.630 align:middle line:84%
+There's no photograph
+of this house
+
+01:13:35.630 --> 01:13:38.030 align:middle line:90%
+that he was-- he painted here.
+
+01:13:38.030 --> 01:13:40.050 align:middle line:90%
+So I don't have paired data.
+
+01:13:40.050 --> 01:13:43.310 align:middle line:84%
+And this is a potentially
+more common situation
+
+01:13:43.310 --> 01:13:45.920 align:middle line:84%
+than the situations in
+which we have paired data.
+
+01:13:45.920 --> 01:13:49.182 align:middle line:84%
+Having paired data--
+it's a big constraint.
+
+01:13:49.182 --> 01:13:51.640 align:middle line:84%
+Not only do I have to have both
+the x's and the y's, I also
+
+01:13:51.640 --> 01:13:52.920 align:middle line:84%
+have to have the
+mapping between them,
+
+01:13:52.920 --> 01:13:54.340 align:middle line:90%
+or the pairing between them.
+
+01:13:54.340 --> 01:13:56.820 align:middle line:84%
+Unpaired data-- it comes
+across all the time.
+
+01:13:56.820 --> 01:13:57.880 align:middle line:90%
+Here's a simple example.
+
+01:13:57.880 --> 01:13:59.880 align:middle line:84%
+I have a set of
+Cézanne photos-- a set
+
+01:13:59.880 --> 01:14:02.240 align:middle line:84%
+of Cézanne paintings,
+a set of photos.
+
+01:14:02.240 --> 01:14:05.117 align:middle line:84%
+And as a human, you can reason
+about the stylistic differences
+
+01:14:05.117 --> 01:14:05.700 align:middle line:90%
+between those.
+
+01:14:05.700 --> 01:14:07.825 align:middle line:84%
+And you can imagine what
+Cézanne would have painted
+
+01:14:07.825 --> 01:14:09.640 align:middle line:90%
+for each of these photos.
+
+01:14:09.640 --> 01:14:11.440 align:middle line:84%
+How did you do that,
+despite never having
+
+01:14:11.440 --> 01:14:16.080 align:middle line:84%
+seen a side-by-side photo of a
+place and what Cézanne painted?
+
+01:14:16.080 --> 01:14:19.280 align:middle line:84%
+This is the problem
+of unpaired learning.
+
+01:14:19.280 --> 01:14:22.380 align:middle line:84%
+And there's a number
+of different methods.
+
+01:14:22.380 --> 01:14:26.160 align:middle line:84%
+So I'm going to talk about one
+in a little detail called--
+
+01:14:26.160 --> 01:14:28.240 align:middle line:90%
+doing this with GANs.
+
+01:14:28.240 --> 01:14:30.828 align:middle line:84%
+So here's a really
+cool thing about GANs
+
+01:14:30.828 --> 01:14:33.120 align:middle line:84%
+and why they're still a neat
+model, even though they're
+
+01:14:33.120 --> 01:14:35.040 align:middle line:90%
+less flashy these days.
+
+01:14:35.040 --> 01:14:38.760 align:middle line:84%
+So with a GAN, the pairing
+between the input and the output
+
+01:14:38.760 --> 01:14:41.320 align:middle line:84%
+is only coming through the
+discriminator, which looks at,
+
+01:14:41.320 --> 01:14:43.130 align:middle line:84%
+does the output
+go with the input?
+
+01:14:43.130 --> 01:14:45.130 align:middle line:90%
+But I could drop that.
+
+01:14:45.130 --> 01:14:46.020 align:middle line:90%
+Oh, sorry.
+
+01:14:46.020 --> 01:14:47.270 align:middle line:90%
+The animation is a little off.
+
+01:14:47.270 --> 01:14:48.530 align:middle line:90%
+I could drop--
+
+01:14:48.530 --> 01:14:55.090 align:middle line:90%
+I could-- so let's see.
+
+01:14:55.090 --> 01:14:57.482 align:middle line:84%
+So the problem with not
+having paired data is I
+
+01:14:57.482 --> 01:14:59.690 align:middle line:84%
+don't know what the Cézanne
+painting of this location
+
+01:14:59.690 --> 01:15:00.690 align:middle line:90%
+would be.
+
+01:15:00.690 --> 01:15:04.737 align:middle line:84%
+But let me go back and
+just drop that dependency.
+
+01:15:04.737 --> 01:15:06.070 align:middle line:90%
+The animations are a little off.
+
+01:15:06.070 --> 01:15:08.930 align:middle line:84%
+But let me drop that dependency
+where the discriminator looks
+
+01:15:08.930 --> 01:15:12.410 align:middle line:84%
+at the pair and say, what if
+the discriminator actually
+
+01:15:12.410 --> 01:15:14.830 align:middle line:84%
+only looks at the
+output and asks,
+
+01:15:14.830 --> 01:15:17.290 align:middle line:84%
+does this look like a
+Cézanne painting or not?
+
+01:15:17.290 --> 01:15:20.970 align:middle line:84%
+Now this is the traditional
+unconditional GAN objective.
+
+01:15:20.970 --> 01:15:24.210 align:middle line:84%
+I'm just trying to look at the
+outputs, my synthetic imagery
+
+01:15:24.210 --> 01:15:26.890 align:middle line:90%
+generated from z or x.
+
+01:15:26.890 --> 01:15:30.007 align:middle line:84%
+And I'm just trying to say,
+does it look like a real Cézanne
+
+01:15:30.007 --> 01:15:32.090 align:middle line:84%
+painting, or does it look
+like a synthetic Cézanne
+
+01:15:32.090 --> 01:15:34.410 align:middle line:90%
+painting made by the generator?
+
+01:15:34.410 --> 01:15:36.510 align:middle line:84%
+And this is a cool
+property of the GAN loss.
+
+01:15:36.510 --> 01:15:39.210 align:middle line:84%
+It's actually just checking
+whether the output belongs
+
+01:15:39.210 --> 01:15:41.810 align:middle line:84%
+to the set of good
+answers, not checking
+
+01:15:41.810 --> 01:15:45.950 align:middle line:84%
+whether the output
+matches the input.
+
+01:15:45.950 --> 01:15:48.530 align:middle line:84%
+So it's suitable for
+unpaired learning.
+
+01:15:48.530 --> 01:15:51.210 align:middle line:84%
+But how do I actually
+make the output not just
+
+01:15:51.210 --> 01:15:56.170 align:middle line:84%
+any random Cézanne photo,
+but actually match the input?
+
+01:15:56.170 --> 01:15:57.930 align:middle line:90%
+Sorry.
+
+01:15:57.930 --> 01:16:00.530 align:middle line:84%
+So here is what looks like
+a Cézanne painting that
+
+01:16:00.530 --> 01:16:01.730 align:middle line:90%
+matches the input.
+
+01:16:01.730 --> 01:16:04.130 align:middle line:90%
+But here is a--
+
+01:16:04.130 --> 01:16:08.010 align:middle line:84%
+well, the animations
+are off here.
+
+01:16:08.010 --> 01:16:12.770 align:middle line:84%
+But here's also a perfectly
+valid Cézanne painting.
+
+01:16:12.770 --> 01:16:17.050 align:middle line:84%
+And the discriminator
+will say that's real, too.
+
+01:16:17.050 --> 01:16:19.850 align:middle line:84%
+So the trick that
+works in this case
+
+01:16:19.850 --> 01:16:23.290 align:middle line:84%
+is to use this idea
+of cycle consistency.
+
+01:16:23.290 --> 01:16:25.730 align:middle line:84%
+So I'm going to
+impose the constraint
+
+01:16:25.730 --> 01:16:29.290 align:middle line:84%
+that the mapping from
+X to Y is consistent
+
+01:16:29.290 --> 01:16:31.762 align:middle line:84%
+with a backwards
+mapping from Y to X.
+
+01:16:31.762 --> 01:16:33.970 align:middle line:84%
+So there's some kind of
+bijectivity between these two
+
+01:16:33.970 --> 01:16:34.870 align:middle line:90%
+domains.
+
+01:16:34.870 --> 01:16:38.210 align:middle line:84%
+So I'm going to say I'll train
+a network to map from photos
+
+01:16:38.210 --> 01:16:40.038 align:middle line:84%
+to Cézanne on
+paintings according
+
+01:16:40.038 --> 01:16:41.580 align:middle line:84%
+to a discriminator
+that says, does it
+
+01:16:41.580 --> 01:16:42.788 align:middle line:90%
+look like a Cézanne painting?
+
+01:16:42.788 --> 01:16:44.602 align:middle line:90%
+Did I get to that domain output?
+
+01:16:44.602 --> 01:16:46.060 align:middle line:84%
+And then I'll train
+a discriminator
+
+01:16:46.060 --> 01:16:48.520 align:middle line:84%
+in the opposite direction
+to go from Cézanne paintings
+
+01:16:48.520 --> 01:16:49.660 align:middle line:90%
+back to photos.
+
+01:16:49.660 --> 01:16:52.600 align:middle line:84%
+And that should fool a
+discriminator that will ask,
+
+01:16:52.600 --> 01:16:53.797 align:middle line:90%
+does it look like a photo?
+
+01:16:53.797 --> 01:16:55.380 align:middle line:84%
+So the discriminators
+will make sure I
+
+01:16:55.380 --> 01:16:57.460 align:middle line:84%
+map to the domain
+of Cézanne paintings
+
+01:16:57.460 --> 01:17:00.085 align:middle line:90%
+and the domain of photos.
+
+01:17:00.085 --> 01:17:01.460 align:middle line:84%
+But I'll train
+these things to be
+
+01:17:01.460 --> 01:17:03.460 align:middle line:84%
+what's called cycle-consistent,
+which just means
+
+01:17:03.460 --> 01:17:07.427 align:middle line:84%
+that if I go from domain X to
+domain Y and then I go back,
+
+01:17:07.427 --> 01:17:08.760 align:middle line:90%
+I should arrive where I started.
+
+01:17:08.760 --> 01:17:11.440 align:middle line:84%
+And if I go from domain Y
+to domain X and I go back,
+
+01:17:11.440 --> 01:17:14.380 align:middle line:90%
+I should arrive where I started.
+
+01:17:14.380 --> 01:17:16.300 align:middle line:90%
+So this is kind of like--
+
+01:17:16.300 --> 01:17:17.922 align:middle line:84%
+in language, people
+use this, too.
+
+01:17:17.922 --> 01:17:19.380 align:middle line:84%
+Actually, there's
+an old Mark Twain
+
+01:17:19.380 --> 01:17:23.100 align:middle line:84%
+story about trying to translate
+between a French speaker
+
+01:17:23.100 --> 01:17:29.300 align:middle line:84%
+and an English speaker,
+where you would translate
+
+01:17:29.300 --> 01:17:32.420 align:middle line:84%
+into French and then back
+translates into English
+
+01:17:32.420 --> 01:17:34.900 align:middle line:84%
+and check that-- and
+you know that the system
+
+01:17:34.900 --> 01:17:38.040 align:middle line:84%
+is consistent with itself if
+you arrive where you started.
+
+01:17:38.040 --> 01:17:40.110 align:middle line:84%
+If I say an English
+word, then I say,
+
+01:17:40.110 --> 01:17:41.860 align:middle line:84%
+this is the French
+word, and then somebody
+
+01:17:41.860 --> 01:17:43.740 align:middle line:84%
+that speaks French tries to
+translate that French word back
+
+01:17:43.740 --> 01:17:45.960 align:middle line:84%
+into English, if I arrive
+back where I started,
+
+01:17:45.960 --> 01:17:50.720 align:middle line:84%
+that's a property that should be
+satisfied by natural languages
+
+01:17:50.720 --> 01:17:53.420 align:middle line:84%
+because natural
+languages tend to have
+
+01:17:53.420 --> 01:17:56.920 align:middle line:84%
+a bijection between the
+different languages,
+
+01:17:56.920 --> 01:17:59.380 align:middle line:84%
+like every French
+word has a roughly
+
+01:17:59.380 --> 01:18:01.802 align:middle line:84%
+direct translation to an
+English word-- not perfectly.
+
+01:18:01.802 --> 01:18:03.260 align:middle line:84%
+So sorry, French
+speakers, if maybe
+
+01:18:03.260 --> 01:18:06.240 align:middle line:84%
+there's concepts you can only
+express in French-- but roughly.
+
+01:18:06.240 --> 01:18:09.618 align:middle line:90%
+
+
+01:18:09.618 --> 01:18:11.160 align:middle line:84%
+So that actually
+works decently well.
+
+01:18:11.160 --> 01:18:13.700 align:middle line:84%
+And that leads to
+results that look
+
+01:18:13.700 --> 01:18:15.780 align:middle line:84%
+like this, where I've
+converted this photo
+
+01:18:15.780 --> 01:18:18.420 align:middle line:84%
+into a synthetic
+Cézanne painting
+
+01:18:18.420 --> 01:18:21.380 align:middle line:90%
+without having paired data.
+
+01:18:21.380 --> 01:18:26.100 align:middle line:84%
+So one question you might
+have is, wait a second.
+
+01:18:26.100 --> 01:18:28.220 align:middle line:84%
+There must be many
+cycle-consistent mappings
+
+01:18:28.220 --> 01:18:32.340 align:middle line:84%
+between any set of images
+x and any set of images y.
+
+01:18:32.340 --> 01:18:34.740 align:middle line:90%
+And indeed, that's true.
+
+01:18:34.740 --> 01:18:37.253 align:middle line:84%
+But there is some
+theory around this
+
+01:18:37.253 --> 01:18:38.670 align:middle line:84%
+that's been developed
+to say that,
+
+01:18:38.670 --> 01:18:43.070 align:middle line:84%
+well, under the constraints
+of a particular neural net
+
+01:18:43.070 --> 01:18:46.550 align:middle line:84%
+architecture in a
+particular optimizer,
+
+01:18:46.550 --> 01:18:50.030 align:middle line:84%
+only some of the possible
+mappings from inputs to outputs
+
+01:18:50.030 --> 01:18:51.870 align:middle line:90%
+are going to be found.
+
+01:18:51.870 --> 01:18:53.833 align:middle line:84%
+So as long as I have
+some constraints
+
+01:18:53.833 --> 01:18:55.750 align:middle line:84%
+that say that I need to
+find a simple mapping,
+
+01:18:55.750 --> 01:18:57.297 align:middle line:90%
+in a certain sense--
+
+01:18:57.297 --> 01:18:59.130 align:middle line:84%
+and neural networks do
+find simple mappings.
+
+01:18:59.130 --> 01:19:00.670 align:middle line:90%
+We've talked about that.
+
+01:19:00.670 --> 01:19:05.030 align:middle line:84%
+So here's a ReLU network with
+a two-dimensional hidden state.
+
+01:19:05.030 --> 01:19:07.488 align:middle line:84%
+It's trying to map this line
+segment A to this line segment
+
+01:19:07.488 --> 01:19:07.988 align:middle line:90%
+B.
+
+01:19:07.988 --> 01:19:09.650 align:middle line:84%
+And there's infinite
+possible mappings.
+
+01:19:09.650 --> 01:19:12.390 align:middle line:84%
+But a ReLU network trained
+with gradient descent
+
+01:19:12.390 --> 01:19:15.200 align:middle line:84%
+with two hidden units can only
+find two mappings in this case,
+
+01:19:15.200 --> 01:19:16.450 align:middle line:90%
+will converge on two mappings.
+
+01:19:16.450 --> 01:19:17.790 align:middle line:90%
+One is the identity mapping.
+
+01:19:17.790 --> 01:19:20.590 align:middle line:84%
+And the other is the
+flipping of the lines,
+
+01:19:20.590 --> 01:19:23.790 align:middle line:90%
+like negative identity.
+
+01:19:23.790 --> 01:19:25.440 align:middle line:90%
+So why is that?
+
+01:19:25.440 --> 01:19:27.190 align:middle line:84%
+There are also complicated
+wiggly mappings
+
+01:19:27.190 --> 01:19:29.950 align:middle line:84%
+where every single point on A
+maps to a different random point
+
+01:19:29.950 --> 01:19:31.830 align:middle line:84%
+on B. But it's
+very hard for those
+
+01:19:31.830 --> 01:19:34.120 align:middle line:84%
+to be found by the
+architectures that we use
+
+01:19:34.120 --> 01:19:35.800 align:middle line:90%
+and the optimizers that we use.
+
+01:19:35.800 --> 01:19:38.420 align:middle line:84%
+So under the constraint of
+having a simple mapping,
+
+01:19:38.420 --> 01:19:41.860 align:middle line:84%
+it will tend to be
+the case that all map
+
+01:19:41.860 --> 01:19:43.173 align:middle line:90%
+the green stuff to green stuff.
+
+01:19:43.173 --> 01:19:44.840 align:middle line:84%
+That will be an easier
+to learn mapping.
+
+01:19:44.840 --> 01:19:48.520 align:middle line:84%
+And that disambiguates that it
+should be green to green instead
+
+01:19:48.520 --> 01:19:49.540 align:middle line:90%
+of green to blue.
+
+01:19:49.540 --> 01:19:52.500 align:middle line:90%
+
+
+01:19:52.500 --> 01:19:55.165 align:middle line:84%
+And these ideas show up also in
+unpaired language translation.
+
+01:19:55.165 --> 01:19:56.540 align:middle line:84%
+And potentially
+in other domains,
+
+01:19:56.540 --> 01:19:59.280 align:middle line:84%
+you could apply
+them, too, where we
+
+01:19:59.280 --> 01:20:01.920 align:middle line:84%
+try to impose what they call
+back translation or cycle
+
+01:20:01.920 --> 01:20:04.080 align:middle line:84%
+consistency between the
+mapping from one language
+
+01:20:04.080 --> 01:20:05.780 align:middle line:90%
+to the other and back.
+
+01:20:05.780 --> 01:20:07.280 align:middle line:84%
+And there's a number
+of other tricks
+
+01:20:07.280 --> 01:20:09.960 align:middle line:84%
+that you can apply,
+as well, in order
+
+01:20:09.960 --> 01:20:12.040 align:middle line:90%
+to solve unpaired translations.
+
+01:20:12.040 --> 01:20:14.540 align:middle line:84%
+So I'm not going to have time
+to go into those other tricks.
+
+01:20:14.540 --> 01:20:17.360 align:middle line:84%
+But the general idea is if I
+have a distribution of data
+
+01:20:17.360 --> 01:20:20.560 align:middle line:84%
+in one modality indicated-- this
+is like the data distribution
+
+01:20:20.560 --> 01:20:22.340 align:middle line:90%
+of the red modality.
+
+01:20:22.340 --> 01:20:24.480 align:middle line:84%
+This is the data distribution
+of the blue modality.
+
+01:20:24.480 --> 01:20:25.980 align:middle line:84%
+Well, I can just
+align their shapes.
+
+01:20:25.980 --> 01:20:28.160 align:middle line:84%
+It's like a rigid
+transformation problem.
+
+01:20:28.160 --> 01:20:32.120 align:middle line:84%
+So under this idea
+of distributional--
+
+01:20:32.120 --> 01:20:37.840 align:middle line:84%
+the two distributions
+should somehow be the same.
+
+01:20:37.840 --> 01:20:39.520 align:middle line:84%
+And I can align those
+two distributions,
+
+01:20:39.520 --> 01:20:42.368 align:middle line:84%
+or they should be the same up
+to an isometric transformation.
+
+01:20:42.368 --> 01:20:44.160 align:middle line:84%
+So if you're interested
+in other approaches
+
+01:20:44.160 --> 01:20:47.040 align:middle line:84%
+to unpaired translation,
+look at this paper and look
+
+01:20:47.040 --> 01:20:48.760 align:middle line:84%
+at distributional
+alignment ideas
+
+01:20:48.760 --> 01:20:51.960 align:middle line:84%
+from natural
+language processing.
+
+01:20:51.960 --> 01:20:54.760 align:middle line:84%
+So the point I'll end
+on is this concept
+
+01:20:54.760 --> 01:20:56.720 align:middle line:84%
+that you don't always
+need paired data
+
+01:20:56.720 --> 01:21:00.200 align:middle line:84%
+to solved conditional
+prediction.
+
+01:21:00.200 --> 01:21:03.360 align:middle line:84%
+And one name for pairing
+is grounding, grounding
+
+01:21:03.360 --> 01:21:04.720 align:middle line:90%
+one modality in another.
+
+01:21:04.720 --> 01:21:06.762 align:middle line:84%
+And there's just really
+interesting implications,
+
+01:21:06.762 --> 01:21:10.080 align:middle line:84%
+like I could potentially
+identify the meaning of a word
+
+01:21:10.080 --> 01:21:12.400 align:middle line:84%
+without ever having seen
+a paired example of what
+
+01:21:12.400 --> 01:21:14.520 align:middle line:84%
+that word corresponds to
+in the physical world.
+
+01:21:14.520 --> 01:21:17.920 align:middle line:84%
+And I'll have more to say on
+that in some future lectures.
+
+01:21:17.920 --> 01:21:19.750 align:middle line:90%
+Thank you.
+
+01:21:19.750 --> 01:21:31.000 align:middle line:90%

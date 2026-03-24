@@ -1,0 +1,6795 @@
+WEBVTT
+
+00:00:00.000 --> 00:00:00.500 align:middle line:90%
+
+
+00:00:00.500 --> 00:00:02.436 align:middle line:90%
+[SQUEAKING]
+
+00:00:02.436 --> 00:00:04.372 align:middle line:90%
+[RUSTLING]
+
+00:00:04.372 --> 00:00:07.760 align:middle line:90%
+[CLICKING]
+
+00:00:07.760 --> 00:00:12.600 align:middle line:90%
+
+
+00:00:12.600 --> 00:00:15.160 align:middle line:84%
+PHILLIP ISOLA: We're going to
+continue on today and this week
+
+00:00:15.160 --> 00:00:17.000 align:middle line:90%
+with generative models.
+
+00:00:17.000 --> 00:00:23.200 align:middle line:84%
+So today will be on
+variational autoencoders.
+
+00:00:23.200 --> 00:00:24.840 align:middle line:84%
+And we're going to
+give a perspective
+
+00:00:24.840 --> 00:00:27.440 align:middle line:84%
+that generative modeling
+and representation learning
+
+00:00:27.440 --> 00:00:29.320 align:middle line:90%
+are very tightly coupled.
+
+00:00:29.320 --> 00:00:31.833 align:middle line:84%
+If you can solve the
+generative modeling problem,
+
+00:00:31.833 --> 00:00:34.000 align:middle line:84%
+it should help you solve
+the representation learning
+
+00:00:34.000 --> 00:00:35.337 align:middle line:90%
+problem and vice versa.
+
+00:00:35.337 --> 00:00:36.920 align:middle line:84%
+And variational
+autoencoders are going
+
+00:00:36.920 --> 00:00:38.587 align:middle line:84%
+to be one model that
+really puts the two
+
+00:00:38.587 --> 00:00:42.880 align:middle line:84%
+ideas together and solves
+them both at the same time.
+
+00:00:42.880 --> 00:00:45.120 align:middle line:84%
+And this lecture is a
+little bit different
+
+00:00:45.120 --> 00:00:47.080 align:middle line:84%
+than some of the
+last few, in that
+
+00:00:47.080 --> 00:00:49.440 align:middle line:84%
+rather than covering a
+lot of different topics
+
+00:00:49.440 --> 00:00:51.500 align:middle line:84%
+in some superficial
+level of detail,
+
+00:00:51.500 --> 00:00:53.180 align:middle line:84%
+we're going to just
+go deep on VAEs,
+
+00:00:53.180 --> 00:00:55.480 align:middle line:90%
+on variational autoencoders.
+
+00:00:55.480 --> 00:00:57.480 align:middle line:84%
+And we'll also talk a
+little bit about the types
+
+00:00:57.480 --> 00:00:58.840 align:middle line:84%
+of representations
+that are learned
+
+00:00:58.840 --> 00:01:00.715 align:middle line:84%
+by generative models at
+the end and this idea
+
+00:01:00.715 --> 00:01:01.740 align:middle line:90%
+of disentanglement.
+
+00:01:01.740 --> 00:01:04.319 align:middle line:90%
+
+
+00:01:04.319 --> 00:01:07.005 align:middle line:84%
+So this is a picture I've
+shown a few different times
+
+00:01:07.005 --> 00:01:08.880 align:middle line:84%
+throughout all of the
+representation learning
+
+00:01:08.880 --> 00:01:11.680 align:middle line:84%
+and generative modeling
+lectures in this class.
+
+00:01:11.680 --> 00:01:14.840 align:middle line:84%
+It's how I like to think
+about the two problems, where
+
+00:01:14.840 --> 00:01:17.400 align:middle line:84%
+representation learning
+is going from raw data
+
+00:01:17.400 --> 00:01:22.120 align:middle line:84%
+to some nicer, structured,
+abstracted representation.
+
+00:01:22.120 --> 00:01:25.040 align:middle line:84%
+And generative modeling is going
+from a nice, simple, abstracted
+
+00:01:25.040 --> 00:01:28.160 align:middle line:90%
+representation to data.
+
+00:01:28.160 --> 00:01:29.960 align:middle line:84%
+And I've said that
+these two things can
+
+00:01:29.960 --> 00:01:33.480 align:middle line:84%
+be kind of thought of as
+inverses to some degree, not
+
+00:01:33.480 --> 00:01:36.920 align:middle line:84%
+necessarily inverses in the
+sense of a mathematical function
+
+00:01:36.920 --> 00:01:40.600 align:middle line:84%
+inverse because the direction
+from data to embeddings
+
+00:01:40.600 --> 00:01:42.840 align:middle line:84%
+is many to one, and the
+direction from embeddings
+
+00:01:42.840 --> 00:01:44.300 align:middle line:90%
+to data might be one to many.
+
+00:01:44.300 --> 00:01:46.980 align:middle line:84%
+It might be stochastic, so it's
+more like a stochastic inverse,
+
+00:01:46.980 --> 00:01:49.520 align:middle line:84%
+but they kind of operate
+in opposite directions.
+
+00:01:49.520 --> 00:01:51.280 align:middle line:84%
+And in this lecture,
+we're going to see
+
+00:01:51.280 --> 00:01:57.655 align:middle line:84%
+a model that explicitly models
+both directions simultaneously.
+
+00:01:57.655 --> 00:01:59.280 align:middle line:84%
+So representation
+learning mapping data
+
+00:01:59.280 --> 00:02:01.600 align:middle line:84%
+to abstract representations,
+generative modeling,
+
+00:02:01.600 --> 00:02:03.120 align:middle line:84%
+mapping abstract
+representations,
+
+00:02:03.120 --> 00:02:06.240 align:middle line:84%
+like a text instruction
+for example to data,
+
+00:02:06.240 --> 00:02:09.280 align:middle line:90%
+so make an image from some text.
+
+00:02:09.280 --> 00:02:15.000 align:middle line:84%
+So the perspective that
+we're going to look at today
+
+00:02:15.000 --> 00:02:19.440 align:middle line:84%
+is going to be generative
+models as transformations
+
+00:02:19.440 --> 00:02:21.160 align:middle line:84%
+from one probability
+distribution
+
+00:02:21.160 --> 00:02:24.600 align:middle line:84%
+to another probability
+distribution.
+
+00:02:24.600 --> 00:02:27.540 align:middle line:84%
+So we'll have a
+prior distribution,
+
+00:02:27.540 --> 00:02:32.800 align:middle line:84%
+which will be the noise that
+we talked about last class.
+
+00:02:32.800 --> 00:02:34.348 align:middle line:84%
+So the prior
+distribution is usually
+
+00:02:34.348 --> 00:02:36.140 align:middle line:84%
+something that is very
+simple in structure.
+
+00:02:36.140 --> 00:02:38.057 align:middle line:84%
+And we're going to map
+that prior distribution
+
+00:02:38.057 --> 00:02:41.420 align:middle line:84%
+to a complicated
+data distribution.
+
+00:02:41.420 --> 00:02:43.360 align:middle line:84%
+So we'll always have
+our latent variables
+
+00:02:43.360 --> 00:02:46.240 align:middle line:84%
+or our noise space z, which
+is often going to be Gaussian,
+
+00:02:46.240 --> 00:02:48.720 align:middle line:84%
+indicated by a cartoon
+here as a circle
+
+00:02:48.720 --> 00:02:51.120 align:middle line:84%
+because it's something
+that is meant to be simple.
+
+00:02:51.120 --> 00:02:53.560 align:middle line:84%
+If it's actually a
+normal distribution, then
+
+00:02:53.560 --> 00:02:56.950 align:middle line:84%
+in high dimensions, that will
+be roughly a soap bubble.
+
+00:02:56.950 --> 00:02:58.200 align:middle line:90%
+That's the way to think of it.
+
+00:02:58.200 --> 00:03:01.600 align:middle line:84%
+Most of the probability density
+of a Gaussian in high dimensions
+
+00:03:01.600 --> 00:03:04.038 align:middle line:84%
+is right near the surface
+of the hypersphere,
+
+00:03:04.038 --> 00:03:06.580 align:middle line:84%
+and the data distribution will
+be something more complicated.
+
+00:03:06.580 --> 00:03:08.497 align:middle line:84%
+And so we're going to
+find a mapping from data
+
+00:03:08.497 --> 00:03:09.740 align:middle line:90%
+that lives in this space.
+
+00:03:09.740 --> 00:03:11.720 align:middle line:84%
+And according to
+this distribution,
+
+00:03:11.720 --> 00:03:14.493 align:middle line:84%
+we're going to geometrically
+push and pull it around,
+
+00:03:14.493 --> 00:03:16.160 align:middle line:84%
+which is what the
+layers of a neural net
+
+00:03:16.160 --> 00:03:19.080 align:middle line:84%
+do until we get it
+into this shape.
+
+00:03:19.080 --> 00:03:21.720 align:middle line:84%
+So remember those
+diagrams I showed before
+
+00:03:21.720 --> 00:03:23.580 align:middle line:84%
+of the distribution
+of input data points,
+
+00:03:23.580 --> 00:03:25.288 align:middle line:84%
+going layer by layer
+and getting remapped
+
+00:03:25.288 --> 00:03:26.600 align:middle line:90%
+into a new distribution.
+
+00:03:26.600 --> 00:03:29.440 align:middle line:84%
+This is like a cartoon
+version of that diagram.
+
+00:03:29.440 --> 00:03:31.540 align:middle line:90%
+So data is x.
+
+00:03:31.540 --> 00:03:34.747 align:middle line:90%
+Latent variables are z.
+
+00:03:34.747 --> 00:03:36.580 align:middle line:84%
+And in the representation
+learning lectures,
+
+00:03:36.580 --> 00:03:37.788 align:middle line:90%
+we looked at this direction--
+
+00:03:37.788 --> 00:03:39.280 align:middle line:84%
+I think I used
+the same cartoons.
+
+00:03:39.280 --> 00:03:42.960 align:middle line:84%
+So we had a mapping f, which
+we called the encoder from data
+
+00:03:42.960 --> 00:03:44.572 align:middle line:90%
+to representations.
+
+00:03:44.572 --> 00:03:46.280 align:middle line:84%
+And in the generative
+modeling direction,
+
+00:03:46.280 --> 00:03:50.200 align:middle line:84%
+it will be a mapping from
+representations to data.
+
+00:03:50.200 --> 00:03:55.370 align:middle line:84%
+And we'll call the function that
+generates the data a generator
+
+00:03:55.370 --> 00:03:57.130 align:middle line:90%
+g.
+
+00:03:57.130 --> 00:04:03.210 align:middle line:84%
+So g is a mapping from z to x
+And f is a mapping from x to z.
+
+00:04:03.210 --> 00:04:05.248 align:middle line:84%
+So these are sometimes
+called generators.
+
+00:04:05.248 --> 00:04:06.790 align:middle line:84%
+Other times, they're
+called decoders.
+
+00:04:06.790 --> 00:04:09.570 align:middle line:84%
+So we have an encoder
+that maps data
+
+00:04:09.570 --> 00:04:12.450 align:middle line:84%
+to representation a decoder that
+maps representation to data.
+
+00:04:12.450 --> 00:04:15.058 align:middle line:90%
+
+
+00:04:15.058 --> 00:04:16.350 align:middle line:90%
+So we've seen that a few times.
+
+00:04:16.350 --> 00:04:18.017 align:middle line:84%
+Now let's put these
+two things together.
+
+00:04:18.017 --> 00:04:21.930 align:middle line:84%
+It looks like they're basically
+solving related problems.
+
+00:04:21.930 --> 00:04:24.130 align:middle line:84%
+And one model that puts
+these two things together
+
+00:04:24.130 --> 00:04:25.470 align:middle line:90%
+is, of course, the autoencoder.
+
+00:04:25.470 --> 00:04:27.590 align:middle line:84%
+Maybe you already
+kind of noticed that.
+
+00:04:27.590 --> 00:04:30.630 align:middle line:84%
+So an autoencoder maps from
+data to some vector space,
+
+00:04:30.630 --> 00:04:32.650 align:middle line:84%
+low-dimensional
+representation z.
+
+00:04:32.650 --> 00:04:36.290 align:middle line:84%
+And then it decodes that vector
+back into the data in such a way
+
+00:04:36.290 --> 00:04:39.850 align:middle line:84%
+that you can reconstruct
+the data itself.
+
+00:04:39.850 --> 00:04:43.730 align:middle line:84%
+So the second half of the
+autoencoder, the decoder,
+
+00:04:43.730 --> 00:04:46.210 align:middle line:84%
+it's doing functionally
+basically what
+
+00:04:46.210 --> 00:04:49.610 align:middle line:84%
+we've described a generator,
+a generative model, as doing.
+
+00:04:49.610 --> 00:04:53.850 align:middle line:84%
+So the second half of the
+autoencoder, the decoder,
+
+00:04:53.850 --> 00:04:59.330 align:middle line:84%
+is a mapping from
+some z vector to data.
+
+00:04:59.330 --> 00:05:02.570 align:middle line:84%
+And now the question is,
+can we use that decoder
+
+00:05:02.570 --> 00:05:04.410 align:middle line:84%
+as a generative
+model, as a generator,
+
+00:05:04.410 --> 00:05:07.950 align:middle line:90%
+to sample new random photos?
+
+00:05:07.950 --> 00:05:09.850 align:middle line:84%
+In order to do
+that, we need to be
+
+00:05:09.850 --> 00:05:12.610 align:middle line:84%
+able to first sample
+a z vector and then
+
+00:05:12.610 --> 00:05:15.130 align:middle line:90%
+decode it into an image.
+
+00:05:15.130 --> 00:05:18.290 align:middle line:84%
+So the first question
+for you to think about--
+
+00:05:18.290 --> 00:05:22.387 align:middle line:84%
+what is the issue
+with this formulation?
+
+00:05:22.387 --> 00:05:22.970 align:middle line:90%
+That's better.
+
+00:05:22.970 --> 00:05:24.770 align:middle line:90%
+I don't know why that happened.
+
+00:05:24.770 --> 00:05:30.090 align:middle line:84%
+So we have a mapping
+from z to data X.
+
+00:05:30.090 --> 00:05:32.750 align:middle line:84%
+And to sample a new random
+photo from the decoder,
+
+00:05:32.750 --> 00:05:35.730 align:middle line:84%
+we would first have to
+sample a new random z vector.
+
+00:05:35.730 --> 00:05:38.370 align:middle line:90%
+So what's the difficulty here?
+
+00:05:38.370 --> 00:05:39.610 align:middle line:90%
+How would I do that?
+
+00:05:39.610 --> 00:05:41.130 align:middle line:84%
+Anyone can think
+about what would
+
+00:05:41.130 --> 00:05:44.830 align:middle line:84%
+be difficult about sampling
+from some distribution over z.
+
+00:05:44.830 --> 00:05:47.770 align:middle line:90%
+
+
+00:05:47.770 --> 00:05:49.530 align:middle line:90%
+Yeah, let's go here.
+
+00:05:49.530 --> 00:05:50.830 align:middle line:90%
+AUDIENCE: What distribution?
+
+00:05:50.830 --> 00:05:51.650 align:middle line:84%
+PHILLIP ISOLA:
+What distribution?
+
+00:05:51.650 --> 00:05:52.990 align:middle line:90%
+I never told you what z is.
+
+00:05:52.990 --> 00:05:55.690 align:middle line:84%
+Yeah, in the back, I
+think I saw a hand.
+
+00:05:55.690 --> 00:05:58.450 align:middle line:84%
+Right, how do you know
+what is the distribution
+
+00:05:58.450 --> 00:06:01.450 align:middle line:84%
+over the encodings
+of an autoencoder?
+
+00:06:01.450 --> 00:06:02.550 align:middle line:90%
+So that's the problem.
+
+00:06:02.550 --> 00:06:05.130 align:middle line:84%
+So typically, an autoencoder
+will learn a mapping
+
+00:06:05.130 --> 00:06:08.270 align:middle line:84%
+to some distribution,
+some set of embeddings.
+
+00:06:08.270 --> 00:06:11.850 align:middle line:84%
+But there's no guarantee
+that set of embeddings
+
+00:06:11.850 --> 00:06:13.690 align:middle line:84%
+is going to form a
+simpler shape or easier
+
+00:06:13.690 --> 00:06:18.570 align:middle line:84%
+to sample from distribution
+than the original data itself.
+
+00:06:18.570 --> 00:06:24.050 align:middle line:84%
+So the problem is, I can
+decode z vectors that
+
+00:06:24.050 --> 00:06:26.950 align:middle line:84%
+are corresponding to the
+data that I trained on.
+
+00:06:26.950 --> 00:06:30.190 align:middle line:84%
+So if I have f of x, where
+x is a real data point,
+
+00:06:30.190 --> 00:06:33.050 align:middle line:84%
+I can decode that by
+doing g of f of x.
+
+00:06:33.050 --> 00:06:36.290 align:middle line:84%
+But I don't know how to
+sample new valid f's of x.
+
+00:06:36.290 --> 00:06:40.030 align:middle line:84%
+It might be some weird
+distribution full of holes.
+
+00:06:40.030 --> 00:06:43.530 align:middle line:84%
+And if I go to a point that
+has never been trained,
+
+00:06:43.530 --> 00:06:45.610 align:middle line:84%
+it's never been
+observed via f of x,
+
+00:06:45.610 --> 00:06:48.570 align:middle line:84%
+then I won't know
+how to decode that.
+
+00:06:48.570 --> 00:06:51.010 align:middle line:84%
+So the whole point of a
+variational autoencoder
+
+00:06:51.010 --> 00:06:54.410 align:middle line:84%
+is to fix this problem is to
+make it so that the latent
+
+00:06:54.410 --> 00:06:56.290 align:middle line:84%
+space, the encodings
+of an autoencoder,
+
+00:06:56.290 --> 00:06:58.710 align:middle line:84%
+form a simple distribution
+that you can sample from.
+
+00:06:58.710 --> 00:07:01.170 align:middle line:84%
+That's all of the
+math and algorithms
+
+00:07:01.170 --> 00:07:04.010 align:middle line:84%
+that we'll develop in this
+lecture are going to be simply
+
+00:07:04.010 --> 00:07:07.090 align:middle line:84%
+to do that, simply to make
+it so that this becomes
+
+00:07:07.090 --> 00:07:10.570 align:middle line:90%
+a sample from distribution.
+
+00:07:10.570 --> 00:07:15.170 align:middle line:84%
+So we're going to
+go through VAEs
+
+00:07:15.170 --> 00:07:16.590 align:middle line:84%
+from a few different
+perspectives.
+
+00:07:16.590 --> 00:07:21.558 align:middle line:84%
+We're going to build up the
+kind of mechanistic intuition
+
+00:07:21.558 --> 00:07:22.350 align:middle line:90%
+of what's going on.
+
+00:07:22.350 --> 00:07:24.142 align:middle line:84%
+But we'll also look at
+the theoretical kind
+
+00:07:24.142 --> 00:07:28.010 align:middle line:84%
+of probabilistic modeling way
+of motivating these things,
+
+00:07:28.010 --> 00:07:33.530 align:middle line:84%
+and try to understand at least
+some of the layers of analysis
+
+00:07:33.530 --> 00:07:34.613 align:middle line:90%
+that I'm going to provide.
+
+00:07:34.613 --> 00:07:36.822 align:middle line:84%
+So it might be that you get
+lost in some of the math,
+
+00:07:36.822 --> 00:07:38.630 align:middle line:84%
+but then always remember
+to pop back out.
+
+00:07:38.630 --> 00:07:40.672 align:middle line:84%
+So the first perspective
+I want you to understand
+
+00:07:40.672 --> 00:07:45.210 align:middle line:84%
+is that a VAE is an autoencoder
+with one change, which
+
+00:07:45.210 --> 00:07:49.020 align:middle line:84%
+is that rather than the encoder
+mapping to a complicated shape,
+
+00:07:49.020 --> 00:07:50.270 align:middle line:90%
+it will map to a simple shape.
+
+00:07:50.270 --> 00:07:52.230 align:middle line:90%
+It will map to a Gaussian.
+
+00:07:52.230 --> 00:07:54.130 align:middle line:84%
+So a VAE is just
+an autoencoder that
+
+00:07:54.130 --> 00:07:57.290 align:middle line:84%
+maps where f maps to
+a Gaussian, and that
+
+00:07:57.290 --> 00:07:59.490 align:middle line:84%
+means that I can sample
+new images by sampling
+
+00:07:59.490 --> 00:08:01.930 align:middle line:84%
+from a Gaussian and
+running the Gaussian
+
+00:08:01.930 --> 00:08:03.630 align:middle line:90%
+random vectors through decoder.
+
+00:08:03.630 --> 00:08:06.030 align:middle line:84%
+That's the first level of
+understanding of a VAE.
+
+00:08:06.030 --> 00:08:09.050 align:middle line:90%
+
+
+00:08:09.050 --> 00:08:09.930 align:middle line:90%
+Question?
+
+00:08:09.930 --> 00:08:13.770 align:middle line:84%
+AUDIENCE: Is the reason that
+we want the latent space to be
+
+00:08:13.770 --> 00:08:15.730 align:middle line:84%
+Gaussian specifically
+because it makes
+
+00:08:15.730 --> 00:08:17.910 align:middle line:90%
+it better to generate models?
+
+00:08:17.910 --> 00:08:20.050 align:middle line:84%
+Or is this an intrinsic
+good [? of having the ?]
+
+00:08:20.050 --> 00:08:21.730 align:middle line:84%
+representation
+space or something?
+
+00:08:21.730 --> 00:08:23.730 align:middle line:84%
+PHILLIP ISOLA: Yes, so
+why do we want the latent
+
+00:08:23.730 --> 00:08:24.872 align:middle line:90%
+space to be Gaussian?
+
+00:08:24.872 --> 00:08:27.330 align:middle line:84%
+So the level of understanding
+that I want you to have right
+
+00:08:27.330 --> 00:08:30.350 align:middle line:84%
+now is that if the latent
+space were Gaussian,
+
+00:08:30.350 --> 00:08:32.370 align:middle line:84%
+you could sample from
+it, and then it becomes
+
+00:08:32.370 --> 00:08:33.630 align:middle line:90%
+a generative model sample.
+
+00:08:33.630 --> 00:08:37.450 align:middle line:84%
+A Gaussian from z,
+decode, becomes an image.
+
+00:08:37.450 --> 00:08:43.730 align:middle line:84%
+Now you also asked, is it
+that a Gaussian is a better--
+
+00:08:43.730 --> 00:08:45.730 align:middle line:84%
+that leads to better
+representations?
+
+00:08:45.730 --> 00:08:48.313 align:middle line:84%
+If I just want to think of this
+from a representation learning
+
+00:08:48.313 --> 00:08:51.350 align:middle line:84%
+angle, is mapping to a Gaussian
+distribution a good idea?
+
+00:08:51.350 --> 00:08:54.670 align:middle line:84%
+And that's also true, but
+it's a little bit more subtle.
+
+00:08:54.670 --> 00:08:58.790 align:middle line:84%
+So we'll get to
+that toward the end.
+
+00:08:58.790 --> 00:09:01.670 align:middle line:84%
+So VAEs are great representation
+learners and great generative
+
+00:09:01.670 --> 00:09:03.670 align:middle line:84%
+models, or they're good
+at both of those things.
+
+00:09:03.670 --> 00:09:06.170 align:middle line:84%
+That's why we're getting
+to them after we've already
+
+00:09:06.170 --> 00:09:09.490 align:middle line:84%
+covered basic representation
+learning and basic generative
+
+00:09:09.490 --> 00:09:12.330 align:middle line:84%
+modeling because the VAE
+puts both of them together.
+
+00:09:12.330 --> 00:09:15.435 align:middle line:84%
+And it encompasses all
+the models we've seen.
+
+00:09:15.435 --> 00:09:17.810 align:middle line:84%
+And many of the models we've
+seen, like diffusion models,
+
+00:09:17.810 --> 00:09:20.770 align:middle line:84%
+can be cast as a
+certain kind of VAE
+
+00:09:20.770 --> 00:09:22.790 align:middle line:84%
+or autoencoders or
+a degenerate VAE.
+
+00:09:22.790 --> 00:09:24.210 align:middle line:90%
+So VAEs are kind of--
+
+00:09:24.210 --> 00:09:26.090 align:middle line:84%
+they're the pinnacle
+of generative modeling
+
+00:09:26.090 --> 00:09:28.810 align:middle line:90%
+and representation learning.
+
+00:09:28.810 --> 00:09:32.430 align:middle line:84%
+But in practice,
+they're not as popular
+
+00:09:32.430 --> 00:09:34.430 align:middle line:84%
+these days as diffusion
+models and other things.
+
+00:09:34.430 --> 00:09:36.055 align:middle line:84%
+But mathematically,
+they're a framework
+
+00:09:36.055 --> 00:09:39.470 align:middle line:84%
+that encompasses almost
+everything that we've seen.
+
+00:09:39.470 --> 00:09:44.405 align:middle line:84%
+So what is the probability
+interpretation of a VAE?
+
+00:09:44.405 --> 00:09:46.030 align:middle line:84%
+So now we're going
+to take a step back,
+
+00:09:46.030 --> 00:09:47.910 align:middle line:84%
+and we're going to talk
+about mixtures of Gaussians
+
+00:09:47.910 --> 00:09:49.730 align:middle line:84%
+because it turns out,
+variational autoencoders
+
+00:09:49.730 --> 00:09:51.147 align:middle line:84%
+are fitting a
+mixture of Gaussians
+
+00:09:51.147 --> 00:09:53.008 align:middle line:90%
+to a data distribution.
+
+00:09:53.008 --> 00:09:55.550 align:middle line:84%
+So a mixture of Gaussians-- so
+what is a mixture of Gaussian?
+
+00:09:55.550 --> 00:09:57.050 align:middle line:90%
+Well, we talked about--
+
+00:09:57.050 --> 00:09:58.430 align:middle line:90%
+we've seen Gaussians.
+
+00:09:58.430 --> 00:10:01.930 align:middle line:84%
+So a Gaussian fit
+to data with a max
+
+00:10:01.930 --> 00:10:03.690 align:middle line:84%
+likelihood objective
+is just going
+
+00:10:03.690 --> 00:10:06.250 align:middle line:84%
+to be a density
+model where we try
+
+00:10:06.250 --> 00:10:08.990 align:middle line:84%
+to increase the density that we
+apply to where the data lives.
+
+00:10:08.990 --> 00:10:11.888 align:middle line:84%
+So there'll be a gradient that
+pushes up the density here.
+
+00:10:11.888 --> 00:10:13.430 align:middle line:84%
+And the parameters
+are just the mean.
+
+00:10:13.430 --> 00:10:15.930 align:middle line:84%
+And the variance will shift
+around the mean and the variance
+
+00:10:15.930 --> 00:10:18.410 align:middle line:84%
+of this Gaussian until we get
+maximum likelihood applied
+
+00:10:18.410 --> 00:10:19.230 align:middle line:90%
+to the data points.
+
+00:10:19.230 --> 00:10:22.410 align:middle line:84%
+And that's what we learned
+about last Thursday.
+
+00:10:22.410 --> 00:10:24.130 align:middle line:90%
+So that's one Gaussian.
+
+00:10:24.130 --> 00:10:26.410 align:middle line:84%
+A mixture of Gaussians
+is just, well,
+
+00:10:26.410 --> 00:10:29.930 align:middle line:84%
+in order to model a complicated
+distribution that does not
+
+00:10:29.930 --> 00:10:32.090 align:middle line:84%
+have a Gaussian shape,
+I can use a bunch
+
+00:10:32.090 --> 00:10:35.130 align:middle line:84%
+of Gaussian distributions
+and sum them up.
+
+00:10:35.130 --> 00:10:37.435 align:middle line:84%
+So a Gaussian is like
+a little-- think of it
+
+00:10:37.435 --> 00:10:38.310 align:middle line:90%
+like a little circle.
+
+00:10:38.310 --> 00:10:40.643 align:middle line:84%
+I mean, it could be an ellipse,
+but most of this lecture
+
+00:10:40.643 --> 00:10:42.760 align:middle line:84%
+will just assume
+isotropic Gaussians,
+
+00:10:42.760 --> 00:10:46.800 align:middle line:84%
+which means that the covariance
+is 1 or is the identity,
+
+00:10:46.800 --> 00:10:47.860 align:middle line:90%
+in fact.
+
+00:10:47.860 --> 00:10:50.540 align:middle line:84%
+So we're going to assume,
+just for simplicity,
+
+00:10:50.540 --> 00:10:53.160 align:middle line:84%
+that there's no ellipsoids
+or covariance structure.
+
+00:10:53.160 --> 00:10:55.500 align:middle line:90%
+It's just circles.
+
+00:10:55.500 --> 00:10:58.860 align:middle line:84%
+You can always turn these into
+ellipses, but in the pictures,
+
+00:10:58.860 --> 00:10:59.880 align:middle line:90%
+I'll just draw circles.
+
+00:10:59.880 --> 00:11:02.540 align:middle line:84%
+So what does it look like to
+have a mixture of Gaussians that
+
+00:11:02.540 --> 00:11:04.780 align:middle line:84%
+is fit to some distribution,
+like this funny shape
+
+00:11:04.780 --> 00:11:07.040 align:middle line:84%
+that I was coloring in blue
+on the previous slides?
+
+00:11:07.040 --> 00:11:08.040 align:middle line:90%
+It just looks like this.
+
+00:11:08.040 --> 00:11:10.020 align:middle line:84%
+I'm going to say I can
+approximate that shape
+
+00:11:10.020 --> 00:11:11.503 align:middle line:90%
+with a bunch of circles.
+
+00:11:11.503 --> 00:11:13.920 align:middle line:84%
+If the circles are small enough
+and I have enough of them,
+
+00:11:13.920 --> 00:11:16.980 align:middle line:84%
+then I can
+approximate any shape.
+
+00:11:16.980 --> 00:11:19.210 align:middle line:90%
+So probably, you could prove--
+
+00:11:19.210 --> 00:11:21.460 align:middle line:84%
+I haven't thought through
+this, but probably a mixture
+
+00:11:21.460 --> 00:11:23.620 align:middle line:84%
+of Gaussians can, to
+arbitrary precision,
+
+00:11:23.620 --> 00:11:27.560 align:middle line:84%
+approximate any density,
+something like that.
+
+00:11:27.560 --> 00:11:29.680 align:middle line:84%
+So here's what the
+mathematical model is.
+
+00:11:29.680 --> 00:11:35.380 align:middle line:84%
+It's just a mixture, so
+a sum, with weightings w.
+
+00:11:35.380 --> 00:11:37.725 align:middle line:84%
+I think, in traditional models,
+these would be positive.
+
+00:11:37.725 --> 00:11:40.100 align:middle line:84%
+But you can imagine these
+being negative or positive more
+
+00:11:40.100 --> 00:11:41.340 align:middle line:90%
+generally.
+
+00:11:41.340 --> 00:11:45.580 align:middle line:84%
+And every component is going
+to be a Gaussian, a little blip
+
+00:11:45.580 --> 00:11:48.820 align:middle line:84%
+of Gaussian probability
+centered at a mean, mu,
+
+00:11:48.820 --> 00:11:51.940 align:middle line:90%
+and covariance, sigma.
+
+00:11:51.940 --> 00:11:55.060 align:middle line:84%
+So the mean of the
+first mixture component
+
+00:11:55.060 --> 00:11:57.940 align:middle line:90%
+is here and the covariance is--
+
+00:11:57.940 --> 00:11:59.660 align:middle line:84%
+in this case, it's
+just isotropic two
+
+00:11:59.660 --> 00:12:00.760 align:middle line:90%
+dimensional Gaussian.
+
+00:12:00.760 --> 00:12:03.140 align:middle line:84%
+So we're just going
+to have a covariance
+
+00:12:03.140 --> 00:12:04.475 align:middle line:90%
+is equal to the variance.
+
+00:12:04.475 --> 00:12:06.600 align:middle line:84%
+It's just one number that
+characterizes that shape.
+
+00:12:06.600 --> 00:12:10.100 align:middle line:90%
+It's the radius of that circle.
+
+00:12:10.100 --> 00:12:12.380 align:middle line:84%
+So that's the
+mixture of Gaussians.
+
+00:12:12.380 --> 00:12:14.300 align:middle line:84%
+And the parameters of
+the mixture of Gaussians
+
+00:12:14.300 --> 00:12:17.980 align:middle line:84%
+are the mixing
+weights, w, the means
+
+00:12:17.980 --> 00:12:20.300 align:middle line:84%
+and the variances,
+the covariances
+
+00:12:20.300 --> 00:12:22.563 align:middle line:84%
+of all of the Gaussians
+in the mixture.
+
+00:12:22.563 --> 00:12:23.980 align:middle line:84%
+And in general,
+in high dimensions
+
+00:12:23.980 --> 00:12:27.748 align:middle line:84%
+the covariance will be d
+by d dimensional matrix,
+
+00:12:27.748 --> 00:12:29.540 align:middle line:84%
+where d is the
+dimensionality, and the mean
+
+00:12:29.540 --> 00:12:32.060 align:middle line:90%
+will be a d-dimensional vector.
+
+00:12:32.060 --> 00:12:36.385 align:middle line:84%
+So VAEs are a
+mixture of Gaussians.
+
+00:12:36.385 --> 00:12:37.760 align:middle line:84%
+But they're not
+just any mixture.
+
+00:12:37.760 --> 00:12:40.340 align:middle line:84%
+They're actually an infinite
+mixture of Gaussians.
+
+00:12:40.340 --> 00:12:42.600 align:middle line:84%
+So mixture of Gaussians
+is a classical model.
+
+00:12:42.600 --> 00:12:43.980 align:middle line:84%
+That kind of new
+thing with a VAE
+
+00:12:43.980 --> 00:12:47.180 align:middle line:84%
+is it's an infinite
+mixture of Gaussians.
+
+00:12:47.180 --> 00:12:53.560 align:middle line:84%
+So how could I parameterize an
+infinite mixture of Gaussians?
+
+00:12:53.560 --> 00:12:55.820 align:middle line:90%
+So a mixture of Gaussians--
+
+00:12:55.820 --> 00:12:58.980 align:middle line:84%
+I have weight, so
+that's one parameter.
+
+00:12:58.980 --> 00:12:59.580 align:middle line:90%
+I have mean.
+
+00:12:59.580 --> 00:13:00.500 align:middle line:90%
+That's d parameters.
+
+00:13:00.500 --> 00:13:02.443 align:middle line:84%
+And covariance-- that's
+d squared parameters.
+
+00:13:02.443 --> 00:13:03.360 align:middle line:90%
+And I have k of those.
+
+00:13:03.360 --> 00:13:07.780 align:middle line:84%
+So I have d squared times k
+plus times k plus parameters
+
+00:13:07.780 --> 00:13:11.140 align:middle line:90%
+to specify k Gaussians.
+
+00:13:11.140 --> 00:13:12.820 align:middle line:84%
+So to specify
+infinite Gaussians,
+
+00:13:12.820 --> 00:13:15.820 align:middle line:90%
+I need infinite parameters.
+
+00:13:15.820 --> 00:13:17.880 align:middle line:84%
+So clearly, that's
+not going to work,
+
+00:13:17.880 --> 00:13:21.900 align:middle line:84%
+that explicit parameterization
+of infinite mixture components.
+
+00:13:21.900 --> 00:13:25.780 align:middle line:84%
+So there's a really cool
+trick for parameterizing
+
+00:13:25.780 --> 00:13:29.220 align:middle line:84%
+an infinite mixture with a
+finite number of parameters.
+
+00:13:29.220 --> 00:13:31.700 align:middle line:84%
+And that is to parameterize
+that infinite mixture
+
+00:13:31.700 --> 00:13:34.040 align:middle line:84%
+as a mapping from
+some underlying base
+
+00:13:34.040 --> 00:13:40.300 align:middle line:84%
+continuous distribution to
+mixture components via function
+
+00:13:40.300 --> 00:13:42.820 align:middle line:84%
+g that has a finite
+set of parameters.
+
+00:13:42.820 --> 00:13:46.380 align:middle line:84%
+And in this course, g
+will be a neural network.
+
+00:13:46.380 --> 00:13:49.180 align:middle line:84%
+But in fact, a VAE doesn't
+have to have anything
+
+00:13:49.180 --> 00:13:52.220 align:middle line:84%
+to do with neural networks. g
+could be any type of mapping.
+
+00:13:52.220 --> 00:13:55.500 align:middle line:84%
+But in this course and in
+traditional literature,
+
+00:13:55.500 --> 00:13:58.180 align:middle line:84%
+VAEs are always
+using neural nets.
+
+00:13:58.180 --> 00:14:00.900 align:middle line:90%
+
+
+00:14:00.900 --> 00:14:03.882 align:middle line:84%
+But yeah, really, you could
+apply this to other models, too.
+
+00:14:03.882 --> 00:14:04.840 align:middle line:90%
+So here's how it works.
+
+00:14:04.840 --> 00:14:05.600 align:middle line:90%
+We have pz.
+
+00:14:05.600 --> 00:14:07.900 align:middle line:84%
+This is a unit
+Gaussian distribution.
+
+00:14:07.900 --> 00:14:11.420 align:middle line:84%
+We sample a random
+vector from that space.
+
+00:14:11.420 --> 00:14:16.220 align:middle line:84%
+We pass it through our
+generator or decoder g.
+
+00:14:16.220 --> 00:14:18.860 align:middle line:84%
+And that outputs
+a number, which we
+
+00:14:18.860 --> 00:14:23.220 align:middle line:84%
+will interpret as the mean
+of one of my infinite mixture
+
+00:14:23.220 --> 00:14:24.580 align:middle line:90%
+components.
+
+00:14:24.580 --> 00:14:27.660 align:middle line:84%
+So I'll index the mean
+with this symbol mu,
+
+00:14:27.660 --> 00:14:31.020 align:middle line:84%
+and we'll have the neural
+network g or the function g
+
+00:14:31.020 --> 00:14:32.760 align:middle line:84%
+actually also
+output the variance.
+
+00:14:32.760 --> 00:14:34.380 align:middle line:84%
+So it'll output
+a set of numbers,
+
+00:14:34.380 --> 00:14:37.500 align:middle line:84%
+a d, a d-dimensional
+vector for the mean,
+
+00:14:37.500 --> 00:14:41.740 align:middle line:84%
+and a d-squared-dimensional
+vector for the covariance
+
+00:14:41.740 --> 00:14:44.740 align:middle line:84%
+or, in this example, two numbers
+for the mean and maybe one
+
+00:14:44.740 --> 00:14:47.140 align:middle line:84%
+number to characterize the
+covariance because it's
+
+00:14:47.140 --> 00:14:50.500 align:middle line:90%
+an isotropic Gaussian.
+
+00:14:50.500 --> 00:14:54.120 align:middle line:84%
+So if I sample different
+points in the z space,
+
+00:14:54.120 --> 00:14:58.400 align:middle line:84%
+I will end up parameterizing
+different Gaussians.
+
+00:14:58.400 --> 00:15:01.940 align:middle line:84%
+And because z is continuous,
+I can sample any point
+
+00:15:01.940 --> 00:15:04.740 align:middle line:84%
+on a continuum,
+and I can thereby
+
+00:15:04.740 --> 00:15:07.380 align:middle line:84%
+get an infinite number
+of possible or continuous
+
+00:15:07.380 --> 00:15:12.060 align:middle line:84%
+possible set of Gaussian
+mixture components.
+
+00:15:12.060 --> 00:15:14.560 align:middle line:84%
+And g just has
+weights and biases.
+
+00:15:14.560 --> 00:15:15.780 align:middle line:90%
+It's a neural net.
+
+00:15:15.780 --> 00:15:18.780 align:middle line:84%
+So that's a finite
+number of parameters
+
+00:15:18.780 --> 00:15:21.660 align:middle line:90%
+to model an infinite mixture.
+
+00:15:21.660 --> 00:15:26.820 align:middle line:90%
+
+
+00:15:26.820 --> 00:15:28.660 align:middle line:90%
+So this has parameters theta.
+
+00:15:28.660 --> 00:15:33.780 align:middle line:84%
+And now we have fit some
+weird complicated distribution
+
+00:15:33.780 --> 00:15:37.660 align:middle line:84%
+with an infinite mixture
+parameterized by a neural net
+
+00:15:37.660 --> 00:15:39.560 align:middle line:90%
+with weights and biases theta.
+
+00:15:39.560 --> 00:15:42.600 align:middle line:90%
+
+
+00:15:42.600 --> 00:15:47.300 align:middle line:84%
+So what is the density
+implied by this mapping?
+
+00:15:47.300 --> 00:15:50.140 align:middle line:84%
+So it's going to be
+not a sum because we
+
+00:15:50.140 --> 00:15:51.400 align:middle line:90%
+have a continuous space.
+
+00:15:51.400 --> 00:15:53.260 align:middle line:84%
+So we have to switch
+to a continuous math
+
+00:15:53.260 --> 00:15:57.980 align:middle line:84%
+and use integrals, so the
+probability of some data point
+
+00:15:57.980 --> 00:15:58.480 align:middle line:90%
+x.
+
+00:15:58.480 --> 00:16:02.500 align:middle line:84%
+So the distribution over
+x implied by this model
+
+00:16:02.500 --> 00:16:06.640 align:middle line:84%
+is going to be an integral over
+all of my mixture components.
+
+00:16:06.640 --> 00:16:08.140 align:middle line:84%
+Each mixture component
+is just going
+
+00:16:08.140 --> 00:16:10.580 align:middle line:84%
+to be a normal
+distribution, a Gaussian,
+
+00:16:10.580 --> 00:16:12.820 align:middle line:84%
+with mean given
+by the neural net
+
+00:16:12.820 --> 00:16:15.140 align:middle line:84%
+and variance given
+by the neural net.
+
+00:16:15.140 --> 00:16:18.220 align:middle line:84%
+That will place a little
+blip of density over x.
+
+00:16:18.220 --> 00:16:24.200 align:middle line:84%
+And my total probability will
+just be marginalizing over z,
+
+00:16:24.200 --> 00:16:25.200 align:middle line:90%
+so integrating over z.
+
+00:16:25.200 --> 00:16:27.200 align:middle line:84%
+So here's the finite
+set of Gaussian.
+
+00:16:27.200 --> 00:16:29.320 align:middle line:84%
+It's the sum over my
+mixture components.
+
+00:16:29.320 --> 00:16:31.860 align:middle line:84%
+But now I have an infinite
+set of mixture components.
+
+00:16:31.860 --> 00:16:33.980 align:middle line:84%
+And I'm going to
+take the integral
+
+00:16:33.980 --> 00:16:35.480 align:middle line:90%
+over all of those components.
+
+00:16:35.480 --> 00:16:37.560 align:middle line:84%
+And that integral
+is over z space.
+
+00:16:37.560 --> 00:16:42.320 align:middle line:90%
+
+
+00:16:42.320 --> 00:16:44.580 align:middle line:84%
+So this is the infinite
+mixture of Gaussian model.
+
+00:16:44.580 --> 00:16:47.560 align:middle line:84%
+These are the weights. pz
+is my prior distribution.
+
+00:16:47.560 --> 00:16:49.360 align:middle line:84%
+It's usually just
+a unit Gaussian.
+
+00:16:49.360 --> 00:16:51.740 align:middle line:84%
+And think of that the weights
+of the mixture components.
+
+00:16:51.740 --> 00:16:53.657 align:middle line:84%
+And then these are all
+the mixture components.
+
+00:16:53.657 --> 00:16:55.020 align:middle line:90%
+And it's an integral.
+
+00:16:55.020 --> 00:16:58.980 align:middle line:90%
+Any questions about that?
+
+00:16:58.980 --> 00:17:01.020 align:middle line:84%
+So this is the probability
+model that underlies
+
+00:17:01.020 --> 00:17:03.420 align:middle line:90%
+VAEs for a Gaussian VAE.
+
+00:17:03.420 --> 00:17:05.065 align:middle line:84%
+You can actually
+have non-Gaussian.
+
+00:17:05.065 --> 00:17:06.440 align:middle line:84%
+So you could have
+other mixtures.
+
+00:17:06.440 --> 00:17:08.315 align:middle line:84%
+It doesn't have to be
+a mixture of Gaussians.
+
+00:17:08.315 --> 00:17:10.807 align:middle line:84%
+It could be a mixture
+of Laplace distributions
+
+00:17:10.807 --> 00:17:12.640 align:middle line:84%
+or Poisson distributions,
+whatever you want.
+
+00:17:12.640 --> 00:17:14.098 align:middle line:84%
+So it doesn't have
+to be Gaussians.
+
+00:17:14.098 --> 00:17:16.060 align:middle line:84%
+But usually, we'll
+work with Gaussians.
+
+00:17:16.060 --> 00:17:18.435 align:middle line:84%
+AUDIENCE: Is this a convolution,
+or is that the wrong way
+
+00:17:18.435 --> 00:17:19.060 align:middle line:90%
+to look at it?
+
+00:17:19.060 --> 00:17:20.435 align:middle line:84%
+PHILLIP ISOLA: Is
+it convolution?
+
+00:17:20.435 --> 00:17:24.619 align:middle line:84%
+I suppose it could be
+interpreted as convolution.
+
+00:17:24.619 --> 00:17:27.880 align:middle line:84%
+Like you're convolving
+over z-space with--
+
+00:17:27.880 --> 00:17:32.377 align:middle line:90%
+
+
+00:17:32.377 --> 00:17:34.710 align:middle line:84%
+yeah, I'm not sure that's the
+most useful way of looking
+
+00:17:34.710 --> 00:17:36.252 align:middle line:84%
+at it, but you could
+probably cast it
+
+00:17:36.252 --> 00:17:38.030 align:middle line:90%
+as convolution in some sense.
+
+00:17:38.030 --> 00:17:38.910 align:middle line:90%
+Yeah.
+
+00:17:38.910 --> 00:17:42.030 align:middle line:84%
+OK, so I think it's
+easier to think
+
+00:17:42.030 --> 00:17:45.350 align:middle line:84%
+of it as marginal likelihood and
+marginalizing over some latent
+
+00:17:45.350 --> 00:17:47.830 align:middle line:84%
+variables, so that's what
+we'll see on this slide.
+
+00:17:47.830 --> 00:17:50.390 align:middle line:84%
+So we're going to
+understand the z-variable--
+
+00:17:50.390 --> 00:17:52.510 align:middle line:84%
+the z-space as being
+latent variables that
+
+00:17:52.510 --> 00:17:55.670 align:middle line:84%
+describe all the attributes
+of the generated data,
+
+00:17:55.670 --> 00:18:01.010 align:middle line:84%
+but in an abstract fashion,
+and all those latent variables,
+
+00:18:01.010 --> 00:18:03.670 align:middle line:84%
+we'll hope that they have
+a simple distribution.
+
+00:18:03.670 --> 00:18:08.070 align:middle line:84%
+And they'll be unit Gaussians
+in the VAE, but in the example
+
+00:18:08.070 --> 00:18:09.950 align:middle line:84%
+I gave last class,
+I said that I could
+
+00:18:09.950 --> 00:18:11.750 align:middle line:84%
+write a Python program
+that will take noise
+
+00:18:11.750 --> 00:18:14.130 align:middle line:84%
+from simple distributions
+and generate images,
+
+00:18:14.130 --> 00:18:16.110 align:middle line:84%
+and these simple
+distributions are
+
+00:18:16.110 --> 00:18:17.930 align:middle line:84%
+my distribution over
+the latent variables,
+
+00:18:17.930 --> 00:18:20.070 align:middle line:90%
+and they have interpretations.
+
+00:18:20.070 --> 00:18:22.705 align:middle line:84%
+So the graphical
+model-- if you've
+
+00:18:22.705 --> 00:18:25.330 align:middle line:84%
+done probability with graphical
+models it would look like this.
+
+00:18:25.330 --> 00:18:27.270 align:middle line:84%
+We sample a z, and then
+condition on the z.
+
+00:18:27.270 --> 00:18:29.787 align:middle line:84%
+We sample an x, we
+only observe the x.
+
+00:18:29.787 --> 00:18:31.370 align:middle line:84%
+The latent variables
+are not observed.
+
+00:18:31.370 --> 00:18:34.790 align:middle line:84%
+Our data modeling problem
+is to fit a distribution
+
+00:18:34.790 --> 00:18:40.430 align:middle line:84%
+over x that is represented as
+a mapping from some underlying
+
+00:18:40.430 --> 00:18:41.750 align:middle line:90%
+variable z.
+
+00:18:41.750 --> 00:18:42.770 align:middle line:90%
+But we don't observe z.
+
+00:18:42.770 --> 00:18:45.350 align:middle line:90%
+We have to maybe infer z from x.
+
+00:18:45.350 --> 00:18:46.110 align:middle line:90%
+OK.
+
+00:18:46.110 --> 00:18:48.150 align:middle line:84%
+So the generator will
+be-- think of that
+
+00:18:48.150 --> 00:18:50.750 align:middle line:84%
+as a conditional distribution,
+the probability over x
+
+00:18:50.750 --> 00:18:54.110 align:middle line:84%
+given some setting of
+the latent variables.
+
+00:18:54.110 --> 00:19:04.110 align:middle line:84%
+And if I want to model the
+likelihood of a data point x,
+
+00:19:04.110 --> 00:19:07.750 align:middle line:84%
+I can integrate over
+my latent variables z.
+
+00:19:07.750 --> 00:19:11.190 align:middle line:84%
+So this is just marginalization
+from probability.
+
+00:19:11.190 --> 00:19:14.170 align:middle line:90%
+Px given z times pz is px and z.
+
+00:19:14.170 --> 00:19:18.150 align:middle line:84%
+Then if I integrate over z, then
+by the rules of probability,
+
+00:19:18.150 --> 00:19:20.590 align:middle line:90%
+I get px.
+
+00:19:20.590 --> 00:19:21.090 align:middle line:90%
+OK.
+
+00:19:21.090 --> 00:19:23.330 align:middle line:84%
+So this is called--
+this is-- the likelihood
+
+00:19:23.330 --> 00:19:26.163 align:middle line:84%
+the probability that the model
+p theta places on the data
+
+00:19:26.163 --> 00:19:27.830 align:middle line:84%
+is called the likelihood,
+and I'm trying
+
+00:19:27.830 --> 00:19:29.050 align:middle line:90%
+to do max likelihood learning.
+
+00:19:29.050 --> 00:19:30.758 align:middle line:84%
+So I want to find the
+probability model p
+
+00:19:30.758 --> 00:19:34.070 align:middle line:84%
+theta that maximizes the
+likelihood of the data that
+
+00:19:34.070 --> 00:19:36.230 align:middle line:84%
+assigns the most
+density to the data.
+
+00:19:36.230 --> 00:19:37.950 align:middle line:84%
+And to compute the
+likelihood, I have
+
+00:19:37.950 --> 00:19:41.030 align:middle line:84%
+to marginalize over my
+unobserved latent variables.
+
+00:19:41.030 --> 00:19:43.648 align:middle line:84%
+So sometimes we call
+this marginal likelihood.
+
+00:19:43.648 --> 00:19:45.190 align:middle line:84%
+So a latent variable
+model, I'm going
+
+00:19:45.190 --> 00:19:48.430 align:middle line:84%
+to fit it to data by maximizing
+the marginal likelihood that it
+
+00:19:48.430 --> 00:19:50.750 align:middle line:84%
+assigns to data when I
+marginalize over all the latent
+
+00:19:50.750 --> 00:19:52.310 align:middle line:90%
+variables.
+
+00:19:52.310 --> 00:19:54.310 align:middle line:84%
+Because for a given
+data point, there
+
+00:19:54.310 --> 00:19:56.657 align:middle line:84%
+might-- to make it
+high probability,
+
+00:19:56.657 --> 00:19:58.990 align:middle line:84%
+there might be a lot of
+different settings of the latent
+
+00:19:58.990 --> 00:20:02.190 align:middle line:84%
+variable that can give
+it some plausible-- like,
+
+00:20:02.190 --> 00:20:04.430 align:middle line:90%
+a high probability.
+
+00:20:04.430 --> 00:20:06.830 align:middle line:90%
+OK.
+
+00:20:06.830 --> 00:20:10.510 align:middle line:84%
+OK, so here is the
+entire objective function
+
+00:20:10.510 --> 00:20:13.630 align:middle line:84%
+and hypothesis space of a
+variational autoencoder,
+
+00:20:13.630 --> 00:20:17.930 align:middle line:84%
+or in this case, just an
+infinite Gaussian mixture model,
+
+00:20:17.930 --> 00:20:20.350 align:middle line:84%
+and the variational
+autoencoder can be--
+
+00:20:20.350 --> 00:20:23.730 align:middle line:84%
+is one type of approach
+that uses this model.
+
+00:20:23.730 --> 00:20:27.230 align:middle line:84%
+So the objective
+function is going
+
+00:20:27.230 --> 00:20:30.170 align:middle line:90%
+to be to do maximum likelihood.
+
+00:20:30.170 --> 00:20:32.710 align:middle line:84%
+So I'm going to maximize the
+likelihood that my model places
+
+00:20:32.710 --> 00:20:34.870 align:middle line:90%
+on the data.
+
+00:20:34.870 --> 00:20:36.665 align:middle line:84%
+And the hypothesis
+space is going
+
+00:20:36.665 --> 00:20:38.290 align:middle line:84%
+to be an infinite
+mixture of Gaussians.
+
+00:20:38.290 --> 00:20:43.110 align:middle line:84%
+So I'm going to try to find
+the means and the variances
+
+00:20:43.110 --> 00:20:46.650 align:middle line:84%
+and the weights of Gaussians
+in an infinite mixture,
+
+00:20:46.650 --> 00:20:48.330 align:middle line:84%
+and to parameterize
+an infinite mixture,
+
+00:20:48.330 --> 00:20:51.790 align:middle line:84%
+I'm going to
+parameterize a mapping
+
+00:20:51.790 --> 00:20:58.350 align:middle line:84%
+from some underlying prior
+space z to the data space x
+
+00:20:58.350 --> 00:21:01.950 align:middle line:84%
+via the math that we just looked
+at on the last few slides.
+
+00:21:01.950 --> 00:21:03.110 align:middle line:90%
+OK.
+
+00:21:03.110 --> 00:21:04.530 align:middle line:90%
+So this is marginal likelihood.
+
+00:21:04.530 --> 00:21:06.830 align:middle line:84%
+I'm marginalizing over
+the latent variables z.
+
+00:21:06.830 --> 00:21:12.010 align:middle line:84%
+And the likelihood term for px
+given z is going to be Gaussian,
+
+00:21:12.010 --> 00:21:15.910 align:middle line:84%
+and the prior term for pz is
+going to be unit Gaussian,
+
+00:21:15.910 --> 00:21:18.310 align:middle line:84%
+mapping from unit Gaussian
+to complicated data
+
+00:21:18.310 --> 00:21:21.870 align:middle line:90%
+distribution in that fashion.
+
+00:21:21.870 --> 00:21:24.130 align:middle line:84%
+And this model is going
+to give me two things.
+
+00:21:24.130 --> 00:21:28.250 align:middle line:84%
+It's going to give me both a
+density-- that's the main thing.
+
+00:21:28.250 --> 00:21:30.710 align:middle line:84%
+I'm trying to learn the
+parameters theta that
+
+00:21:30.710 --> 00:21:33.990 align:middle line:84%
+will define this density
+function that maps from x
+
+00:21:33.990 --> 00:21:36.670 align:middle line:90%
+to non-negative numbers.
+
+00:21:36.670 --> 00:21:38.670 align:middle line:84%
+And it will actually
+also give me
+
+00:21:38.670 --> 00:21:41.410 align:middle line:84%
+a very easy way of
+sampling from that density.
+
+00:21:41.410 --> 00:21:43.110 align:middle line:90%
+So it gives me those two things.
+
+00:21:43.110 --> 00:21:48.130 align:middle line:84%
+So in order to sample from this
+density, I can do the following.
+
+00:21:48.130 --> 00:21:51.150 align:middle line:84%
+I first sample a
+random unit Gaussian.
+
+00:21:51.150 --> 00:21:55.590 align:middle line:84%
+So that's sampling my z vector,
+And then I decode it through g.
+
+00:21:55.590 --> 00:21:56.130 align:middle line:90%
+OK.
+
+00:21:56.130 --> 00:21:58.550 align:middle line:84%
+So in order to
+create a sample x,
+
+00:21:58.550 --> 00:22:03.830 align:middle line:84%
+I first sample a
+random unit Gaussian z.
+
+00:22:03.830 --> 00:22:05.710 align:middle line:84%
+Or, in fact, this sampler
+that's written here
+
+00:22:05.710 --> 00:22:10.890 align:middle line:84%
+is just going to be the
+mapping p of x given z.
+
+00:22:10.890 --> 00:22:13.870 align:middle line:84%
+So it's going to say
+given some z, how
+
+00:22:13.870 --> 00:22:18.590 align:middle line:84%
+do I draw a sample over
+the possible x's that
+
+00:22:18.590 --> 00:22:21.230 align:middle line:90%
+follow the density px given z?
+
+00:22:21.230 --> 00:22:28.750 align:middle line:84%
+So I will take my z, and I will
+have my neural network predict
+
+00:22:28.750 --> 00:22:31.390 align:middle line:84%
+what is the mean of
+the mixture component,
+
+00:22:31.390 --> 00:22:35.350 align:middle line:90%
+and then I will transform--
+
+00:22:35.350 --> 00:22:38.390 align:middle line:84%
+I will take a sample
+with some variance
+
+00:22:38.390 --> 00:22:42.490 align:middle line:84%
+by multiplying my variance
+by a unit Gaussian.
+
+00:22:42.490 --> 00:22:46.150 align:middle line:84%
+So this is just a way to
+sample from a Gaussian
+
+00:22:46.150 --> 00:22:48.830 align:middle line:84%
+whose mean is g of
+mu and whose variance
+
+00:22:48.830 --> 00:22:53.590 align:middle line:84%
+is g sigma by transforming a
+sample from a unit Gaussian.
+
+00:22:53.590 --> 00:22:56.110 align:middle line:90%
+
+
+00:22:56.110 --> 00:22:58.750 align:middle line:84%
+So x will be distributed
+as normal distribution
+
+00:22:58.750 --> 00:23:05.310 align:middle line:84%
+whose mean is g of mu and
+whose variance is g of sigma.
+
+00:23:05.310 --> 00:23:07.100 align:middle line:90%
+OK.
+
+00:23:07.100 --> 00:23:10.830 align:middle line:90%
+So the difficulty here--
+
+00:23:10.830 --> 00:23:11.410 align:middle line:90%
+let's see.
+
+00:23:11.410 --> 00:23:14.490 align:middle line:90%
+
+
+00:23:14.490 --> 00:23:14.990 align:middle line:90%
+Sorry.
+
+00:23:14.990 --> 00:23:17.030 align:middle line:90%
+The variance is sigma squared.
+
+00:23:17.030 --> 00:23:20.290 align:middle line:84%
+I suppose sigma is the standard
+deviation, not the variance.
+
+00:23:20.290 --> 00:23:22.090 align:middle line:90%
+I always mix up those two.
+
+00:23:22.090 --> 00:23:23.830 align:middle line:90%
+OK.
+
+00:23:23.830 --> 00:23:27.070 align:middle line:90%
+So, yeah, the variance--
+
+00:23:27.070 --> 00:23:28.750 align:middle line:90%
+did I get this right?
+
+00:23:28.750 --> 00:23:31.090 align:middle line:84%
+Variance is square of
+standard deviation.
+
+00:23:31.090 --> 00:23:32.110 align:middle line:90%
+OK, yeah.
+
+00:23:32.110 --> 00:23:38.690 align:middle line:84%
+So the difficulty here
+is this term right here.
+
+00:23:38.690 --> 00:23:41.750 align:middle line:84%
+So if I want to maximize the
+likelihood that my model assigns
+
+00:23:41.750 --> 00:23:43.830 align:middle line:84%
+to the data, well,
+the likelihood
+
+00:23:43.830 --> 00:23:45.670 align:middle line:90%
+is written as an integral.
+
+00:23:45.670 --> 00:23:48.550 align:middle line:84%
+So if I were to try to solve
+this with back-propagation
+
+00:23:48.550 --> 00:23:51.750 align:middle line:84%
+or something like that, that
+means that every time I'm
+
+00:23:51.750 --> 00:23:54.430 align:middle line:84%
+going to perturb my parameters
+to place more probability, more
+
+00:23:54.430 --> 00:23:58.550 align:middle line:84%
+likelihood on the data, I would
+have to compute this integral.
+
+00:23:58.550 --> 00:24:01.990 align:middle line:84%
+And this would be
+incredibly expensive.
+
+00:24:01.990 --> 00:24:05.690 align:middle line:84%
+So we don't even have a
+closed form for that integral,
+
+00:24:05.690 --> 00:24:09.110 align:middle line:84%
+so we would compute that
+integral by approximating it
+
+00:24:09.110 --> 00:24:10.710 align:middle line:84%
+with a set of samples
+by approximating
+
+00:24:10.710 --> 00:24:11.810 align:middle line:90%
+the integral somehow.
+
+00:24:11.810 --> 00:24:13.650 align:middle line:84%
+To get a good approximation
+to an integral,
+
+00:24:13.650 --> 00:24:17.370 align:middle line:84%
+I need to maybe take a
+lot of samples over z.
+
+00:24:17.370 --> 00:24:21.640 align:middle line:84%
+And this means
+that every time I'm
+
+00:24:21.640 --> 00:24:25.040 align:middle line:84%
+going to run my
+model forward, see
+
+00:24:25.040 --> 00:24:26.940 align:middle line:84%
+what density it
+places in my data,
+
+00:24:26.940 --> 00:24:29.382 align:middle line:84%
+I actually have to run it
+forward a lot, a lot of times
+
+00:24:29.382 --> 00:24:30.840 align:middle line:84%
+because look at
+the neural network,
+
+00:24:30.840 --> 00:24:32.660 align:middle line:84%
+and g appears
+inside the integral,
+
+00:24:32.660 --> 00:24:35.480 align:middle line:84%
+so to get a good approximation
+to the likelihood
+
+00:24:35.480 --> 00:24:37.560 align:middle line:84%
+my model places on
+the data, I have
+
+00:24:37.560 --> 00:24:42.160 align:middle line:84%
+to run my neural network forward
+as many times as necessary
+
+00:24:42.160 --> 00:24:45.480 align:middle line:84%
+to approximate this integral,
+which might be a lot of times.
+
+00:24:45.480 --> 00:24:48.680 align:middle line:84%
+So one step of backprop is
+running my neural network
+
+00:24:48.680 --> 00:24:51.600 align:middle line:84%
+forward many, many,
+many times to get
+
+00:24:51.600 --> 00:24:53.780 align:middle line:84%
+a good estimate
+of this integral,
+
+00:24:53.780 --> 00:24:55.880 align:middle line:84%
+and then I still have
+to backprop that.
+
+00:24:55.880 --> 00:24:56.380 align:middle line:90%
+OK.
+
+00:24:56.380 --> 00:24:59.460 align:middle line:84%
+So this integral is
+difficult to calculate.
+
+00:24:59.460 --> 00:25:03.680 align:middle line:84%
+It's an intractable integral,
+so what am I going to do?
+
+00:25:03.680 --> 00:25:04.360 align:middle line:90%
+Oh.
+
+00:25:04.360 --> 00:25:06.560 align:middle line:84%
+And just notation-wise,
+there's something
+
+00:25:06.560 --> 00:25:09.365 align:middle line:84%
+that you might encounter
+in the literature, which
+
+00:25:09.365 --> 00:25:11.240 align:middle line:84%
+is called the
+reparameterization trick, which
+
+00:25:11.240 --> 00:25:12.320 align:middle line:90%
+just refers to this.
+
+00:25:12.320 --> 00:25:18.120 align:middle line:84%
+In order to take a sample from
+this distribution, px given
+
+00:25:18.120 --> 00:25:21.400 align:middle line:84%
+z, which is a
+normal distribution,
+
+00:25:21.400 --> 00:25:23.720 align:middle line:84%
+it suffices to take a
+sample from a unit Gaussian
+
+00:25:23.720 --> 00:25:25.800 align:middle line:84%
+and transform it by
+offsetting it by the mean
+
+00:25:25.800 --> 00:25:29.000 align:middle line:84%
+and then multiplying
+it by the variance.
+
+00:25:29.000 --> 00:25:30.880 align:middle line:90%
+OK.
+
+00:25:30.880 --> 00:25:34.600 align:middle line:84%
+So then x is just a
+deterministic function
+
+00:25:34.600 --> 00:25:37.360 align:middle line:84%
+of g with the only
+stochasticity coming
+
+00:25:37.360 --> 00:25:41.700 align:middle line:84%
+in through this unit Gaussian
+noise inserted in the side.
+
+00:25:41.700 --> 00:25:43.320 align:middle line:90%
+It's just a little trick.
+
+00:25:43.320 --> 00:25:44.560 align:middle line:90%
+AUDIENCE: Just to clarify.
+
+00:25:44.560 --> 00:25:48.560 align:middle line:84%
+So you say a variance because
+only sigma squared, is it
+
+00:25:48.560 --> 00:25:49.580 align:middle line:90%
+standard deviation?
+
+00:25:49.580 --> 00:25:50.440 align:middle line:90%
+PHILLIP ISOLA: Yeah.
+
+00:25:50.440 --> 00:25:54.960 align:middle line:84%
+Sorry, I got mixed up
+in the terminology.
+
+00:25:54.960 --> 00:25:57.980 align:middle line:84%
+So sigma is the
+standard deviation,
+
+00:25:57.980 --> 00:25:59.500 align:middle line:90%
+sigma squared is the variance.
+
+00:25:59.500 --> 00:26:01.780 align:middle line:84%
+And, yeah, apologies for
+mixing up those terms.
+
+00:26:01.780 --> 00:26:03.040 align:middle line:90%
+AUDIENCE: So is this--
+
+00:26:03.040 --> 00:26:05.620 align:middle line:84%
+it should be standard
+deviation or is this a typo,
+
+00:26:05.620 --> 00:26:07.600 align:middle line:90%
+it should be sigma squared?
+
+00:26:07.600 --> 00:26:09.760 align:middle line:84%
+PHILLIP ISOLA: No,
+I believe that it
+
+00:26:09.760 --> 00:26:13.520 align:middle line:84%
+should be multiplied by the
+standard deviation, yeah.
+
+00:26:13.520 --> 00:26:15.660 align:middle line:84%
+I think this is not a
+typo, it's just I misspoke.
+
+00:26:15.660 --> 00:26:18.180 align:middle line:90%
+
+
+00:26:18.180 --> 00:26:18.680 align:middle line:90%
+OK.
+
+00:26:18.680 --> 00:26:19.722 align:middle line:90%
+Anybody can confirm that?
+
+00:26:19.722 --> 00:26:22.040 align:middle line:84%
+That's the proper way to
+transform a unit Gaussian
+
+00:26:22.040 --> 00:26:24.100 align:middle line:84%
+into a Gaussian
+with some variance?
+
+00:26:24.100 --> 00:26:24.900 align:middle line:90%
+OK, good.
+
+00:26:24.900 --> 00:26:26.760 align:middle line:84%
+So you multiply by the
+standard deviation.
+
+00:26:26.760 --> 00:26:28.320 align:middle line:90%
+Square root of the variance.
+
+00:26:28.320 --> 00:26:30.440 align:middle line:90%
+OK.
+
+00:26:30.440 --> 00:26:31.480 align:middle line:90%
+OK.
+
+00:26:31.480 --> 00:26:35.580 align:middle line:84%
+So that's the problem that
+we're trying to solve,
+
+00:26:35.580 --> 00:26:39.160 align:middle line:84%
+and the rest of the VAE
+trickery is going to be,
+
+00:26:39.160 --> 00:26:43.440 align:middle line:84%
+how do you calculate this
+integral in an efficient manner?
+
+00:26:43.440 --> 00:26:45.640 align:middle line:84%
+So you could pause here
+and you could say you
+
+00:26:45.640 --> 00:26:47.820 align:middle line:90%
+understand what VAEs are doing.
+
+00:26:47.820 --> 00:26:52.520 align:middle line:84%
+They're modeling the-- they're
+maximizing the data likelihood
+
+00:26:52.520 --> 00:26:55.800 align:middle line:84%
+by fitting an infinite mixture
+of Gaussians to the data
+
+00:26:55.800 --> 00:26:59.280 align:middle line:84%
+and doing optimization to
+increase the probability we
+
+00:26:59.280 --> 00:27:01.680 align:middle line:84%
+place on x with respect to
+the parameters theta, which
+
+00:27:01.680 --> 00:27:04.443 align:middle line:84%
+are the weights and biases
+of the neural network g.
+
+00:27:04.443 --> 00:27:05.860 align:middle line:84%
+That's one layer
+of understanding.
+
+00:27:05.860 --> 00:27:08.318 align:middle line:84%
+But then there's this integral--
+so the rest of the lecture
+
+00:27:08.318 --> 00:27:12.320 align:middle line:84%
+is actually how do we
+approximate that integral.
+
+00:27:12.320 --> 00:27:14.560 align:middle line:90%
+OK.
+
+00:27:14.560 --> 00:27:16.880 align:middle line:84%
+OK, so I'm going
+to use the notation
+
+00:27:16.880 --> 00:27:22.520 align:middle line:84%
+L to represent the objective
+function, which is the data log
+
+00:27:22.520 --> 00:27:23.720 align:middle line:90%
+likelihood.
+
+00:27:23.720 --> 00:27:27.060 align:middle line:84%
+So L is equal to this
+equation down here.
+
+00:27:27.060 --> 00:27:32.220 align:middle line:84%
+So that equation is the
+marginal likelihood--
+
+00:27:32.220 --> 00:27:35.000 align:middle line:84%
+so it's going to be the
+probability of x given z times
+
+00:27:35.000 --> 00:27:37.600 align:middle line:90%
+z integrated over z is px.
+
+00:27:37.600 --> 00:27:39.732 align:middle line:90%
+Log of px is the log likelihood.
+
+00:27:39.732 --> 00:27:41.440 align:middle line:84%
+I'm trying to maximize
+the log likelihood
+
+00:27:41.440 --> 00:27:43.520 align:middle line:90%
+my model places on the data.
+
+00:27:43.520 --> 00:27:47.860 align:middle line:84%
+And this outer sum over n data
+points is going to be-- well,
+
+00:27:47.860 --> 00:27:48.540 align:middle line:90%
+my training set.
+
+00:27:48.540 --> 00:27:51.040 align:middle line:84%
+I'm going to be fitting
+my model to a training
+
+00:27:51.040 --> 00:27:53.640 align:middle line:90%
+set of n observations.
+
+00:27:53.640 --> 00:27:55.240 align:middle line:84%
+So maybe I have n
+photographs and I
+
+00:27:55.240 --> 00:27:57.120 align:middle line:84%
+want to learn a
+generative model of them.
+
+00:27:57.120 --> 00:28:02.000 align:middle line:84%
+So I-- since this is
+log likelihood, when
+
+00:28:02.000 --> 00:28:05.300 align:middle line:84%
+I have multiple
+different data points,
+
+00:28:05.300 --> 00:28:08.800 align:middle line:84%
+I maximize the joint probability
+by maximizing the sum
+
+00:28:08.800 --> 00:28:11.660 align:middle line:90%
+over the log probabilities.
+
+00:28:11.660 --> 00:28:14.440 align:middle line:84%
+OK, so this is the
+objective function
+
+00:28:14.440 --> 00:28:20.040 align:middle line:84%
+for maximizing the likelihood
+using a mixture of Gaussians.
+
+00:28:20.040 --> 00:28:21.810 align:middle line:90%
+OK.
+
+00:28:21.810 --> 00:28:24.440 align:middle line:84%
+So I'm now going to introduce
+a series of tricks--
+
+00:28:24.440 --> 00:28:28.020 align:middle line:84%
+I think around three tricks for
+approximating this integral.
+
+00:28:28.020 --> 00:28:31.200 align:middle line:84%
+So the first trick is going
+to be the most vanilla trick
+
+00:28:31.200 --> 00:28:33.985 align:middle line:84%
+that we use all the time, which
+is to approximate an integral I
+
+00:28:33.985 --> 00:28:34.860 align:middle line:90%
+can use some sample--
+
+00:28:34.860 --> 00:28:36.520 align:middle line:90%
+I can use sampling in some form.
+
+00:28:36.520 --> 00:28:38.120 align:middle line:84%
+And the nice thing
+about this integral
+
+00:28:38.120 --> 00:28:41.620 align:middle line:84%
+is it's actually in the
+form of an expectation.
+
+00:28:41.620 --> 00:28:44.520 align:middle line:84%
+So this marginal likelihood,
+marginalizing over the latent
+
+00:28:44.520 --> 00:28:49.080 align:middle line:84%
+variables, is equal
+to the expectation
+
+00:28:49.080 --> 00:28:52.360 align:middle line:84%
+of how much likelihood
+probability density
+
+00:28:52.360 --> 00:28:57.760 align:middle line:84%
+I place on x for each z in
+expectation over random samples
+
+00:28:57.760 --> 00:29:01.360 align:middle line:90%
+from the prior pz.
+
+00:29:01.360 --> 00:29:04.140 align:middle line:84%
+So that's the definition
+of expectation.
+
+00:29:04.140 --> 00:29:08.320 align:middle line:90%
+It's an integral with--
+
+00:29:08.320 --> 00:29:10.180 align:middle line:84%
+if I sample from
+this distribution,
+
+00:29:10.180 --> 00:29:13.960 align:middle line:84%
+it goes outside the expectation,
+this is just a definition.
+
+00:29:13.960 --> 00:29:15.880 align:middle line:90%
+OK.
+
+00:29:15.880 --> 00:29:19.880 align:middle line:84%
+So, how do we
+approximate expectations?
+
+00:29:19.880 --> 00:29:22.960 align:middle line:84%
+You can approximate expectations
+by simply taking a finite set
+
+00:29:22.960 --> 00:29:26.160 align:middle line:90%
+of samples and averaging them.
+
+00:29:26.160 --> 00:29:29.160 align:middle line:84%
+That's the trick that comes
+up all the time in math.
+
+00:29:29.160 --> 00:29:31.160 align:middle line:84%
+If I have an expectation,
+I approximate it
+
+00:29:31.160 --> 00:29:34.800 align:middle line:84%
+with a Monte Carlo estimate,
+which is a set of samples,
+
+00:29:34.800 --> 00:29:36.520 align:middle line:84%
+and then I take the
+average, as opposed
+
+00:29:36.520 --> 00:29:39.280 align:middle line:84%
+to having to compute
+the entire integral.
+
+00:29:39.280 --> 00:29:42.360 align:middle line:84%
+As M goes to infinity,
+this becomes--
+
+00:29:42.360 --> 00:29:44.900 align:middle line:84%
+this is an unbiased
+estimator of that integral.
+
+00:29:44.900 --> 00:29:49.120 align:middle line:84%
+So as M goes to infinity,
+then I get a perfect estimate.
+
+00:29:49.120 --> 00:29:50.860 align:middle line:90%
+OK, so how do I do that?
+
+00:29:50.860 --> 00:29:53.740 align:middle line:84%
+I sample from my prior,
+which is unit Gaussian.
+
+00:29:53.740 --> 00:29:54.340 align:middle line:90%
+That's easy.
+
+00:29:54.340 --> 00:29:57.240 align:middle line:84%
+We can sample unit
+Gaussian vectors.
+
+00:29:57.240 --> 00:30:01.840 align:middle line:84%
+And then I sum up and take
+the average of the density
+
+00:30:01.840 --> 00:30:05.300 align:middle line:84%
+that the model places
+over x for each z.
+
+00:30:05.300 --> 00:30:08.700 align:middle line:84%
+And remember that px given z
+is a very simple distribution.
+
+00:30:08.700 --> 00:30:11.600 align:middle line:84%
+That's just a
+Gaussian distribution.
+
+00:30:11.600 --> 00:30:12.940 align:middle line:90%
+That was here.
+
+00:30:12.940 --> 00:30:15.880 align:middle line:84%
+So px given z is just a Gaussian
+distribution parametrized
+
+00:30:15.880 --> 00:30:19.040 align:middle line:84%
+by my neural net output
+mean and variance.
+
+00:30:19.040 --> 00:30:20.540 align:middle line:90%
+OK.
+
+00:30:20.540 --> 00:30:22.540 align:middle line:90%
+So this is trick number one.
+
+00:30:22.540 --> 00:30:24.520 align:middle line:84%
+And now that we have
+done that trick,
+
+00:30:24.520 --> 00:30:25.773 align:middle line:90%
+we actually can train this.
+
+00:30:25.773 --> 00:30:27.440 align:middle line:84%
+I can actually write
+PyTorch and do this
+
+00:30:27.440 --> 00:30:28.857 align:middle line:84%
+because I got rid
+of the integral,
+
+00:30:28.857 --> 00:30:31.100 align:middle line:84%
+I don't know how to write
+integrals in PyTorch.
+
+00:30:31.100 --> 00:30:33.640 align:middle line:84%
+But now I've got it
+into a form where
+
+00:30:33.640 --> 00:30:35.040 align:middle line:90%
+we can write it in PyTorch.
+
+00:30:35.040 --> 00:30:39.500 align:middle line:84%
+Everything is just
+countable, discrete math.
+
+00:30:39.500 --> 00:30:44.080 align:middle line:84%
+So I approximated the integral
+with an average over average
+
+00:30:44.080 --> 00:30:46.633 align:middle line:84%
+over M samples from
+my prior, and I
+
+00:30:46.633 --> 00:30:48.800 align:middle line:84%
+looked at how much probability
+each of those samples
+
+00:30:48.800 --> 00:30:49.940 align:middle line:90%
+places on my data.
+
+00:30:49.940 --> 00:30:53.240 align:middle line:90%
+I add it all up.
+
+00:30:53.240 --> 00:30:57.220 align:middle line:84%
+And then I will-- it's
+a log probability,
+
+00:30:57.220 --> 00:31:03.080 align:middle line:84%
+so I'm trying to estimate
+log of p theta x.
+
+00:31:03.080 --> 00:31:06.010 align:middle line:90%
+So log of-- this is p theta x.
+
+00:31:06.010 --> 00:31:09.010 align:middle line:84%
+This is my approximation
+to p theta x.
+
+00:31:09.010 --> 00:31:14.490 align:middle line:84%
+And then I will be-- my total
+probability over all my training
+
+00:31:14.490 --> 00:31:18.530 align:middle line:84%
+data points is a sum
+over the n data points,
+
+00:31:18.530 --> 00:31:20.530 align:middle line:84%
+and I'm going to try to
+find the parameters that
+
+00:31:20.530 --> 00:31:25.030 align:middle line:84%
+maximize the probability I place
+over all of my data points.
+
+00:31:25.030 --> 00:31:25.530 align:middle line:90%
+OK.
+
+00:31:25.530 --> 00:31:29.870 align:middle line:90%
+
+
+00:31:29.870 --> 00:31:30.370 align:middle line:90%
+Ah.
+
+00:31:30.370 --> 00:31:31.650 align:middle line:90%
+I see-- I think I--
+
+00:31:31.650 --> 00:31:32.150 align:middle line:90%
+no.
+
+00:31:32.150 --> 00:31:33.067 align:middle line:90%
+Oh yeah, this is fine.
+
+00:31:33.067 --> 00:31:36.050 align:middle line:90%
+OK, good.
+
+00:31:36.050 --> 00:31:39.450 align:middle line:84%
+Yeah no, I think actually,
+I think there's a typo here.
+
+00:31:39.450 --> 00:31:44.450 align:middle line:84%
+So that 1 over M should be
+inside the log, I suppose.
+
+00:31:44.450 --> 00:31:47.410 align:middle line:84%
+Yeah, that's probably
+an important typo.
+
+00:31:47.410 --> 00:31:47.950 align:middle line:90%
+OK.
+
+00:31:47.950 --> 00:31:50.330 align:middle line:90%
+So log 1 over M.
+
+00:31:50.330 --> 00:31:53.070 align:middle line:84%
+So there's a lot of
+equations in this lecture,
+
+00:31:53.070 --> 00:31:56.030 align:middle line:84%
+so be sure to try to go through
+and think about them yourself,
+
+00:31:56.030 --> 00:31:58.470 align:middle line:90%
+and there might be typos.
+
+00:31:58.470 --> 00:32:01.010 align:middle line:90%
+So exercise for you to solve.
+
+00:32:01.010 --> 00:32:02.590 align:middle line:90%
+OK, so what does that look like?
+
+00:32:02.590 --> 00:32:06.890 align:middle line:84%
+So here is actually a colab
+that's running this optimization
+
+00:32:06.890 --> 00:32:10.330 align:middle line:84%
+to fit a mixture of
+Gaussians to this data
+
+00:32:10.330 --> 00:32:11.650 align:middle line:90%
+distribution on the right.
+
+00:32:11.650 --> 00:32:13.942 align:middle line:84%
+And rather than showing random
+samples-- so rather than
+
+00:32:13.942 --> 00:32:15.810 align:middle line:84%
+randomly sampling
+from the prior pz,
+
+00:32:15.810 --> 00:32:20.010 align:middle line:84%
+I'm sampling along a grid of
+points just for visualization.
+
+00:32:20.010 --> 00:32:23.730 align:middle line:84%
+So we can say, for this
+z, that maps to a Gaussian
+
+00:32:23.730 --> 00:32:24.705 align:middle line:90%
+at this location.
+
+00:32:24.705 --> 00:32:27.330 align:middle line:84%
+Now at initialization, which is
+the frame that you're currently
+
+00:32:27.330 --> 00:32:30.030 align:middle line:84%
+seeing, I've initialized
+the neural networks
+
+00:32:30.030 --> 00:32:33.970 align:middle line:84%
+so the weights are near 0,
+and so the Gaussians-- all
+
+00:32:33.970 --> 00:32:37.130 align:middle line:84%
+the mixture components
+are mapping to around 0.
+
+00:32:37.130 --> 00:32:40.170 align:middle line:84%
+OK, so here's what it looks
+like when you train this system.
+
+00:32:40.170 --> 00:32:44.570 align:middle line:84%
+So the different
+points in z-space
+
+00:32:44.570 --> 00:32:47.270 align:middle line:84%
+learn to map to different
+parts of the data distribution,
+
+00:32:47.270 --> 00:32:49.030 align:middle line:84%
+so they cover the
+data distribution,
+
+00:32:49.030 --> 00:32:51.690 align:middle line:90%
+they maximize this likelihood.
+
+00:32:51.690 --> 00:32:53.070 align:middle line:84%
+OK, so that's what
+it looks like.
+
+00:32:53.070 --> 00:32:59.090 align:middle line:84%
+This is SGD on the
+equation above OK.
+
+00:32:59.090 --> 00:33:00.370 align:middle line:90%
+Yeah, question?
+
+00:33:00.370 --> 00:33:03.498 align:middle line:84%
+AUDIENCE: Why don't we multiply
+by the probability of z?
+
+00:33:03.498 --> 00:33:05.290 align:middle line:84%
+PHILLIP ISOLA: Why
+don't we multiply by it?
+
+00:33:05.290 --> 00:33:06.430 align:middle line:90%
+Yeah, great question.
+
+00:33:06.430 --> 00:33:08.790 align:middle line:84%
+So that's just because
+of how expectation works.
+
+00:33:08.790 --> 00:33:14.410 align:middle line:84%
+So expectation is
+defined as this integral,
+
+00:33:14.410 --> 00:33:18.830 align:middle line:84%
+and the probability z comes in
+through the sampling procedure.
+
+00:33:18.830 --> 00:33:21.690 align:middle line:84%
+So higher probability
+samples, according to z,
+
+00:33:21.690 --> 00:33:24.010 align:middle line:84%
+will be overrepresented
+in this sum, so don't
+
+00:33:24.010 --> 00:33:25.270 align:middle line:90%
+need to double-weight them.
+
+00:33:25.270 --> 00:33:27.810 align:middle line:90%
+Yeah, that's why.
+
+00:33:27.810 --> 00:33:30.050 align:middle line:84%
+AUDIENCE: I was just a little
+confused on how are you
+
+00:33:30.050 --> 00:33:32.333 align:middle line:90%
+computing p theta of x given z.
+
+00:33:32.333 --> 00:33:33.250 align:middle line:90%
+You said it was just--
+
+00:33:33.250 --> 00:33:34.750 align:middle line:84%
+I mean, like, on
+the previous slide,
+
+00:33:34.750 --> 00:33:39.450 align:middle line:84%
+it's like a normal distribution
+with a mean and standard
+
+00:33:39.450 --> 00:33:41.890 align:middle line:84%
+deviation or variance
+provided by the forward pass
+
+00:33:41.890 --> 00:33:43.210 align:middle line:90%
+through your model.
+
+00:33:43.210 --> 00:33:45.450 align:middle line:84%
+So then do you
+just draw a sample
+
+00:33:45.450 --> 00:33:47.530 align:middle line:84%
+from the normal
+distribution defined
+
+00:33:47.530 --> 00:33:49.348 align:middle line:84%
+by the parameters
+that your neural net--
+
+00:33:49.348 --> 00:33:51.890 align:middle line:84%
+PHILLIP ISOLA: You don't-- so
+you don't have to draw a sample
+
+00:33:51.890 --> 00:33:55.630 align:middle line:84%
+because this thing has a
+closed-form analytical form.
+
+00:33:55.630 --> 00:34:03.250 align:middle line:84%
+So what is n of x with
+mu and sigma as your--
+
+00:34:03.250 --> 00:34:06.930 align:middle line:84%
+or sigma squared, let's say,
+as your mean and your variance?
+
+00:34:06.930 --> 00:34:11.090 align:middle line:84%
+This is equal to some
+normalization times e
+
+00:34:11.090 --> 00:34:17.429 align:middle line:84%
+to the negative x minus
+mu over 2 sigma squared.
+
+00:34:17.429 --> 00:34:21.330 align:middle line:84%
+That's just the analytical
+form of the density, yeah.
+
+00:34:21.330 --> 00:34:24.850 align:middle line:84%
+So this thing here
+is just shorthand
+
+00:34:24.850 --> 00:34:27.929 align:middle line:84%
+for some exponential of the
+difference from the mean divided
+
+00:34:27.929 --> 00:34:29.290 align:middle line:90%
+by the variance.
+
+00:34:29.290 --> 00:34:30.989 align:middle line:84%
+AUDIENCE: In the
+approximation step,
+
+00:34:30.989 --> 00:34:32.842 align:middle line:90%
+how does the error scale with M?
+
+00:34:32.842 --> 00:34:34.550 align:middle line:84%
+PHILLIP ISOLA: In the
+approximation step,
+
+00:34:34.550 --> 00:34:35.883 align:middle line:90%
+how does the error scale with M?
+
+00:34:35.883 --> 00:34:36.850 align:middle line:90%
+I don't know.
+
+00:34:36.850 --> 00:34:38.610 align:middle line:90%
+That's a great question.
+
+00:34:38.610 --> 00:34:43.350 align:middle line:84%
+So I think that it's
+going to depend on, yeah,
+
+00:34:43.350 --> 00:34:46.489 align:middle line:84%
+the data and the parametric
+form of p and all
+
+00:34:46.489 --> 00:34:49.170 align:middle line:84%
+these different things,
+but I would just say,
+
+00:34:49.170 --> 00:34:52.110 align:middle line:84%
+that's like a good question
+to do some analysis on,
+
+00:34:52.110 --> 00:34:54.489 align:middle line:90%
+and I'm sure people have--
+
+00:34:54.489 --> 00:34:58.330 align:middle line:84%
+in general, how do Monte Carlo
+estimators scale with respect
+
+00:34:58.330 --> 00:35:01.310 align:middle line:90%
+to the number of samples?
+
+00:35:01.310 --> 00:35:04.090 align:middle line:84%
+And there's probably
+some classical results,
+
+00:35:04.090 --> 00:35:05.030 align:middle line:90%
+I don't remember.
+
+00:35:05.030 --> 00:35:07.230 align:middle line:90%
+Yeah.
+
+00:35:07.230 --> 00:35:07.730 align:middle line:90%
+OK.
+
+00:35:07.730 --> 00:35:10.370 align:middle line:90%
+
+
+00:35:10.370 --> 00:35:13.290 align:middle line:90%
+Yeah?
+
+00:35:13.290 --> 00:35:14.170 align:middle line:90%
+OK.
+
+00:35:14.170 --> 00:35:16.833 align:middle line:84%
+So, that's all
+all well and good.
+
+00:35:16.833 --> 00:35:19.250 align:middle line:84%
+So actually, I'm going to ask
+a question related to that--
+
+00:35:19.250 --> 00:35:23.720 align:middle line:84%
+how many samples do you need
+to get a good approximation?
+
+00:35:23.720 --> 00:35:25.470 align:middle line:84%
+So I'll come to your
+question in a second.
+
+00:35:25.470 --> 00:35:27.970 align:middle line:84%
+So how many samples do you need
+to get a good approximation?
+
+00:35:27.970 --> 00:35:30.530 align:middle line:90%
+So this worked.
+
+00:35:30.530 --> 00:35:31.910 align:middle line:90%
+Do we need any more tricks?
+
+00:35:31.910 --> 00:35:33.050 align:middle line:90%
+Is this enough?
+
+00:35:33.050 --> 00:35:36.670 align:middle line:84%
+So here, I took some
+number of samples--
+
+00:35:36.670 --> 00:35:37.750 align:middle line:90%
+let's say M is like 100--
+
+00:35:37.750 --> 00:35:39.730 align:middle line:84%
+I don't remember
+the exact number.
+
+00:35:39.730 --> 00:35:42.530 align:middle line:84%
+Well, what's going
+to happen as I
+
+00:35:42.530 --> 00:35:45.612 align:middle line:90%
+scale my latent dimensionality?
+
+00:35:45.612 --> 00:35:47.570 align:middle line:84%
+And I'm going to need a
+high-dimensional latent
+
+00:35:47.570 --> 00:35:49.210 align:middle line:84%
+space in order to be
+an effective model
+
+00:35:49.210 --> 00:35:50.810 align:middle line:84%
+of a high-dimensional
+data space.
+
+00:35:50.810 --> 00:35:53.570 align:middle line:84%
+So for two-dimensional
+distributions like shown here,
+
+00:35:53.570 --> 00:35:57.010 align:middle line:84%
+it turns out that I can just
+sample 100 of these samples M
+
+00:35:57.010 --> 00:36:00.890 align:middle line:84%
+and get a good fit to
+my data distribution.
+
+00:36:00.890 --> 00:36:03.758 align:middle line:84%
+But for high-dimensional data,
+I need a high-dimensional latent
+
+00:36:03.758 --> 00:36:05.550 align:middle line:84%
+space-- or higher-dimensional
+latent space.
+
+00:36:05.550 --> 00:36:09.010 align:middle line:84%
+So let's say that my z vectors
+are hundreds dimensional.
+
+00:36:09.010 --> 00:36:11.810 align:middle line:84%
+Do you think 100 samples M are
+going to be a good approximation
+
+00:36:11.810 --> 00:36:13.830 align:middle line:84%
+to the integral over this
+100-dimensional space?
+
+00:36:13.830 --> 00:36:15.850 align:middle line:90%
+What do you think?
+
+00:36:15.850 --> 00:36:17.910 align:middle line:84%
+Thumbs up if you
+think it will be OK?
+
+00:36:17.910 --> 00:36:18.410 align:middle line:90%
+OK, no.
+
+00:36:18.410 --> 00:36:19.790 align:middle line:84%
+Thumbs down if you
+think it won't be OK?
+
+00:36:19.790 --> 00:36:20.670 align:middle line:90%
+Yeah, thumbs down.
+
+00:36:20.670 --> 00:36:22.110 align:middle line:90%
+OK, so why?
+
+00:36:22.110 --> 00:36:24.090 align:middle line:84%
+How many samples,
+roughly, would you
+
+00:36:24.090 --> 00:36:28.010 align:middle line:84%
+say you need to have a good
+approximation to an integral
+
+00:36:28.010 --> 00:36:32.450 align:middle line:90%
+over a D-dimensional space?
+
+00:36:32.450 --> 00:36:36.050 align:middle line:84%
+This kind of gets at
+your question, I think.
+
+00:36:36.050 --> 00:36:38.530 align:middle line:90%
+Yeah, in the back.
+
+00:36:38.530 --> 00:36:40.990 align:middle line:84%
+AUDIENCE: Responding to his
+question, your question,
+
+00:36:40.990 --> 00:36:45.130 align:middle line:84%
+the Monte Carlo estimator
+has variance 1 over M,
+
+00:36:45.130 --> 00:36:46.850 align:middle line:90%
+so it goes down to square root--
+
+00:36:46.850 --> 00:36:48.070 align:middle line:90%
+1 over square root of M.
+
+00:36:48.070 --> 00:36:48.450 align:middle line:90%
+PHILLIP ISOLA: Excellent.
+
+00:36:48.450 --> 00:36:49.150 align:middle line:90%
+OK, thank you.
+
+00:36:49.150 --> 00:36:51.250 align:middle line:84%
+Monte Carlo estimator
+has variance 1 over M.
+
+00:36:51.250 --> 00:36:52.750 align:middle line:84%
+AUDIENCE: Nominally
+non-dimensional,
+
+00:36:52.750 --> 00:36:55.202 align:middle line:84%
+but in practice,
+somewhat dimensional.
+
+00:36:55.202 --> 00:36:56.910 align:middle line:84%
+PHILLIP ISOLA: Nominally
+not dimensional,
+
+00:36:56.910 --> 00:36:58.370 align:middle line:84%
+so actually, there's
+no dependence
+
+00:36:58.370 --> 00:37:00.930 align:middle line:84%
+on the dimensionality D, I
+guess, but in practice, there
+
+00:37:00.930 --> 00:37:01.570 align:middle line:90%
+is.
+
+00:37:01.570 --> 00:37:03.070 align:middle line:90%
+OK.
+
+00:37:03.070 --> 00:37:06.850 align:middle line:84%
+So I'll say that my rough
+intuition would be that you
+
+00:37:06.850 --> 00:37:08.310 align:middle line:90%
+need exponential samples.
+
+00:37:08.310 --> 00:37:13.170 align:middle line:84%
+In order to cover a
+D-dimensional space--
+
+00:37:13.170 --> 00:37:15.090 align:middle line:84%
+and each dimension
+is going to be--
+
+00:37:15.090 --> 00:37:16.507 align:middle line:84%
+you're going to
+have to fill it up
+
+00:37:16.507 --> 00:37:19.390 align:middle line:84%
+with another fixed
+set of samples,
+
+00:37:19.390 --> 00:37:21.730 align:middle line:84%
+so you should have something
+exponentially more samples
+
+00:37:21.730 --> 00:37:23.530 align:middle line:90%
+to cover a D-dimensional space.
+
+00:37:23.530 --> 00:37:26.857 align:middle line:84%
+But yeah, formally
+I'm not sure what--
+
+00:37:26.857 --> 00:37:28.190 align:middle line:90%
+so actually, how does that work?
+
+00:37:28.190 --> 00:37:30.410 align:middle line:90%
+I'm interested.
+
+00:37:30.410 --> 00:37:31.170 align:middle line:90%
+Yeah.
+
+00:37:31.170 --> 00:37:33.010 align:middle line:90%
+Central limit theorem?
+
+00:37:33.010 --> 00:37:33.730 align:middle line:90%
+AUDIENCE: Yeah.
+
+00:37:33.730 --> 00:37:34.657 align:middle line:90%
+The classical result.
+
+00:37:34.657 --> 00:37:35.490 align:middle line:90%
+PHILLIP ISOLA: Yeah.
+
+00:37:35.490 --> 00:37:38.170 align:middle line:90%
+
+
+00:37:38.170 --> 00:37:40.370 align:middle line:90%
+OK.
+
+00:37:40.370 --> 00:37:43.082 align:middle line:90%
+OK, well--
+
+00:37:43.082 --> 00:37:44.050 align:middle line:90%
+[INTERPOSING VOICES]
+
+00:37:44.050 --> 00:37:46.010 align:middle line:84%
+AUDIENCE: --multiple
+dimensions [INAUDIBLE]
+
+00:37:46.010 --> 00:37:47.510 align:middle line:84%
+AUDIENCE: Yeah,
+[? it can happen. ?]
+
+00:37:47.510 --> 00:37:49.530 align:middle line:84%
+We end up with a
+multi-dimensional Gaussian
+
+00:37:49.530 --> 00:37:54.100 align:middle line:84%
+as your limit, and that has
+a multi-dimensional variance.
+
+00:37:54.100 --> 00:37:56.780 align:middle line:84%
+And then if you want to
+calculate the error of that
+
+00:37:56.780 --> 00:38:00.320 align:middle line:84%
+instead of variance, I think
+exponential, as I mentioned,
+
+00:38:00.320 --> 00:38:02.540 align:middle line:90%
+is exactly correct.
+
+00:38:02.540 --> 00:38:05.060 align:middle line:84%
+PHILLIP ISOLA: I think it's
+exponential in dimension--
+
+00:38:05.060 --> 00:38:07.620 align:middle line:84%
+so there should be
+some term in terms of--
+
+00:38:07.620 --> 00:38:10.780 align:middle line:84%
+the number of samples you need
+to get some quality of fit
+
+00:38:10.780 --> 00:38:12.360 align:middle line:90%
+should depend on the dimension.
+
+00:38:12.360 --> 00:38:13.640 align:middle line:84%
+I think it's exponential
+in dimension,
+
+00:38:13.640 --> 00:38:15.182 align:middle line:84%
+but there's probably
+more to discuss,
+
+00:38:15.182 --> 00:38:16.700 align:middle line:90%
+maybe we can take that offline.
+
+00:38:16.700 --> 00:38:19.060 align:middle line:84%
+But I'll just say
+that in practice, this
+
+00:38:19.060 --> 00:38:22.020 align:middle line:84%
+doesn't work in high
+dimensions, and I
+
+00:38:22.020 --> 00:38:24.375 align:middle line:84%
+think it's because you need
+exponentially more samples
+
+00:38:24.375 --> 00:38:27.000 align:middle line:84%
+to get a good approximation to
+the integral in high dimensions,
+
+00:38:27.000 --> 00:38:29.042 align:middle line:84%
+but we should talk about
+that more offline to see
+
+00:38:29.042 --> 00:38:30.580 align:middle line:90%
+if that's really true.
+
+00:38:30.580 --> 00:38:31.420 align:middle line:90%
+OK.
+
+00:38:31.420 --> 00:38:34.620 align:middle line:84%
+So, the next trick of
+the VAE is we're not
+
+00:38:34.620 --> 00:38:36.700 align:middle line:84%
+going to just sample
+randomly, we're
+
+00:38:36.700 --> 00:38:37.960 align:middle line:90%
+going to sample intelligently.
+
+00:38:37.960 --> 00:38:40.703 align:middle line:84%
+We're not going to just do
+naive Monte Carlo approximation
+
+00:38:40.703 --> 00:38:42.620 align:middle line:84%
+to the integral, we're
+going to do a much more
+
+00:38:42.620 --> 00:38:44.820 align:middle line:84%
+intelligent approximation
+to the integral,
+
+00:38:44.820 --> 00:38:48.000 align:middle line:84%
+and that one is going to be
+called importance sampling.
+
+00:38:48.000 --> 00:38:48.500 align:middle line:90%
+OK.
+
+00:38:48.500 --> 00:38:50.600 align:middle line:84%
+So what is the idea of
+importance sampling?
+
+00:38:50.600 --> 00:38:52.380 align:middle line:84%
+The idea is that
+let's say that I
+
+00:38:52.380 --> 00:38:55.580 align:middle line:84%
+want to estimate the
+likelihood that my model places
+
+00:38:55.580 --> 00:38:59.100 align:middle line:84%
+on some data point x,
+that little x up there.
+
+00:38:59.100 --> 00:39:02.460 align:middle line:84%
+OK, what I'm going to do with
+importance sampling is say,
+
+00:39:02.460 --> 00:39:05.580 align:middle line:84%
+I could say that that's
+the expectation of px given
+
+00:39:05.580 --> 00:39:07.700 align:middle line:90%
+z with respect--
+
+00:39:07.700 --> 00:39:10.580 align:middle line:90%
+taking expectation over z.
+
+00:39:10.580 --> 00:39:13.220 align:middle line:84%
+And I could randomly sample
+the z's to calculate that
+
+00:39:13.220 --> 00:39:15.540 align:middle line:90%
+expectation.
+
+00:39:15.540 --> 00:39:18.100 align:middle line:84%
+But what will happen if I
+randomly sample the z's?
+
+00:39:18.100 --> 00:39:21.580 align:middle line:84%
+Then almost every
+single px given
+
+00:39:21.580 --> 00:39:25.180 align:middle line:84%
+z for most of the z's will
+place nearly zero probability
+
+00:39:25.180 --> 00:39:27.100 align:middle line:90%
+on that data point x.
+
+00:39:27.100 --> 00:39:31.760 align:middle line:84%
+Most of these mixture components
+don't lie near the data point x.
+
+00:39:31.760 --> 00:39:33.260 align:middle line:84%
+Just in practice,
+this is what might
+
+00:39:33.260 --> 00:39:35.593 align:middle line:84%
+happen if I've spread out
+these mixture components to be
+
+00:39:35.593 --> 00:39:38.220 align:middle line:90%
+a good fit to the data density.
+
+00:39:38.220 --> 00:39:40.920 align:middle line:84%
+OK, so the observation is
+that with random sampling,
+
+00:39:40.920 --> 00:39:42.860 align:middle line:84%
+maybe I have to take
+around 7 samples
+
+00:39:42.860 --> 00:39:45.540 align:middle line:84%
+to get one Gaussian
+component that's near x,
+
+00:39:45.540 --> 00:39:48.180 align:middle line:84%
+and almost all the other
+components are adding 0--
+
+00:39:48.180 --> 00:39:50.020 align:middle line:90%
+roughly 0, so it's like this.
+
+00:39:50.020 --> 00:39:54.720 align:middle line:84%
+p of x is equal to the average
+of px given one sample plus px
+
+00:39:54.720 --> 00:39:57.280 align:middle line:84%
+given the next sample plus
+px given the next sample,
+
+00:39:57.280 --> 00:40:00.100 align:middle line:84%
+but most of these px
+given a sample are 0.
+
+00:40:00.100 --> 00:40:02.920 align:middle line:84%
+So almost all the terms are
+nearly 0 except for the sample
+
+00:40:02.920 --> 00:40:03.420 align:middle line:90%
+that--
+
+00:40:03.420 --> 00:40:07.140 align:middle line:84%
+except for the z's that
+map to Gaussians that place
+
+00:40:07.140 --> 00:40:10.540 align:middle line:90%
+high density over this x.
+
+00:40:10.540 --> 00:40:13.180 align:middle line:84%
+So in this expectation,
+most of the terms
+
+00:40:13.180 --> 00:40:17.620 align:middle line:84%
+are going to be 0 for
+any given point x.
+
+00:40:17.620 --> 00:40:19.860 align:middle line:84%
+So we can exploit that
+by just trying to say,
+
+00:40:19.860 --> 00:40:22.260 align:middle line:84%
+let me only take the
+sample z2, and that
+
+00:40:22.260 --> 00:40:26.100 align:middle line:84%
+will be a good approximation
+to this expectation.
+
+00:40:26.100 --> 00:40:27.500 align:middle line:90%
+And this is called--
+
+00:40:27.500 --> 00:40:29.660 align:middle line:84%
+this is the idea behind
+importance sampling.
+
+00:40:29.660 --> 00:40:33.340 align:middle line:84%
+So in order to approximate
+this expectation, which
+
+00:40:33.340 --> 00:40:38.260 align:middle line:84%
+is that integral, I can
+simply multiply by q--
+
+00:40:38.260 --> 00:40:43.840 align:middle line:84%
+by another density q, and I can
+multiply by qz divided by qz--
+
+00:40:43.840 --> 00:40:47.860 align:middle line:84%
+so qz divided by qz will be
+1 as long as qz is non-zero
+
+00:40:47.860 --> 00:40:50.120 align:middle line:84%
+everywhere, which is just
+a technical condition,
+
+00:40:50.120 --> 00:40:52.740 align:middle line:84%
+we need to make sure it
+has support everywhere.
+
+00:40:52.740 --> 00:40:55.460 align:middle line:90%
+OK, so then I can--
+
+00:40:55.460 --> 00:40:56.180 align:middle line:90%
+that's valid.
+
+00:40:56.180 --> 00:40:57.958 align:middle line:90%
+So I'm just multiplying by 1.
+
+00:40:57.958 --> 00:40:59.500 align:middle line:84%
+But the interesting
+thing here is now
+
+00:40:59.500 --> 00:41:01.620 align:middle line:84%
+this appears as an
+expectation with respect
+
+00:41:01.620 --> 00:41:05.820 align:middle line:84%
+to z samples from qz as
+opposed to z samples from pz.
+
+00:41:05.820 --> 00:41:09.700 align:middle line:84%
+And if qz is a
+distribution which
+
+00:41:09.700 --> 00:41:16.460 align:middle line:84%
+has placed high density only on
+the z's that actually contribute
+
+00:41:16.460 --> 00:41:19.780 align:middle line:84%
+to the sum that actually have
+high probability of the data
+
+00:41:19.780 --> 00:41:23.100 align:middle line:84%
+under that z, high
+px given z, then this
+
+00:41:23.100 --> 00:41:26.860 align:middle line:84%
+will be an expectation
+which requires fewer samples
+
+00:41:26.860 --> 00:41:33.180 align:middle line:84%
+to get a good estimate
+of the true integral.
+
+00:41:33.180 --> 00:41:36.120 align:middle line:84%
+OK, so this is called
+importance sampling.
+
+00:41:36.120 --> 00:41:38.820 align:middle line:84%
+I'm sampling from a distribution
+that gives more importance
+
+00:41:38.820 --> 00:41:43.220 align:middle line:90%
+to the points that matter.
+
+00:41:43.220 --> 00:41:45.500 align:middle line:84%
+OK, so I won't prove
+this, but I'll just
+
+00:41:45.500 --> 00:41:50.980 align:middle line:84%
+assert that the
+optimal distribution
+
+00:41:50.980 --> 00:41:53.400 align:middle line:84%
+to sample from for
+performing this estimation.
+
+00:41:53.400 --> 00:41:56.580 align:middle line:84%
+In a certain sense, I
+think the distribution that
+
+00:41:56.580 --> 00:42:01.460 align:middle line:84%
+minimizes the variance over my
+estimator of this expectation,
+
+00:42:01.460 --> 00:42:09.260 align:middle line:84%
+is to sample z's from exactly
+the density p Z given x.
+
+00:42:09.260 --> 00:42:10.393 align:middle line:90%
+OK.
+
+00:42:10.393 --> 00:42:11.560 align:middle line:90%
+So what does that look like?
+
+00:42:11.560 --> 00:42:18.600 align:middle line:84%
+So it's like if I knew p Z
+given x, it's like, here's x.
+
+00:42:18.600 --> 00:42:20.980 align:middle line:84%
+So given x, these are
+the Z's, let's say, that
+
+00:42:20.980 --> 00:42:22.778 align:middle line:90%
+place high probability on x.
+
+00:42:22.778 --> 00:42:25.320 align:middle line:84%
+It's a distribution-- it might
+be a complicated distribution,
+
+00:42:25.320 --> 00:42:27.420 align:middle line:84%
+but most of the
+density-- like, this
+
+00:42:27.420 --> 00:42:32.660 align:middle line:84%
+is the high-density region of p
+Z given x, is in a small region.
+
+00:42:32.660 --> 00:42:34.640 align:middle line:84%
+And if I could simply
+sample from those points,
+
+00:42:34.640 --> 00:42:38.260 align:middle line:84%
+it would suffice to get
+a good estimate of what
+
+00:42:38.260 --> 00:42:40.258 align:middle line:84%
+would happen if I had
+sampled from everywhere
+
+00:42:40.258 --> 00:42:42.300 align:middle line:84%
+because most other points
+will place zero density
+
+00:42:42.300 --> 00:42:44.860 align:middle line:84%
+and they just won't
+contribute to that integral--
+
+00:42:44.860 --> 00:42:47.380 align:middle line:90%
+or roughly zero density.
+
+00:42:47.380 --> 00:42:49.580 align:middle line:90%
+OK.
+
+00:42:49.580 --> 00:42:52.580 align:middle line:84%
+OK, so importance sampling is
+like now I just sample once
+
+00:42:52.580 --> 00:42:55.540 align:middle line:84%
+from this distribution and
+I get as good an estimate
+
+00:42:55.540 --> 00:42:58.440 align:middle line:84%
+as having sampled seven
+times with random sampling.
+
+00:42:58.440 --> 00:43:01.180 align:middle line:90%
+
+
+00:43:01.180 --> 00:43:03.360 align:middle line:84%
+OK, so here's the
+entire transformation.
+
+00:43:03.360 --> 00:43:06.780 align:middle line:84%
+I'm going to estimate the
+likelihood that my model places
+
+00:43:06.780 --> 00:43:09.340 align:middle line:84%
+on the data via
+this expectation,
+
+00:43:09.340 --> 00:43:12.780 align:middle line:84%
+but I'm going to switch it
+to this other expectation
+
+00:43:12.780 --> 00:43:16.760 align:middle line:84%
+where-- these two expectations
+are exactly equal to each other.
+
+00:43:16.760 --> 00:43:20.300 align:middle line:84%
+That's because
+these two integrals
+
+00:43:20.300 --> 00:43:23.340 align:middle line:84%
+are exactly equal to
+each other if q has
+
+00:43:23.340 --> 00:43:26.780 align:middle line:90%
+non-zero support everywhere.
+
+00:43:26.780 --> 00:43:31.100 align:middle line:84%
+But this one can be approximated
+with a Monte Carlo set of--
+
+00:43:31.100 --> 00:43:33.220 align:middle line:84%
+a Monte Carlo
+approximation to this--
+
+00:43:33.220 --> 00:43:36.420 align:middle line:84%
+expectation is going to be
+a better estimate, lower
+
+00:43:36.420 --> 00:43:38.960 align:middle line:90%
+variance than this expectation.
+
+00:43:38.960 --> 00:43:41.700 align:middle line:90%
+
+
+00:43:41.700 --> 00:43:44.390 align:middle line:90%
+OK.
+
+00:43:44.390 --> 00:43:47.330 align:middle line:84%
+So here's an
+importance sampling.
+
+00:43:47.330 --> 00:43:51.550 align:middle line:84%
+Random sampling, I take random
+samples from z-- from pz.
+
+00:43:51.550 --> 00:43:53.707 align:middle line:84%
+And most of them don't
+contribute to the sum.
+
+00:43:53.707 --> 00:43:55.790 align:middle line:84%
+Importance sampling, I
+only sample from the points
+
+00:43:55.790 --> 00:43:56.970 align:middle line:90%
+that contribute to the sum.
+
+00:43:56.970 --> 00:44:00.350 align:middle line:84%
+I only sample from the
+points that the model
+
+00:44:00.350 --> 00:44:04.190 align:middle line:84%
+thinks will place
+high probability on x.
+
+00:44:04.190 --> 00:44:06.230 align:middle line:84%
+So the probability of
+z given x is the points
+
+00:44:06.230 --> 00:44:08.670 align:middle line:84%
+that the model thinks
+are the z's that will
+
+00:44:08.670 --> 00:44:12.130 align:middle line:90%
+place high probability on x.
+
+00:44:12.130 --> 00:44:12.630 align:middle line:90%
+OK.
+
+00:44:12.630 --> 00:44:18.030 align:middle line:90%
+
+
+00:44:18.030 --> 00:44:18.730 align:middle line:90%
+Great.
+
+00:44:18.730 --> 00:44:24.550 align:middle line:84%
+So, if I knew p Z given x, then
+this would be what I want to do.
+
+00:44:24.550 --> 00:44:28.550 align:middle line:84%
+I just sample from p Z given x
+and I get a better approximation
+
+00:44:28.550 --> 00:44:33.170 align:middle line:84%
+to that integral, and this will
+then work in high dimensions
+
+00:44:33.170 --> 00:44:35.670 align:middle line:84%
+because for high dimensions,
+the volume is exponential in D,
+
+00:44:35.670 --> 00:44:40.590 align:middle line:84%
+but the area of z-space that
+actually maps to any given point
+
+00:44:40.590 --> 00:44:45.450 align:middle line:84%
+x might be very small
+under a particular model p.
+
+00:44:45.450 --> 00:44:45.950 align:middle line:90%
+OK.
+
+00:44:45.950 --> 00:44:48.950 align:middle line:84%
+But the problem is, I
+don't know p Z given
+
+00:44:48.950 --> 00:44:51.050 align:middle line:84%
+x that might be another
+complicated distribution,
+
+00:44:51.050 --> 00:44:52.550 align:middle line:84%
+and I now have to
+come up with a way
+
+00:44:52.550 --> 00:44:55.190 align:middle line:90%
+of modeling that distribution.
+
+00:44:55.190 --> 00:44:56.210 align:middle line:90%
+So here's how you do it.
+
+00:44:56.210 --> 00:45:00.550 align:middle line:84%
+The next step in the VAE--
+the third trick is you're
+
+00:45:00.550 --> 00:45:04.602 align:middle line:84%
+going to try to model or
+predict the optimal sampling
+
+00:45:04.602 --> 00:45:06.310 align:middle line:84%
+distribution, the
+sampling distribution p
+
+00:45:06.310 --> 00:45:08.293 align:middle line:90%
+Z given x given x.
+
+00:45:08.293 --> 00:45:09.710 align:middle line:84%
+You're going to
+train a model that
+
+00:45:09.710 --> 00:45:13.910 align:middle line:84%
+will take x as input and
+output a density over Z,
+
+00:45:13.910 --> 00:45:17.050 align:middle line:84%
+and that will be a
+model of p Z given x.
+
+00:45:17.050 --> 00:45:18.550 align:middle line:84%
+OK, so now we get
+to where it starts
+
+00:45:18.550 --> 00:45:19.530 align:middle line:90%
+to look like an autoencoder.
+
+00:45:19.530 --> 00:45:22.110 align:middle line:84%
+It probably didn't look at all
+like an autoencoder until now,
+
+00:45:22.110 --> 00:45:23.318 align:middle line:90%
+but what does that look like?
+
+00:45:23.318 --> 00:45:24.510 align:middle line:90%
+That's an encoder.
+
+00:45:24.510 --> 00:45:31.390 align:middle line:84%
+That's a mapping from x to
+a distribution over z-space.
+
+00:45:31.390 --> 00:45:34.310 align:middle line:90%
+So our model of--
+
+00:45:34.310 --> 00:45:40.310 align:middle line:84%
+our model, which we'll call q,
+which is trying to approximate p
+
+00:45:40.310 --> 00:45:44.070 align:middle line:84%
+theta Z given x, so we're going
+to try to approximate that
+
+00:45:44.070 --> 00:45:47.470 align:middle line:84%
+with another
+prediction called q.
+
+00:45:47.470 --> 00:45:52.310 align:middle line:84%
+That density is going to be,
+just for simplicity, modeled
+
+00:45:52.310 --> 00:45:53.410 align:middle line:90%
+also as a Gaussian.
+
+00:45:53.410 --> 00:45:55.230 align:middle line:84%
+So we're going to
+take our x, we're
+
+00:45:55.230 --> 00:45:57.710 align:middle line:84%
+going to try to predict
+what part of z-space
+
+00:45:57.710 --> 00:46:01.710 align:middle line:84%
+would p place high
+probability on x.
+
+00:46:01.710 --> 00:46:06.910 align:middle line:84%
+So for what part of z-space is
+px given z high probability?
+
+00:46:06.910 --> 00:46:10.310 align:middle line:84%
+We're going to predict
+that by modeling
+
+00:46:10.310 --> 00:46:12.570 align:middle line:90%
+a distribution over z-space.
+
+00:46:12.570 --> 00:46:14.510 align:middle line:84%
+And we're going to
+make that a Gaussian.
+
+00:46:14.510 --> 00:46:17.050 align:middle line:84%
+It will be-- we'll take
+our neural network f,
+
+00:46:17.050 --> 00:46:19.830 align:middle line:84%
+it will output a mean and a
+variance, or maybe a covariance
+
+00:46:19.830 --> 00:46:24.750 align:middle line:84%
+if we wish, and that will
+be our model for pz given
+
+00:46:24.750 --> 00:46:26.410 align:middle line:90%
+x, and that model is called q.
+
+00:46:26.410 --> 00:46:28.110 align:middle line:84%
+And q has parameters
+psi, which is
+
+00:46:28.110 --> 00:46:33.130 align:middle line:84%
+a new set of weights and biases
+of this encoder function.
+
+00:46:33.130 --> 00:46:33.630 align:middle line:90%
+OK.
+
+00:46:33.630 --> 00:46:36.790 align:middle line:90%
+
+
+00:46:36.790 --> 00:46:37.310 align:middle line:90%
+OK.
+
+00:46:37.310 --> 00:46:40.370 align:middle line:84%
+So, now we're going to
+get to the full picture.
+
+00:46:40.370 --> 00:46:42.010 align:middle line:90%
+So we have these two pieces.
+
+00:46:42.010 --> 00:46:45.310 align:middle line:84%
+We have the decoder
+function, which
+
+00:46:45.310 --> 00:46:47.933 align:middle line:84%
+is this probability model--
+probability of x given z,
+
+00:46:47.933 --> 00:46:49.350 align:middle line:84%
+and we have this
+encoder function,
+
+00:46:49.350 --> 00:46:51.610 align:middle line:90%
+probability of z given x.
+
+00:46:51.610 --> 00:46:53.830 align:middle line:84%
+We're going to put
+them together now.
+
+00:46:53.830 --> 00:46:59.230 align:middle line:84%
+So how am I going to
+actually write down
+
+00:46:59.230 --> 00:47:02.230 align:middle line:84%
+the objective function
+for the encoder?
+
+00:47:02.230 --> 00:47:04.810 align:middle line:84%
+So the objective, we're
+going to say we want it--
+
+00:47:04.810 --> 00:47:10.950 align:middle line:84%
+we want the encoder to model
+a distribution pz given x,
+
+00:47:10.950 --> 00:47:12.830 align:middle line:84%
+and it's going to
+model that distribution
+
+00:47:12.830 --> 00:47:15.430 align:middle line:84%
+with another distribution
+parameterized
+
+00:47:15.430 --> 00:47:17.490 align:middle line:84%
+by mean and variance
+that defines a Gaussian,
+
+00:47:17.490 --> 00:47:18.940 align:middle line:84%
+and that's going
+to be qz given x.
+
+00:47:18.940 --> 00:47:21.190 align:middle line:84%
+And we're going to try to
+make those two distributions
+
+00:47:21.190 --> 00:47:21.650 align:middle line:90%
+the same.
+
+00:47:21.650 --> 00:47:23.567 align:middle line:84%
+So we're going to use
+the KL divergence to try
+
+00:47:23.567 --> 00:47:26.090 align:middle line:84%
+to minimize the difference
+between those two distributions.
+
+00:47:26.090 --> 00:47:29.830 align:middle line:84%
+Just a particular divergence
+measure of how different
+
+00:47:29.830 --> 00:47:32.710 align:middle line:84%
+our two distributions, we
+want to make them the same.
+
+00:47:32.710 --> 00:47:35.610 align:middle line:84%
+OK, so this is our objective
+for the problem of the encoder.
+
+00:47:35.610 --> 00:47:38.708 align:middle line:84%
+The problem of encoder
+is to minimize Jq.
+
+00:47:38.708 --> 00:47:40.750 align:middle line:84%
+Actually, I think I have
+a negative sign, so it's
+
+00:47:40.750 --> 00:47:42.950 align:middle line:90%
+going to be to maximize Jq.
+
+00:47:42.950 --> 00:47:47.510 align:middle line:84%
+So I'm just going to
+rewrite the KL divergence.
+
+00:47:47.510 --> 00:47:49.990 align:middle line:84%
+There's a little bit of
+algebra that you'll probably
+
+00:47:49.990 --> 00:47:52.870 align:middle line:84%
+want to look at in more
+detail on your own time,
+
+00:47:52.870 --> 00:47:56.590 align:middle line:84%
+but this is one way of writing
+out the definition of KL
+
+00:47:56.590 --> 00:47:57.510 align:middle line:90%
+divergence.
+
+00:47:57.510 --> 00:48:02.510 align:middle line:84%
+It's going to be,
+yeah, this equation.
+
+00:48:02.510 --> 00:48:06.910 align:middle line:84%
+It's going to be in-expectation
+sampling from the density
+
+00:48:06.910 --> 00:48:12.630 align:middle line:84%
+that q Z given x
+all of these terms.
+
+00:48:12.630 --> 00:48:14.170 align:middle line:90%
+OK.
+
+00:48:14.170 --> 00:48:21.470 align:middle line:84%
+So the learning problem
+for q is to maximize--
+
+00:48:21.470 --> 00:48:24.030 align:middle line:84%
+to minimize the KL divergence
+or maximize the negative KL
+
+00:48:24.030 --> 00:48:24.930 align:middle line:90%
+divergence.
+
+00:48:24.930 --> 00:48:27.190 align:middle line:84%
+So this is the
+learning problem for q.
+
+00:48:27.190 --> 00:48:30.590 align:middle line:84%
+It's trying to predict the
+distribution over latent
+
+00:48:30.590 --> 00:48:33.175 align:middle line:84%
+variables that will explain
+a given data point x.
+
+00:48:33.175 --> 00:48:34.550 align:middle line:84%
+We call that
+inference sometimes,
+
+00:48:34.550 --> 00:48:39.110 align:middle line:84%
+infer the latent variables
+that explain the data x.
+
+00:48:39.110 --> 00:48:40.630 align:middle line:84%
+I can take this
+equation and I can
+
+00:48:40.630 --> 00:48:44.350 align:middle line:84%
+notice that if I'm maximizing
+with respect to the parameters
+
+00:48:44.350 --> 00:48:46.890 align:middle line:84%
+of q, well, the parameters of
+q don't appear in this term,
+
+00:48:46.890 --> 00:48:48.590 align:middle line:84%
+so I'm going to just
+remove that term.
+
+00:48:48.590 --> 00:48:52.050 align:middle line:84%
+They don't affect the
+maximization problem,
+
+00:48:52.050 --> 00:48:54.910 align:middle line:84%
+they don't affect the arg
+max over the parameters psi,
+
+00:48:54.910 --> 00:48:57.070 align:middle line:90%
+the parameters of the encoder.
+
+00:48:57.070 --> 00:49:00.810 align:middle line:84%
+So now-- and we'll use this
+term a little bit later,
+
+00:49:00.810 --> 00:49:03.130 align:middle line:84%
+but this equation
+here will be J,
+
+00:49:03.130 --> 00:49:05.350 align:middle line:90%
+it will come back in a minute.
+
+00:49:05.350 --> 00:49:10.350 align:middle line:84%
+OK, so for our learning problem
+for q is to optimize this.
+
+00:49:10.350 --> 00:49:13.750 align:middle line:84%
+And this is an expectation,
+so I could optimize that again
+
+00:49:13.750 --> 00:49:18.910 align:middle line:84%
+by just taking a Monte Carlo
+estimate to the expectation
+
+00:49:18.910 --> 00:49:21.990 align:middle line:84%
+by sampling a bunch of
+different z's and taking
+
+00:49:21.990 --> 00:49:27.950 align:middle line:84%
+the average over all of the
+values within the expectation.
+
+00:49:27.950 --> 00:49:28.700 align:middle line:90%
+OK.
+
+00:49:28.700 --> 00:49:32.684 align:middle line:90%
+
+
+00:49:32.684 --> 00:49:36.030 align:middle line:84%
+So that's the learning
+problem for q,
+
+00:49:36.030 --> 00:49:39.350 align:middle line:84%
+which is parameterized
+by a neural network f.
+
+00:49:39.350 --> 00:49:41.910 align:middle line:84%
+Map from x to an
+inferred distribution
+
+00:49:41.910 --> 00:49:46.050 align:middle line:84%
+over latent variables
+that can explain x.
+
+00:49:46.050 --> 00:49:47.993 align:middle line:84%
+OK, the learning
+problem for p-- this
+
+00:49:47.993 --> 00:49:49.410 align:middle line:84%
+was our original
+learning problem.
+
+00:49:49.410 --> 00:49:52.470 align:middle line:84%
+We wanted to learn a
+generative model parameterized
+
+00:49:52.470 --> 00:49:58.110 align:middle line:84%
+by a neural net g where g
+places Gaussian probability
+
+00:49:58.110 --> 00:50:03.030 align:middle line:84%
+over the data space x, and g
+defines an infinite mixture
+
+00:50:03.030 --> 00:50:05.190 align:middle line:84%
+of Gaussians by mapping
+from-- by taking
+
+00:50:05.190 --> 00:50:08.510 align:middle line:84%
+an integral over all
+possible points in z-space.
+
+00:50:08.510 --> 00:50:11.390 align:middle line:84%
+OK, so for a learning
+problem for p,
+
+00:50:11.390 --> 00:50:15.670 align:middle line:84%
+what I'm going to call Jp, is to
+find the parameters theta that
+
+00:50:15.670 --> 00:50:19.430 align:middle line:84%
+maximize the likelihood that
+my model places on the data,
+
+00:50:19.430 --> 00:50:21.950 align:middle line:84%
+and with importance
+sampling, that
+
+00:50:21.950 --> 00:50:24.750 align:middle line:84%
+means I'm going to sample
+from my importance sampling
+
+00:50:24.750 --> 00:50:28.470 align:middle line:84%
+distribution q, which we learned
+the optimal importance sampling
+
+00:50:28.470 --> 00:50:31.270 align:middle line:84%
+distribution q up here, we know
+that it should be pz given x,
+
+00:50:31.270 --> 00:50:33.240 align:middle line:84%
+but we're just going
+to try to learn z
+
+00:50:33.240 --> 00:50:36.760 align:middle line:84%
+given x by fitting a
+distribution q to pz given x.
+
+00:50:36.760 --> 00:50:38.760 align:middle line:84%
+And this is, then, my
+importance sampling
+
+00:50:38.760 --> 00:50:40.560 align:middle line:84%
+for estimating the
+integral that defines
+
+00:50:40.560 --> 00:50:43.160 align:middle line:84%
+the likelihood of the data
+under the parameters theta
+
+00:50:43.160 --> 00:50:45.840 align:middle line:90%
+of my model neural net g.
+
+00:50:45.840 --> 00:50:46.800 align:middle line:90%
+OK.
+
+00:50:46.800 --> 00:50:50.920 align:middle line:84%
+So I know there's a lot
+of terms in math going on.
+
+00:50:50.920 --> 00:50:54.120 align:middle line:84%
+This might take you time to
+work through step by step.
+
+00:50:54.120 --> 00:50:58.240 align:middle line:84%
+All of this derivation is
+in the reading for today,
+
+00:50:58.240 --> 00:51:01.238 align:middle line:84%
+so these slides follow
+that almost exactly.
+
+00:51:01.238 --> 00:51:02.780 align:middle line:84%
+And additionally,
+in the problem set,
+
+00:51:02.780 --> 00:51:04.822 align:middle line:84%
+you'll get to work through
+some of this yourself,
+
+00:51:04.822 --> 00:51:06.840 align:middle line:90%
+so hopefully you'll enjoy that.
+
+00:51:06.840 --> 00:51:10.040 align:middle line:84%
+But I know this is a little more
+mathematically notation-heavy
+
+00:51:10.040 --> 00:51:12.080 align:middle line:90%
+than some of the other lectures.
+
+00:51:12.080 --> 00:51:12.830 align:middle line:90%
+OK.
+
+00:51:12.830 --> 00:51:15.300 align:middle line:84%
+So now putting
+everything together,
+
+00:51:15.300 --> 00:51:18.400 align:middle line:84%
+there's one little
+final step, which
+
+00:51:18.400 --> 00:51:25.160 align:middle line:84%
+is, it turns out that if we
+approximate log of expectation
+
+00:51:25.160 --> 00:51:27.220 align:middle line:84%
+by taking sample like a
+Monte Carlo estimate--
+
+00:51:27.220 --> 00:51:31.680 align:middle line:84%
+by taking samples from the
+thing that we're taking
+
+00:51:31.680 --> 00:51:34.580 align:middle line:84%
+the expectation over, if we do
+a Monte Carlo estimate of this
+
+00:51:34.580 --> 00:51:36.372 align:middle line:84%
+and then we take log
+of that, it turns out,
+
+00:51:36.372 --> 00:51:39.245 align:middle line:84%
+that's a biased estimator
+of log of expectation.
+
+00:51:39.245 --> 00:51:41.120 align:middle line:84%
+So Monte Carlo estimate
+of log of expectation
+
+00:51:41.120 --> 00:51:42.820 align:middle line:84%
+is a biased estimator, and
+we don't really want that.
+
+00:51:42.820 --> 00:51:45.195 align:middle line:84%
+We want it to be the case that
+as samples go to infinity,
+
+00:51:45.195 --> 00:51:47.880 align:middle line:84%
+we get the true answer, and
+that won't be the case here.
+
+00:51:47.880 --> 00:51:49.755 align:middle line:84%
+So we're going to do
+this little trick, which
+
+00:51:49.755 --> 00:51:53.128 align:middle line:84%
+is that we're going to pull
+the log inside the expectation
+
+00:51:53.128 --> 00:51:55.420 align:middle line:84%
+so that then we just have
+expectation of some function,
+
+00:51:55.420 --> 00:51:57.800 align:middle line:84%
+and then a Monte Carlo
+estimate of that expectation
+
+00:51:57.800 --> 00:52:01.240 align:middle line:84%
+is an unbiased estimator
+of that expectation.
+
+00:52:01.240 --> 00:52:01.740 align:middle line:90%
+OK.
+
+00:52:01.740 --> 00:52:04.720 align:middle line:84%
+So we're allowed to do that
+by Jensen's inequality that
+
+00:52:04.720 --> 00:52:07.760 align:middle line:84%
+says log of e of
+some function is
+
+00:52:07.760 --> 00:52:10.880 align:middle line:84%
+equal-- is greater than
+or equal to expectation
+
+00:52:10.880 --> 00:52:14.120 align:middle line:90%
+of log of that function.
+
+00:52:14.120 --> 00:52:16.060 align:middle line:84%
+So this is just an
+identity, again, from--
+
+00:52:16.060 --> 00:52:18.060 align:middle line:84%
+a lot of you will have
+seen Jensen's inequality.
+
+00:52:18.060 --> 00:52:20.440 align:middle line:84%
+It comes up a lot when you're
+working with probabilities.
+
+00:52:20.440 --> 00:52:23.160 align:middle line:84%
+And now what we
+have is that this
+
+00:52:23.160 --> 00:52:26.400 align:middle line:84%
+is going to be a lower
+bound to our objective J.
+
+00:52:26.400 --> 00:52:27.900 align:middle line:90%
+So this is a lower bound.
+
+00:52:27.900 --> 00:52:29.820 align:middle line:84%
+I can rewrite it--
+so I take the log,
+
+00:52:29.820 --> 00:52:31.660 align:middle line:84%
+I move around the
+terms a little bit.
+
+00:52:31.660 --> 00:52:34.440 align:middle line:84%
+This is just rewriting
+some algebra.
+
+00:52:34.440 --> 00:52:40.000 align:middle line:84%
+And this thing here is called
+the evidence lower bound.
+
+00:52:40.000 --> 00:52:41.052 align:middle line:90%
+It's called the ELBO.
+
+00:52:41.052 --> 00:52:42.760 align:middle line:84%
+So you'll come across
+this term if you're
+
+00:52:42.760 --> 00:52:45.040 align:middle line:84%
+working in VAEs or
+other types of what
+
+00:52:45.040 --> 00:52:47.160 align:middle line:90%
+we call variational inference.
+
+00:52:47.160 --> 00:52:50.460 align:middle line:84%
+And it's a lower bound to the
+thing we actually care about,
+
+00:52:50.460 --> 00:52:53.398 align:middle line:84%
+which is the likelihood of
+the data under the model.
+
+00:52:53.398 --> 00:52:55.440 align:middle line:84%
+And it's a lower bound
+due to Jensen's inequality
+
+00:52:55.440 --> 00:52:56.880 align:middle line:90%
+on this line.
+
+00:52:56.880 --> 00:53:00.360 align:middle line:84%
+And this is something
+that is now--
+
+00:53:00.360 --> 00:53:02.520 align:middle line:84%
+we can approximate this
+expectation as an--
+
+00:53:02.520 --> 00:53:06.520 align:middle line:84%
+or this expectation
+with samples and it'll
+
+00:53:06.520 --> 00:53:08.420 align:middle line:84%
+be an unbiased
+estimator of that value.
+
+00:53:08.420 --> 00:53:10.795 align:middle line:84%
+So we're going to have an
+unbiased estimator of the lower
+
+00:53:10.795 --> 00:53:12.880 align:middle line:84%
+bound, we can maximize
+the lower bound
+
+00:53:12.880 --> 00:53:15.380 align:middle line:84%
+on the likelihood the
+model applies to the data,
+
+00:53:15.380 --> 00:53:17.040 align:middle line:84%
+and this will learn
+a model that places
+
+00:53:17.040 --> 00:53:18.760 align:middle line:90%
+high likelihood on the data.
+
+00:53:18.760 --> 00:53:26.040 align:middle line:84%
+Maximizing the lower bound will
+increase my objective J. OK.
+
+00:53:26.040 --> 00:53:29.000 align:middle line:84%
+So evidence-- like,
+this is the evidence
+
+00:53:29.000 --> 00:53:33.597 align:middle line:84%
+that the model
+provides for the data.
+
+00:53:33.597 --> 00:53:35.680 align:middle line:84%
+Anyway, yeah, don't worry
+about the name too much,
+
+00:53:35.680 --> 00:53:37.720 align:middle line:84%
+but it's called the
+evidence lower-bound,
+
+00:53:37.720 --> 00:53:39.360 align:middle line:90%
+it's just terminology, ELBO.
+
+00:53:39.360 --> 00:53:39.860 align:middle line:90%
+OK.
+
+00:53:39.860 --> 00:53:46.000 align:middle line:84%
+So it comes in two terms that
+both have intuitive form,
+
+00:53:46.000 --> 00:53:47.820 align:middle line:84%
+and I'll get to those
+on the next slide.
+
+00:53:47.820 --> 00:53:50.960 align:middle line:84%
+But the interesting thing is,
+once we have written things
+
+00:53:50.960 --> 00:53:54.440 align:middle line:84%
+in this form, what you can
+notice, if you go back a slide,
+
+00:53:54.440 --> 00:53:56.680 align:middle line:84%
+is that this
+objective is actually
+
+00:53:56.680 --> 00:54:02.220 align:middle line:84%
+exactly equal to the
+objective that we had for q.
+
+00:54:02.220 --> 00:54:06.340 align:middle line:84%
+So q appears over
+here in this KL term.
+
+00:54:06.340 --> 00:54:07.340 align:middle line:90%
+So what is this saying?
+
+00:54:07.340 --> 00:54:10.560 align:middle line:84%
+This is saying that
+in order to learn
+
+00:54:10.560 --> 00:54:15.060 align:middle line:84%
+the parameters of the encoder
+that give me the best importance
+
+00:54:15.060 --> 00:54:18.320 align:middle line:84%
+sampling distribution
+for estimating
+
+00:54:18.320 --> 00:54:22.720 align:middle line:84%
+the likelihood the decoder
+places on the data,
+
+00:54:22.720 --> 00:54:27.960 align:middle line:84%
+it actually works
+out that I can just
+
+00:54:27.960 --> 00:54:31.240 align:middle line:84%
+maximize this
+evidence lower bound
+
+00:54:31.240 --> 00:54:36.520 align:middle line:84%
+with respect to the encoder
+and decoder parameters jointly.
+
+00:54:36.520 --> 00:54:38.020 align:middle line:90%
+OK.
+
+00:54:38.020 --> 00:54:43.600 align:middle line:84%
+So, the VAE objective now
+can be written in this form
+
+00:54:43.600 --> 00:54:45.760 align:middle line:84%
+as maximizing this
+lower bound to the thing
+
+00:54:45.760 --> 00:54:48.280 align:middle line:84%
+we actually care about,
+and I can approximate that
+
+00:54:48.280 --> 00:54:52.200 align:middle line:84%
+with sampling, and it will be
+an unbiased estimator of all
+
+00:54:52.200 --> 00:54:54.600 align:middle line:84%
+of these expectations
+and integrals.
+
+00:54:54.600 --> 00:54:55.585 align:middle line:90%
+It has two terms.
+
+00:54:55.585 --> 00:54:57.960 align:middle line:84%
+It has the first term, which
+is how much probability does
+
+00:54:57.960 --> 00:55:00.400 align:middle line:90%
+the model place on the data?
+
+00:55:00.400 --> 00:55:02.040 align:middle line:84%
+And another term,
+which is, well, I
+
+00:55:02.040 --> 00:55:03.720 align:middle line:84%
+was estimating how
+much probability
+
+00:55:03.720 --> 00:55:06.400 align:middle line:84%
+the model places on the data
+with respect to the wrong--
+
+00:55:06.400 --> 00:55:08.420 align:middle line:84%
+not actually taking samples
+over all of z-space,
+
+00:55:08.420 --> 00:55:10.080 align:middle line:84%
+but with taking
+samples with respect
+
+00:55:10.080 --> 00:55:11.717 align:middle line:90%
+to this other distribution.
+
+00:55:11.717 --> 00:55:13.300 align:middle line:84%
+So I have to somehow
+account for that,
+
+00:55:13.300 --> 00:55:16.300 align:middle line:84%
+so I'll penalize the difference
+between this other distribution
+
+00:55:16.300 --> 00:55:18.380 align:middle line:84%
+in my prior, the
+unit Gaussian pz.
+
+00:55:18.380 --> 00:55:21.280 align:middle line:90%
+
+
+00:55:21.280 --> 00:55:22.030 align:middle line:90%
+OK.
+
+00:55:22.030 --> 00:55:24.600 align:middle line:84%
+So this term's
+coming out because I
+
+00:55:24.600 --> 00:55:26.340 align:middle line:90%
+had to multiply by this ratio.
+
+00:55:26.340 --> 00:55:29.200 align:middle line:84%
+How much different
+are my samples
+
+00:55:29.200 --> 00:55:32.360 align:middle line:84%
+under pz from my
+samples under qz?
+
+00:55:32.360 --> 00:55:35.960 align:middle line:84%
+OK, so that pops out
+into this term here.
+
+00:55:35.960 --> 00:55:39.640 align:middle line:84%
+So now, the encoder is trying
+to make these things as
+
+00:55:39.640 --> 00:55:41.560 align:middle line:84%
+similar as possible,
+and the decoder
+
+00:55:41.560 --> 00:55:44.280 align:middle line:84%
+is trying to just learn
+parameters theta that
+
+00:55:44.280 --> 00:55:48.100 align:middle line:84%
+will maximize the probability
+placed on the data.
+
+00:55:48.100 --> 00:55:50.960 align:middle line:90%
+
+
+00:55:50.960 --> 00:55:53.410 align:middle line:90%
+OK.
+
+00:55:53.410 --> 00:55:56.200 align:middle line:90%
+So here's the picture.
+
+00:55:56.200 --> 00:55:58.280 align:middle line:84%
+I'm going to start
+with a data point x.
+
+00:55:58.280 --> 00:55:59.880 align:middle line:90%
+I will encode it.
+
+00:55:59.880 --> 00:56:02.500 align:middle line:84%
+That will define a distribution
+over my latent space.
+
+00:56:02.500 --> 00:56:04.680 align:middle line:84%
+I'll take a sample from
+that distribution, that's
+
+00:56:04.680 --> 00:56:07.880 align:middle line:84%
+one important sample, for
+estimating the probability
+
+00:56:07.880 --> 00:56:09.305 align:middle line:90%
+of my model places on the data.
+
+00:56:09.305 --> 00:56:10.680 align:middle line:84%
+And then I'll
+decode that and see
+
+00:56:10.680 --> 00:56:13.800 align:middle line:84%
+what probability the model
+did place on the data.
+
+00:56:13.800 --> 00:56:16.320 align:middle line:84%
+That's one important
+sampling step
+
+00:56:16.320 --> 00:56:20.160 align:middle line:84%
+of approximating the lower
+bound to the probability
+
+00:56:20.160 --> 00:56:23.640 align:middle line:84%
+that my model
+places on the data.
+
+00:56:23.640 --> 00:56:25.040 align:middle line:90%
+OK.
+
+00:56:25.040 --> 00:56:27.520 align:middle line:84%
+So, now we come
+back to autoencoder.
+
+00:56:27.520 --> 00:56:30.300 align:middle line:84%
+A lot of math, but at
+the end of the day,
+
+00:56:30.300 --> 00:56:31.880 align:middle line:84%
+the VAE is a very
+simple model that
+
+00:56:31.880 --> 00:56:33.288 align:middle line:90%
+looks just like an autoencoder.
+
+00:56:33.288 --> 00:56:35.080 align:middle line:84%
+So here's how it looks
+like an autoencoder.
+
+00:56:35.080 --> 00:56:39.520 align:middle line:84%
+We start with data point x,
+we encode it, we get mean mu z
+
+00:56:39.520 --> 00:56:42.720 align:middle line:90%
+and variance sigma squared z.
+
+00:56:42.720 --> 00:56:47.940 align:middle line:84%
+We then take a sample from
+the distribution q Z given x.
+
+00:56:47.940 --> 00:56:51.260 align:middle line:84%
+So taking a sample, that means
+we're just going to add noise.
+
+00:56:51.260 --> 00:56:54.880 align:middle line:84%
+So remember that mu z
+plus unit Gaussian epsilon
+
+00:56:54.880 --> 00:56:59.160 align:middle line:84%
+times standard deviation
+for the encoded
+
+00:56:59.160 --> 00:57:02.520 align:middle line:84%
+point x-- so sigma z is going
+to be the standard deviation
+
+00:57:02.520 --> 00:57:05.200 align:middle line:90%
+of the encoded point x.
+
+00:57:05.200 --> 00:57:08.120 align:middle line:84%
+This is one sample from a
+normal distribution centered
+
+00:57:08.120 --> 00:57:11.160 align:middle line:84%
+at mu z with variance
+sigma z squared.
+
+00:57:11.160 --> 00:57:13.680 align:middle line:84%
+OK, I think I'm getting the
+squared versus not squared term
+
+00:57:13.680 --> 00:57:15.640 align:middle line:90%
+correct now.
+
+00:57:15.640 --> 00:57:20.430 align:middle line:84%
+So, that is one sample,
+for importance sampling,
+
+00:57:20.430 --> 00:57:26.010 align:middle line:84%
+for estimating the density that
+my model will place on the data.
+
+00:57:26.010 --> 00:57:28.770 align:middle line:84%
+So then I will decode
+that to observe,
+
+00:57:28.770 --> 00:57:30.250 align:middle line:84%
+under a normal
+distribution, what
+
+00:57:30.250 --> 00:57:32.490 align:middle line:84%
+is the probability that my
+model placed on that data
+
+00:57:32.490 --> 00:57:33.865 align:middle line:84%
+for that mixture
+component, which
+
+00:57:33.865 --> 00:57:36.570 align:middle line:84%
+is a good approximation
+to the entire integral.
+
+00:57:36.570 --> 00:57:38.650 align:middle line:84%
+OK, so remember the normal
+distribution is just
+
+00:57:38.650 --> 00:57:43.170 align:middle line:84%
+an analytical form, so I can
+calculate how much probability
+
+00:57:43.170 --> 00:57:47.410 align:middle line:90%
+g placed on the data point x.
+
+00:57:47.410 --> 00:57:49.250 align:middle line:84%
+OK, so this looks just
+like an autoencoder
+
+00:57:49.250 --> 00:57:52.890 align:middle line:84%
+except one step, which is this
+noise I added in the latent
+
+00:57:52.890 --> 00:57:54.670 align:middle line:90%
+space.
+
+00:57:54.670 --> 00:57:56.190 align:middle line:84%
+Otherwise, it's
+just encode-decode,
+
+00:57:56.190 --> 00:57:59.170 align:middle line:84%
+but I added a little bit of
+noise to the latent space
+
+00:57:59.170 --> 00:58:00.430 align:middle line:90%
+because that's my sampling.
+
+00:58:00.430 --> 00:58:02.530 align:middle line:84%
+That's necessary
+because I'm sampling
+
+00:58:02.530 --> 00:58:05.530 align:middle line:90%
+to approximate this expectation.
+
+00:58:05.530 --> 00:58:07.410 align:middle line:84%
+OK, so here's the
+two terms of the ELBO
+
+00:58:07.410 --> 00:58:09.890 align:middle line:90%
+that I talked about before.
+
+00:58:09.890 --> 00:58:14.510 align:middle line:84%
+The first term, it looks
+like a reconstruction error.
+
+00:58:14.510 --> 00:58:15.270 align:middle line:90%
+Why?
+
+00:58:15.270 --> 00:58:18.730 align:middle line:84%
+Because p theta x
+given z is going
+
+00:58:18.730 --> 00:58:27.770 align:middle line:84%
+to be a normal distribution
+over x centered at a mean, which
+
+00:58:27.770 --> 00:58:32.190 align:middle line:90%
+is the decoded g theta of z.
+
+00:58:32.190 --> 00:58:35.230 align:middle line:84%
+So a normal distribution over
+x is just going to be-- a log
+
+00:58:35.230 --> 00:58:37.510 align:middle line:84%
+normal distribution will
+be just the squared error.
+
+00:58:37.510 --> 00:58:40.330 align:middle line:84%
+If I take log of e to the
+negative squared distance,
+
+00:58:40.330 --> 00:58:43.050 align:middle line:84%
+it's just negative
+squared distance.
+
+00:58:43.050 --> 00:58:49.010 align:middle line:84%
+So how different is my decoded
+point from my input observation
+
+00:58:49.010 --> 00:58:50.450 align:middle line:90%
+x?
+
+00:58:50.450 --> 00:58:53.850 align:middle line:90%
+That's this likelihood term.
+
+00:58:53.850 --> 00:58:56.348 align:middle line:84%
+And these other terms
+over here are just--
+
+00:58:56.348 --> 00:58:57.890 align:middle line:84%
+because the Gaussian
+distribution has
+
+00:58:57.890 --> 00:58:59.890 align:middle line:84%
+to be normalized,
+and the variance
+
+00:58:59.890 --> 00:59:02.770 align:middle line:84%
+appears in the normalization,
+and dividing by 2 sigma squared
+
+00:59:02.770 --> 00:59:04.970 align:middle line:84%
+is just also part of the
+definition of the Gaussian
+
+00:59:04.970 --> 00:59:07.730 align:middle line:90%
+probability.
+
+00:59:07.730 --> 00:59:12.450 align:middle line:84%
+So just for simplicity, imagine
+that we're going to model--
+
+00:59:12.450 --> 00:59:14.850 align:middle line:84%
+we're going to use a VAE
+where we won't actually
+
+00:59:14.850 --> 00:59:17.977 align:middle line:84%
+model the covariance or even
+the variance of the Gaussians.
+
+00:59:17.977 --> 00:59:19.310 align:middle line:90%
+This is a valid modeling choice.
+
+00:59:19.310 --> 00:59:23.635 align:middle line:84%
+So I could just fix my
+circles to have radius 1.
+
+00:59:23.635 --> 00:59:25.010 align:middle line:84%
+I can say I'm
+going to try to fit
+
+00:59:25.010 --> 00:59:26.730 align:middle line:84%
+an infinite mixture
+of Gaussians where
+
+00:59:26.730 --> 00:59:29.070 align:middle line:84%
+I don't get to change the
+variance of the circles,
+
+00:59:29.070 --> 00:59:31.487 align:middle line:84%
+but I'm still going to try to
+find the max likelihood fit.
+
+00:59:31.487 --> 00:59:33.450 align:middle line:84%
+That's a perfectly
+valid modeling choice.
+
+00:59:33.450 --> 00:59:36.110 align:middle line:84%
+And if I did that,
+then sigma becomes 1,
+
+00:59:36.110 --> 00:59:38.570 align:middle line:84%
+and these terms all
+become constant.
+
+00:59:38.570 --> 00:59:41.650 align:middle line:84%
+And then you can see that
+really, all I would be doing
+
+00:59:41.650 --> 00:59:46.130 align:middle line:84%
+is trying to minimize the
+difference between my data point
+
+00:59:46.130 --> 00:59:49.170 align:middle line:84%
+x and encode-decode
+of the data point x.
+
+00:59:49.170 --> 00:59:52.010 align:middle line:84%
+So then it would be exactly
+the autoencoder objective
+
+00:59:52.010 --> 00:59:54.930 align:middle line:84%
+of minimizing the mean squared
+error between my reconstructions
+
+00:59:54.930 --> 00:59:58.010 align:middle line:90%
+and my input observation.
+
+00:59:58.010 --> 01:00:02.150 align:middle line:84%
+So VAEs often will also model
+the variance of this Gaussian,
+
+01:00:02.150 --> 01:00:03.890 align:middle line:84%
+but vanilla autoencoders
+don't really
+
+01:00:03.890 --> 01:00:05.348 align:middle line:84%
+model the variance
+of the Gaussian,
+
+01:00:05.348 --> 01:00:08.890 align:middle line:84%
+they just kind of implicitly
+set it to be constant.
+
+01:00:08.890 --> 01:00:11.050 align:middle line:90%
+OK.
+
+01:00:11.050 --> 01:00:14.470 align:middle line:84%
+OK, the other term, the
+KL, is saying, well,
+
+01:00:14.470 --> 01:00:19.430 align:middle line:84%
+I need my q Z given
+x distribution.
+
+01:00:19.430 --> 01:00:21.830 align:middle line:84%
+I want it to be close
+to a unit Gaussian.
+
+01:00:21.830 --> 01:00:26.650 align:middle line:84%
+So we say that the posterior
+of the inference direction
+
+01:00:26.650 --> 01:00:31.390 align:middle line:84%
+should be near the prior
+pz So what is this?
+
+01:00:31.390 --> 01:00:33.702 align:middle line:84%
+This term also has a very
+simple interpretation.
+
+01:00:33.702 --> 01:00:34.910 align:middle line:90%
+So here's what it looks like.
+
+01:00:34.910 --> 01:00:38.530 align:middle line:84%
+This is the KL-- this is the
+KL divergence between two
+
+01:00:38.530 --> 01:00:39.470 align:middle line:90%
+Gaussians.
+
+01:00:39.470 --> 01:00:41.970 align:middle line:84%
+So luckily, the KL divergence
+between two Gaussians
+
+01:00:41.970 --> 01:00:45.710 align:middle line:84%
+has a closed form, an analytical
+form, and it looks like that.
+
+01:00:45.710 --> 01:00:50.210 align:middle line:84%
+So remember, this is the KL
+divergence between the Gaussian
+
+01:00:50.210 --> 01:00:55.490 align:middle line:84%
+defined by q Z given x and
+the prior Gaussian, which
+
+01:00:55.490 --> 01:00:56.750 align:middle line:90%
+is a unit Gaussian.
+
+01:00:56.750 --> 01:00:59.010 align:middle line:84%
+So this is the KL
+divergence with respect to--
+
+01:00:59.010 --> 01:01:03.230 align:middle line:84%
+between a Gaussian that has mean
+mu and variance sigma squared,
+
+01:01:03.230 --> 01:01:06.930 align:middle line:84%
+and a unit Gaussian that
+has mean 0 and variance 1.
+
+01:01:06.930 --> 01:01:07.430 align:middle line:90%
+OK.
+
+01:01:07.430 --> 01:01:09.050 align:middle line:90%
+It has this form.
+
+01:01:09.050 --> 01:01:11.710 align:middle line:84%
+In the readings, we posted
+the original VAE paper,
+
+01:01:11.710 --> 01:01:14.890 align:middle line:84%
+and in the appendix, there's a
+nice derivation of that form.
+
+01:01:14.890 --> 01:01:16.223 align:middle line:90%
+OK, so what does this look like?
+
+01:01:16.223 --> 01:01:17.973 align:middle line:84%
+Well, let's, again,
+imagine that we're not
+
+01:01:17.973 --> 01:01:19.410 align:middle line:84%
+going to model the
+variance, we're
+
+01:01:19.410 --> 01:01:22.910 align:middle line:84%
+just going to set the
+variance to be one constant.
+
+01:01:22.910 --> 01:01:27.490 align:middle line:84%
+We're only going to get to
+update our neural net to improve
+
+01:01:27.490 --> 01:01:29.130 align:middle line:84%
+the density by
+changing the means
+
+01:01:29.130 --> 01:01:31.410 align:middle line:90%
+that it places over the data.
+
+01:01:31.410 --> 01:01:34.470 align:middle line:84%
+OK, so these terms would then
+can be ignored, they go away,
+
+01:01:34.470 --> 01:01:35.503 align:middle line:90%
+this is just a constant.
+
+01:01:35.503 --> 01:01:36.170 align:middle line:90%
+So what is that?
+
+01:01:36.170 --> 01:01:43.270 align:middle line:84%
+That's going to be I want
+to minimize the means.
+
+01:01:43.270 --> 01:01:45.610 align:middle line:84%
+So basically, if all
+these terms are constant,
+
+01:01:45.610 --> 01:01:47.930 align:middle line:84%
+one half is just a
+scaling, in order
+
+01:01:47.930 --> 01:01:52.390 align:middle line:84%
+to increase the
+evidence lower bound,
+
+01:01:52.390 --> 01:01:54.630 align:middle line:84%
+in order to place higher
+probability on the data,
+
+01:01:54.630 --> 01:01:57.255 align:middle line:84%
+increase the lower bound to the
+likelihood I place on the data,
+
+01:01:57.255 --> 01:02:00.850 align:middle line:84%
+I'm going to try to
+decrease the means.
+
+01:02:00.850 --> 01:02:02.810 align:middle line:84%
+So all of this term
+is saying is squash
+
+01:02:02.810 --> 01:02:06.410 align:middle line:90%
+the means toward the origin.
+
+01:02:06.410 --> 01:02:09.112 align:middle line:84%
+So I'm going to try to
+reconstruct my data-- that's
+
+01:02:09.112 --> 01:02:11.570 align:middle line:84%
+the first term, that's the data
+reconstruction term, that's
+
+01:02:11.570 --> 01:02:12.550 align:middle line:90%
+an autoencoder.
+
+01:02:12.550 --> 01:02:15.530 align:middle line:84%
+And I have one extra term,
+which is just do that in a way
+
+01:02:15.530 --> 01:02:19.450 align:middle line:84%
+where all of the encodings
+are near the origin.
+
+01:02:19.450 --> 01:02:20.630 align:middle line:90%
+So what does that look like?
+
+01:02:20.630 --> 01:02:22.710 align:middle line:84%
+That means that this funny
+shape that I could have gotten,
+
+01:02:22.710 --> 01:02:23.710 align:middle line:90%
+this is an autoencoder--
+
+01:02:23.710 --> 01:02:26.450 align:middle line:84%
+I just encode, I decode,
+I minimize reconstruction,
+
+01:02:26.450 --> 01:02:29.350 align:middle line:84%
+I might get an arbitrarily
+complicated latent space.
+
+01:02:29.350 --> 01:02:32.410 align:middle line:84%
+In fact, here, if my latent
+space is two-dimensional
+
+01:02:32.410 --> 01:02:35.125 align:middle line:84%
+on this cartoon, I could
+just have f be the identity,
+
+01:02:35.125 --> 01:02:37.250 align:middle line:84%
+and then my latent space
+has exactly the same shape
+
+01:02:37.250 --> 01:02:39.770 align:middle line:90%
+as my input data space.
+
+01:02:39.770 --> 01:02:41.250 align:middle line:84%
+If g and f are
+both the identity,
+
+01:02:41.250 --> 01:02:43.790 align:middle line:84%
+it's just, like, I
+encode to the same shape,
+
+01:02:43.790 --> 01:02:46.170 align:middle line:90%
+I decode back to the same shape.
+
+01:02:46.170 --> 01:02:49.270 align:middle line:84%
+That would satisfy the
+reconstruction error,
+
+01:02:49.270 --> 01:02:53.190 align:middle line:84%
+but it wouldn't be a very good
+representation of the data,
+
+01:02:53.190 --> 01:02:56.330 align:middle line:84%
+it would just be the raw
+data itself once again.
+
+01:02:56.330 --> 01:02:58.970 align:middle line:84%
+So the variational
+autoencoder simply
+
+01:02:58.970 --> 01:03:00.730 align:middle line:84%
+says, no, you've got
+to squish that latent
+
+01:03:00.730 --> 01:03:02.310 align:middle line:90%
+space toward the origin.
+
+01:03:02.310 --> 01:03:06.230 align:middle line:90%
+
+
+01:03:06.230 --> 01:03:08.963 align:middle line:84%
+So this means that in
+a normal autoencoder,
+
+01:03:08.963 --> 01:03:11.130 align:middle line:84%
+I need to make sure the
+dimensionality of the latent
+
+01:03:11.130 --> 01:03:13.450 align:middle line:84%
+space is low so that I'm
+doing compression and forcing
+
+01:03:13.450 --> 01:03:14.990 align:middle line:90%
+it to do something non-trivial.
+
+01:03:14.990 --> 01:03:18.155 align:middle line:84%
+In a variational autoencoder, it
+helps to have a low-dimensional
+
+01:03:18.155 --> 01:03:20.530 align:middle line:84%
+latent space, but it's less
+critical because there's this
+
+01:03:20.530 --> 01:03:24.090 align:middle line:84%
+other term, this KL term,
+which is trying to compress
+
+01:03:24.090 --> 01:03:27.290 align:middle line:90%
+the distribution toward 0--
+
+01:03:27.290 --> 01:03:29.650 align:middle line:84%
+compress all the
+means towards 0.
+
+01:03:29.650 --> 01:03:32.010 align:middle line:84%
+And equivalently,
+we can understand
+
+01:03:32.010 --> 01:03:37.010 align:middle line:84%
+that to be, I'm trying to make
+the distribution of encodings z
+
+01:03:37.010 --> 01:03:38.560 align:middle line:84%
+have the shape of
+a unit Gaussian,
+
+01:03:38.560 --> 01:03:40.810 align:middle line:84%
+but when I'm not modeling
+the variance that just means
+
+01:03:40.810 --> 01:03:43.410 align:middle line:90%
+squishing the means towards 0.
+
+01:03:43.410 --> 01:03:44.290 align:middle line:90%
+OK.
+
+01:03:44.290 --> 01:03:45.990 align:middle line:84%
+So I just squish
+everything down.
+
+01:03:45.990 --> 01:03:47.830 align:middle line:84%
+Why does it not collapse
+to a single point?
+
+01:03:47.830 --> 01:03:48.930 align:middle line:90%
+So what do you think?
+
+01:03:48.930 --> 01:03:51.927 align:middle line:84%
+If I'm trying to squish
+the means towards 0,
+
+01:03:51.927 --> 01:03:53.510 align:middle line:84%
+why don't they just
+all collapse to 0?
+
+01:03:53.510 --> 01:03:55.570 align:middle line:90%
+What do you think?
+
+01:03:55.570 --> 01:03:56.390 align:middle line:90%
+What prevents that?
+
+01:03:56.390 --> 01:03:56.890 align:middle line:90%
+Yeah?
+
+01:03:56.890 --> 01:04:00.050 align:middle line:90%
+
+
+01:04:00.050 --> 01:04:01.190 align:middle line:90%
+I think I heard an answer.
+
+01:04:01.190 --> 01:04:01.690 align:middle line:90%
+No?
+
+01:04:01.690 --> 01:04:03.290 align:middle line:84%
+AUDIENCE: Would it
+push everything to 0?
+
+01:04:03.290 --> 01:04:04.630 align:middle line:84%
+PHILLIP ISOLA: If you
+push everything to 0--
+
+01:04:04.630 --> 01:04:05.530 align:middle line:90%
+AUDIENCE: That's trivial.
+
+01:04:05.530 --> 01:04:06.270 align:middle line:90%
+PHILLIP ISOLA: It's trivial.
+
+01:04:06.270 --> 01:04:08.480 align:middle line:84%
+And what will happen
+to the reconstruction?
+
+01:04:08.480 --> 01:04:09.520 align:middle line:90%
+AUDIENCE: You cannot.
+
+01:04:09.520 --> 01:04:10.120 align:middle line:90%
+PHILLIP ISOLA: You cannot.
+
+01:04:10.120 --> 01:04:10.620 align:middle line:90%
+Yeah.
+
+01:04:10.620 --> 01:04:11.660 align:middle line:90%
+So that's the tension.
+
+01:04:11.660 --> 01:04:13.220 align:middle line:84%
+We're going to try
+to push everything
+
+01:04:13.220 --> 01:04:17.340 align:middle line:84%
+to 0, that's this term if I'm
+not modeling the variance.
+
+01:04:17.340 --> 01:04:20.380 align:middle line:84%
+But I also need to satisfy this
+term, which says that you better
+
+01:04:20.380 --> 01:04:22.580 align:middle line:84%
+be able to reconstruct
+your input point,
+
+01:04:22.580 --> 01:04:25.078 align:middle line:84%
+and if everything goes to
+0, then there's ambiguity.
+
+01:04:25.078 --> 01:04:26.620 align:middle line:84%
+So in order to
+reconstruct the input,
+
+01:04:26.620 --> 01:04:28.515 align:middle line:84%
+I need to to
+preserve information.
+
+01:04:28.515 --> 01:04:29.640 align:middle line:90%
+I can't compress too much--
+
+01:04:29.640 --> 01:04:31.483 align:middle line:84%
+I can't squish
+everything down too much,
+
+01:04:31.483 --> 01:04:32.900 align:middle line:84%
+so you want to
+spread out in order
+
+01:04:32.900 --> 01:04:34.763 align:middle line:84%
+to be able to
+reconstruct the data.
+
+01:04:34.763 --> 01:04:36.180 align:middle line:84%
+And that's the
+fundamental tension
+
+01:04:36.180 --> 01:04:37.700 align:middle line:90%
+of the variational autoencoder.
+
+01:04:37.700 --> 01:04:40.680 align:middle line:84%
+Pushes everything toward the
+0, creates this compact shape.
+
+01:04:40.680 --> 01:04:43.190 align:middle line:84%
+It's like I have some
+Play-Doh, and I'm
+
+01:04:43.190 --> 01:04:44.940 align:middle line:84%
+trying to squish it
+down, but there's also
+
+01:04:44.940 --> 01:04:46.690 align:middle line:84%
+this physical force
+which is preventing it
+
+01:04:46.690 --> 01:04:48.140 align:middle line:90%
+from going to a black hole.
+
+01:04:48.140 --> 01:04:50.940 align:middle line:84%
+It's like, no, no, I don't
+want to do that because I
+
+01:04:50.940 --> 01:04:53.220 align:middle line:84%
+need to still be able to
+know where I came from
+
+01:04:53.220 --> 01:04:54.580 align:middle line:90%
+to reconstruct the data.
+
+01:04:54.580 --> 01:04:55.320 align:middle line:90%
+It's like that.
+
+01:04:55.320 --> 01:04:57.278 align:middle line:84%
+I'm pressing it down,
+but there's some tension.
+
+01:04:57.278 --> 01:04:59.180 align:middle line:84%
+Eventually it gets
+to this unit shape,
+
+01:04:59.180 --> 01:05:01.480 align:middle line:84%
+and that's what the
+math works out to.
+
+01:05:01.480 --> 01:05:02.980 align:middle line:90%
+So here's what that looks like.
+
+01:05:02.980 --> 01:05:05.620 align:middle line:84%
+So now here, I'm showing
+the encoder mapping
+
+01:05:05.620 --> 01:05:06.680 align:middle line:90%
+at initialization.
+
+01:05:06.680 --> 01:05:09.780 align:middle line:84%
+The neural net is initialized
+with weights and biases that
+
+01:05:09.780 --> 01:05:12.380 align:middle line:84%
+are near 0, so
+everything maps to 0.
+
+01:05:12.380 --> 01:05:13.480 align:middle line:90%
+And then the decoder.
+
+01:05:13.480 --> 01:05:17.340 align:middle line:84%
+So initially, all of my
+mixture components are near 0.
+
+01:05:17.340 --> 01:05:19.340 align:middle line:84%
+And here's what it
+looks like to train.
+
+01:05:19.340 --> 01:05:22.940 align:middle line:84%
+So what you'll notice
+is I'm giving--
+
+01:05:22.940 --> 01:05:26.693 align:middle line:84%
+I'm getting a good coverage
+over the data distribution.
+
+01:05:26.693 --> 01:05:28.360 align:middle line:84%
+That's my infinite
+mixture of Gaussians,
+
+01:05:28.360 --> 01:05:30.027 align:middle line:84%
+but I'm visualizing
+it with a finite set
+
+01:05:30.027 --> 01:05:31.820 align:middle line:90%
+of samples along this grid.
+
+01:05:31.820 --> 01:05:33.740 align:middle line:90%
+And what is the encoder doing?
+
+01:05:33.740 --> 01:05:38.260 align:middle line:84%
+It's like, I want to spread
+out these Gaussians so
+
+01:05:38.260 --> 01:05:42.020 align:middle line:84%
+that if I go from x
+to z and reconstruct,
+
+01:05:42.020 --> 01:05:44.620 align:middle line:84%
+I'll know where I came from,
+I'll have enough information,
+
+01:05:44.620 --> 01:05:49.040 align:middle line:84%
+but I also want to be near the
+unit sphere, unit Gaussian.
+
+01:05:49.040 --> 01:05:51.340 align:middle line:84%
+So this tension
+will make it pop out
+
+01:05:51.340 --> 01:05:53.238 align:middle line:90%
+and then squish back together.
+
+01:05:53.238 --> 01:05:54.780 align:middle line:84%
+And you can think
+of this almost like
+
+01:05:54.780 --> 01:05:55.960 align:middle line:90%
+some sphere-packing problem.
+
+01:05:55.960 --> 01:05:57.793 align:middle line:84%
+There's probably some
+interesting connection
+
+01:05:57.793 --> 01:06:00.200 align:middle line:84%
+to a geometric way of
+understanding this,
+
+01:06:00.200 --> 01:06:02.180 align:middle line:84%
+that if you have
+a bunch of spheres
+
+01:06:02.180 --> 01:06:03.940 align:middle line:84%
+and you want to
+fit them all into--
+
+01:06:03.940 --> 01:06:05.960 align:middle line:84%
+you want to make
+them not overlap.
+
+01:06:05.960 --> 01:06:07.680 align:middle line:84%
+If they overlap,
+what's the problem?
+
+01:06:07.680 --> 01:06:08.980 align:middle line:90%
+That means there's ambiguity.
+
+01:06:08.980 --> 01:06:11.860 align:middle line:84%
+If two different data points
+map to the same point,
+
+01:06:11.860 --> 01:06:14.280 align:middle line:84%
+or overlapping Gaussians,
+then there's ambiguity,
+
+01:06:14.280 --> 01:06:16.560 align:middle line:84%
+you don't know which one it came
+from, and you can't reconstruct.
+
+01:06:16.560 --> 01:06:18.280 align:middle line:84%
+So it's like, you don't want
+them to overlap too much,
+
+01:06:18.280 --> 01:06:20.322 align:middle line:84%
+but you want them to squish
+down at the same time
+
+01:06:20.322 --> 01:06:21.460 align:middle line:90%
+and there's this tension.
+
+01:06:21.460 --> 01:06:23.002 align:middle line:84%
+And then the solution
+is that they'll
+
+01:06:23.002 --> 01:06:26.480 align:middle line:84%
+spread out to evenly
+tile the unit Gaussian.
+
+01:06:26.480 --> 01:06:31.020 align:middle line:90%
+
+
+01:06:31.020 --> 01:06:31.780 align:middle line:90%
+OK.
+
+01:06:31.780 --> 01:06:33.620 align:middle line:84%
+So here's what the densities
+look like if I plot them
+
+01:06:33.620 --> 01:06:34.280 align:middle line:90%
+as a heat map.
+
+01:06:34.280 --> 01:06:35.960 align:middle line:84%
+So remember, these are
+the Gaussian components,
+
+01:06:35.960 --> 01:06:37.335 align:middle line:84%
+but actually,
+they're continuous.
+
+01:06:37.335 --> 01:06:39.240 align:middle line:84%
+They're little blips of
+Gaussian probability.
+
+01:06:39.240 --> 01:06:41.032 align:middle line:84%
+So here's what it looks
+like as a heat map,
+
+01:06:41.032 --> 01:06:42.780 align:middle line:84%
+it really did learn
+a good density model.
+
+01:06:42.780 --> 01:06:45.240 align:middle line:84%
+And here's the density
+over the latent space,
+
+01:06:45.240 --> 01:06:47.660 align:middle line:84%
+it becomes kind of a unit
+Gaussian in two dimensions.
+
+01:06:47.660 --> 01:06:48.820 align:middle line:90%
+That looks like just--
+
+01:06:48.820 --> 01:06:51.400 align:middle line:84%
+like a little blip of
+bell-shaped probability.
+
+01:06:51.400 --> 01:06:53.940 align:middle line:90%
+
+
+01:06:53.940 --> 01:06:57.620 align:middle line:84%
+OK, so VAE is really
+just three tricks--
+
+01:06:57.620 --> 01:07:00.580 align:middle line:84%
+approximate an infinite
+mixture with samples,
+
+01:07:00.580 --> 01:07:02.667 align:middle line:84%
+sample efficiently by not
+just sampling at random,
+
+01:07:02.667 --> 01:07:04.500 align:middle line:84%
+but with importance
+samples-- so approximate
+
+01:07:04.500 --> 01:07:07.300 align:middle line:84%
+with important
+samples, and predict
+
+01:07:07.300 --> 01:07:10.220 align:middle line:84%
+the optimal important samples
+to take the optimal importance
+
+01:07:10.220 --> 01:07:12.420 align:middle line:84%
+sampling distribution with
+another neural network,
+
+01:07:12.420 --> 01:07:14.128 align:middle line:84%
+and then jointly
+optimize the whole thing
+
+01:07:14.128 --> 01:07:17.380 align:middle line:84%
+and it looks like
+an autoencoder.
+
+01:07:17.380 --> 01:07:19.380 align:middle line:90%
+OK.
+
+01:07:19.380 --> 01:07:22.818 align:middle line:84%
+So in case some of that was
+a little bit too abstract,
+
+01:07:22.818 --> 01:07:24.860 align:middle line:84%
+I just wanted to give you
+the step by step, like,
+
+01:07:24.860 --> 01:07:27.027 align:middle line:84%
+what would you write in
+PyTorch to make this happen?
+
+01:07:27.027 --> 01:07:29.380 align:middle line:90%
+It's actually very simple.
+
+01:07:29.380 --> 01:07:31.940 align:middle line:84%
+So to optimize a VAE,
+I'll sample a data
+
+01:07:31.940 --> 01:07:34.660 align:middle line:90%
+point x from my training set--
+
+01:07:34.660 --> 01:07:36.040 align:middle line:90%
+or maybe a batch of data points.
+
+01:07:36.040 --> 01:07:39.220 align:middle line:84%
+I'll encode the data with a
+forward pass through my encoder.
+
+01:07:39.220 --> 01:07:41.280 align:middle line:84%
+For each data point
+that's been encoded,
+
+01:07:41.280 --> 01:07:45.320 align:middle line:84%
+I'll add some noise
+to my encoding.
+
+01:07:45.320 --> 01:07:47.780 align:middle line:90%
+That's my important sample.
+
+01:07:47.780 --> 01:07:50.952 align:middle line:84%
+Then I'll decode the data by
+passing it through the decoder.
+
+01:07:50.952 --> 01:07:52.660 align:middle line:84%
+It'll compute the
+losses, which will just
+
+01:07:52.660 --> 01:07:55.980 align:middle line:84%
+be the squared error
+and the KL term.
+
+01:07:55.980 --> 01:07:59.060 align:middle line:84%
+And then that will
+give me a scalar loss
+
+01:07:59.060 --> 01:08:01.420 align:middle line:84%
+value at the end of the
+day, and I'll just backprop
+
+01:08:01.420 --> 01:08:04.740 align:middle line:90%
+through that computation graph.
+
+01:08:04.740 --> 01:08:06.948 align:middle line:84%
+And typically for the VAE,
+even though I would really
+
+01:08:06.948 --> 01:08:08.573 align:middle line:84%
+want to take a lot
+of important samples
+
+01:08:08.573 --> 01:08:10.880 align:middle line:84%
+to get a better estimate,
+usually people just take one.
+
+01:08:10.880 --> 01:08:16.140 align:middle line:84%
+They do forward one sample,
+decode backward, and that
+
+01:08:16.140 --> 01:08:17.520 align:middle line:90%
+seems to be sufficient.
+
+01:08:17.520 --> 01:08:18.020 align:middle line:90%
+Yeah?
+
+01:08:18.020 --> 01:08:20.020 align:middle line:84%
+AUDIENCE: How do you
+backprop through sampling?
+
+01:08:20.020 --> 01:08:21.600 align:middle line:84%
+PHILLIP ISOLA: So that's
+why that reparametrize.
+
+01:08:21.600 --> 01:08:22.640 align:middle line:84%
+How do you backprop
+through sampling?
+
+01:08:22.640 --> 01:08:24.473 align:middle line:84%
+That's why that
+reparameterization trick was
+
+01:08:24.473 --> 01:08:26.687 align:middle line:84%
+important, because the
+stochastic element comes
+
+01:08:26.687 --> 01:08:28.979 align:middle line:84%
+in through the side of the
+graph and you don't actually
+
+01:08:28.979 --> 01:08:31.300 align:middle line:84%
+have to backprop through
+that sampling procedure.
+
+01:08:31.300 --> 01:08:31.899 align:middle line:90%
+Yeah.
+
+01:08:31.899 --> 01:08:34.316 align:middle line:84%
+You're just backdropping through
+the mean and the variance
+
+01:08:34.316 --> 01:08:36.420 align:middle line:84%
+of a distribution,
+and the actual noise
+
+01:08:36.420 --> 01:08:40.660 align:middle line:84%
+is coming through the side and
+doesn't affect the optimization.
+
+01:08:40.660 --> 01:08:42.180 align:middle line:90%
+A question in the back.
+
+01:08:42.180 --> 01:08:44.100 align:middle line:84%
+AUDIENCE: In practice,
+is it important to get
+
+01:08:44.100 --> 01:08:48.300 align:middle line:84%
+the variance inside the
+latent, like sigmas,
+
+01:08:48.300 --> 01:08:49.520 align:middle line:90%
+from the neural network?
+
+01:08:49.520 --> 01:08:53.029 align:middle line:84%
+Or does it also work to just
+have always the same one?
+
+01:08:53.029 --> 01:08:54.779 align:middle line:84%
+Because it would be
+natural to think like,
+
+01:08:54.779 --> 01:08:56.279 align:middle line:84%
+oh, we should just
+do an autoencoder
+
+01:08:56.279 --> 01:08:57.540 align:middle line:90%
+and you just noise it.
+
+01:08:57.540 --> 01:09:01.048 align:middle line:84%
+Some things will be smoother
+than the representation,
+
+01:09:01.048 --> 01:09:03.340 align:middle line:84%
+but maybe it doesn't matter
+to have different variances
+
+01:09:03.340 --> 01:09:04.160 align:middle line:90%
+for different--
+
+01:09:04.160 --> 01:09:04.993 align:middle line:90%
+PHILLIP ISOLA: Yeah.
+
+01:09:04.993 --> 01:09:06.319 align:middle line:90%
+So great, yeah, good question.
+
+01:09:06.319 --> 01:09:08.600 align:middle line:84%
+The question is,
+for the encoder,
+
+01:09:08.600 --> 01:09:13.340 align:middle line:84%
+is it important that the
+noise you're adding actually
+
+01:09:13.340 --> 01:09:17.620 align:middle line:84%
+is dependent on the variance
+predicted by the neural net?
+
+01:09:17.620 --> 01:09:19.540 align:middle line:84%
+So you're kind of
+asking, for q Z
+
+01:09:19.540 --> 01:09:21.979 align:middle line:84%
+given x, which you're
+modeling, would it
+
+01:09:21.979 --> 01:09:25.700 align:middle line:84%
+suffice to just model
+the mean and the variance
+
+01:09:25.700 --> 01:09:27.779 align:middle line:90%
+to be 1 or some constant?
+
+01:09:27.779 --> 01:09:32.020 align:middle line:84%
+And I think, indeed,
+oftentimes you
+
+01:09:32.020 --> 01:09:33.760 align:middle line:84%
+can get away with
+those types of things.
+
+01:09:33.760 --> 01:09:35.540 align:middle line:84%
+Like, you can just
+take an autoencoder,
+
+01:09:35.540 --> 01:09:38.520 align:middle line:84%
+add a little noise to the latent
+space and do nothing else,
+
+01:09:38.520 --> 01:09:40.020 align:middle line:90%
+and it might be fine.
+
+01:09:40.020 --> 01:09:43.380 align:middle line:84%
+Or maybe you add this KL penalty
+to say, take an autoencoder,
+
+01:09:43.380 --> 01:09:45.500 align:middle line:84%
+penalize the means for
+being far from the origin,
+
+01:09:45.500 --> 01:09:49.420 align:middle line:84%
+and add a little noise,
+and it'll give you a VAE
+
+01:09:49.420 --> 01:09:51.260 align:middle line:90%
+and it might be fine.
+
+01:09:51.260 --> 01:09:54.002 align:middle line:84%
+But your mileage will vary,
+and you can always also
+
+01:09:54.002 --> 01:09:56.460 align:middle line:84%
+not model these things with
+Gaussians, but more complicated
+
+01:09:56.460 --> 01:09:57.460 align:middle line:90%
+distributions.
+
+01:09:57.460 --> 01:09:59.280 align:middle line:84%
+So there's a lot of
+variations on this,
+
+01:09:59.280 --> 01:10:03.017 align:middle line:84%
+but the simplest vanilla
+version might be good enough.
+
+01:10:03.017 --> 01:10:04.600 align:middle line:84%
+And I think it
+captures the full idea.
+
+01:10:04.600 --> 01:10:06.017 align:middle line:84%
+Like, the simplest
+vanilla version
+
+01:10:06.017 --> 01:10:08.500 align:middle line:84%
+is just smooth out
+the latent space
+
+01:10:08.500 --> 01:10:13.060 align:middle line:84%
+and make it dense by penalizing
+the encodings from being far
+
+01:10:13.060 --> 01:10:15.980 align:middle line:84%
+from the origin, and smooth
+it out by adding some noise
+
+01:10:15.980 --> 01:10:20.120 align:middle line:84%
+so that it has finite
+information capacity,
+
+01:10:20.120 --> 01:10:23.700 align:middle line:84%
+it can't overfit or have too
+complicated a decoding mapping.
+
+01:10:23.700 --> 01:10:24.200 align:middle line:90%
+OK.
+
+01:10:24.200 --> 01:10:26.900 align:middle line:90%
+Anyway, more to say about that.
+
+01:10:26.900 --> 01:10:27.700 align:middle line:90%
+Yeah, question?
+
+01:10:27.700 --> 01:10:30.340 align:middle line:84%
+AUDIENCE: Is there a reason
+why pushing the latent variable
+
+01:10:30.340 --> 01:10:34.387 align:middle line:84%
+distribution to 0 is better
+other than mathematics?
+
+01:10:34.387 --> 01:10:35.220 align:middle line:90%
+PHILLIP ISOLA: Yeah.
+
+01:10:35.220 --> 01:10:35.920 align:middle line:90%
+So, right.
+
+01:10:35.920 --> 01:10:38.700 align:middle line:84%
+So why is pushing the latent
+variable distribution to 0
+
+01:10:38.700 --> 01:10:39.200 align:middle line:90%
+better.
+
+01:10:39.200 --> 01:10:47.020 align:middle line:84%
+So it comes out as that is what
+KL divergence between a unit
+
+01:10:47.020 --> 01:10:49.360 align:middle line:84%
+Gaussian and another
+Gaussian will do.
+
+01:10:49.360 --> 01:10:52.020 align:middle line:90%
+
+
+01:10:52.020 --> 01:10:53.540 align:middle line:84%
+But I think more
+intuitively, it's
+
+01:10:53.540 --> 01:10:55.790 align:middle line:84%
+just-- it's this kind of
+sphere-packing an idea
+
+01:10:55.790 --> 01:11:02.990 align:middle line:84%
+that I want it to be the
+case that every single point
+
+01:11:02.990 --> 01:11:05.170 align:middle line:84%
+in z-space, if I
+sample from that point,
+
+01:11:05.170 --> 01:11:09.470 align:middle line:84%
+it will lead to a valid image
+or a valid decoded data point x.
+
+01:11:09.470 --> 01:11:11.750 align:middle line:84%
+And if I don't pack
+things in, if I
+
+01:11:11.750 --> 01:11:15.030 align:middle line:84%
+don't squish all
+the means towards 0,
+
+01:11:15.030 --> 01:11:16.950 align:middle line:90%
+then there might be gaps.
+
+01:11:16.950 --> 01:11:22.213 align:middle line:84%
+So, like here, there
+might be these gaps.
+
+01:11:22.213 --> 01:11:24.630 align:middle line:84%
+At the end of the optimization,
+there's a little gap here.
+
+01:11:24.630 --> 01:11:27.047 align:middle line:84%
+That might-- I mean, this is
+only a finite set of samples,
+
+01:11:27.047 --> 01:11:29.750 align:middle line:90%
+but maybe there's no--
+
+01:11:29.750 --> 01:11:32.110 align:middle line:84%
+these data points
+here, like, they
+
+01:11:32.110 --> 01:11:34.470 align:middle line:90%
+can't be reconstructed at all.
+
+01:11:34.470 --> 01:11:36.950 align:middle line:84%
+Or equivalently
+on this direction,
+
+01:11:36.950 --> 01:11:40.842 align:middle line:84%
+if there's gaps here, if
+these means all went out
+
+01:11:40.842 --> 01:11:43.050 align:middle line:84%
+to infinity-- so it's like,
+oh, I have high capacity,
+
+01:11:43.050 --> 01:11:44.870 align:middle line:84%
+I can memorize
+everything, they're
+
+01:11:44.870 --> 01:11:47.245 align:middle line:84%
+going to go out to infinity,
+so they'll all be infinitely
+
+01:11:47.245 --> 01:11:49.750 align:middle line:84%
+far apart, and then
+I can more easily
+
+01:11:49.750 --> 01:11:52.650 align:middle line:84%
+decode where they came from--
+there's no overlap at all,
+
+01:11:52.650 --> 01:11:54.830 align:middle line:84%
+it's like perfectly
+information-preserving,
+
+01:11:54.830 --> 01:11:57.470 align:middle line:84%
+it's invertible, well, that
+wouldn't be good because there'd
+
+01:11:57.470 --> 01:11:58.470 align:middle line:90%
+be all these gaps.
+
+01:11:58.470 --> 01:12:00.930 align:middle line:84%
+Where if I now take a
+sample from my z-space,
+
+01:12:00.930 --> 01:12:02.170 align:middle line:90%
+I might end up in a gap.
+
+01:12:02.170 --> 01:12:04.650 align:middle line:84%
+That's never-- so the decoder
+has never seen that sample
+
+01:12:04.650 --> 01:12:07.573 align:middle line:84%
+and it will not know what
+data point to reconstruct.
+
+01:12:07.573 --> 01:12:08.990 align:middle line:84%
+So you want there
+to be no gaps so
+
+01:12:08.990 --> 01:12:11.070 align:middle line:84%
+that any point you
+sample in that z-space
+
+01:12:11.070 --> 01:12:17.190 align:middle line:84%
+will map to a valid data point
+x according to your distribution
+
+01:12:17.190 --> 01:12:18.330 align:middle line:90%
+of training points x.
+
+01:12:18.330 --> 01:12:18.830 align:middle line:90%
+OK.
+
+01:12:18.830 --> 01:12:22.750 align:middle line:90%
+That's the intuition I have.
+
+01:12:22.750 --> 01:12:25.490 align:middle line:84%
+OK, so in the last
+five or 10 minutes,
+
+01:12:25.490 --> 01:12:29.190 align:middle line:84%
+I want to talk about what
+kinds of representations
+
+01:12:29.190 --> 01:12:33.030 align:middle line:84%
+are learned by a VAE and
+other generative models.
+
+01:12:33.030 --> 01:12:40.350 align:middle line:84%
+And so we're going to go
+back to this example here,
+
+01:12:40.350 --> 01:12:42.750 align:middle line:84%
+and we're going to
+ask, are the latent
+
+01:12:42.750 --> 01:12:46.710 align:middle line:84%
+variables z that the
+VAE learns actually
+
+01:12:46.710 --> 01:12:48.440 align:middle line:84%
+related to what I
+gave as an intuition?
+
+01:12:48.440 --> 01:12:50.190 align:middle line:84%
+I said I could write
+a Python program that
+
+01:12:50.190 --> 01:12:53.030 align:middle line:84%
+takes a normal
+distribution, maps it
+
+01:12:53.030 --> 01:12:54.870 align:middle line:84%
+to grass color; a
+Bernoulli distribution,
+
+01:12:54.870 --> 01:12:56.950 align:middle line:84%
+maps it to the
+turns of the river.
+
+01:12:56.950 --> 01:12:59.750 align:middle line:84%
+Well, is that what
+actually happens
+
+01:12:59.750 --> 01:13:04.070 align:middle line:84%
+when I train a model
+without hand-defining it?
+
+01:13:04.070 --> 01:13:08.150 align:middle line:84%
+OK, so I will take my data, I'll
+learn my encoder and my decoder.
+
+01:13:08.150 --> 01:13:11.830 align:middle line:84%
+My decoder can generate samples,
+and this is a good generative
+
+01:13:11.830 --> 01:13:13.270 align:middle line:90%
+model of my data.
+
+01:13:13.270 --> 01:13:15.090 align:middle line:84%
+But now let's look
+at the encoder.
+
+01:13:15.090 --> 01:13:17.150 align:middle line:84%
+Is the encoder
+separately useful?
+
+01:13:17.150 --> 01:13:20.910 align:middle line:84%
+Is a VAE a good
+representation learner?
+
+01:13:20.910 --> 01:13:23.450 align:middle line:84%
+OK, so we'll visualize
+it like this.
+
+01:13:23.450 --> 01:13:25.990 align:middle line:84%
+We're going to take
+our latent space
+
+01:13:25.990 --> 01:13:30.470 align:middle line:84%
+and we're going to move in axis
+line directions in the latent
+
+01:13:30.470 --> 01:13:34.830 align:middle line:84%
+space and see what
+images those map to.
+
+01:13:34.830 --> 01:13:38.910 align:middle line:84%
+OK, so if I move along
+one axis of latent space,
+
+01:13:38.910 --> 01:13:41.550 align:middle line:84%
+it ends up causing this
+kind of smooth variation
+
+01:13:41.550 --> 01:13:45.390 align:middle line:84%
+in the output space where the
+curvature of the river changes.
+
+01:13:45.390 --> 01:13:48.750 align:middle line:84%
+If I move along another
+dimension of latent space,
+
+01:13:48.750 --> 01:13:50.950 align:middle line:84%
+it ends up changing
+the color of the grass.
+
+01:13:50.950 --> 01:13:52.310 align:middle line:90%
+Oh, sorry.
+
+01:13:52.310 --> 01:13:54.230 align:middle line:90%
+OK.
+
+01:13:54.230 --> 01:14:00.670 align:middle line:84%
+So, indeed, my learned
+latent distribution
+
+01:14:00.670 --> 01:14:04.890 align:middle line:84%
+ends up having different
+dimensions in latent space
+
+01:14:04.890 --> 01:14:10.750 align:middle line:84%
+controlling different types of
+visual variation on this data.
+
+01:14:10.750 --> 01:14:12.870 align:middle line:84%
+And those types of
+visual variation
+
+01:14:12.870 --> 01:14:21.350 align:middle line:84%
+actually do relate to the
+underlying parameters that
+
+01:14:21.350 --> 01:14:23.370 align:middle line:84%
+define causally how
+the data was generated.
+
+01:14:23.370 --> 01:14:25.510 align:middle line:84%
+Like, there is a causal
+process, a Python program
+
+01:14:25.510 --> 01:14:29.950 align:middle line:84%
+I wrote that takes these
+attributes and turns them
+
+01:14:29.950 --> 01:14:32.310 align:middle line:84%
+into rivers and
+grass and so forth.
+
+01:14:32.310 --> 01:14:35.230 align:middle line:84%
+And one of those attributes
+is the grass color
+
+01:14:35.230 --> 01:14:36.370 align:middle line:90%
+is a normal distribution.
+
+01:14:36.370 --> 01:14:39.390 align:middle line:84%
+So there's one dimension
+of the latent space
+
+01:14:39.390 --> 01:14:42.770 align:middle line:84%
+that generated the data that
+should control grass color,
+
+01:14:42.770 --> 01:14:44.750 align:middle line:84%
+and the VAE actually
+recovers that.
+
+01:14:44.750 --> 01:14:47.830 align:middle line:84%
+So it identifies
+that true factor of--
+
+01:14:47.830 --> 01:14:50.070 align:middle line:84%
+that true causal
+factor in the data.
+
+01:14:50.070 --> 01:14:53.037 align:middle line:84%
+OK, but this is not always
+going to be the case.
+
+01:14:53.037 --> 01:14:55.370 align:middle line:84%
+The other factor of variation
+that I'm showing you here,
+
+01:14:55.370 --> 01:14:56.870 align:middle line:84%
+which is the curvature
+of the river,
+
+01:14:56.870 --> 01:15:00.470 align:middle line:84%
+actually does not correspond
+to any of the underlying
+
+01:15:00.470 --> 01:15:02.210 align:middle line:90%
+variables in my Python code.
+
+01:15:02.210 --> 01:15:04.630 align:middle line:84%
+Because the Python code took
+a vector of Bernoulli coin
+
+01:15:04.630 --> 01:15:07.430 align:middle line:84%
+flips to determine the
+shape of the river,
+
+01:15:07.430 --> 01:15:11.510 align:middle line:84%
+and there was no single
+variable, no Gaussian variable
+
+01:15:11.510 --> 01:15:14.930 align:middle line:84%
+that defined the overall
+shape of the river,
+
+01:15:14.930 --> 01:15:16.730 align:middle line:84%
+it was just a sequence
+of Bernoulli steps.
+
+01:15:16.730 --> 01:15:20.310 align:middle line:84%
+But somehow, the VAE learned
+this abstracted, intuitive
+
+01:15:20.310 --> 01:15:21.210 align:middle line:90%
+physics of the world.
+
+01:15:21.210 --> 01:15:23.252 align:middle line:84%
+It didn't actually learn
+the physics of the world
+
+01:15:23.252 --> 01:15:25.350 align:middle line:84%
+that I wrote in Python
+to generate this data,
+
+01:15:25.350 --> 01:15:27.763 align:middle line:84%
+it came up with this
+abstracted abstraction,
+
+01:15:27.763 --> 01:15:30.430 align:middle line:84%
+which is that there should be a
+factor of variation in this data
+
+01:15:30.430 --> 01:15:32.630 align:middle line:84%
+that controls the curvature
+of the river that's
+
+01:15:32.630 --> 01:15:34.150 align:middle line:90%
+a good explanation.
+
+01:15:34.150 --> 01:15:37.570 align:middle line:84%
+So a VAE, like other
+representation learners,
+
+01:15:37.570 --> 01:15:41.990 align:middle line:84%
+can learn different independent
+factors of variation
+
+01:15:41.990 --> 01:15:45.550 align:middle line:84%
+that affect the
+primary independent--
+
+01:15:45.550 --> 01:15:48.853 align:middle line:84%
+it can learn different latent
+variables, different dimensions
+
+01:15:48.853 --> 01:15:51.270 align:middle line:84%
+of latent space that control
+different independent factors
+
+01:15:51.270 --> 01:15:53.430 align:middle line:84%
+of variation-- we call
+that disentanglement,
+
+01:15:53.430 --> 01:15:55.430 align:middle line:84%
+that if I vary the river
+or curvature dimension,
+
+01:15:55.430 --> 01:15:57.680 align:middle line:84%
+it does not affect the color,
+and if I vary the color,
+
+01:15:57.680 --> 01:15:59.870 align:middle line:84%
+it does not affect the
+river curvature dimension.
+
+01:15:59.870 --> 01:16:02.430 align:middle line:84%
+This is a disentangled
+representation
+
+01:16:02.430 --> 01:16:03.910 align:middle line:90%
+where there's independent--
+
+01:16:03.910 --> 01:16:06.845 align:middle line:84%
+independence between the
+effects of those two factors,
+
+01:16:06.845 --> 01:16:08.470 align:middle line:84%
+but those two factors
+don't necessarily
+
+01:16:08.470 --> 01:16:12.070 align:middle line:84%
+map on to actually the
+causal mechanisms underlying
+
+01:16:12.070 --> 01:16:14.030 align:middle line:90%
+how this world was defined.
+
+01:16:14.030 --> 01:16:17.150 align:middle line:84%
+They might be more
+abstracted from it.
+
+01:16:17.150 --> 01:16:17.830 align:middle line:90%
+OK.
+
+01:16:17.830 --> 01:16:20.510 align:middle line:84%
+So VAEs are not the
+only models that
+
+01:16:20.510 --> 01:16:23.270 align:middle line:84%
+have this property of learning
+organized latent spaces that
+
+01:16:23.270 --> 01:16:26.270 align:middle line:84%
+are good maps or good
+representations of the world.
+
+01:16:26.270 --> 01:16:29.950 align:middle line:84%
+In fact, this is an example
+of a GAN, and it does--
+
+01:16:29.950 --> 01:16:31.810 align:middle line:84%
+has just the same
+types of properties.
+
+01:16:31.810 --> 01:16:38.550 align:middle line:84%
+So we covered GANs very briefly
+last lecture, and it's not--
+
+01:16:38.550 --> 01:16:42.690 align:middle line:84%
+GANs didn't have any encoder
+that maps from data to latents.
+
+01:16:42.690 --> 01:16:44.790 align:middle line:84%
+So VAEs do have an encoder,
+they can go from data
+
+01:16:44.790 --> 01:16:48.470 align:middle line:84%
+to the representation of the
+data in this disentangled space.
+
+01:16:48.470 --> 01:16:50.470 align:middle line:84%
+Again, doesn't have
+that, but nonetheless,
+
+01:16:50.470 --> 01:16:54.390 align:middle line:84%
+the latent variables, if you
+sample random latent variables
+
+01:16:54.390 --> 01:16:56.512 align:middle line:84%
+or sample along a grid
+of latent variables,
+
+01:16:56.512 --> 01:16:58.470 align:middle line:84%
+they do show that they
+actually model structure
+
+01:16:58.470 --> 01:17:00.630 align:middle line:90%
+in a similar way to the VAE.
+
+01:17:00.630 --> 01:17:04.510 align:middle line:84%
+And here's just an example from
+a model called BigGAN where
+
+01:17:04.510 --> 01:17:06.532 align:middle line:84%
+there's one direction
+in latent space
+
+01:17:06.532 --> 01:17:08.990 align:middle line:84%
+that controls the orientation
+of the bird and one direction
+
+01:17:08.990 --> 01:17:11.830 align:middle line:84%
+that controls the
+background color.
+
+01:17:11.830 --> 01:17:13.510 align:middle line:84%
+And you'll see this
+over and over again.
+
+01:17:13.510 --> 01:17:15.590 align:middle line:84%
+In all the types of
+generative models
+
+01:17:15.590 --> 01:17:21.190 align:middle line:84%
+that we have talked
+about, there are some kind
+
+01:17:21.190 --> 01:17:24.070 align:middle line:84%
+of latent variables usually,
+like in diffusion models, maybe
+
+01:17:24.070 --> 01:17:26.390 align:middle line:90%
+the noise.
+
+01:17:26.390 --> 01:17:28.350 align:middle line:84%
+Or there are other
+intermediate variables
+
+01:17:28.350 --> 01:17:31.030 align:middle line:84%
+like the activations of the
+network as it processes--
+
+01:17:31.030 --> 01:17:33.650 align:middle line:90%
+as a decoder processes the data.
+
+01:17:33.650 --> 01:17:35.150 align:middle line:84%
+The activations on
+some layer, I can
+
+01:17:35.150 --> 01:17:37.910 align:middle line:84%
+look at directions in
+that activation space.
+
+01:17:37.910 --> 01:17:42.350 align:middle line:84%
+And these tend to learn
+structured representations
+
+01:17:42.350 --> 01:17:42.910 align:middle line:90%
+of the data.
+
+01:17:42.910 --> 01:17:47.200 align:middle line:84%
+That is the mechanism by which
+the model can fit to the world
+
+01:17:47.200 --> 01:17:47.820 align:middle line:90%
+effectively.
+
+01:17:47.820 --> 01:17:51.432 align:middle line:84%
+It has to learn some kind of
+factors that can parsimoniously
+
+01:17:51.432 --> 01:17:52.140 align:middle line:90%
+explain the data.
+
+01:17:52.140 --> 01:17:54.307 align:middle line:84%
+If it only has so much
+capacity, so many dimensions,
+
+01:17:54.307 --> 01:17:56.993 align:middle line:84%
+this is a kind of
+somehow pops out
+
+01:17:56.993 --> 01:17:59.160 align:middle line:84%
+that this is a good
+representation of the world that
+
+01:17:59.160 --> 01:18:03.320 align:middle line:84%
+allows you to generate photos
+that maximize likelihood.
+
+01:18:03.320 --> 01:18:04.160 align:middle line:90%
+OK.
+
+01:18:04.160 --> 01:18:07.920 align:middle line:84%
+So generative modeling forces
+you to explain the world.
+
+01:18:07.920 --> 01:18:13.400 align:middle line:84%
+Explaining the world is done
+well by actually capturing
+
+01:18:13.400 --> 01:18:16.040 align:middle line:84%
+independent components
+and things that we
+
+01:18:16.040 --> 01:18:18.100 align:middle line:84%
+have physical names for,
+like background color,
+
+01:18:18.100 --> 01:18:19.820 align:middle line:84%
+but sometimes things
+are more abstracted,
+
+01:18:19.820 --> 01:18:23.060 align:middle line:84%
+like low-frequency
+curvature of the river.
+
+01:18:23.060 --> 01:18:27.160 align:middle line:90%
+
+
+01:18:27.160 --> 01:18:31.760 align:middle line:84%
+Yeah, this one maybe just a kind
+of fun visualization to end on.
+
+01:18:31.760 --> 01:18:35.280 align:middle line:90%
+This is, again, that same map.
+
+01:18:35.280 --> 01:18:37.200 align:middle line:84%
+And here, I'm coloring
+the input points
+
+01:18:37.200 --> 01:18:40.080 align:middle line:84%
+according to their
+coordinates within this space.
+
+01:18:40.080 --> 01:18:42.240 align:middle line:84%
+And here's what
+happens as I train it.
+
+01:18:42.240 --> 01:18:47.160 align:middle line:84%
+So what you can see
+is that this thing
+
+01:18:47.160 --> 01:18:52.440 align:middle line:84%
+gets-- the points in this space
+get remapped to the sphere,
+
+01:18:52.440 --> 01:18:54.500 align:middle line:84%
+but not like in a
+disorganized way.
+
+01:18:54.500 --> 01:18:56.420 align:middle line:90%
+It's smooth, it's a smooth map.
+
+01:18:56.420 --> 01:18:59.295 align:middle line:90%
+And that's kind of why--
+
+01:18:59.295 --> 01:19:00.920 align:middle line:84%
+it's meant to give
+an intuition for how
+
+01:19:00.920 --> 01:19:04.120 align:middle line:84%
+these dimensions
+of the latent space
+
+01:19:04.120 --> 01:19:07.260 align:middle line:84%
+might map to smooth
+properties of the input space,
+
+01:19:07.260 --> 01:19:08.880 align:middle line:84%
+because on this
+simple example, all
+
+01:19:08.880 --> 01:19:10.840 align:middle line:84%
+it's really doing is
+squishing the thing down.
+
+01:19:10.840 --> 01:19:12.340 align:middle line:84%
+But there's also
+an important point,
+
+01:19:12.340 --> 01:19:16.300 align:middle line:84%
+which is that it didn't
+quite fill this gap here.
+
+01:19:16.300 --> 01:19:18.760 align:middle line:84%
+And if it really was going
+to squish it into a sphere,
+
+01:19:18.760 --> 01:19:21.040 align:middle line:84%
+a Gaussian, then it
+should fill that.
+
+01:19:21.040 --> 01:19:23.687 align:middle line:84%
+And you'll see this when you're
+training generative models,
+
+01:19:23.687 --> 01:19:26.020 align:middle line:84%
+that in the latent space,
+things will be smooth and nice
+
+01:19:26.020 --> 01:19:27.720 align:middle line:84%
+and there will be
+a seam because it's
+
+01:19:27.720 --> 01:19:30.160 align:middle line:84%
+like you're mapping this
+complicated topology
+
+01:19:30.160 --> 01:19:33.400 align:middle line:84%
+onto a sphere, and you're
+going to have cuts and seams,
+
+01:19:33.400 --> 01:19:34.580 align:middle line:90%
+and you see it right here.
+
+01:19:34.580 --> 01:19:36.520 align:middle line:84%
+So if you're navigating
+through VAE latent
+
+01:19:36.520 --> 01:19:39.400 align:middle line:84%
+space or diffusion
+model activation space
+
+01:19:39.400 --> 01:19:41.342 align:middle line:84%
+on some layer of
+the network, you'll
+
+01:19:41.342 --> 01:19:42.800 align:middle line:84%
+come across these
+weird jumps where
+
+01:19:42.800 --> 01:19:44.300 align:middle line:84%
+it's smooth moves,
+nice variation,
+
+01:19:44.300 --> 01:19:46.640 align:middle line:84%
+and then suddenly it switches
+to a different category,
+
+01:19:46.640 --> 01:19:49.260 align:middle line:90%
+and that's what's going on here.
+
+01:19:49.260 --> 01:19:49.760 align:middle line:90%
+OK.
+
+01:19:49.760 --> 01:19:51.240 align:middle line:90%
+Also, these tendrils.
+
+01:19:51.240 --> 01:19:53.980 align:middle line:84%
+Like, you can't-- this is
+all smooth transformations.
+
+01:19:53.980 --> 01:19:54.940 align:middle line:90%
+How do you cut?
+
+01:19:54.940 --> 01:19:59.640 align:middle line:84%
+You can't really cut, so you
+get this tendril of probability.
+
+01:19:59.640 --> 01:20:01.450 align:middle line:84%
+OK, so these are the
+models that we've
+
+01:20:01.450 --> 01:20:02.700 align:middle line:90%
+seen in the last two lectures.
+
+01:20:02.700 --> 01:20:03.720 align:middle line:90%
+We covered a lot.
+
+01:20:03.720 --> 01:20:07.040 align:middle line:90%
+So we talked about a bunch.
+
+01:20:07.040 --> 01:20:09.820 align:middle line:84%
+I'd say I think the most popular
+right now is diffusion models.
+
+01:20:09.820 --> 01:20:11.760 align:middle line:84%
+The most complete,
+like full picture,
+
+01:20:11.760 --> 01:20:13.640 align:middle line:84%
+that encompasses
+everything is VAEs.
+
+01:20:13.640 --> 01:20:15.683 align:middle line:90%
+The most cute and fun is GANs.
+
+01:20:15.683 --> 01:20:17.600 align:middle line:84%
+The ones that are popular
+in language modeling
+
+01:20:17.600 --> 01:20:18.675 align:middle line:90%
+is autoregressive.
+
+01:20:18.675 --> 01:20:20.300 align:middle line:84%
+And they all have
+different trade-offs.
+
+01:20:20.300 --> 01:20:22.508 align:middle line:84%
+Some of them have latent
+variables that are explicit,
+
+01:20:22.508 --> 01:20:23.160 align:middle line:90%
+some don't.
+
+01:20:23.160 --> 01:20:25.540 align:middle line:84%
+Some give you a density or
+energy function, some don't.
+
+01:20:25.540 --> 01:20:27.873 align:middle line:84%
+And some give you a way of
+sampling efficiently and some
+
+01:20:27.873 --> 01:20:28.680 align:middle line:90%
+don't.
+
+01:20:28.680 --> 01:20:31.480 align:middle line:84%
+So that's for your own
+reference to review.
+
+01:20:31.480 --> 01:20:33.590 align:middle line:90%
+OK, thank you.
+
+01:20:33.590 --> 01:20:39.000 align:middle line:90%

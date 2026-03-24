@@ -1,0 +1,5117 @@
+WEBVTT
+
+00:00:00.000 --> 00:00:00.500 align:middle line:90%
+
+
+00:00:00.500 --> 00:00:01.970 align:middle line:90%
+[SQUEAKING]
+
+00:00:01.970 --> 00:00:03.930 align:middle line:90%
+[RUSTLING]
+
+00:00:03.930 --> 00:00:07.360 align:middle line:90%
+[CLICKING]
+
+00:00:07.360 --> 00:00:12.848 align:middle line:90%
+
+
+00:00:12.848 --> 00:00:14.140 align:middle line:90%
+JEREMY BERNSTEIN: Hi, everyone.
+
+00:00:14.140 --> 00:00:15.520 align:middle line:84%
+So today, I'm
+actually just going
+
+00:00:15.520 --> 00:00:18.600 align:middle line:84%
+to tell you about some
+of my research, which
+
+00:00:18.600 --> 00:00:20.320 align:middle line:90%
+is about deep learning.
+
+00:00:20.320 --> 00:00:26.580 align:middle line:84%
+And again, you can
+take everything out--
+
+00:00:26.580 --> 00:00:29.980 align:middle line:84%
+you don't have to fully
+trust me in this lecture.
+
+00:00:29.980 --> 00:00:31.860 align:middle line:84%
+And maybe you
+should be skeptical.
+
+00:00:31.860 --> 00:00:35.000 align:middle line:90%
+
+
+00:00:35.000 --> 00:00:43.200 align:middle line:84%
+So the idea that I want to talk
+about is the idea of the way
+
+00:00:43.200 --> 00:00:46.280 align:middle line:84%
+that we build neural networks
+is kind of like a LEGO set,
+
+00:00:46.280 --> 00:00:48.060 align:middle line:84%
+where we have all
+these little pieces,
+
+00:00:48.060 --> 00:00:51.440 align:middle line:84%
+all these building blocks,
+and we piece them together,
+
+00:00:51.440 --> 00:00:56.377 align:middle line:84%
+and we can build a
+transformer, for example.
+
+00:00:56.377 --> 00:00:57.960 align:middle line:84%
+But we could take
+those pieces, and we
+
+00:00:57.960 --> 00:00:59.310 align:middle line:90%
+could build something else.
+
+00:00:59.310 --> 00:01:03.790 align:middle line:84%
+There's definitely
+this modular structure.
+
+00:01:03.790 --> 00:01:07.670 align:middle line:84%
+So if that's how we
+build neural networks,
+
+00:01:07.670 --> 00:01:10.350 align:middle line:84%
+why don't we also build our
+theoretical understanding
+
+00:01:10.350 --> 00:01:15.190 align:middle line:90%
+of them in exactly the same way?
+
+00:01:15.190 --> 00:01:18.790 align:middle line:84%
+And arguably, if you want to
+have a theoretical understanding
+
+00:01:18.790 --> 00:01:21.910 align:middle line:84%
+of deep learning that really
+applies to any neural network
+
+00:01:21.910 --> 00:01:23.990 align:middle line:84%
+that you actually
+find in the wild,
+
+00:01:23.990 --> 00:01:28.113 align:middle line:84%
+you better build the
+theory in the same way
+
+00:01:28.113 --> 00:01:29.530 align:middle line:84%
+that you build the
+neural network.
+
+00:01:29.530 --> 00:01:31.110 align:middle line:84%
+Otherwise, how can
+it possibly hope
+
+00:01:31.110 --> 00:01:33.310 align:middle line:84%
+to describe actual
+neural networks
+
+00:01:33.310 --> 00:01:37.430 align:middle line:90%
+that you find out in the wild?
+
+00:01:37.430 --> 00:01:41.150 align:middle line:84%
+So what does that mean to build
+the theory in the same way
+
+00:01:41.150 --> 00:01:42.730 align:middle line:90%
+as you build the neural network?
+
+00:01:42.730 --> 00:01:45.630 align:middle line:90%
+
+
+00:01:45.630 --> 00:01:49.830 align:middle line:84%
+So the idea is if you think
+about an individual piece
+
+00:01:49.830 --> 00:01:52.910 align:middle line:84%
+of LEGO, imagine if you
+had a full theoretical
+
+00:01:52.910 --> 00:01:56.070 align:middle line:84%
+characterization of that
+single object, which
+
+00:01:56.070 --> 00:01:59.920 align:middle line:84%
+is maybe reasonable because
+it's a simple little piece.
+
+00:01:59.920 --> 00:02:02.900 align:middle line:90%
+
+
+00:02:02.900 --> 00:02:06.420 align:middle line:84%
+Then, if we think about what
+are the operations that we have
+
+00:02:06.420 --> 00:02:09.900 align:middle line:84%
+for combining little
+pieces of LEGO
+
+00:02:09.900 --> 00:02:14.140 align:middle line:84%
+to build more complicated
+structures, and the two
+
+00:02:14.140 --> 00:02:17.820 align:middle line:84%
+that we're going to think
+about is what we call a series
+
+00:02:17.820 --> 00:02:20.180 align:middle line:84%
+combination, or putting
+one on top of the other,
+
+00:02:20.180 --> 00:02:26.000 align:middle line:84%
+or a parallel combination, which
+is putting them side by side.
+
+00:02:26.000 --> 00:02:30.660 align:middle line:90%
+
+
+00:02:30.660 --> 00:02:34.820 align:middle line:84%
+And then we should ask, what
+properties of an individual LEGO
+
+00:02:34.820 --> 00:02:37.940 align:middle line:84%
+piece do we actually care
+about, or of an individual layer
+
+00:02:37.940 --> 00:02:38.840 align:middle line:90%
+in a neural network?
+
+00:02:38.840 --> 00:02:39.920 align:middle line:90%
+What do we care about?
+
+00:02:39.920 --> 00:02:42.700 align:middle line:90%
+
+
+00:02:42.700 --> 00:02:46.780 align:middle line:84%
+So a layer in a neural
+network has an input.
+
+00:02:46.780 --> 00:02:50.200 align:middle line:90%
+It has weights and an output.
+
+00:02:50.200 --> 00:02:54.500 align:middle line:90%
+
+
+00:02:54.500 --> 00:02:57.870 align:middle line:84%
+And the question that
+we're going to ask is how--
+
+00:02:57.870 --> 00:03:00.120 align:middle line:84%
+the thing that we're really
+going to care about is how
+
+00:03:00.120 --> 00:03:04.160 align:middle line:84%
+sensitive is the output of
+the layer in this case to both
+
+00:03:04.160 --> 00:03:06.120 align:middle line:84%
+changing the input-- so
+you think about adding
+
+00:03:06.120 --> 00:03:09.200 align:middle line:90%
+a perturbation to the input--
+
+00:03:09.200 --> 00:03:13.120 align:middle line:84%
+or what if we
+perturb the weights?
+
+00:03:13.120 --> 00:03:17.080 align:middle line:84%
+The question is, how much
+does the output change?
+
+00:03:17.080 --> 00:03:19.880 align:middle line:84%
+And think that the
+change in output
+
+00:03:19.880 --> 00:03:23.605 align:middle line:84%
+gets contributions both from
+the change in the inputs
+
+00:03:23.605 --> 00:03:25.480 align:middle line:84%
+and the change in the
+weights and potentially
+
+00:03:25.480 --> 00:03:27.500 align:middle line:84%
+the interactions of
+those two things.
+
+00:03:27.500 --> 00:03:31.160 align:middle line:90%
+
+
+00:03:31.160 --> 00:03:33.900 align:middle line:84%
+And what I want to argue
+is that, first of all,
+
+00:03:33.900 --> 00:03:35.180 align:middle line:90%
+no one understands this.
+
+00:03:35.180 --> 00:03:37.360 align:middle line:84%
+It's a really basic question
+about neural networks,
+
+00:03:37.360 --> 00:03:40.220 align:middle line:90%
+but no one teaches you about it.
+
+00:03:40.220 --> 00:03:42.400 align:middle line:90%
+No one understands it.
+
+00:03:42.400 --> 00:03:45.680 align:middle line:84%
+But it's a really
+important question
+
+00:03:45.680 --> 00:03:47.260 align:middle line:84%
+for a variety of
+different reasons.
+
+00:03:47.260 --> 00:03:50.280 align:middle line:84%
+But one of them is optimization
+because, if you think about it,
+
+00:03:50.280 --> 00:03:52.720 align:middle line:84%
+training a neural network
+involves changing the weights
+
+00:03:52.720 --> 00:03:57.140 align:middle line:84%
+and changing the weights of
+all the different layers.
+
+00:03:57.140 --> 00:03:59.390 align:middle line:84%
+And another reason you should
+care about this question
+
+00:03:59.390 --> 00:04:01.890 align:middle line:90%
+is things like robustness.
+
+00:04:01.890 --> 00:04:04.110 align:middle line:84%
+People talk about
+adversarial examples,
+
+00:04:04.110 --> 00:04:06.550 align:middle line:84%
+where you change the input
+to the network and the output
+
+00:04:06.550 --> 00:04:08.170 align:middle line:90%
+changes dramatically.
+
+00:04:08.170 --> 00:04:10.310 align:middle line:84%
+So it's another question
+of understanding
+
+00:04:10.310 --> 00:04:12.170 align:middle line:90%
+the sensitivity of the network.
+
+00:04:12.170 --> 00:04:18.630 align:middle line:90%
+
+
+00:04:18.630 --> 00:04:20.968 align:middle line:84%
+And so the high-level
+way that I want
+
+00:04:20.968 --> 00:04:22.510 align:middle line:84%
+to think about this
+question is let's
+
+00:04:22.510 --> 00:04:24.550 align:middle line:84%
+say that we can characterize
+that information
+
+00:04:24.550 --> 00:04:28.350 align:middle line:84%
+for an individual
+piece of the network,
+
+00:04:28.350 --> 00:04:31.910 align:middle line:84%
+can we extend this
+understanding to combinations?
+
+00:04:31.910 --> 00:04:36.710 align:middle line:84%
+So if we put the bricks or we
+put the layers into a series
+
+00:04:36.710 --> 00:04:39.830 align:middle line:84%
+combination, that's a
+little more complicated
+
+00:04:39.830 --> 00:04:42.390 align:middle line:90%
+because now there's two.
+
+00:04:42.390 --> 00:04:45.455 align:middle line:84%
+Each piece has its
+own weight space.
+
+00:04:45.455 --> 00:04:46.830 align:middle line:84%
+If we combine
+them, we're somehow
+
+00:04:46.830 --> 00:04:50.430 align:middle line:90%
+combining the weight space.
+
+00:04:50.430 --> 00:04:55.540 align:middle line:84%
+And similarly for
+putting them in parallel,
+
+00:04:55.540 --> 00:04:59.380 align:middle line:84%
+we get an object with a
+combined weight space.
+
+00:04:59.380 --> 00:05:02.800 align:middle line:84%
+And now there's-- you think of
+this as duplicating the input,
+
+00:05:02.800 --> 00:05:06.080 align:middle line:84%
+sending it to both
+of the pieces,
+
+00:05:06.080 --> 00:05:09.740 align:middle line:90%
+and then we get two outputs now.
+
+00:05:09.740 --> 00:05:12.900 align:middle line:84%
+And if you think about it,
+somehow the series combination
+
+00:05:12.900 --> 00:05:15.880 align:middle line:84%
+is somehow a bit more coupled
+than the parallel combination,
+
+00:05:15.880 --> 00:05:20.540 align:middle line:84%
+but we've still got to think
+about both of these things.
+
+00:05:20.540 --> 00:05:22.960 align:middle line:84%
+And then if we can
+really do this,
+
+00:05:22.960 --> 00:05:27.500 align:middle line:84%
+if we can really understand the
+properties of individual pieces
+
+00:05:27.500 --> 00:05:29.700 align:middle line:84%
+and then how those
+properties get transformed
+
+00:05:29.700 --> 00:05:32.500 align:middle line:84%
+through combinations,
+then we can really
+
+00:05:32.500 --> 00:05:35.620 align:middle line:84%
+think of a deep learning
+library, something
+
+00:05:35.620 --> 00:05:38.540 align:middle line:90%
+like PyTorch or Jax.
+
+00:05:38.540 --> 00:05:42.140 align:middle line:84%
+You should really think
+of it like a LEGO set,
+
+00:05:42.140 --> 00:05:43.940 align:middle line:84%
+where you've got
+all these layers,
+
+00:05:43.940 --> 00:05:48.060 align:middle line:84%
+and each layer should have its
+own theoretical description.
+
+00:05:48.060 --> 00:05:51.370 align:middle line:84%
+And then we should
+have a system of rules
+
+00:05:51.370 --> 00:05:54.810 align:middle line:84%
+for if you combine layers,
+the new object that you get
+
+00:05:54.810 --> 00:05:56.150 align:middle line:90%
+has these properties.
+
+00:05:56.150 --> 00:05:58.770 align:middle line:90%
+
+
+00:05:58.770 --> 00:06:00.790 align:middle line:84%
+And then once you've
+got those things,
+
+00:06:00.790 --> 00:06:02.810 align:middle line:84%
+you should be able to
+build whatever you want.
+
+00:06:02.810 --> 00:06:06.250 align:middle line:84%
+You can go and take this
+library and build whatever
+
+00:06:06.250 --> 00:06:09.265 align:middle line:90%
+fanciful creation you like.
+
+00:06:09.265 --> 00:06:10.390 align:middle line:90%
+And that should be allowed.
+
+00:06:10.390 --> 00:06:12.348 align:middle line:84%
+And you should have a
+theoretical understanding
+
+00:06:12.348 --> 00:06:15.850 align:middle line:90%
+of that thing automatically.
+
+00:06:15.850 --> 00:06:20.690 align:middle line:84%
+So that's how we're thinking
+about deep learning.
+
+00:06:20.690 --> 00:06:25.270 align:middle line:84%
+And there's actually a practical
+payoff already in certain axes.
+
+00:06:25.270 --> 00:06:27.810 align:middle line:84%
+So I just want to tell you
+a little bit about that
+
+00:06:27.810 --> 00:06:30.530 align:middle line:84%
+because otherwise you
+wouldn't know whether or not
+
+00:06:30.530 --> 00:06:33.170 align:middle line:90%
+you should bother listening.
+
+00:06:33.170 --> 00:06:37.890 align:middle line:84%
+So what I want to claim is that
+if you adopt this perspective,
+
+00:06:37.890 --> 00:06:40.330 align:middle line:84%
+it provides an easy way
+to fix these scaling
+
+00:06:40.330 --> 00:06:42.050 align:middle line:90%
+issues that people have.
+
+00:06:42.050 --> 00:06:46.490 align:middle line:84%
+So we talked a bit about this
+in one of the earlier lectures
+
+00:06:46.490 --> 00:06:47.110 align:middle line:90%
+in the class.
+
+00:06:47.110 --> 00:06:48.568 align:middle line:84%
+But you have these
+issues where you
+
+00:06:48.568 --> 00:06:52.070 align:middle line:84%
+scale the width of building
+blocks in the network
+
+00:06:52.070 --> 00:06:57.670 align:middle line:84%
+and the whole optimization
+landscape kind of drifts,
+
+00:06:57.670 --> 00:07:02.110 align:middle line:84%
+even though the performance
+is getting better,
+
+00:07:02.110 --> 00:07:04.310 align:middle line:84%
+the minima in the
+optimization landscape
+
+00:07:04.310 --> 00:07:08.010 align:middle line:84%
+is shifting to a different
+optimal learning rate.
+
+00:07:08.010 --> 00:07:10.550 align:middle line:90%
+
+
+00:07:10.550 --> 00:07:12.430 align:middle line:84%
+And then, actually,
+people have recently
+
+00:07:12.430 --> 00:07:14.910 align:middle line:84%
+taken some of these
+ideas and packaged them
+
+00:07:14.910 --> 00:07:20.550 align:middle line:84%
+with some other ideas but
+got much faster training.
+
+00:07:20.550 --> 00:07:22.950 align:middle line:84%
+So this also relates
+to the homework problem
+
+00:07:22.950 --> 00:07:26.170 align:middle line:84%
+about the steepest
+descent algorithms.
+
+00:07:26.170 --> 00:07:28.770 align:middle line:84%
+But this is all in the
+last couple of months,
+
+00:07:28.770 --> 00:07:33.590 align:middle line:84%
+but this is showing a
+comparison of training speed.
+
+00:07:33.590 --> 00:07:37.710 align:middle line:84%
+And the baseline is llm.c,
+which is like Andrej Karpathy's
+
+00:07:37.710 --> 00:07:41.710 align:middle line:84%
+extremely high-performance
+C implementation,
+
+00:07:41.710 --> 00:07:44.830 align:middle line:84%
+but with some of these
+ideas about steepest descent
+
+00:07:44.830 --> 00:07:49.160 align:middle line:84%
+algorithms based on norms and
+spectral descent-type things,
+
+00:07:49.160 --> 00:07:51.080 align:middle line:84%
+they actually got
+way faster training.
+
+00:07:51.080 --> 00:07:53.100 align:middle line:84%
+So this is a huge
+wall clock speedup
+
+00:07:53.100 --> 00:07:57.400 align:middle line:84%
+in training by integrating
+some of these ideas.
+
+00:07:57.400 --> 00:07:59.100 align:middle line:84%
+So this is just to
+give you a sense
+
+00:07:59.100 --> 00:08:01.600 align:middle line:84%
+that actually maybe some
+of this stuff matters.
+
+00:08:01.600 --> 00:08:09.480 align:middle line:90%
+
+
+00:08:09.480 --> 00:08:13.580 align:middle line:84%
+So far, I've tried to put
+across this-- oh yeah, go ahead.
+
+00:08:13.580 --> 00:08:16.380 align:middle line:84%
+AUDIENCE: In this method, you
+showed that it was much faster
+
+00:08:16.380 --> 00:08:17.620 align:middle line:90%
+than the other one.
+
+00:08:17.620 --> 00:08:20.720 align:middle line:84%
+Do they know why
+it's so much faster,
+
+00:08:20.720 --> 00:08:23.800 align:middle line:84%
+or just they found that this is
+faster, but not really sure why?
+
+00:08:23.800 --> 00:08:26.500 align:middle line:90%
+
+
+00:08:26.500 --> 00:08:28.520 align:middle line:84%
+JEREMY BERNSTEIN:
+Partly understand why.
+
+00:08:28.520 --> 00:08:30.340 align:middle line:90%
+Yeah, we partly understand why.
+
+00:08:30.340 --> 00:08:34.020 align:middle line:84%
+Basically, the difference
+between the faster curves
+
+00:08:34.020 --> 00:08:36.000 align:middle line:84%
+are using this spectral
+descent algorithm,
+
+00:08:36.000 --> 00:08:38.940 align:middle line:84%
+which uses steepest descent
+under the spectral norm, which
+
+00:08:38.940 --> 00:08:40.200 align:middle line:90%
+was in the homework problem.
+
+00:08:40.200 --> 00:08:42.179 align:middle line:84%
+And if you believe
+that the geometry
+
+00:08:42.179 --> 00:08:45.450 align:middle line:84%
+of an individual
+linear layer is somehow
+
+00:08:45.450 --> 00:08:49.450 align:middle line:84%
+described by the spectral norm,
+then that would explain why.
+
+00:08:49.450 --> 00:08:51.670 align:middle line:84%
+So it's just
+integrating that idea.
+
+00:08:51.670 --> 00:08:58.170 align:middle line:90%
+
+
+00:08:58.170 --> 00:09:00.430 align:middle line:84%
+But we'll go a little
+more into things.
+
+00:09:00.430 --> 00:09:02.410 align:middle line:90%
+But I first want to zoom out.
+
+00:09:02.410 --> 00:09:04.850 align:middle line:84%
+And so we talked about
+optimization theory earlier
+
+00:09:04.850 --> 00:09:08.330 align:middle line:84%
+in the class, but I want to
+try to connect optimization
+
+00:09:08.330 --> 00:09:12.230 align:middle line:84%
+theory to this idea of building
+neural networks like a LEGO set.
+
+00:09:12.230 --> 00:09:15.330 align:middle line:90%
+
+
+00:09:15.330 --> 00:09:20.090 align:middle line:84%
+So if you remember, let's say
+that we have our loss function,
+
+00:09:20.090 --> 00:09:22.150 align:middle line:90%
+which is like this L symbol.
+
+00:09:22.150 --> 00:09:25.170 align:middle line:84%
+And we've got an
+n-dimensional parameter space.
+
+00:09:25.170 --> 00:09:27.610 align:middle line:84%
+And then the loss function
+maps the set of parameters
+
+00:09:27.610 --> 00:09:29.250 align:middle line:90%
+to a real number.
+
+00:09:29.250 --> 00:09:32.890 align:middle line:84%
+And let's say that we can
+Taylor expand the loss.
+
+00:09:32.890 --> 00:09:35.730 align:middle line:84%
+So if you remember, there's
+the first-order term,
+
+00:09:35.730 --> 00:09:39.090 align:middle line:84%
+and then there's
+the Hessian term,
+
+00:09:39.090 --> 00:09:42.560 align:middle line:84%
+and then there's higher-order
+terms in the Taylor expansion.
+
+00:09:42.560 --> 00:09:44.880 align:middle line:84%
+And if you remember,
+what we said is,
+
+00:09:44.880 --> 00:09:49.320 align:middle line:84%
+what if we could come up with a
+norm and a sharpness parameter
+
+00:09:49.320 --> 00:09:52.827 align:middle line:84%
+lambda such that we can
+upper bound-- at least
+
+00:09:52.827 --> 00:09:55.160 align:middle line:84%
+we can upper bound that second
+order piece in the Taylor
+
+00:09:55.160 --> 00:09:56.700 align:middle line:90%
+expansion using this norm?
+
+00:09:56.700 --> 00:09:59.600 align:middle line:90%
+
+
+00:09:59.600 --> 00:10:03.820 align:middle line:84%
+So yeah, we were saying,
+what if we could do this?
+
+00:10:03.820 --> 00:10:05.320 align:middle line:90%
+What would it mean?
+
+00:10:05.320 --> 00:10:09.040 align:middle line:84%
+And in particular, can we find
+a norm and a sharpness parameter
+
+00:10:09.040 --> 00:10:10.940 align:middle line:84%
+such that this is a
+really tight upper bound?
+
+00:10:10.940 --> 00:10:13.440 align:middle line:84%
+That would also be really great
+because then we can actually
+
+00:10:13.440 --> 00:10:16.360 align:middle line:84%
+think of using this bound as an
+actual description of the loss
+
+00:10:16.360 --> 00:10:19.560 align:middle line:90%
+function.
+
+00:10:19.560 --> 00:10:21.800 align:middle line:84%
+Well, if we could do
+that, what we said
+
+00:10:21.800 --> 00:10:24.480 align:middle line:84%
+and what we spent time on
+the homework thinking about
+
+00:10:24.480 --> 00:10:29.900 align:middle line:84%
+is this thing called steepest
+descent optimization algorithms,
+
+00:10:29.900 --> 00:10:34.440 align:middle line:84%
+using particular norms that
+we can think about picking
+
+00:10:34.440 --> 00:10:38.520 align:middle line:84%
+an update step to minimize this,
+the linearization of the loss,
+
+00:10:38.520 --> 00:10:41.780 align:middle line:84%
+plus the penalty term
+that involves the norm.
+
+00:10:41.780 --> 00:10:46.600 align:middle line:84%
+And then we can think
+about if I pick this norm,
+
+00:10:46.600 --> 00:10:48.047 align:middle line:84%
+I get this
+optimization algorithm.
+
+00:10:48.047 --> 00:10:50.380 align:middle line:84%
+If I pick this other norm, I
+get this other optimization
+
+00:10:50.380 --> 00:10:53.660 align:middle line:90%
+algorithm.
+
+00:10:53.660 --> 00:10:57.740 align:middle line:84%
+So how should we actually
+produce such a norm?
+
+00:10:57.740 --> 00:10:59.880 align:middle line:84%
+What is a good norm
+for a neural network?
+
+00:10:59.880 --> 00:11:02.420 align:middle line:84%
+Why would we favor one
+norm over a different norm?
+
+00:11:02.420 --> 00:11:05.660 align:middle line:84%
+I think that's an
+important question.
+
+00:11:05.660 --> 00:11:07.660 align:middle line:84%
+So that's what we're going
+to try to think about
+
+00:11:07.660 --> 00:11:10.200 align:middle line:90%
+over the next few slides.
+
+00:11:10.200 --> 00:11:13.900 align:middle line:90%
+
+
+00:11:13.900 --> 00:11:18.220 align:middle line:84%
+And just remember that-- so
+we're trying to produce a norm
+
+00:11:18.220 --> 00:11:21.707 align:middle line:84%
+and a sharpness parameter such
+that the second-order piece
+
+00:11:21.707 --> 00:11:23.540 align:middle line:84%
+in the Taylor expansion
+of our loss function
+
+00:11:23.540 --> 00:11:28.620 align:middle line:84%
+is upper bounded by that
+object in the red box.
+
+00:11:28.620 --> 00:11:30.700 align:middle line:84%
+So how are we going
+to think about this?
+
+00:11:30.700 --> 00:11:33.660 align:middle line:84%
+Well, first of all, remember
+that, in deep learning, we have
+
+00:11:33.660 --> 00:11:35.820 align:middle line:84%
+what's called a
+composite loss function.
+
+00:11:35.820 --> 00:11:38.690 align:middle line:84%
+So the total loss is the
+error measure composed
+
+00:11:38.690 --> 00:11:40.230 align:middle line:90%
+with the neural network.
+
+00:11:40.230 --> 00:11:44.010 align:middle line:84%
+So that the error measure is
+l and the neural network is f.
+
+00:11:44.010 --> 00:11:45.883 align:middle line:90%
+So it's a composite structure.
+
+00:11:45.883 --> 00:11:48.050 align:middle line:84%
+And then also remember that
+we have something called
+
+00:11:48.050 --> 00:11:49.550 align:middle line:90%
+the Gauss-Newton decomposition.
+
+00:11:49.550 --> 00:11:53.610 align:middle line:84%
+So whenever you have a
+composite loss function where
+
+00:11:53.610 --> 00:11:58.130 align:middle line:84%
+both parts of it are
+suitably differentiable,
+
+00:11:58.130 --> 00:12:01.810 align:middle line:84%
+we can decompose the
+second-order term in the loss
+
+00:12:01.810 --> 00:12:03.570 align:middle line:90%
+function into two pieces.
+
+00:12:03.570 --> 00:12:07.590 align:middle line:84%
+So the first one involves the
+curvature of the neural network,
+
+00:12:07.590 --> 00:12:09.650 align:middle line:84%
+and the second piece
+involves the curvature
+
+00:12:09.650 --> 00:12:11.930 align:middle line:90%
+of the error measure.
+
+00:12:11.930 --> 00:12:14.570 align:middle line:84%
+So that step one is just like,
+because we have a composite,
+
+00:12:14.570 --> 00:12:18.850 align:middle line:84%
+we have the Gauss-Newton
+decomposition.
+
+00:12:18.850 --> 00:12:24.890 align:middle line:84%
+So step two is now let's suppose
+that we know a really good norm
+
+00:12:24.890 --> 00:12:26.890 align:middle line:90%
+on the output of the network.
+
+00:12:26.890 --> 00:12:28.852 align:middle line:84%
+And maybe that's reasonable
+because the output
+
+00:12:28.852 --> 00:12:30.310 align:middle line:84%
+of the network is
+often something--
+
+00:12:30.310 --> 00:12:32.030 align:middle line:84%
+it's a simple thing
+like a vector,
+
+00:12:32.030 --> 00:12:34.570 align:middle line:84%
+like either the network
+tends to output a vector
+
+00:12:34.570 --> 00:12:36.190 align:middle line:90%
+or it outputs a real number.
+
+00:12:36.190 --> 00:12:38.690 align:middle line:84%
+So we can usually come
+up with a good norm.
+
+00:12:38.690 --> 00:12:40.440 align:middle line:84%
+AUDIENCE: So what would
+it mean for a norm
+
+00:12:40.440 --> 00:12:42.380 align:middle line:90%
+to be bad in this instance?
+
+00:12:42.380 --> 00:12:46.632 align:middle line:90%
+
+
+00:12:46.632 --> 00:12:48.340 align:middle line:84%
+JEREMY BERNSTEIN:
+That's a good question.
+
+00:12:48.340 --> 00:12:51.520 align:middle line:90%
+
+
+00:12:51.520 --> 00:12:55.040 align:middle line:84%
+Well, at least if you just
+have the output of the network,
+
+00:12:55.040 --> 00:12:57.240 align:middle line:84%
+and it's a vector with
+the kind of there's
+
+00:12:57.240 --> 00:12:59.640 align:middle line:84%
+no obvious extra structure
+on that thing other
+
+00:12:59.640 --> 00:13:03.280 align:middle line:84%
+than it's a vector, there's only
+a few norms you would really
+
+00:13:03.280 --> 00:13:05.640 align:middle line:90%
+think of, Lp norms, basically.
+
+00:13:05.640 --> 00:13:07.660 align:middle line:84%
+But if you have a more
+complicated object,
+
+00:13:07.660 --> 00:13:10.040 align:middle line:84%
+like a full neural network,
+there's a whole zoo of norms
+
+00:13:10.040 --> 00:13:11.620 align:middle line:90%
+that you might think of.
+
+00:13:11.620 --> 00:13:14.520 align:middle line:84%
+So it's at least like
+maybe you give the output
+
+00:13:14.520 --> 00:13:20.600 align:middle line:84%
+the infinity norm, the L2 norm,
+the RMS norm, the L1 norm.
+
+00:13:20.600 --> 00:13:22.780 align:middle line:84%
+There's not many
+other obvious choices.
+
+00:13:22.780 --> 00:13:26.680 align:middle line:90%
+
+
+00:13:26.680 --> 00:13:29.380 align:middle line:90%
+So that's what I mean.
+
+00:13:29.380 --> 00:13:31.580 align:middle line:84%
+And again, I may be
+wrong about these things,
+
+00:13:31.580 --> 00:13:36.750 align:middle line:84%
+so be a little skeptical because
+this is just the way that we've
+
+00:13:36.750 --> 00:13:40.550 align:middle line:90%
+started thinking about it.
+
+00:13:40.550 --> 00:13:45.550 align:middle line:84%
+So the point is that if we
+have a norm on the output,
+
+00:13:45.550 --> 00:13:47.950 align:middle line:84%
+we can take the
+Gauss-Newton decomposition,
+
+00:13:47.950 --> 00:13:56.670 align:middle line:84%
+and then we can actually
+bound the two terms.
+
+00:13:56.670 --> 00:14:00.630 align:middle line:84%
+And the reason
+that we can do that
+
+00:14:00.630 --> 00:14:09.670 align:middle line:84%
+is essentially because you
+can read the term in orange
+
+00:14:09.670 --> 00:14:13.070 align:middle line:84%
+as being a dot product between
+the curvature of the model
+
+00:14:13.070 --> 00:14:16.350 align:middle line:84%
+and the linearization
+of the error measure.
+
+00:14:16.350 --> 00:14:18.710 align:middle line:84%
+And then you can apply the
+Cauchy-Schwarz inequality
+
+00:14:18.710 --> 00:14:21.350 align:middle line:90%
+to that term.
+
+00:14:21.350 --> 00:14:24.790 align:middle line:84%
+So the norm on the derivative
+of the error measure
+
+00:14:24.790 --> 00:14:26.470 align:middle line:84%
+is actually a dual
+norm corresponding
+
+00:14:26.470 --> 00:14:29.630 align:middle line:84%
+to the dual norm of the
+norm and network outputs.
+
+00:14:29.630 --> 00:14:34.090 align:middle line:84%
+And similarly, you can
+think about the purple term
+
+00:14:34.090 --> 00:14:39.470 align:middle line:84%
+as being like a vector times
+a matrix times a vector,
+
+00:14:39.470 --> 00:14:42.090 align:middle line:84%
+and there's an operator norm
+upper bound on that thing.
+
+00:14:42.090 --> 00:14:46.810 align:middle line:84%
+So basically, anyway,
+long story short,
+
+00:14:46.810 --> 00:14:50.110 align:middle line:84%
+you can bound these terms if you
+have a norm on a network output.
+
+00:14:50.110 --> 00:14:54.690 align:middle line:90%
+
+
+00:14:54.690 --> 00:14:57.433 align:middle line:84%
+So that's step two
+is just observing
+
+00:14:57.433 --> 00:14:58.850 align:middle line:84%
+that you can upper
+bound the terms
+
+00:14:58.850 --> 00:15:00.430 align:middle line:84%
+in the Gauss-Newton
+decomposition,
+
+00:15:00.430 --> 00:15:05.610 align:middle line:84%
+so no approximations,
+just an upper bound.
+
+00:15:05.610 --> 00:15:10.090 align:middle line:84%
+So step three is just
+restating where we got up to.
+
+00:15:10.090 --> 00:15:13.430 align:middle line:84%
+We've upper bounded the terms in
+the Gauss-Newton decomposition.
+
+00:15:13.430 --> 00:15:15.970 align:middle line:84%
+And then we can now
+actually-- remember,
+
+00:15:15.970 --> 00:15:21.090 align:middle line:84%
+our original problem
+was finding this red box
+
+00:15:21.090 --> 00:15:24.090 align:middle line:84%
+finding this upper bound on the
+second-order piece of the loss
+
+00:15:24.090 --> 00:15:25.070 align:middle line:90%
+function.
+
+00:15:25.070 --> 00:15:28.890 align:middle line:84%
+But we've actually reduced
+our problem because now
+
+00:15:28.890 --> 00:15:36.320 align:middle line:84%
+if we can upper bound
+the first term in orange
+
+00:15:36.320 --> 00:15:38.338 align:middle line:84%
+with a norm using a
+norm on the weights,
+
+00:15:38.338 --> 00:15:40.880 align:middle line:84%
+so if we can produce a norm on
+the weights which upper bounds
+
+00:15:40.880 --> 00:15:47.360 align:middle line:84%
+that first orange term and if we
+can produce a norm on the weight
+
+00:15:47.360 --> 00:15:55.600 align:middle line:84%
+space to upper bound
+this last term in purple,
+
+00:15:55.600 --> 00:16:00.240 align:middle line:84%
+if we can do that,
+you can plug those
+
+00:16:00.240 --> 00:16:02.860 align:middle line:84%
+into the upper bound on the
+Gauss-Newton decomposition.
+
+00:16:02.860 --> 00:16:04.960 align:middle line:84%
+It will give us an upper
+bound on the curvature
+
+00:16:04.960 --> 00:16:06.342 align:middle line:90%
+of the overall loss function.
+
+00:16:06.342 --> 00:16:08.800 align:middle line:84%
+So we've kind of reduced the
+problem which we didn't really
+
+00:16:08.800 --> 00:16:12.580 align:middle line:84%
+know how to solve now into
+at least a different problem,
+
+00:16:12.580 --> 00:16:15.800 align:middle line:84%
+and then the question is, can
+we solve that other problem?
+
+00:16:15.800 --> 00:16:20.160 align:middle line:84%
+And then I've just written
+beneath these two expressions
+
+00:16:20.160 --> 00:16:23.000 align:middle line:84%
+that the first one is asking
+that the network is Lipschitz
+
+00:16:23.000 --> 00:16:26.160 align:middle line:84%
+smooth in its weights,
+and the second one
+
+00:16:26.160 --> 00:16:28.040 align:middle line:84%
+is asking that the
+network is Lipschitz
+
+00:16:28.040 --> 00:16:31.590 align:middle line:90%
+continuous in its weights.
+
+00:16:31.590 --> 00:16:36.070 align:middle line:90%
+I'll just pause briefly.
+
+00:16:36.070 --> 00:16:38.230 align:middle line:84%
+So it's just to say
+that we started out
+
+00:16:38.230 --> 00:16:40.933 align:middle line:84%
+with a problem about the
+overall loss function.
+
+00:16:40.933 --> 00:16:42.350 align:middle line:84%
+We upper bounded
+this thing called
+
+00:16:42.350 --> 00:16:44.830 align:middle line:90%
+the Gauss-Newton decomposition.
+
+00:16:44.830 --> 00:16:46.830 align:middle line:84%
+And then we related
+the terms in that
+
+00:16:46.830 --> 00:16:48.490 align:middle line:90%
+to properties of the network.
+
+00:16:48.490 --> 00:16:53.290 align:middle line:90%
+
+
+00:16:53.290 --> 00:16:55.430 align:middle line:84%
+This is supposed to be a
+more pictorial or somehow
+
+00:16:55.430 --> 00:16:58.350 align:middle line:84%
+visual description
+of what's going on.
+
+00:16:58.350 --> 00:17:01.150 align:middle line:84%
+So we said that we
+reduced to wanting
+
+00:17:01.150 --> 00:17:04.109 align:middle line:84%
+to have these conditions
+on our neural network, so
+
+00:17:04.109 --> 00:17:09.030 align:middle line:84%
+a norm on the weight space such
+that the network is Lipschitz
+
+00:17:09.030 --> 00:17:12.589 align:middle line:84%
+smooth and Lipschitz
+continuous in that norm.
+
+00:17:12.589 --> 00:17:15.670 align:middle line:84%
+AUDIENCE: So if it's Lipschitz
+smooth and Lipschitz continuous,
+
+00:17:15.670 --> 00:17:22.030 align:middle line:84%
+that guarantees existence
+of such alphas and deltas?
+
+00:17:22.030 --> 00:17:23.990 align:middle line:90%
+JEREMY BERNSTEIN: Yes, but--
+
+00:17:23.990 --> 00:17:28.060 align:middle line:84%
+AUDIENCE: For any
+norm or [INAUDIBLE]?
+
+00:17:28.060 --> 00:17:30.740 align:middle line:84%
+JEREMY BERNSTEIN: Well, you
+could take these actually
+
+00:17:30.740 --> 00:17:34.240 align:middle line:84%
+as the definitions of Lipschitz
+smooth and Lipschitz continuous
+
+00:17:34.240 --> 00:17:36.340 align:middle line:84%
+and once you have
+them in one norm,
+
+00:17:36.340 --> 00:17:38.740 align:middle line:84%
+you can automatically produce
+them in any other norm
+
+00:17:38.740 --> 00:17:40.720 align:middle line:84%
+because all the
+norms are equivalent
+
+00:17:40.720 --> 00:17:44.220 align:middle line:84%
+but it may be a much
+tighter guarantee
+
+00:17:44.220 --> 00:17:46.140 align:middle line:90%
+in 1 norm than another norm.
+
+00:17:46.140 --> 00:17:48.940 align:middle line:84%
+So we really want to find
+a norm on the weight space
+
+00:17:48.940 --> 00:17:55.020 align:middle line:84%
+such that these conditions
+hold very, very tightly.
+
+00:17:55.020 --> 00:17:57.360 align:middle line:84%
+But just to describe
+pictorially what's going on,
+
+00:17:57.360 --> 00:18:00.340 align:middle line:84%
+so we've got a neural
+network, and we
+
+00:18:00.340 --> 00:18:04.540 align:middle line:84%
+think about passing an input
+into it, and it has weights
+
+00:18:04.540 --> 00:18:06.148 align:middle line:90%
+and it has an output.
+
+00:18:06.148 --> 00:18:07.940 align:middle line:84%
+And what you can think
+of doing is actually
+
+00:18:07.940 --> 00:18:12.538 align:middle line:84%
+Taylor expanding the neural
+network in its weights.
+
+00:18:12.538 --> 00:18:14.580 align:middle line:84%
+So remember, previously,
+we were Taylor expanding
+
+00:18:14.580 --> 00:18:16.380 align:middle line:84%
+the loss in the
+weights, but now we've
+
+00:18:16.380 --> 00:18:18.780 align:middle line:84%
+mapped things to actually
+just thinking directly
+
+00:18:18.780 --> 00:18:21.340 align:middle line:90%
+about the network.
+
+00:18:21.340 --> 00:18:24.060 align:middle line:84%
+And these Lipschitz
+conditions are
+
+00:18:24.060 --> 00:18:29.200 align:middle line:84%
+asking for upper bounds on the
+terms in the Taylor expansion
+
+00:18:29.200 --> 00:18:31.040 align:middle line:90%
+in a particular norm.
+
+00:18:31.040 --> 00:18:33.600 align:middle line:84%
+So can we produce a
+norm on the weight space
+
+00:18:33.600 --> 00:18:37.840 align:middle line:84%
+such that we get nice,
+convenient upper bounds
+
+00:18:37.840 --> 00:18:39.160 align:middle line:90%
+on these terms?
+
+00:18:39.160 --> 00:18:41.580 align:middle line:84%
+And so forgetting everything
+that we talked about,
+
+00:18:41.580 --> 00:18:44.280 align:middle line:84%
+about optimization, just
+directly looking at this slide
+
+00:18:44.280 --> 00:18:46.260 align:middle line:84%
+and just directly
+thinking about it,
+
+00:18:46.260 --> 00:18:49.200 align:middle line:84%
+wouldn't it be great if we
+had a norm on the weights that
+
+00:18:49.200 --> 00:18:51.840 align:middle line:84%
+could predict the magnitude
+of these terms in the Taylor
+
+00:18:51.840 --> 00:18:52.680 align:middle line:90%
+expansion?
+
+00:18:52.680 --> 00:18:54.760 align:middle line:84%
+If we had such a
+norm, it would mean
+
+00:18:54.760 --> 00:18:56.762 align:middle line:84%
+that whenever you
+were going to change
+
+00:18:56.762 --> 00:18:58.220 align:middle line:84%
+the weights of your
+neural network,
+
+00:18:58.220 --> 00:19:00.360 align:middle line:84%
+you would have a
+direct way to predict
+
+00:19:00.360 --> 00:19:02.000 align:middle line:84%
+how much the output
+of the network
+
+00:19:02.000 --> 00:19:04.700 align:middle line:84%
+can change up to first
+and second order.
+
+00:19:04.700 --> 00:19:07.400 align:middle line:84%
+So there's just
+a direct argument
+
+00:19:07.400 --> 00:19:09.760 align:middle line:84%
+that having such a norm would
+be a really useful thing
+
+00:19:09.760 --> 00:19:12.240 align:middle line:84%
+to have because we can now
+predict what our network is
+
+00:19:12.240 --> 00:19:14.560 align:middle line:84%
+going to do in response
+to changing the weights.
+
+00:19:14.560 --> 00:19:17.680 align:middle line:84%
+And then all of the preceding
+argument was saying,
+
+00:19:17.680 --> 00:19:21.480 align:middle line:84%
+one of the use cases for
+having these relationships
+
+00:19:21.480 --> 00:19:25.470 align:middle line:84%
+is that we can build an
+optimization theory around them,
+
+00:19:25.470 --> 00:19:27.590 align:middle line:84%
+but they can be useful
+for other reasons as well.
+
+00:19:27.590 --> 00:19:30.602 align:middle line:84%
+They're useful anytime you
+want to be able to just predict
+
+00:19:30.602 --> 00:19:32.310 align:middle line:84%
+what changing the
+weights of your network
+
+00:19:32.310 --> 00:19:34.250 align:middle line:84%
+is going to do to
+the overall function.
+
+00:19:34.250 --> 00:19:44.550 align:middle line:90%
+
+
+00:19:44.550 --> 00:19:48.710 align:middle line:84%
+So what we've tried to argue
+is that having these conditions
+
+00:19:48.710 --> 00:19:51.550 align:middle line:84%
+would be useful, and it would
+help us build an optimization
+
+00:19:51.550 --> 00:19:54.230 align:middle line:84%
+theory, but it seems like,
+actually, how on Earth
+
+00:19:54.230 --> 00:19:57.830 align:middle line:84%
+would we produce a norm,
+which is a really good norm
+
+00:19:57.830 --> 00:20:01.510 align:middle line:84%
+for this reason because it seems
+that neural networks are really
+
+00:20:01.510 --> 00:20:03.770 align:middle line:84%
+complicated, so how are
+we going to do that?
+
+00:20:03.770 --> 00:20:05.470 align:middle line:90%
+It seems really hard.
+
+00:20:05.470 --> 00:20:06.118 align:middle line:90%
+Go ahead.
+
+00:20:06.118 --> 00:20:08.410 align:middle line:84%
+AUDIENCE: I don't even know
+if my question makes sense,
+
+00:20:08.410 --> 00:20:12.110 align:middle line:84%
+but I would like to know if
+people have used this approach
+
+00:20:12.110 --> 00:20:15.743 align:middle line:84%
+to find approximation for
+other types of problems,
+
+00:20:15.743 --> 00:20:17.910 align:middle line:84%
+so say [INAUDIBLE] neural
+network or something else,
+
+00:20:17.910 --> 00:20:19.368 align:middle line:84%
+you didn't know
+how to approximate,
+
+00:20:19.368 --> 00:20:21.300 align:middle line:84%
+and then you found
+[INAUDIBLE] and has
+
+00:20:21.300 --> 00:20:22.598 align:middle line:90%
+this worked in [INAUDIBLE].
+
+00:20:22.598 --> 00:20:24.140 align:middle line:84%
+JEREMY BERNSTEIN:
+Yeah, what I'll say
+
+00:20:24.140 --> 00:20:26.920 align:middle line:84%
+is that a lot of
+classical optimization,
+
+00:20:26.920 --> 00:20:31.340 align:middle line:84%
+once you start to get into it,
+is all about finding a distance
+
+00:20:31.340 --> 00:20:32.980 align:middle line:90%
+measure for your problem.
+
+00:20:32.980 --> 00:20:35.280 align:middle line:84%
+And once you've got a really
+good distance measure,
+
+00:20:35.280 --> 00:20:38.320 align:middle line:84%
+you can start to design
+clever algorithms.
+
+00:20:38.320 --> 00:20:41.740 align:middle line:90%
+
+
+00:20:41.740 --> 00:20:44.540 align:middle line:84%
+And people have that
+idea in deep learning
+
+00:20:44.540 --> 00:20:45.820 align:middle line:90%
+but haven't really--
+
+00:20:45.820 --> 00:20:48.220 align:middle line:84%
+it's not really borne
+fruit, I would say.
+
+00:20:48.220 --> 00:20:52.400 align:middle line:84%
+But it is a very classical
+idea to do this general thing.
+
+00:20:52.400 --> 00:20:56.060 align:middle line:84%
+And then there is you can
+look up composite optimization
+
+00:20:56.060 --> 00:20:58.440 align:middle line:84%
+theory, and there's
+lots of papers about it.
+
+00:20:58.440 --> 00:21:03.140 align:middle line:84%
+But I would say that
+it's not really borne
+
+00:21:03.140 --> 00:21:04.600 align:middle line:90%
+fruit in the deep learning.
+
+00:21:04.600 --> 00:21:09.440 align:middle line:84%
+But it's definitely that idea
+is very abundant, I would say.
+
+00:21:09.440 --> 00:21:14.743 align:middle line:90%
+
+
+00:21:14.743 --> 00:21:17.160 align:middle line:84%
+If you think about it, that's
+why we have different norms.
+
+00:21:17.160 --> 00:21:20.470 align:middle line:84%
+Why do we have the
+L1 norm and L2 norm?
+
+00:21:20.470 --> 00:21:21.930 align:middle line:84%
+Because somehow,
+they're supposed
+
+00:21:21.930 --> 00:21:25.690 align:middle line:84%
+to characterize the structure
+of different problems.
+
+00:21:25.690 --> 00:21:28.590 align:middle line:84%
+If they didn't, we would
+just only have one of them.
+
+00:21:28.590 --> 00:21:30.610 align:middle line:84%
+So that's like why there's
+a whole zoo of norms
+
+00:21:30.610 --> 00:21:34.270 align:middle line:84%
+is to somehow use them to
+characterize different problems.
+
+00:21:34.270 --> 00:21:40.490 align:middle line:90%
+
+
+00:21:40.490 --> 00:21:43.850 align:middle line:84%
+So this is where the
+whole LEGO thing comes
+
+00:21:43.850 --> 00:21:46.290 align:middle line:84%
+back again because
+it's like, how on Earth
+
+00:21:46.290 --> 00:21:48.530 align:middle line:84%
+are we going to come up
+with a norm on the weight
+
+00:21:48.530 --> 00:21:50.250 align:middle line:90%
+space of our whole network?
+
+00:21:50.250 --> 00:21:53.590 align:middle line:84%
+Well, what if we can
+break it up into stages?
+
+00:21:53.590 --> 00:21:57.650 align:middle line:84%
+So if we first think about
+the activation spaces,
+
+00:21:57.650 --> 00:21:59.330 align:middle line:84%
+again, those are
+more like simple
+
+00:21:59.330 --> 00:22:01.350 align:middle line:84%
+just vectors in
+a simple network.
+
+00:22:01.350 --> 00:22:05.250 align:middle line:84%
+So as we said,
+it's kind of easier
+
+00:22:05.250 --> 00:22:07.090 align:middle line:84%
+to give those norms
+because there's not
+
+00:22:07.090 --> 00:22:10.830 align:middle line:84%
+that many options, like
+L2, L infinity, L1, RMS.
+
+00:22:10.830 --> 00:22:13.530 align:middle line:90%
+
+
+00:22:13.530 --> 00:22:16.730 align:middle line:84%
+Now let's think about the tensor
+spaces, like the matrix spaces,
+
+00:22:16.730 --> 00:22:18.410 align:middle line:90%
+for example, in the network.
+
+00:22:18.410 --> 00:22:21.190 align:middle line:84%
+Once we've picked norms
+on the activation spaces,
+
+00:22:21.190 --> 00:22:24.550 align:middle line:84%
+there's actually a way to
+induce something called
+
+00:22:24.550 --> 00:22:26.510 align:middle line:90%
+an induced operator norm.
+
+00:22:26.510 --> 00:22:30.110 align:middle line:84%
+But there's a procedure for
+taking two norms on the input
+
+00:22:30.110 --> 00:22:32.190 align:middle line:84%
+and output of a linear
+operator and coming up
+
+00:22:32.190 --> 00:22:34.150 align:middle line:90%
+with a norm on the operator.
+
+00:22:34.150 --> 00:22:37.110 align:middle line:84%
+It's called induced
+operator norm.
+
+00:22:37.110 --> 00:22:39.150 align:middle line:84%
+AUDIENCE: So the activation
+functions usually
+
+00:22:39.150 --> 00:22:41.230 align:middle line:90%
+don't have weights.
+
+00:22:41.230 --> 00:22:42.270 align:middle line:90%
+JEREMY BERNSTEIN: Yes.
+
+00:22:42.270 --> 00:22:44.905 align:middle line:84%
+AUDIENCE: So, I guess,
+what are we norming?
+
+00:22:44.905 --> 00:22:47.030 align:middle line:84%
+JEREMY BERNSTEIN: So when
+I talk about activations,
+
+00:22:47.030 --> 00:22:49.030 align:middle line:84%
+I just meant the
+feature vectors.
+
+00:22:49.030 --> 00:22:50.630 align:middle line:90%
+But then if you think about--
+
+00:22:50.630 --> 00:22:54.350 align:middle line:90%
+
+
+00:22:54.350 --> 00:22:56.170 align:middle line:84%
+yeah, so I just meant
+the feature vectors.
+
+00:22:56.170 --> 00:23:03.590 align:middle line:84%
+But when it comes to including--
+if you want to think of a ReLU
+
+00:23:03.590 --> 00:23:06.950 align:middle line:84%
+nonlinearity as a LEGO block,
+it will just be a LEGO block
+
+00:23:06.950 --> 00:23:10.090 align:middle line:84%
+with the weight space is
+just the 0 vector space,
+
+00:23:10.090 --> 00:23:11.850 align:middle line:84%
+or it just has a
+trivial weight space.
+
+00:23:11.850 --> 00:23:17.700 align:middle line:90%
+
+
+00:23:17.700 --> 00:23:21.860 align:middle line:84%
+But we really need a norm
+not on each individual layer
+
+00:23:21.860 --> 00:23:23.860 align:middle line:84%
+separately, although
+that's kind of already
+
+00:23:23.860 --> 00:23:26.235 align:middle line:84%
+an interesting thing to think
+about is what norm would we
+
+00:23:26.235 --> 00:23:28.180 align:middle line:84%
+give to each individual
+layer, but we really
+
+00:23:28.180 --> 00:23:30.300 align:middle line:84%
+want a norm on the
+full weight vector.
+
+00:23:30.300 --> 00:23:32.460 align:middle line:84%
+So we really need a
+procedure for taking
+
+00:23:32.460 --> 00:23:35.420 align:middle line:84%
+all of these layer-wise
+norms and combining them
+
+00:23:35.420 --> 00:23:41.220 align:middle line:84%
+into one meganorm and
+on the whole neural net.
+
+00:23:41.220 --> 00:23:44.920 align:middle line:84%
+So that's what we tried
+to figure out how to do.
+
+00:23:44.920 --> 00:23:49.420 align:middle line:84%
+So there's this idea of starting
+with very granular norms
+
+00:23:49.420 --> 00:23:52.820 align:middle line:84%
+and then combining them until
+we have one norm that describes
+
+00:23:52.820 --> 00:23:54.000 align:middle line:90%
+the full weight space.
+
+00:23:54.000 --> 00:23:58.780 align:middle line:90%
+
+
+00:23:58.780 --> 00:24:00.500 align:middle line:84%
+So part two of the
+talk is I'm going
+
+00:24:00.500 --> 00:24:05.340 align:middle line:84%
+to try to make this more
+like a formal procedure.
+
+00:24:05.340 --> 00:24:10.060 align:middle line:84%
+So we call it the
+theory of modules.
+
+00:24:10.060 --> 00:24:13.760 align:middle line:84%
+And so this is another
+perspective on this LEGO idea.
+
+00:24:13.760 --> 00:24:15.930 align:middle line:84%
+But there's something
+called combinator pattern
+
+00:24:15.930 --> 00:24:21.050 align:middle line:84%
+in programming, which
+is the idea of building
+
+00:24:21.050 --> 00:24:24.010 align:middle line:84%
+complex structures by
+taking simple things
+
+00:24:24.010 --> 00:24:25.510 align:middle line:90%
+and combining them.
+
+00:24:25.510 --> 00:24:27.670 align:middle line:84%
+And you think that
+there's an abstract type,
+
+00:24:27.670 --> 00:24:29.433 align:middle line:84%
+and you can build very
+simple things which
+
+00:24:29.433 --> 00:24:30.850 align:middle line:84%
+are members of
+that type, and then
+
+00:24:30.850 --> 00:24:32.725 align:middle line:84%
+you combine them and
+you get new things which
+
+00:24:32.725 --> 00:24:35.850 align:middle line:90%
+belong to that type.
+
+00:24:35.850 --> 00:24:38.650 align:middle line:84%
+So for us, the abstract
+type is something
+
+00:24:38.650 --> 00:24:42.130 align:middle line:84%
+called a module, which has
+inputs weights and an output.
+
+00:24:42.130 --> 00:24:45.470 align:middle line:84%
+And that can be an individual
+layer in a neural network,
+
+00:24:45.470 --> 00:24:47.210 align:middle line:84%
+or it can be a
+whole neural network
+
+00:24:47.210 --> 00:24:50.270 align:middle line:84%
+that both of those
+things would be modules.
+
+00:24:50.270 --> 00:24:52.810 align:middle line:90%
+
+
+00:24:52.810 --> 00:24:56.870 align:middle line:84%
+And then given two modules, we
+have these combination rules.
+
+00:24:56.870 --> 00:25:01.490 align:middle line:84%
+So there's composition, which
+is like series, combination.
+
+00:25:01.490 --> 00:25:04.050 align:middle line:84%
+And concatenation
+is the name that we
+
+00:25:04.050 --> 00:25:06.430 align:middle line:90%
+gave to parallel combination.
+
+00:25:06.430 --> 00:25:10.130 align:middle line:90%
+
+
+00:25:10.130 --> 00:25:12.008 align:middle line:84%
+And again, it's just
+like the LEGO bricks.
+
+00:25:12.008 --> 00:25:13.800 align:middle line:84%
+It's like putting them
+on top of each other
+
+00:25:13.800 --> 00:25:15.300 align:middle line:84%
+or putting them
+next to each other.
+
+00:25:15.300 --> 00:25:18.120 align:middle line:90%
+
+
+00:25:18.120 --> 00:25:22.440 align:middle line:84%
+And this is just to
+show you actually you
+
+00:25:22.440 --> 00:25:25.000 align:middle line:90%
+can build interesting little--
+
+00:25:25.000 --> 00:25:26.700 align:middle line:84%
+you can think of them
+also as circuits.
+
+00:25:26.700 --> 00:25:29.000 align:middle line:84%
+But if you want to
+add two modules,
+
+00:25:29.000 --> 00:25:31.680 align:middle line:84%
+you can put them in parallel,
+and then you can compose them
+
+00:25:31.680 --> 00:25:33.840 align:middle line:90%
+with an addition module.
+
+00:25:33.840 --> 00:25:37.280 align:middle line:84%
+So it's like a kind
+of little circuit.
+
+00:25:37.280 --> 00:25:39.360 align:middle line:84%
+Scalar multiplication--
+you can take a module
+
+00:25:39.360 --> 00:25:41.920 align:middle line:84%
+and you can compose it with
+a special module, which
+
+00:25:41.920 --> 00:25:43.620 align:middle line:90%
+just multiplies by scalar.
+
+00:25:43.620 --> 00:25:47.320 align:middle line:90%
+
+
+00:25:47.320 --> 00:25:50.080 align:middle line:84%
+And then you can
+combine these things
+
+00:25:50.080 --> 00:25:52.602 align:middle line:90%
+to build a residual block.
+
+00:25:52.602 --> 00:25:54.060 align:middle line:84%
+So it kind of just
+looks like this.
+
+00:25:54.060 --> 00:26:01.180 align:middle line:84%
+So it's like some
+concatenations and compositions.
+
+00:26:01.180 --> 00:26:02.680 align:middle line:84%
+But essentially,
+then, you can think
+
+00:26:02.680 --> 00:26:05.440 align:middle line:84%
+about taking that little circuit
+and composing it with itself
+
+00:26:05.440 --> 00:26:09.600 align:middle line:84%
+a bunch of times to
+build a residual network.
+
+00:26:09.600 --> 00:26:11.140 align:middle line:84%
+And this is just
+to give you an idea
+
+00:26:11.140 --> 00:26:14.420 align:middle line:84%
+that actually those simple kind
+of binary combination rules
+
+00:26:14.420 --> 00:26:17.180 align:middle line:84%
+are actually enough to build
+all the neural networks
+
+00:26:17.180 --> 00:26:18.200 align:middle line:90%
+that you want to build.
+
+00:26:18.200 --> 00:26:22.460 align:middle line:90%
+
+
+00:26:22.460 --> 00:26:26.900 align:middle line:84%
+AUDIENCE: [INAUDIBLE], I guess
+we're adding [INAUDIBLE].
+
+00:26:26.900 --> 00:26:28.860 align:middle line:84%
+I guess we could
+just have modules
+
+00:26:28.860 --> 00:26:31.540 align:middle line:90%
+that have two inputs then?
+
+00:26:31.540 --> 00:26:33.460 align:middle line:84%
+JEREMY BERNSTEIN:
+Yeah, a module having
+
+00:26:33.460 --> 00:26:35.860 align:middle line:84%
+two inputs we would think
+of as the input as being
+
+00:26:35.860 --> 00:26:38.180 align:middle line:90%
+a single tuple.
+
+00:26:38.180 --> 00:26:41.180 align:middle line:84%
+So the input space can have
+whatever structure you want.
+
+00:26:41.180 --> 00:26:43.980 align:middle line:84%
+AUDIENCE: Just concatenate
+operational [INAUDIBLE]?
+
+00:26:43.980 --> 00:26:46.480 align:middle line:84%
+JEREMY BERNSTEIN: Yeah, so it
+just has to be a vector space,
+
+00:26:46.480 --> 00:26:48.120 align:middle line:90%
+but in the abstract sense.
+
+00:26:48.120 --> 00:26:55.060 align:middle line:90%
+
+
+00:26:55.060 --> 00:26:59.020 align:middle line:84%
+So this is to say
+that we can build--
+
+00:26:59.020 --> 00:27:00.860 align:middle line:84%
+then we have this
+kind of categorization
+
+00:27:00.860 --> 00:27:04.280 align:middle line:84%
+of different types of modules
+that we find interesting.
+
+00:27:04.280 --> 00:27:11.570 align:middle line:84%
+So atoms-- this is the name that
+we give to the simple layers
+
+00:27:11.570 --> 00:27:14.290 align:middle line:84%
+that you write by hand, like
+a linear layer, a convolution
+
+00:27:14.290 --> 00:27:16.890 align:middle line:90%
+layer, an embedding layer.
+
+00:27:16.890 --> 00:27:20.190 align:middle line:84%
+Bonds are just the ones with the
+kind of trivial weight space.
+
+00:27:20.190 --> 00:27:23.850 align:middle line:84%
+So things like nonlinearities
+don't have weights.
+
+00:27:23.850 --> 00:27:27.370 align:middle line:84%
+And a functional
+attention is the part
+
+00:27:27.370 --> 00:27:29.450 align:middle line:84%
+of attention
+without the weights.
+
+00:27:29.450 --> 00:27:33.170 align:middle line:84%
+And then you could compose
+it with some linear modules
+
+00:27:33.170 --> 00:27:37.090 align:middle line:84%
+and so on if you want to build
+an actual attention module.
+
+00:27:37.090 --> 00:27:40.330 align:middle line:84%
+And then compounds is the
+name that we give to anything
+
+00:27:40.330 --> 00:27:42.350 align:middle line:90%
+you build by combinations.
+
+00:27:42.350 --> 00:27:44.970 align:middle line:90%
+
+
+00:27:44.970 --> 00:27:47.130 align:middle line:84%
+And this is just a
+recap that what we
+
+00:27:47.130 --> 00:27:49.625 align:middle line:84%
+really what we've said that--
+the thing that we care about
+
+00:27:49.625 --> 00:27:51.250 align:middle line:84%
+or the thing that we
+want to know about
+
+00:27:51.250 --> 00:27:53.350 align:middle line:90%
+is the sensitivity information.
+
+00:27:53.350 --> 00:27:57.090 align:middle line:84%
+If I change the inputs
+and I change the weights,
+
+00:27:57.090 --> 00:27:59.150 align:middle line:90%
+how much does the output change?
+
+00:27:59.150 --> 00:28:00.570 align:middle line:84%
+Can we predict how
+much the output
+
+00:28:00.570 --> 00:28:02.290 align:middle line:84%
+changes from knowing
+how much we change
+
+00:28:02.290 --> 00:28:04.970 align:middle line:90%
+the inputs and the weights?
+
+00:28:04.970 --> 00:28:07.760 align:middle line:84%
+And can we do this in
+particular for any module?
+
+00:28:07.760 --> 00:28:10.520 align:middle line:84%
+So let's suppose that we can
+do it for the basic building
+
+00:28:10.520 --> 00:28:11.440 align:middle line:90%
+blocks.
+
+00:28:11.440 --> 00:28:13.600 align:middle line:84%
+Can we do it for
+any compound module
+
+00:28:13.600 --> 00:28:19.380 align:middle line:84%
+or anything built
+from our LEGO set
+
+00:28:19.380 --> 00:28:20.940 align:middle line:90%
+is the analogy we were making.
+
+00:28:20.940 --> 00:28:29.360 align:middle line:90%
+
+
+00:28:29.360 --> 00:28:32.700 align:middle line:84%
+So I worked recently with a
+pure mathematician, basically.
+
+00:28:32.700 --> 00:28:35.600 align:middle line:84%
+So it's quite an
+abstract or formal way
+
+00:28:35.600 --> 00:28:37.420 align:middle line:84%
+of going about
+solving this problem.
+
+00:28:37.420 --> 00:28:42.140 align:middle line:84%
+But essentially, we've come
+up with these definitions.
+
+00:28:42.140 --> 00:28:43.640 align:middle line:84%
+So just to remind
+you, a module is
+
+00:28:43.640 --> 00:28:46.160 align:middle line:84%
+something with inputs,
+weights, and an output.
+
+00:28:46.160 --> 00:28:50.040 align:middle line:84%
+But we also give
+it some metadata,
+
+00:28:50.040 --> 00:28:54.340 align:middle line:84%
+like its forward function,
+a sensitivity number,
+
+00:28:54.340 --> 00:28:58.180 align:middle line:84%
+which is supposed to measure
+the input-output sensitivity.
+
+00:28:58.180 --> 00:29:02.060 align:middle line:84%
+So it's one of the
+Lipschitz constants.
+
+00:29:02.060 --> 00:29:04.470 align:middle line:84%
+The mass is supposed to be a
+kind of hyperparameter which
+
+00:29:04.470 --> 00:29:07.770 align:middle line:84%
+sets how important this module
+is compared to other modules,
+
+00:29:07.770 --> 00:29:10.110 align:middle line:84%
+how much it will
+contribute to learning.
+
+00:29:10.110 --> 00:29:11.950 align:middle line:84%
+And then we're asking
+that it should have
+
+00:29:11.950 --> 00:29:14.750 align:middle line:90%
+a norm on the weight space.
+
+00:29:14.750 --> 00:29:19.590 align:middle line:84%
+And anything with these
+attributes is a valid module
+
+00:29:19.590 --> 00:29:22.910 align:middle line:84%
+but because, in our
+library, we don't
+
+00:29:22.910 --> 00:29:24.610 align:middle line:84%
+want to have really
+horrible functions,
+
+00:29:24.610 --> 00:29:27.890 align:middle line:84%
+we want to have nice
+functions that people can use,
+
+00:29:27.890 --> 00:29:30.830 align:middle line:84%
+and so that's why we have
+this second definition, which
+
+00:29:30.830 --> 00:29:35.670 align:middle line:90%
+is a module being well-normed.
+
+00:29:35.670 --> 00:29:37.883 align:middle line:84%
+So these are the good
+modules, the ones
+
+00:29:37.883 --> 00:29:39.550 align:middle line:84%
+that we actually like
+to use and that we
+
+00:29:39.550 --> 00:29:43.390 align:middle line:90%
+want to include in our library.
+
+00:29:43.390 --> 00:29:45.090 align:middle line:84%
+So for a module
+to be well-normed,
+
+00:29:45.090 --> 00:29:48.550 align:middle line:84%
+it needs to have a notion
+of a norm on its input space
+
+00:29:48.550 --> 00:29:54.030 align:middle line:84%
+and a norm on its output space,
+which corresponds to roughly
+
+00:29:54.030 --> 00:29:56.310 align:middle line:84%
+saying you want to know
+how the inputs behave
+
+00:29:56.310 --> 00:29:58.190 align:middle line:84%
+and how the outputs
+behave, or how
+
+00:29:58.190 --> 00:30:01.550 align:middle line:90%
+you want the outputs to behave.
+
+00:30:01.550 --> 00:30:08.130 align:middle line:84%
+And then we'll basically say
+that a module is well-normed
+
+00:30:08.130 --> 00:30:12.170 align:middle line:84%
+if it's one Lipschitz
+in its weights
+
+00:30:12.170 --> 00:30:14.390 align:middle line:84%
+and if it's Lipschitz
+in its inputs
+
+00:30:14.390 --> 00:30:16.730 align:middle line:84%
+where the sensitivity number
+assigned to the module
+
+00:30:16.730 --> 00:30:19.822 align:middle line:90%
+is Lipschitz constant.
+
+00:30:19.822 --> 00:30:21.530 align:middle line:84%
+So the way that we're
+thinking about this
+
+00:30:21.530 --> 00:30:25.330 align:middle line:84%
+is like when we say that a LEGO
+brick has a theory associated
+
+00:30:25.330 --> 00:30:28.530 align:middle line:84%
+with it, it basically
+means that a LEGO
+
+00:30:28.530 --> 00:30:31.890 align:middle line:90%
+brick has these attributes.
+
+00:30:31.890 --> 00:30:35.530 align:middle line:84%
+And the second definition
+says that the attributes
+
+00:30:35.530 --> 00:30:38.570 align:middle line:84%
+are based on constraints
+with respect to each other.
+
+00:30:38.570 --> 00:30:42.250 align:middle line:84%
+And if the LEGO brick
+satisfies these constraints,
+
+00:30:42.250 --> 00:30:43.417 align:middle line:90%
+we'll put it in our library.
+
+00:30:43.417 --> 00:30:45.167 align:middle line:84%
+And if it doesn't,
+we'll just throw it out
+
+00:30:45.167 --> 00:30:46.270 align:middle line:90%
+because we don't like it.
+
+00:30:46.270 --> 00:30:49.330 align:middle line:90%
+
+
+00:30:49.330 --> 00:30:52.250 align:middle line:84%
+So I want to give you some
+examples of what this actually
+
+00:30:52.250 --> 00:30:53.030 align:middle line:90%
+looks like.
+
+00:30:53.030 --> 00:30:56.090 align:middle line:90%
+So these are some--
+
+00:30:56.090 --> 00:31:00.720 align:middle line:84%
+first of all, the linear
+module, the most classic
+
+00:31:00.720 --> 00:31:03.160 align:middle line:84%
+does a matrix vector
+multiplication.
+
+00:31:03.160 --> 00:31:07.080 align:middle line:84%
+We'll say that it has
+sensitivity 1 and mass 1.
+
+00:31:07.080 --> 00:31:09.840 align:middle line:84%
+And we'll give it this
+kind of funky norm,
+
+00:31:09.840 --> 00:31:12.100 align:middle line:90%
+this rescaled spectral norm.
+
+00:31:12.100 --> 00:31:14.800 align:middle line:90%
+
+
+00:31:14.800 --> 00:31:18.040 align:middle line:84%
+And then we need to ask, is
+this module well-normed or not?
+
+00:31:18.040 --> 00:31:20.140 align:middle line:84%
+Do we want to put it
+into our library or not?
+
+00:31:20.140 --> 00:31:23.160 align:middle line:90%
+
+
+00:31:23.160 --> 00:31:26.400 align:middle line:84%
+And so the claim is that if
+you set the input and output
+
+00:31:26.400 --> 00:31:28.160 align:middle line:84%
+norm to be the RMS
+norm, which is kind
+
+00:31:28.160 --> 00:31:31.680 align:middle line:84%
+of a natural choice for feature
+vectors inside a neural network,
+
+00:31:31.680 --> 00:31:33.640 align:middle line:84%
+then the linear
+module is well-normed
+
+00:31:33.640 --> 00:31:37.220 align:middle line:84%
+if it has bounded inputs and
+if the weights are bounded.
+
+00:31:37.220 --> 00:31:39.840 align:middle line:90%
+
+
+00:31:39.840 --> 00:31:43.140 align:middle line:84%
+So yeah, I'm still kind of
+thinking about this topic,
+
+00:31:43.140 --> 00:31:44.920 align:middle line:84%
+but it's kind of
+interesting that one
+
+00:31:44.920 --> 00:31:48.040 align:middle line:84%
+of the basic things that, in an
+actual neural net, that you do
+
+00:31:48.040 --> 00:31:52.900 align:middle line:84%
+is you normalize all the feature
+vectors everywhere explicitly.
+
+00:31:52.900 --> 00:31:54.400 align:middle line:84%
+People don't really
+know why they're
+
+00:31:54.400 --> 00:31:57.220 align:middle line:84%
+doing that other than
+somehow, intuitively,
+
+00:31:57.220 --> 00:31:58.950 align:middle line:84%
+it's going to make
+things more stable
+
+00:31:58.950 --> 00:32:00.430 align:middle line:90%
+and stop things blowing up.
+
+00:32:00.430 --> 00:32:02.270 align:middle line:84%
+But this is pointing
+out that if you
+
+00:32:02.270 --> 00:32:05.230 align:middle line:84%
+want to have Lipschitz
+guarantees for a linear module,
+
+00:32:05.230 --> 00:32:07.830 align:middle line:84%
+the inputs and the
+weights must be bounded.
+
+00:32:07.830 --> 00:32:11.010 align:middle line:84%
+If they're not, it can
+be arbitrarily sensitive.
+
+00:32:11.010 --> 00:32:17.030 align:middle line:90%
+
+
+00:32:17.030 --> 00:32:20.790 align:middle line:84%
+So a useful counterpoint
+is an embedding module
+
+00:32:20.790 --> 00:32:22.643 align:middle line:84%
+because, at first
+glance, it looks
+
+00:32:22.643 --> 00:32:24.810 align:middle line:84%
+like it's kind of the same
+thing as a linear module.
+
+00:32:24.810 --> 00:32:29.910 align:middle line:84%
+You can write it as a matrix
+vector multiplication.
+
+00:32:29.910 --> 00:32:31.470 align:middle line:84%
+But the difference
+is that you think
+
+00:32:31.470 --> 00:32:33.750 align:middle line:84%
+about an embedding layer
+in a neural network
+
+00:32:33.750 --> 00:32:36.790 align:middle line:84%
+is you pass in a one hot
+vector, and it picks out
+
+00:32:36.790 --> 00:32:38.610 align:middle line:84%
+one of the columns
+of the matrix,
+
+00:32:38.610 --> 00:32:42.190 align:middle line:84%
+and that's the embedding that
+corresponds to that token.
+
+00:32:42.190 --> 00:32:45.350 align:middle line:84%
+So it has an embedding layer
+has a very different semantics
+
+00:32:45.350 --> 00:32:48.230 align:middle line:90%
+to a linear layer.
+
+00:32:48.230 --> 00:32:52.350 align:middle line:84%
+And one of the ways
+that gets expressed
+
+00:32:52.350 --> 00:32:54.950 align:middle line:84%
+is by giving the weight
+space of an embedding module
+
+00:32:54.950 --> 00:33:00.540 align:middle line:84%
+a different norm
+to a linear module.
+
+00:33:00.540 --> 00:33:03.820 align:middle line:84%
+And similarly, when we ask
+if the module is well-normed
+
+00:33:03.820 --> 00:33:07.000 align:middle line:84%
+or not, we'll put a different
+norm on the input space.
+
+00:33:07.000 --> 00:33:08.900 align:middle line:84%
+And the way we
+think about this is
+
+00:33:08.900 --> 00:33:11.300 align:middle line:84%
+that the input vector
+to an embedding layer
+
+00:33:11.300 --> 00:33:14.560 align:middle line:84%
+is a one hot vector, which is a
+bit like a probability vector.
+
+00:33:14.560 --> 00:33:16.120 align:middle line:90%
+So we give it the L1 norm.
+
+00:33:16.120 --> 00:33:19.820 align:middle line:90%
+
+
+00:33:19.820 --> 00:33:22.380 align:middle line:84%
+And then it's basically
+with that choice
+
+00:33:22.380 --> 00:33:25.700 align:middle line:90%
+of input norm and output norm.
+
+00:33:25.700 --> 00:33:29.340 align:middle line:84%
+It's well-known that under the
+same conditions of like unit
+
+00:33:29.340 --> 00:33:32.300 align:middle line:90%
+inputs and unit weights.
+
+00:33:32.300 --> 00:33:35.540 align:middle line:84%
+AUDIENCE: Actually, I just
+finished trying to figure out
+
+00:33:35.540 --> 00:33:38.860 align:middle line:84%
+the well-normed module
+definition before--
+
+00:33:38.860 --> 00:33:41.660 align:middle line:84%
+there's a diamond,
+like a rotated square.
+
+00:33:41.660 --> 00:33:42.500 align:middle line:90%
+What does that mean?
+
+00:33:42.500 --> 00:33:45.980 align:middle line:84%
+JEREMY BERNSTEIN: That means
+contract over any tensor indices
+
+00:33:45.980 --> 00:33:48.380 align:middle line:90%
+which are shared between the--
+
+00:33:48.380 --> 00:33:51.605 align:middle line:84%
+it's just like a
+tensor contraction.
+
+00:33:51.605 --> 00:33:52.480 align:middle line:90%
+Does that make sense?
+
+00:33:52.480 --> 00:33:56.190 align:middle line:84%
+It's like if there are two
+vectors, it's a dot product.
+
+00:33:56.190 --> 00:33:57.770 align:middle line:84%
+If it's a matrix
+and a vector, it's
+
+00:33:57.770 --> 00:33:59.890 align:middle line:90%
+a matrix vector multiplication.
+
+00:33:59.890 --> 00:34:02.830 align:middle line:84%
+If it's a matrix and a matrix
+where the indices are the same,
+
+00:34:02.830 --> 00:34:05.770 align:middle line:84%
+it's like sum over the
+[INAUDIBLE] indices.
+
+00:34:05.770 --> 00:34:10.889 align:middle line:84%
+It's just like the objects
+in a neural network
+
+00:34:10.889 --> 00:34:13.150 align:middle line:84%
+have a whole zoo of
+different shapes.
+
+00:34:13.150 --> 00:34:17.710 align:middle line:84%
+And it's hard to come up with
+a notation to express that.
+
+00:34:17.710 --> 00:34:19.409 align:middle line:84%
+So it's just like a
+shorthand for figure
+
+00:34:19.409 --> 00:34:22.150 align:middle line:84%
+out what kind of multiplication
+you actually want to do here.
+
+00:34:22.150 --> 00:34:27.530 align:middle line:90%
+
+
+00:34:27.530 --> 00:34:30.090 align:middle line:84%
+AUDIENCE: Do you
+not run into issues
+
+00:34:30.090 --> 00:34:33.810 align:middle line:84%
+when you optimize this with
+boundary value problems,
+
+00:34:33.810 --> 00:34:37.969 align:middle line:84%
+where, let's say, you're at the
+boundary of your input space
+
+00:34:37.969 --> 00:34:41.370 align:middle line:84%
+being less than or equal
+to 1 and your gradient is
+
+00:34:41.370 --> 00:34:45.150 align:middle line:84%
+like trying to push you
+outside of the boundary?
+
+00:34:45.150 --> 00:34:47.150 align:middle line:84%
+JEREMY BERNSTEIN: Yeah,
+that's a great question.
+
+00:34:47.150 --> 00:34:50.810 align:middle line:84%
+So that the short
+answer is we've
+
+00:34:50.810 --> 00:34:53.750 align:middle line:84%
+not actually implemented this
+part really faithfully yet.
+
+00:34:53.750 --> 00:34:55.889 align:middle line:84%
+So when we actually
+implement it at the moment,
+
+00:34:55.889 --> 00:34:58.130 align:middle line:84%
+we just let everything
+go outside the boundary.
+
+00:34:58.130 --> 00:35:00.990 align:middle line:90%
+But I want to do that.
+
+00:35:00.990 --> 00:35:04.030 align:middle line:84%
+And the idea is to design like
+manifold optimization algorithms
+
+00:35:04.030 --> 00:35:08.910 align:middle line:84%
+where the weights stay on this
+like well-normed manifold.
+
+00:35:08.910 --> 00:35:10.950 align:middle line:84%
+And then, because of
+that, that gives you
+
+00:35:10.950 --> 00:35:12.617 align:middle line:84%
+guarantees about how
+the outputs behave.
+
+00:35:12.617 --> 00:35:14.617 align:middle line:84%
+And then you can think
+about those as the inputs
+
+00:35:14.617 --> 00:35:15.750 align:middle line:90%
+to the next layer.
+
+00:35:15.750 --> 00:35:18.090 align:middle line:84%
+And there's a way to make
+everything consistent.
+
+00:35:18.090 --> 00:35:19.890 align:middle line:90%
+We just haven't done it yet.
+
+00:35:19.890 --> 00:35:27.510 align:middle line:90%
+
+
+00:35:27.510 --> 00:35:31.590 align:middle line:84%
+So yeah, so far, it's different
+aspects of the whole theory
+
+00:35:31.590 --> 00:35:33.810 align:middle line:90%
+seem to be useful.
+
+00:35:33.810 --> 00:35:36.130 align:middle line:84%
+But there's not like
+a complete version,
+
+00:35:36.130 --> 00:35:38.770 align:middle line:84%
+which is where everything
+is consistent in practice.
+
+00:35:38.770 --> 00:35:44.230 align:middle line:90%
+
+
+00:35:44.230 --> 00:35:46.710 align:middle line:84%
+So the reason for setting up
+those abstract definitions
+
+00:35:46.710 --> 00:35:49.750 align:middle line:84%
+of what is a module and
+what is a well-normed module
+
+00:35:49.750 --> 00:35:54.240 align:middle line:84%
+is that we want to have
+combination rules which
+
+00:35:54.240 --> 00:35:56.680 align:middle line:84%
+somehow automatically
+preserve those properties.
+
+00:35:56.680 --> 00:35:59.460 align:middle line:84%
+So if you take two well-normed
+modules in your library
+
+00:35:59.460 --> 00:36:02.180 align:middle line:84%
+and compose them, the
+new thing that you get
+
+00:36:02.180 --> 00:36:07.980 align:middle line:84%
+is automatically satisfies the
+definition of being well normed.
+
+00:36:07.980 --> 00:36:10.660 align:middle line:84%
+And so the types of things
+that we want to show
+
+00:36:10.660 --> 00:36:13.120 align:middle line:84%
+are that the combination
+rules are associative.
+
+00:36:13.120 --> 00:36:16.820 align:middle line:84%
+So if you do compose
+a chain of things,
+
+00:36:16.820 --> 00:36:18.840 align:middle line:84%
+you get the same
+fundamental object,
+
+00:36:18.840 --> 00:36:23.620 align:middle line:84%
+whichever order you take those
+compositions, for example.
+
+00:36:23.620 --> 00:36:26.460 align:middle line:84%
+We want the space of
+modules to be kind of closed
+
+00:36:26.460 --> 00:36:31.620 align:middle line:84%
+under combinations, the
+space of well-normed modules
+
+00:36:31.620 --> 00:36:34.820 align:middle line:90%
+to be closed under combinations.
+
+00:36:34.820 --> 00:36:37.780 align:middle line:84%
+And then we want that mass
+parameter that one of those
+
+00:36:37.780 --> 00:36:41.140 align:middle line:84%
+attributes to allow
+us to tune how
+
+00:36:41.140 --> 00:36:43.180 align:middle line:84%
+much different modules
+contribute relative
+
+00:36:43.180 --> 00:36:43.920 align:middle line:90%
+to each other.
+
+00:36:43.920 --> 00:36:46.860 align:middle line:84%
+And intuitively think
+about that as giving you
+
+00:36:46.860 --> 00:36:49.510 align:middle line:84%
+the freedom to tune learning
+rates at different layers
+
+00:36:49.510 --> 00:36:50.990 align:middle line:90%
+if you want to do that.
+
+00:36:50.990 --> 00:36:53.530 align:middle line:90%
+
+
+00:36:53.530 --> 00:36:58.190 align:middle line:84%
+And so we came up
+with these rules.
+
+00:36:58.190 --> 00:37:00.330 align:middle line:84%
+So again, these are
+just definitions.
+
+00:37:00.330 --> 00:37:03.190 align:middle line:84%
+And the kind of style
+of what this is,
+
+00:37:03.190 --> 00:37:05.910 align:middle line:84%
+is come up with really,
+really clever definitions.
+
+00:37:05.910 --> 00:37:09.330 align:middle line:84%
+And then everything
+else is easy.
+
+00:37:09.330 --> 00:37:13.250 align:middle line:84%
+So the definitions are
+kind of the hard part.
+
+00:37:13.250 --> 00:37:19.570 align:middle line:84%
+So for composing modules or
+putting modules in series,
+
+00:37:19.570 --> 00:37:21.270 align:middle line:84%
+you compose the
+forward functions,
+
+00:37:21.270 --> 00:37:23.130 align:middle line:90%
+which seems kind of natural.
+
+00:37:23.130 --> 00:37:24.810 align:middle line:84%
+The sensitivity,
+which is supposed
+
+00:37:24.810 --> 00:37:28.190 align:middle line:84%
+to be the input to output
+Lipschitz constant,
+
+00:37:28.190 --> 00:37:31.330 align:middle line:84%
+those multiply, which is kind
+of like if you compose things,
+
+00:37:31.330 --> 00:37:33.190 align:middle line:84%
+you multiply that
+Lipschitz constant.
+
+00:37:33.190 --> 00:37:35.370 align:middle line:90%
+So that's maybe intuitive.
+
+00:37:35.370 --> 00:37:38.970 align:middle line:84%
+Mass is like, you have to
+think about it a little more.
+
+00:37:38.970 --> 00:37:43.270 align:middle line:84%
+And then the important thing
+is that we use a max norm.
+
+00:37:43.270 --> 00:37:45.050 align:middle line:84%
+So when we compose
+modules, we want
+
+00:37:45.050 --> 00:37:47.940 align:middle line:84%
+to have a norm on the
+joint weight space.
+
+00:37:47.940 --> 00:37:51.360 align:middle line:84%
+Then we pick the max norm
+with a special weighting.
+
+00:37:51.360 --> 00:37:54.200 align:middle line:84%
+So there's coefficients
+p and q, which
+
+00:37:54.200 --> 00:37:57.800 align:middle line:84%
+weight the two different
+norms in the max.
+
+00:37:57.800 --> 00:38:01.440 align:middle line:84%
+And p and q depend on the
+mass ratios, which that's
+
+00:38:01.440 --> 00:38:03.080 align:middle line:84%
+the idea that the
+mass allows you
+
+00:38:03.080 --> 00:38:04.800 align:middle line:84%
+to tune the
+importance of the two
+
+00:38:04.800 --> 00:38:07.040 align:middle line:84%
+different modules
+in the composition,
+
+00:38:07.040 --> 00:38:11.520 align:middle line:84%
+and the scalar p also
+couples to the sensitivity
+
+00:38:11.520 --> 00:38:12.920 align:middle line:90%
+of the second module.
+
+00:38:12.920 --> 00:38:15.780 align:middle line:84%
+So that's like, if you
+compose two things,
+
+00:38:15.780 --> 00:38:18.880 align:middle line:84%
+but the second one is very,
+very sensitive to its inputs.
+
+00:38:18.880 --> 00:38:21.065 align:middle line:84%
+Somehow, the first one
+should know about that
+
+00:38:21.065 --> 00:38:22.440 align:middle line:84%
+because if you're
+going to change
+
+00:38:22.440 --> 00:38:24.920 align:middle line:84%
+the weights of the
+first one, you hopefully
+
+00:38:24.920 --> 00:38:27.440 align:middle line:84%
+want to know that the second
+one is really, really sensitive
+
+00:38:27.440 --> 00:38:29.000 align:middle line:90%
+or it's very insensitive.
+
+00:38:29.000 --> 00:38:33.320 align:middle line:84%
+So it's like just another
+view on really trying
+
+00:38:33.320 --> 00:38:35.920 align:middle line:84%
+to characterize the sensitivity
+of how things behave when you
+
+00:38:35.920 --> 00:38:37.340 align:middle line:90%
+combine them with each other.
+
+00:38:37.340 --> 00:38:40.040 align:middle line:90%
+
+
+00:38:40.040 --> 00:38:44.320 align:middle line:84%
+AUDIENCE: So we explained
+the intuition for sensitivity
+
+00:38:44.320 --> 00:38:45.900 align:middle line:84%
+in terms of
+[? functions. ?] What's
+
+00:38:45.900 --> 00:38:48.460 align:middle line:90%
+the main intuition for mass?
+
+00:38:48.460 --> 00:38:50.500 align:middle line:84%
+JEREMY BERNSTEIN: Yeah,
+the intuition for mass
+
+00:38:50.500 --> 00:38:53.840 align:middle line:84%
+is if you just forget
+about all of this
+
+00:38:53.840 --> 00:38:56.435 align:middle line:84%
+and you say you're going
+to train a transformer
+
+00:38:56.435 --> 00:38:58.560 align:middle line:84%
+and you think about the
+structure of a transformer,
+
+00:38:58.560 --> 00:39:01.180 align:middle line:84%
+it's got like the kind
+of body of the network
+
+00:39:01.180 --> 00:39:03.440 align:middle line:90%
+is like residual blocks.
+
+00:39:03.440 --> 00:39:05.320 align:middle line:84%
+There's an embedding
+layer at the beginning,
+
+00:39:05.320 --> 00:39:07.358 align:middle line:84%
+and there's a linear
+layer at the output.
+
+00:39:07.358 --> 00:39:08.900 align:middle line:84%
+And then you say
+like, OK, now I want
+
+00:39:08.900 --> 00:39:12.300 align:middle line:90%
+to scale the number of blocks.
+
+00:39:12.300 --> 00:39:13.980 align:middle line:84%
+And let's say you
+want to even scale
+
+00:39:13.980 --> 00:39:17.820 align:middle line:84%
+the number of blocks to the
+point where there's millions
+
+00:39:17.820 --> 00:39:20.900 align:middle line:84%
+of blocks, but there's only one
+embedding layer and one output
+
+00:39:20.900 --> 00:39:23.100 align:middle line:90%
+layer.
+
+00:39:23.100 --> 00:39:26.500 align:middle line:84%
+The claim is that it's not
+obvious whether in the limit
+
+00:39:26.500 --> 00:39:28.658 align:middle line:84%
+of a really large
+number of blocks.
+
+00:39:28.658 --> 00:39:30.700 align:middle line:84%
+Should you even still be
+training the input layer
+
+00:39:30.700 --> 00:39:31.520 align:middle line:90%
+and the output layer?
+
+00:39:31.520 --> 00:39:32.860 align:middle line:84%
+Should they now
+become negligible
+
+00:39:32.860 --> 00:39:33.980 align:middle line:84%
+because you want
+all the learning
+
+00:39:33.980 --> 00:39:35.140 align:middle line:90%
+to happen in the middle?
+
+00:39:35.140 --> 00:39:37.540 align:middle line:84%
+Or actually, the
+embedding layer plays
+
+00:39:37.540 --> 00:39:39.620 align:middle line:84%
+a really interesting
+and different functional
+
+00:39:39.620 --> 00:39:42.000 align:middle line:84%
+role to the blocks, so even
+if you have a lot of blocks,
+
+00:39:42.000 --> 00:39:43.630 align:middle line:84%
+you still want to
+train the embeddings.
+
+00:39:43.630 --> 00:39:45.950 align:middle line:84%
+It's not obvious what the
+answer to that question is.
+
+00:39:45.950 --> 00:39:50.410 align:middle line:90%
+I find it difficult to know.
+
+00:39:50.410 --> 00:39:52.430 align:middle line:84%
+So that's why there's
+a degree of freedom,
+
+00:39:52.430 --> 00:39:54.930 align:middle line:84%
+which is letting you
+tune how much you
+
+00:39:54.930 --> 00:39:56.570 align:middle line:84%
+want the embedding
+to be important
+
+00:39:56.570 --> 00:39:58.970 align:middle line:90%
+relative to the blocks.
+
+00:39:58.970 --> 00:40:02.150 align:middle line:84%
+AUDIENCE: So it's being defined
+as the thing that you add up,
+
+00:40:02.150 --> 00:40:05.330 align:middle line:84%
+regardless of whether it's
+composition or concatenation.
+
+00:40:05.330 --> 00:40:09.290 align:middle line:84%
+So in that case, could you say
+if you had a set of blocks,
+
+00:40:09.290 --> 00:40:10.970 align:middle line:84%
+and you're trying to
+analyze it, and you
+
+00:40:10.970 --> 00:40:12.850 align:middle line:84%
+doubled all of their
+masses, would that
+
+00:40:12.850 --> 00:40:14.890 align:middle line:90%
+give you the same analysis?
+
+00:40:14.890 --> 00:40:18.210 align:middle line:84%
+JEREMY BERNSTEIN:
+Yeah, it would.
+
+00:40:18.210 --> 00:40:19.270 align:middle line:90%
+Analysis goes through.
+
+00:40:19.270 --> 00:40:22.010 align:middle line:84%
+But it would just mean that
+when you train the network
+
+00:40:22.010 --> 00:40:24.970 align:middle line:84%
+under this norm, using this
+norm to help you train it,
+
+00:40:24.970 --> 00:40:28.010 align:middle line:84%
+that the amount of contribution
+towards learning of the blocks
+
+00:40:28.010 --> 00:40:31.690 align:middle line:84%
+would double compared to
+the things whose mass you
+
+00:40:31.690 --> 00:40:32.858 align:middle line:90%
+don't double.
+
+00:40:32.858 --> 00:40:34.650 align:middle line:84%
+AUDIENCE: Oh, but if
+there's no other thing
+
+00:40:34.650 --> 00:40:35.710 align:middle line:90%
+that you don't double--
+
+00:40:35.710 --> 00:40:37.335 align:middle line:84%
+JEREMY BERNSTEIN:
+Then nothing changes.
+
+00:40:37.335 --> 00:40:37.890 align:middle line:90%
+Exactly.
+
+00:40:37.890 --> 00:40:41.720 align:middle line:90%
+
+
+00:40:41.720 --> 00:40:43.935 align:middle line:84%
+AUDIENCE: Follow-up
+question on this.
+
+00:40:43.935 --> 00:40:46.060 align:middle line:84%
+How do you determine the
+mass for different blocks?
+
+00:40:46.060 --> 00:40:49.360 align:middle line:84%
+So I am assuming here
+that mass incorporates
+
+00:40:49.360 --> 00:40:53.960 align:middle line:84%
+some-- defines the richness
+of a certain block in terms
+
+00:40:53.960 --> 00:40:56.780 align:middle line:84%
+of its feature
+representation or ability?
+
+00:40:56.780 --> 00:40:58.280 align:middle line:84%
+JEREMY BERNSTEIN:
+What it determines
+
+00:40:58.280 --> 00:41:01.160 align:middle line:84%
+is how much that
+block during training
+
+00:41:01.160 --> 00:41:03.800 align:middle line:84%
+is going to influence
+the features of anything
+
+00:41:03.800 --> 00:41:06.520 align:middle line:84%
+that it contributes to,
+any kind of super module
+
+00:41:06.520 --> 00:41:09.200 align:middle line:90%
+that it contributes to.
+
+00:41:09.200 --> 00:41:12.360 align:middle line:84%
+And sort of like a
+degree of freedom
+
+00:41:12.360 --> 00:41:14.860 align:middle line:84%
+that we couldn't really see a
+theoretical way to get rid of,
+
+00:41:14.860 --> 00:41:17.720 align:middle line:84%
+so it's something
+you have to tune.
+
+00:41:17.720 --> 00:41:19.340 align:middle line:84%
+But when we actually
+did experiments,
+
+00:41:19.340 --> 00:41:24.180 align:middle line:84%
+we just tuned the mass of
+all of the blocks together.
+
+00:41:24.180 --> 00:41:26.080 align:middle line:90%
+So we give each--
+
+00:41:26.080 --> 00:41:28.820 align:middle line:84%
+if all of the blocks have
+mass m and there's l blocks,
+
+00:41:28.820 --> 00:41:31.960 align:middle line:84%
+each block gets
+mass m divided by l.
+
+00:41:31.960 --> 00:41:34.500 align:middle line:84%
+So there's one number, which
+is the mass of all the blocks.
+
+00:41:34.500 --> 00:41:37.080 align:middle line:84%
+And then we fix the input layer
+to have mass 1 and the output
+
+00:41:37.080 --> 00:41:39.080 align:middle line:90%
+layer to have mass 1.
+
+00:41:39.080 --> 00:41:42.270 align:middle line:84%
+AUDIENCE: So if you have a block
+that's linear that has mass 1,
+
+00:41:42.270 --> 00:41:44.570 align:middle line:84%
+and you have a block
+as a convolution,
+
+00:41:44.570 --> 00:41:46.710 align:middle line:90%
+that would also have the same--
+
+00:41:46.710 --> 00:41:47.990 align:middle line:90%
+JEREMY BERNSTEIN: Yes.
+
+00:41:47.990 --> 00:41:51.230 align:middle line:84%
+And we do that for
+simplicity because it's
+
+00:41:51.230 --> 00:41:55.670 align:middle line:84%
+a pain if you-- but the
+current understanding is maybe
+
+00:41:55.670 --> 00:41:58.210 align:middle line:84%
+it would work better if
+you tune them separately.
+
+00:41:58.210 --> 00:42:04.510 align:middle line:84%
+But you can tune them in
+groups if you want to.
+
+00:42:04.510 --> 00:42:06.730 align:middle line:84%
+So concatenation is
+kind of analogous,
+
+00:42:06.730 --> 00:42:09.070 align:middle line:84%
+but it doesn't have the
+coupling because they
+
+00:42:09.070 --> 00:42:10.530 align:middle line:90%
+don't compose with each other.
+
+00:42:10.530 --> 00:42:12.750 align:middle line:90%
+So it's a little bit simpler.
+
+00:42:12.750 --> 00:42:16.310 align:middle line:84%
+But the point of the
+point of these definitions
+
+00:42:16.310 --> 00:42:19.410 align:middle line:84%
+is that you take
+these definitions.
+
+00:42:19.410 --> 00:42:21.290 align:middle line:84%
+You take the definition
+of well-normedness,
+
+00:42:21.290 --> 00:42:24.470 align:middle line:84%
+and you can prove that if
+you compose two things that
+
+00:42:24.470 --> 00:42:27.530 align:middle line:84%
+are well-normed, then the
+composition is also well-normed.
+
+00:42:27.530 --> 00:42:29.830 align:middle line:90%
+So they preserve that property.
+
+00:42:29.830 --> 00:42:32.350 align:middle line:84%
+And they have another--
+there's another advantage which
+
+00:42:32.350 --> 00:42:37.770 align:middle line:84%
+is that you can work this
+theory through to second order.
+
+00:42:37.770 --> 00:42:40.050 align:middle line:84%
+So you define what you
+mean by the sharpness.
+
+00:42:40.050 --> 00:42:44.210 align:middle line:84%
+It's a bit like the
+reciprocal of the smoothness.
+
+00:42:44.210 --> 00:42:48.130 align:middle line:84%
+But you say that the module
+is alpha, beta, gamma sharp
+
+00:42:48.130 --> 00:42:50.570 align:middle line:90%
+if it's second derivatives.
+
+00:42:50.570 --> 00:42:53.310 align:middle line:84%
+In other words, it's
+Lipschitz smooth
+
+00:42:53.310 --> 00:42:55.290 align:middle line:84%
+if the module is Lipschitz
+smooth with respect
+
+00:42:55.290 --> 00:42:57.410 align:middle line:84%
+to its weight norm
+and input norm.
+
+00:42:57.410 --> 00:43:00.490 align:middle line:84%
+But because a module
+has two arguments,
+
+00:43:00.490 --> 00:43:05.390 align:middle line:84%
+we can give it three
+sharpness coefficients,
+
+00:43:05.390 --> 00:43:09.430 align:middle line:84%
+which correspond to
+varying just the weights,
+
+00:43:09.430 --> 00:43:10.910 align:middle line:84%
+varying the weights
+and the input,
+
+00:43:10.910 --> 00:43:12.150 align:middle line:90%
+or varying just the input.
+
+00:43:12.150 --> 00:43:15.672 align:middle line:84%
+So that's why there's three
+sharpness coefficients.
+
+00:43:15.672 --> 00:43:17.130 align:middle line:84%
+And you can think
+of these as being
+
+00:43:17.130 --> 00:43:19.110 align:middle line:84%
+like generalized
+top eigenvalues.
+
+00:43:19.110 --> 00:43:25.210 align:middle line:84%
+So oftentimes, when people
+talk about the sharpness
+
+00:43:25.210 --> 00:43:28.930 align:middle line:84%
+of the Hessian in deep
+learning, what they're meaning
+
+00:43:28.930 --> 00:43:32.710 align:middle line:84%
+is how big is the largest
+eigenvalue of the Hessian.
+
+00:43:32.710 --> 00:43:35.690 align:middle line:84%
+But somehow, that's like
+a Euclidean constant.
+
+00:43:35.690 --> 00:43:38.880 align:middle line:84%
+And if you don't believe that
+the geometry of the weight space
+
+00:43:38.880 --> 00:43:41.640 align:middle line:84%
+is a Euclidean geometry, then
+you shouldn't necessarily even
+
+00:43:41.640 --> 00:43:43.760 align:middle line:90%
+care about the top eigenvalue.
+
+00:43:43.760 --> 00:43:48.000 align:middle line:84%
+And you need some kind
+of generalized notion.
+
+00:43:48.000 --> 00:43:53.840 align:middle line:84%
+And the point is that if a
+module is well-normed and has
+
+00:43:53.840 --> 00:43:56.640 align:middle line:84%
+these sharpness coefficients,
+there's an automatic way
+
+00:43:56.640 --> 00:44:00.000 align:middle line:84%
+to determine what the sharpness
+coefficients are of compositions
+
+00:44:00.000 --> 00:44:02.680 align:middle line:90%
+and concatenations.
+
+00:44:02.680 --> 00:44:05.160 align:middle line:84%
+And then you can use that to
+show that the overall loss
+
+00:44:05.160 --> 00:44:13.660 align:middle line:84%
+function is Lipschitz smooth
+and some other things.
+
+00:44:13.660 --> 00:44:19.320 align:middle line:90%
+
+
+00:44:19.320 --> 00:44:27.200 align:middle line:84%
+So that was a lot of building
+a theory and not really clear
+
+00:44:27.200 --> 00:44:30.080 align:middle line:90%
+if it's going to be useful.
+
+00:44:30.080 --> 00:44:34.670 align:middle line:84%
+So the next two parts are
+talking about different ways
+
+00:44:34.670 --> 00:44:39.510 align:middle line:84%
+that we've been trying
+to apply this theory.
+
+00:44:39.510 --> 00:44:42.390 align:middle line:84%
+And in some sense,
+the theory is intended
+
+00:44:42.390 --> 00:44:44.290 align:middle line:84%
+to try to solve these
+problems as well.
+
+00:44:44.290 --> 00:44:47.190 align:middle line:90%
+
+
+00:44:47.190 --> 00:44:49.290 align:middle line:84%
+So now I want to
+think about scaling.
+
+00:44:49.290 --> 00:44:51.290 align:middle line:84%
+So you want to
+scale your training.
+
+00:44:51.290 --> 00:44:54.310 align:middle line:84%
+You want to make your
+transformer as big as possible.
+
+00:44:54.310 --> 00:44:56.910 align:middle line:84%
+And that's this idea,
+even in the natural world,
+
+00:44:56.910 --> 00:44:59.570 align:middle line:84%
+that big things
+with bigger brains
+
+00:44:59.570 --> 00:45:02.370 align:middle line:84%
+are supposed to be
+more intelligent.
+
+00:45:02.370 --> 00:45:05.210 align:middle line:84%
+And the African elephant
+is, according to Wikipedia,
+
+00:45:05.210 --> 00:45:09.070 align:middle line:84%
+is the organism with
+the most neurons.
+
+00:45:09.070 --> 00:45:12.247 align:middle line:84%
+And then we've got
+this recipe for
+
+00:45:12.247 --> 00:45:13.830 align:middle line:84%
+artificial general
+intelligence, where
+
+00:45:13.830 --> 00:45:16.150 align:middle line:84%
+it's like, get the biggest
+supercomputer that you can
+
+00:45:16.150 --> 00:45:18.270 align:middle line:84%
+and scrape all the
+data and then train
+
+00:45:18.270 --> 00:45:21.830 align:middle line:90%
+the really big transformer.
+
+00:45:21.830 --> 00:45:24.990 align:middle line:84%
+And that's this problem that we
+talked about it in the earlier
+
+00:45:24.990 --> 00:45:28.350 align:middle line:84%
+lecture, but the training
+properties of the system
+
+00:45:28.350 --> 00:45:30.910 align:middle line:90%
+can drift as you scale up.
+
+00:45:30.910 --> 00:45:34.660 align:middle line:84%
+So even though with the case of
+width, even as the network gets
+
+00:45:34.660 --> 00:45:37.680 align:middle line:84%
+wider, the performance
+is getting better,
+
+00:45:37.680 --> 00:45:40.580 align:middle line:84%
+but the optimal step size,
+which is on the x-axis,
+
+00:45:40.580 --> 00:45:42.580 align:middle line:90%
+is just drifting.
+
+00:45:42.580 --> 00:45:47.218 align:middle line:84%
+And sometimes, if you
+scale badly in depth,
+
+00:45:47.218 --> 00:45:49.760 align:middle line:84%
+the performance can get worse
+as you make the network deeper.
+
+00:45:49.760 --> 00:45:51.260 align:middle line:84%
+So we want to try
+to have a way that
+
+00:45:51.260 --> 00:45:54.900 align:middle line:90%
+solves some of these problems.
+
+00:45:54.900 --> 00:46:00.020 align:middle line:84%
+So our thesis for good
+scaling-- why is scaling bad?
+
+00:46:00.020 --> 00:46:04.600 align:middle line:84%
+Our thesis is scaling well
+is actually not difficult.
+
+00:46:04.600 --> 00:46:09.220 align:middle line:84%
+It's just about really
+understanding the Lipschitz
+
+00:46:09.220 --> 00:46:11.620 align:middle line:84%
+properties of the system,
+which is the thing that people
+
+00:46:11.620 --> 00:46:14.900 align:middle line:90%
+don't really understand.
+
+00:46:14.900 --> 00:46:19.500 align:middle line:84%
+And so the thesis is that if
+you have Lipschitz guarantees
+
+00:46:19.500 --> 00:46:22.800 align:middle line:84%
+for your network
+which are tight,
+
+00:46:22.800 --> 00:46:25.180 align:middle line:84%
+meaning that it's not like
+a really loose band that's
+
+00:46:25.180 --> 00:46:28.580 align:middle line:84%
+kind of useless, and if
+the Lipschitz constants are
+
+00:46:28.580 --> 00:46:33.200 align:middle line:84%
+non-dimensional, which basically
+means that as you change
+
+00:46:33.200 --> 00:46:35.960 align:middle line:84%
+the scale of the system, the
+Lipschitz constant is staying
+
+00:46:35.960 --> 00:46:41.520 align:middle line:84%
+fixed, it's not varying, then
+if you normalize the updates
+
+00:46:41.520 --> 00:46:46.313 align:middle line:84%
+in the corresponding norm, that
+will give you good scaling.
+
+00:46:46.313 --> 00:46:48.480 align:middle line:84%
+You kind of call it a thesis
+because it's not really
+
+00:46:48.480 --> 00:46:49.060 align:middle line:90%
+a theorem.
+
+00:46:49.060 --> 00:46:50.540 align:middle line:90%
+It's just like what we think.
+
+00:46:50.540 --> 00:46:54.480 align:middle line:90%
+
+
+00:46:54.480 --> 00:46:57.218 align:middle line:84%
+So we want to have
+Lipschitz constants
+
+00:46:57.218 --> 00:46:58.760 align:middle line:84%
+for the overall
+neural network, which
+
+00:46:58.760 --> 00:47:02.040 align:middle line:84%
+are independent of the
+scaling dimensions.
+
+00:47:02.040 --> 00:47:04.280 align:middle line:84%
+And what we really
+want is to believe
+
+00:47:04.280 --> 00:47:06.600 align:middle line:84%
+that the bounds that
+these Lipschitz bounds
+
+00:47:06.600 --> 00:47:10.240 align:middle line:84%
+are going to be tight, and
+the amount of tightness
+
+00:47:10.240 --> 00:47:12.700 align:middle line:84%
+that the bounds have is
+not dependent on scale.
+
+00:47:12.700 --> 00:47:16.440 align:middle line:90%
+
+
+00:47:16.440 --> 00:47:20.440 align:middle line:84%
+So then, if we can have
+that, then the norm
+
+00:47:20.440 --> 00:47:25.600 align:middle line:84%
+on the overall module,
+which those bounds hold in.
+
+00:47:25.600 --> 00:47:27.960 align:middle line:84%
+If we control that norm
+of the weight updates,
+
+00:47:27.960 --> 00:47:30.750 align:middle line:84%
+we'll be able to predict
+how much the outputs change.
+
+00:47:30.750 --> 00:47:34.130 align:middle line:84%
+So that's one of the reasons
+we were setting this thing up.
+
+00:47:34.130 --> 00:47:40.110 align:middle line:84%
+So in other words,
+this is the example
+
+00:47:40.110 --> 00:47:43.670 align:middle line:84%
+that we mainly think about,
+but if the neural network is
+
+00:47:43.670 --> 00:47:46.570 align:middle line:84%
+1 Lipschitz, meaning that
+the Lipschitz constant is 1,
+
+00:47:46.570 --> 00:47:48.750 align:middle line:84%
+so one is a really
+great number, which
+
+00:47:48.750 --> 00:47:55.230 align:middle line:84%
+is an example of a number,
+which is nondimensional,
+
+00:47:55.230 --> 00:48:02.130 align:middle line:84%
+then if we control the weight
+norm of our weight updates,
+
+00:48:02.130 --> 00:48:04.030 align:middle line:84%
+we'll be able to
+predict that output
+
+00:48:04.030 --> 00:48:06.370 align:middle line:90%
+norm of the change in outputs.
+
+00:48:06.370 --> 00:48:09.190 align:middle line:90%
+
+
+00:48:09.190 --> 00:48:14.950 align:middle line:84%
+And this is just showing
+you some of the papers
+
+00:48:14.950 --> 00:48:17.170 align:middle line:84%
+where we wrote about
+some of this stuff.
+
+00:48:17.170 --> 00:48:19.570 align:middle line:84%
+But we broke up the problem
+into these two pieces.
+
+00:48:19.570 --> 00:48:21.750 align:middle line:84%
+What are the properties
+of an individual layer?
+
+00:48:21.750 --> 00:48:26.820 align:middle line:84%
+And how do we keep them under
+composition and concatenation?
+
+00:48:26.820 --> 00:48:29.340 align:middle line:84%
+And this is just saying
+that, actually, some of them
+
+00:48:29.340 --> 00:48:31.900 align:middle line:84%
+put a little bit on
+the homework, this idea
+
+00:48:31.900 --> 00:48:34.380 align:middle line:84%
+that this particular
+scaled spectral norm is
+
+00:48:34.380 --> 00:48:37.180 align:middle line:84%
+a really good norm
+for getting Lipschitz
+
+00:48:37.180 --> 00:48:39.280 align:middle line:90%
+guarantees on a linear layer.
+
+00:48:39.280 --> 00:48:43.500 align:middle line:90%
+
+
+00:48:43.500 --> 00:48:48.240 align:middle line:84%
+And this paper that I worked
+on with Philip and also
+
+00:48:48.240 --> 00:48:49.740 align:middle line:84%
+with some other
+collaborators, which
+
+00:48:49.740 --> 00:48:54.380 align:middle line:84%
+is about the idea
+of combining things.
+
+00:48:54.380 --> 00:48:57.380 align:middle line:84%
+And we actually built this
+software package, which is still
+
+00:48:57.380 --> 00:48:58.980 align:middle line:84%
+a work in progress,
+but it's the idea
+
+00:48:58.980 --> 00:49:00.820 align:middle line:84%
+that all of those
+rules, everything
+
+00:49:00.820 --> 00:49:04.000 align:middle line:84%
+that I was showing you, are
+things that can be programmed.
+
+00:49:04.000 --> 00:49:05.960 align:middle line:84%
+So you can actually
+build this library.
+
+00:49:05.960 --> 00:49:08.220 align:middle line:84%
+So you think about it as
+building this LEGO set,
+
+00:49:08.220 --> 00:49:12.220 align:middle line:84%
+where you can combine-- so this
+is an example of building an MLP
+
+00:49:12.220 --> 00:49:17.540 align:middle line:84%
+by combining layers and
+nonlinearities to get--
+
+00:49:17.540 --> 00:49:22.220 align:middle line:84%
+this MLP would then
+be a compound module.
+
+00:49:22.220 --> 00:49:25.370 align:middle line:84%
+And then you would automatically
+get its forward function
+
+00:49:25.370 --> 00:49:28.610 align:middle line:84%
+through taking the
+composition, but you also
+
+00:49:28.610 --> 00:49:30.110 align:middle line:90%
+get this normalized function.
+
+00:49:30.110 --> 00:49:32.050 align:middle line:84%
+So when we compose
+things, we automatically
+
+00:49:32.050 --> 00:49:33.630 align:middle line:84%
+build a norm on
+the weight space.
+
+00:49:33.630 --> 00:49:37.330 align:middle line:84%
+And then we can use
+that norm to normalize.
+
+00:49:37.330 --> 00:49:42.310 align:middle line:84%
+And so this is our simple
+programming example.
+
+00:49:42.310 --> 00:49:45.670 align:middle line:84%
+And the claim is that because we
+did this clever normalization,
+
+00:49:45.670 --> 00:49:47.130 align:middle line:84%
+the training will
+now scale better
+
+00:49:47.130 --> 00:49:49.270 align:middle line:84%
+without needing to
+retrain the learning rate.
+
+00:49:49.270 --> 00:49:54.090 align:middle line:90%
+
+
+00:49:54.090 --> 00:49:58.330 align:middle line:84%
+And you can basically build it
+on top of different programming
+
+00:49:58.330 --> 00:49:59.450 align:middle line:90%
+languages.
+
+00:49:59.450 --> 00:50:03.330 align:middle line:90%
+It can be put on top of PyTorch.
+
+00:50:03.330 --> 00:50:05.630 align:middle line:84%
+And this is some
+empirical evidence.
+
+00:50:05.630 --> 00:50:18.670 align:middle line:90%
+
+
+00:50:18.670 --> 00:50:22.390 align:middle line:84%
+What we're showing here
+is actual width sweep.
+
+00:50:22.390 --> 00:50:25.030 align:middle line:84%
+So we're increasing the
+width of the network.
+
+00:50:25.030 --> 00:50:31.950 align:middle line:84%
+And the left plot is
+just training nanoGPT,
+
+00:50:31.950 --> 00:50:35.308 align:middle line:84%
+which is Karpathy's
+transformer-- sorry, go ahead.
+
+00:50:35.308 --> 00:50:36.850 align:middle line:84%
+AUDIENCE: I didn't
+mean to interrupt.
+
+00:50:36.850 --> 00:50:37.725 align:middle line:90%
+[INAUDIBLE] question.
+
+00:50:37.725 --> 00:50:43.312 align:middle line:90%
+
+
+00:50:43.312 --> 00:50:45.270 align:middle line:84%
+JEREMY BERNSTEIN: The
+point is that if you just
+
+00:50:45.270 --> 00:50:48.930 align:middle line:84%
+take like nanoGPT, which
+is this GitHub repository,
+
+00:50:48.930 --> 00:50:51.550 align:middle line:84%
+and you try changing the
+width, the optimal learning
+
+00:50:51.550 --> 00:50:54.150 align:middle line:90%
+rate is going to drift.
+
+00:50:54.150 --> 00:50:57.450 align:middle line:84%
+The middle plot is our own
+transformer implementation,
+
+00:50:57.450 --> 00:51:00.110 align:middle line:84%
+which has some tweaks to the
+architecture to make it actually
+
+00:51:00.110 --> 00:51:02.710 align:middle line:90%
+Lipschitz.
+
+00:51:02.710 --> 00:51:06.550 align:middle line:84%
+And then the third plot
+is adding normalization
+
+00:51:06.550 --> 00:51:10.310 align:middle line:90%
+on top of the optimization.
+
+00:51:10.310 --> 00:51:11.990 align:middle line:84%
+And the point is,
+this is supposed
+
+00:51:11.990 --> 00:51:15.150 align:middle line:84%
+to be saying that by adding
+this normalization, we kind fix
+
+00:51:15.150 --> 00:51:18.710 align:middle line:90%
+the drift in the learning rate.
+
+00:51:18.710 --> 00:51:21.820 align:middle line:84%
+AUDIENCE: So I guess from the
+perspective of a gradient that
+
+00:51:21.820 --> 00:51:25.780 align:middle line:84%
+has not been normalized,
+when you apply normalization,
+
+00:51:25.780 --> 00:51:29.460 align:middle line:84%
+it's as if you are
+changing the learning rate.
+
+00:51:29.460 --> 00:51:32.700 align:middle line:90%
+JEREMY BERNSTEIN: Yes.
+
+00:51:32.700 --> 00:51:34.943 align:middle line:84%
+Yeah, that's the
+one perspective.
+
+00:51:34.943 --> 00:51:37.360 align:middle line:84%
+AUDIENCE: I guess it would be
+like changing learning rate,
+
+00:51:37.360 --> 00:51:39.777 align:middle line:84%
+but in a way that's functionally
+dependent on the gradient
+
+00:51:39.777 --> 00:51:40.540 align:middle line:90%
+itself.
+
+00:51:40.540 --> 00:51:42.260 align:middle line:90%
+JEREMY BERNSTEIN: Yes.
+
+00:51:42.260 --> 00:51:44.380 align:middle line:84%
+And it changes the
+learning rate in a way
+
+00:51:44.380 --> 00:51:47.220 align:middle line:84%
+which depends on what the
+architecture of the network is.
+
+00:51:47.220 --> 00:51:49.740 align:middle line:84%
+So depending on--
+different layers
+
+00:51:49.740 --> 00:51:52.380 align:middle line:84%
+will get gradients rescaled
+by different amounts.
+
+00:51:52.380 --> 00:51:54.780 align:middle line:84%
+AUDIENCE: So learning
+rate here is a scaling
+
+00:51:54.780 --> 00:51:55.822 align:middle line:90%
+of that entire process.
+
+00:51:55.822 --> 00:51:56.780 align:middle line:90%
+JEREMY BERNSTEIN: Yeah.
+
+00:51:56.780 --> 00:52:00.780 align:middle line:90%
+
+
+00:52:00.780 --> 00:52:06.140 align:middle line:84%
+And this is to say that things
+also work in scaling depth.
+
+00:52:06.140 --> 00:52:10.340 align:middle line:84%
+So the baseline nanoGPT
+performance-- it kind of is not
+
+00:52:10.340 --> 00:52:11.920 align:middle line:90%
+so bad if you just scale depth.
+
+00:52:11.920 --> 00:52:15.320 align:middle line:84%
+It works reasonably well, but
+it's a little bit messier.
+
+00:52:15.320 --> 00:52:19.370 align:middle line:84%
+And this is just to say that--
+so in the middle plot, which
+
+00:52:19.370 --> 00:52:21.750 align:middle line:84%
+is without applying our
+normalization procedure,
+
+00:52:21.750 --> 00:52:26.130 align:middle line:84%
+Adam coincidentally does pretty
+well in terms of depth scaling,
+
+00:52:26.130 --> 00:52:28.270 align:middle line:84%
+and then adding the
+normalization on top,
+
+00:52:28.270 --> 00:52:30.670 align:middle line:84%
+things stay pretty much
+the same, actually.
+
+00:52:30.670 --> 00:52:36.650 align:middle line:90%
+
+
+00:52:36.650 --> 00:52:38.850 align:middle line:84%
+So this is good because
+this is pretty much
+
+00:52:38.850 --> 00:52:41.190 align:middle line:84%
+what we built this whole
+thing to be able to do.
+
+00:52:41.190 --> 00:52:43.650 align:middle line:84%
+So it's kind of we knew
+these things were going
+
+00:52:43.650 --> 00:52:46.290 align:middle line:84%
+to work because we had an
+intuitive understanding of how
+
+00:52:46.290 --> 00:52:49.210 align:middle line:84%
+to do scaling, and then we kind
+of built the theory in order
+
+00:52:49.210 --> 00:52:51.630 align:middle line:90%
+to do this.
+
+00:52:51.630 --> 00:52:55.170 align:middle line:84%
+So it's like, kind of knew
+this was going to work.
+
+00:52:55.170 --> 00:52:59.210 align:middle line:84%
+That's just saying we do some
+other things in the paper.
+
+00:52:59.210 --> 00:53:01.530 align:middle line:84%
+We spent a whole lot of
+effort to try to build
+
+00:53:01.530 --> 00:53:02.892 align:middle line:90%
+this theoretical framework.
+
+00:53:02.892 --> 00:53:04.850 align:middle line:84%
+And the idea that we have
+now is actually maybe
+
+00:53:04.850 --> 00:53:08.770 align:middle line:84%
+it's going to be useful
+for other things.
+
+00:53:08.770 --> 00:53:11.970 align:middle line:84%
+And something I'm
+really excited about now
+
+00:53:11.970 --> 00:53:18.560 align:middle line:84%
+is this idea of duality and
+what we call modular duality.
+
+00:53:18.560 --> 00:53:20.020 align:middle line:90%
+So what does that mean?
+
+00:53:20.020 --> 00:53:22.960 align:middle line:90%
+
+
+00:53:22.960 --> 00:53:25.980 align:middle line:84%
+And this is the thing which led
+to the big training speed-up.
+
+00:53:25.980 --> 00:53:30.600 align:middle line:84%
+So that's why we care about
+this, or one of the reasons.
+
+00:53:30.600 --> 00:53:35.600 align:middle line:84%
+So if you remember
+that we suppose now
+
+00:53:35.600 --> 00:53:37.800 align:middle line:84%
+that we came up with
+a norm such that
+
+00:53:37.800 --> 00:53:41.520 align:middle line:84%
+we could upper bound the
+error in the linearization
+
+00:53:41.520 --> 00:53:45.320 align:middle line:90%
+of our objective function.
+
+00:53:45.320 --> 00:53:47.880 align:middle line:84%
+And then we remember
+that because we did this
+
+00:53:47.880 --> 00:53:51.200 align:middle line:84%
+on the homework, that you can
+then derive steepest descent
+
+00:53:51.200 --> 00:53:53.280 align:middle line:84%
+optimization
+algorithms by solving
+
+00:53:53.280 --> 00:53:55.120 align:middle line:84%
+the argmin of this
+thing, finding
+
+00:53:55.120 --> 00:53:58.640 align:middle line:90%
+the minimizer of this thing.
+
+00:53:58.640 --> 00:54:01.240 align:middle line:84%
+And then you remember, because
+you did it on the homework,
+
+00:54:01.240 --> 00:54:05.040 align:middle line:84%
+that you can decouple the
+solutions for that problem
+
+00:54:05.040 --> 00:54:06.020 align:middle line:90%
+into two pieces.
+
+00:54:06.020 --> 00:54:09.160 align:middle line:84%
+One is evaluating a
+dual norm, and the other
+
+00:54:09.160 --> 00:54:12.940 align:middle line:84%
+is evaluating at argmax
+over a set of unit vectors.
+
+00:54:12.940 --> 00:54:15.880 align:middle line:90%
+
+
+00:54:15.880 --> 00:54:17.380 align:middle line:84%
+And so we think
+about the purple box
+
+00:54:17.380 --> 00:54:19.080 align:middle line:90%
+as roughly being the step size.
+
+00:54:19.080 --> 00:54:24.340 align:middle line:84%
+And we can call this the
+second thing-- we can actually
+
+00:54:24.340 --> 00:54:27.500 align:middle line:90%
+call it a duality map.
+
+00:54:27.500 --> 00:54:28.920 align:middle line:90%
+And what does that mean?
+
+00:54:28.920 --> 00:54:37.420 align:middle line:90%
+
+
+00:54:37.420 --> 00:54:40.380 align:middle line:84%
+Basically, there's this idea
+in more classical optimization
+
+00:54:40.380 --> 00:54:43.180 align:middle line:84%
+theory that the gradient
+is a dual vector
+
+00:54:43.180 --> 00:54:46.900 align:middle line:84%
+and the weights are
+a regular vector.
+
+00:54:46.900 --> 00:54:48.540 align:middle line:84%
+And the only thing
+that you're allowed
+
+00:54:48.540 --> 00:54:54.440 align:middle line:84%
+to do with dual vectors and
+regular vectors is combine them.
+
+00:54:54.440 --> 00:54:56.980 align:middle line:84%
+Well, basically, the dual
+vector is a linear map
+
+00:54:56.980 --> 00:55:00.020 align:middle line:84%
+that takes a regular vector
+and returns a real number.
+
+00:55:00.020 --> 00:55:01.860 align:middle line:84%
+And that's borne
+out here by saying
+
+00:55:01.860 --> 00:55:05.020 align:middle line:84%
+that if you have a gradient,
+the thing a gradient
+
+00:55:05.020 --> 00:55:08.100 align:middle line:84%
+is really, really what it's
+really good for is taking dot
+
+00:55:08.100 --> 00:55:11.580 align:middle line:84%
+products with weights and
+describing the linearization
+
+00:55:11.580 --> 00:55:12.700 align:middle line:90%
+of the function.
+
+00:55:12.700 --> 00:55:15.150 align:middle line:84%
+That's the only thing that
+you should ever really trust
+
+00:55:15.150 --> 00:55:17.690 align:middle line:84%
+the gradient will tell
+you is the linearization
+
+00:55:17.690 --> 00:55:18.710 align:middle line:90%
+of your function.
+
+00:55:18.710 --> 00:55:20.270 align:middle line:84%
+The idea that you
+can take a gradient
+
+00:55:20.270 --> 00:55:21.770 align:middle line:84%
+and just do gradient
+descent with it
+
+00:55:21.770 --> 00:55:25.450 align:middle line:84%
+is generically a bad
+idea and something
+
+00:55:25.450 --> 00:55:28.290 align:middle line:90%
+that we should all forget.
+
+00:55:28.290 --> 00:55:30.570 align:middle line:90%
+So that's like this idea of--
+
+00:55:30.570 --> 00:55:33.850 align:middle line:84%
+and it's the idea that a
+dual vector, even though it
+
+00:55:33.850 --> 00:55:36.357 align:middle line:84%
+may have the same
+dimensions, technically
+
+00:55:36.357 --> 00:55:38.690 align:middle line:84%
+you could add and subtract
+them because technically they
+
+00:55:38.690 --> 00:55:41.190 align:middle line:84%
+have the same dimensions,
+it can still be a bad idea.
+
+00:55:41.190 --> 00:55:45.130 align:middle line:90%
+
+
+00:55:45.130 --> 00:55:49.110 align:middle line:84%
+What we need is a kind
+of formal procedure.
+
+00:55:49.110 --> 00:55:52.270 align:middle line:84%
+We need a procedure for
+converting dual vectors,
+
+00:55:52.270 --> 00:55:55.850 align:middle line:84%
+like the gradient, back
+to the primal space
+
+00:55:55.850 --> 00:55:59.790 align:middle line:84%
+such that we can add
+and subtract them.
+
+00:55:59.790 --> 00:56:02.230 align:middle line:84%
+But we should not just
+directly add and subtract them.
+
+00:56:02.230 --> 00:56:05.930 align:middle line:84%
+But this is an example
+of such a procedure.
+
+00:56:05.930 --> 00:56:09.593 align:middle line:84%
+And just looking at
+this argmax, what
+
+00:56:09.593 --> 00:56:11.010 align:middle line:84%
+you can think of
+it as saying is I
+
+00:56:11.010 --> 00:56:14.520 align:middle line:84%
+want to take a step
+of unit norm which
+
+00:56:14.520 --> 00:56:20.080 align:middle line:84%
+maximizes the linear improvement
+of my objective function.
+
+00:56:20.080 --> 00:56:23.960 align:middle line:84%
+And just subtracting the
+gradient from the weights
+
+00:56:23.960 --> 00:56:25.960 align:middle line:90%
+may not solve that problem.
+
+00:56:25.960 --> 00:56:27.900 align:middle line:84%
+AUDIENCE: Is that
+your beef with that
+
+00:56:27.900 --> 00:56:30.740 align:middle line:84%
+because we're doing nonlinear
+optimization, therefore,
+
+00:56:30.740 --> 00:56:33.880 align:middle line:84%
+you have no guarantee that your
+gradient plus the step size
+
+00:56:33.880 --> 00:56:35.242 align:middle line:90%
+results in an improvement?
+
+00:56:35.242 --> 00:56:37.700 align:middle line:84%
+JEREMY BERNSTEIN: Well, for a
+sufficiently small step size,
+
+00:56:37.700 --> 00:56:39.620 align:middle line:90%
+it will give you an improvement.
+
+00:56:39.620 --> 00:56:43.840 align:middle line:84%
+It may just be really suboptimal
+because it may not solve--
+
+00:56:43.840 --> 00:56:47.158 align:middle line:84%
+there's a sense in which this
+thing is an optimal procedure
+
+00:56:47.158 --> 00:56:49.700 align:middle line:84%
+just in the sense that there is
+an optimization problem here.
+
+00:56:49.700 --> 00:56:50.860 align:middle line:90%
+There's a max.
+
+00:56:50.860 --> 00:56:52.360 align:middle line:90%
+There's an argmax.
+
+00:56:52.360 --> 00:56:55.320 align:middle line:84%
+So the solution the thing
+will solve some kind
+
+00:56:55.320 --> 00:56:57.060 align:middle line:90%
+of optimality criteria.
+
+00:56:57.060 --> 00:57:00.360 align:middle line:84%
+If you pick a good norm, it's
+like an optimality criterion
+
+00:57:00.360 --> 00:57:02.080 align:middle line:90%
+that you really care about.
+
+00:57:02.080 --> 00:57:06.560 align:middle line:84%
+And just moving in
+the gradient direction
+
+00:57:06.560 --> 00:57:09.140 align:middle line:84%
+is equivalent to saying that
+this is the Euclidean norm.
+
+00:57:09.140 --> 00:57:13.590 align:middle line:84%
+And so the optimization
+space in neural networks
+
+00:57:13.590 --> 00:57:17.830 align:middle line:84%
+is really unlikely to have
+a Euclidean structure.
+
+00:57:17.830 --> 00:57:19.090 align:middle line:90%
+So that's the argument.
+
+00:57:19.090 --> 00:57:23.910 align:middle line:90%
+
+
+00:57:23.910 --> 00:57:26.550 align:middle line:84%
+And this is just a
+picture where it's
+
+00:57:26.550 --> 00:57:28.690 align:middle line:84%
+suggested by some other
+ideas in optimization.
+
+00:57:28.690 --> 00:57:32.188 align:middle line:84%
+But you think about
+the weight space--
+
+00:57:32.188 --> 00:57:33.730 align:middle line:84%
+the space that the
+gradient lives in,
+
+00:57:33.730 --> 00:57:36.250 align:middle line:84%
+you think of it as being
+a very distorted version.
+
+00:57:36.250 --> 00:57:38.550 align:middle line:84%
+So even though it may have
+the same dimensionality
+
+00:57:38.550 --> 00:57:40.550 align:middle line:84%
+as the weight space,
+the things that
+
+00:57:40.550 --> 00:57:43.990 align:middle line:84%
+live in the gradient
+space kind of maybe
+
+00:57:43.990 --> 00:57:45.610 align:middle line:90%
+are stretched and distorted.
+
+00:57:45.610 --> 00:57:50.042 align:middle line:84%
+So we need some procedure
+to undistort them
+
+00:57:50.042 --> 00:57:52.250 align:middle line:84%
+before we're going to subtract
+them from the weights.
+
+00:57:52.250 --> 00:57:55.230 align:middle line:90%
+
+
+00:57:55.230 --> 00:57:57.790 align:middle line:84%
+So this is just to say that
+you should never do this
+
+00:57:57.790 --> 00:57:59.830 align:middle line:84%
+ever again unless
+you're really sure
+
+00:57:59.830 --> 00:58:01.370 align:middle line:90%
+that your space is Euclidean.
+
+00:58:01.370 --> 00:58:04.190 align:middle line:90%
+
+
+00:58:04.190 --> 00:58:06.330 align:middle line:84%
+And that you should
+always think,
+
+00:58:06.330 --> 00:58:13.850 align:middle line:84%
+what is this dualization
+procedure that I really need
+
+00:58:13.850 --> 00:58:15.270 align:middle line:90%
+to think through what it is?
+
+00:58:15.270 --> 00:58:18.090 align:middle line:90%
+
+
+00:58:18.090 --> 00:58:19.950 align:middle line:84%
+In a sense, this should
+not be surprising
+
+00:58:19.950 --> 00:58:22.740 align:middle line:84%
+because everyone
+tells you, if you're
+
+00:58:22.740 --> 00:58:24.490 align:middle line:84%
+going to do deep
+learning, you should just
+
+00:58:24.490 --> 00:58:25.670 align:middle line:90%
+use the Adam optimizer.
+
+00:58:25.670 --> 00:58:29.278 align:middle line:84%
+No one ever tells you to use
+regular gradient descent,
+
+00:58:29.278 --> 00:58:31.070 align:middle line:84%
+so there should be some
+idea that there is,
+
+00:58:31.070 --> 00:58:32.770 align:middle line:84%
+intuitively, we all
+know there's something
+
+00:58:32.770 --> 00:58:34.270 align:middle line:84%
+bad about regular
+gradient descent,
+
+00:58:34.270 --> 00:58:35.770 align:middle line:84%
+we just don't quite
+know what it is.
+
+00:58:35.770 --> 00:58:39.610 align:middle line:90%
+
+
+00:58:39.610 --> 00:58:44.530 align:middle line:84%
+So this second thing is
+supposed to pass the type check.
+
+00:58:44.530 --> 00:58:48.290 align:middle line:84%
+And the question is,
+how do we come up
+
+00:58:48.290 --> 00:58:51.370 align:middle line:84%
+with such a dualization
+procedure for a neural net?
+
+00:58:51.370 --> 00:58:54.890 align:middle line:84%
+Well, if we built this, we
+had this recursive procedure
+
+00:58:54.890 --> 00:58:58.610 align:middle line:84%
+for inducing a norm
+on the weight space
+
+00:58:58.610 --> 00:58:59.750 align:middle line:90%
+of the full neural network.
+
+00:58:59.750 --> 00:59:01.970 align:middle line:84%
+So maybe there's a
+corresponding procedure
+
+00:59:01.970 --> 00:59:06.720 align:middle line:84%
+for recursively
+constructing a duality map.
+
+00:59:06.720 --> 00:59:08.640 align:middle line:84%
+So that's what we
+wanted to propose.
+
+00:59:08.640 --> 00:59:13.320 align:middle line:84%
+So it's the idea that, given
+individual layers, if you
+
+00:59:13.320 --> 00:59:15.720 align:middle line:84%
+have a norm on the weights
+of an individual layer,
+
+00:59:15.720 --> 00:59:19.560 align:middle line:84%
+you can solve a duality
+map for that layer.
+
+00:59:19.560 --> 00:59:21.620 align:middle line:84%
+And that's what you
+did on the homework
+
+00:59:21.620 --> 00:59:23.800 align:middle line:84%
+because we said that
+we're going to give
+
+00:59:23.800 --> 00:59:26.497 align:middle line:84%
+the linear layers
+a spectral norm,
+
+00:59:26.497 --> 00:59:29.080 align:middle line:84%
+and then we're going to solve
+the duality map that corresponds
+
+00:59:29.080 --> 00:59:30.300 align:middle line:90%
+to the spectral norm.
+
+00:59:30.300 --> 00:59:33.160 align:middle line:90%
+
+
+00:59:33.160 --> 00:59:36.140 align:middle line:84%
+And then once we've solved
+those layer-wise duality maps,
+
+00:59:36.140 --> 00:59:39.360 align:middle line:84%
+it turns out that there
+is a valid recursive
+
+00:59:39.360 --> 00:59:41.280 align:middle line:84%
+procedure for combining
+them to come up
+
+00:59:41.280 --> 00:59:47.480 align:middle line:84%
+with a duality map on the full
+architecture, which I didn't
+
+00:59:47.480 --> 00:59:49.880 align:middle line:84%
+write it down in the
+slides, but maybe it's
+
+00:59:49.880 --> 00:59:51.340 align:middle line:90%
+something fun to think about.
+
+00:59:51.340 --> 00:59:55.640 align:middle line:90%
+
+
+00:59:55.640 --> 00:59:58.960 align:middle line:84%
+AUDIENCE: So this would mean
+that the dualization of g
+
+00:59:58.960 --> 01:00:02.294 align:middle line:90%
+always has a norm of 1.
+
+01:00:02.294 --> 01:00:03.110 align:middle line:90%
+Oh, never mind.
+
+01:00:03.110 --> 01:00:08.230 align:middle line:84%
+JEREMY BERNSTEIN: Yeah, it's
+because we broke things up
+
+01:00:08.230 --> 01:00:10.030 align:middle line:90%
+into two pieces.
+
+01:00:10.030 --> 01:00:12.272 align:middle line:84%
+AUDIENCE: Oh, so it's a
+projection in that space?
+
+01:00:12.272 --> 01:00:13.230 align:middle line:90%
+JEREMY BERNSTEIN: Sure.
+
+01:00:13.230 --> 01:00:17.990 align:middle line:84%
+So we broke up
+solving this argument.
+
+01:00:17.990 --> 01:00:21.990 align:middle line:84%
+We broke it up into solving
+an argmax over unit vectors
+
+01:00:21.990 --> 01:00:24.090 align:middle line:84%
+and then multiplying
+by the dual norm.
+
+01:00:24.090 --> 01:00:26.630 align:middle line:90%
+
+
+01:00:26.630 --> 01:00:28.270 align:middle line:84%
+So there's also a
+recursive procedure
+
+01:00:28.270 --> 01:00:30.230 align:middle line:90%
+for computing the dual norm.
+
+01:00:30.230 --> 01:00:32.803 align:middle line:84%
+I just didn't talk
+about that on the slide.
+
+01:00:32.803 --> 01:00:34.470 align:middle line:84%
+AUDIENCE: So I guess
+I'm interpreting it
+
+01:00:34.470 --> 01:00:37.830 align:middle line:84%
+as we're finding whatever
+coordinate the projection
+
+01:00:37.830 --> 01:00:42.133 align:middle line:90%
+of the gradient maximizes--
+
+01:00:42.133 --> 01:00:43.550 align:middle line:84%
+I guess I'm just
+looking at argmax
+
+01:00:43.550 --> 01:00:45.450 align:middle line:90%
+of that in the next slide.
+
+01:00:45.450 --> 01:00:53.630 align:middle line:84%
+We're looking at the argmax
+of the inner product,
+
+01:00:53.630 --> 01:00:57.803 align:middle line:84%
+interpreting that as
+some of projection.
+
+01:00:57.803 --> 01:00:59.470 align:middle line:84%
+JEREMY BERNSTEIN: It
+doesn't necessarily
+
+01:00:59.470 --> 01:01:02.460 align:middle line:90%
+have to be a projection.
+
+01:01:02.460 --> 01:01:05.100 align:middle line:84%
+Actually, maybe it
+is, in some sense--
+
+01:01:05.100 --> 01:01:08.060 align:middle line:84%
+yes, maybe it is
+in the projection.
+
+01:01:08.060 --> 01:01:10.980 align:middle line:84%
+Definitely the one on the
+homework was a projection.
+
+01:01:10.980 --> 01:01:13.740 align:middle line:84%
+Yeah, I think, for norms,
+it probably usually
+
+01:01:13.740 --> 01:01:15.200 align:middle line:90%
+is a projection.
+
+01:01:15.200 --> 01:01:19.140 align:middle line:90%
+
+
+01:01:19.140 --> 01:01:22.040 align:middle line:84%
+So yeah, I need to just
+think through that.
+
+01:01:22.040 --> 01:01:24.100 align:middle line:84%
+But I think you're
+probably right that you
+
+01:01:24.100 --> 01:01:25.980 align:middle line:84%
+can think of it as
+taking the gradient
+
+01:01:25.980 --> 01:01:27.840 align:middle line:84%
+and projecting it to
+the unit norm ball
+
+01:01:27.840 --> 01:01:29.760 align:middle line:84%
+but also distorting
+the direction.
+
+01:01:29.760 --> 01:01:37.500 align:middle line:90%
+
+
+01:01:37.500 --> 01:01:44.220 align:middle line:84%
+But yeah, this is supposed to
+be you think about it as you've
+
+01:01:44.220 --> 01:01:47.220 align:middle line:84%
+got some Lipschitz guarantee
+and some Lipschitz smoothness
+
+01:01:47.220 --> 01:01:52.900 align:middle line:84%
+guarantee, which tell you
+how much the neural network
+
+01:01:52.900 --> 01:01:57.900 align:middle line:84%
+output is going to respond
+to changing its weights.
+
+01:01:57.900 --> 01:02:00.640 align:middle line:84%
+And so that, in particular,
+one of the things that
+
+01:02:00.640 --> 01:02:02.480 align:middle line:84%
+tells you is when the
+second-order changes
+
+01:02:02.480 --> 01:02:05.480 align:middle line:84%
+and the network output become
+important relative to the first
+
+01:02:05.480 --> 01:02:08.520 align:middle line:84%
+order changes, so a
+sensible thing to do
+
+01:02:08.520 --> 01:02:10.920 align:middle line:84%
+is to take an
+optimization step which
+
+01:02:10.920 --> 01:02:13.320 align:middle line:84%
+squeezes as much
+kind of juice out
+
+01:02:13.320 --> 01:02:17.120 align:middle line:84%
+of the linearization
+as possible while
+
+01:02:17.120 --> 01:02:19.080 align:middle line:84%
+making sure that the
+second-order network
+
+01:02:19.080 --> 01:02:21.250 align:middle line:84%
+effects don't dominate
+the first-order effects,
+
+01:02:21.250 --> 01:02:23.000 align:middle line:84%
+because the gradient
+really only tells you
+
+01:02:23.000 --> 01:02:24.580 align:middle line:90%
+about the first-order effects.
+
+01:02:24.580 --> 01:02:26.460 align:middle line:84%
+So that's an
+intuitive description.
+
+01:02:26.460 --> 01:02:29.860 align:middle line:84%
+And if you can solve that
+problem for individual layers,
+
+01:02:29.860 --> 01:02:33.540 align:middle line:84%
+how do you solve it
+for a full network?
+
+01:02:33.540 --> 01:02:36.000 align:middle line:84%
+And I'm just claiming that
+there's a recursive procedure
+
+01:02:36.000 --> 01:02:37.100 align:middle line:90%
+for doing that.
+
+01:02:37.100 --> 01:02:40.360 align:middle line:90%
+
+
+01:02:40.360 --> 01:02:44.320 align:middle line:84%
+And this is just to say, to
+tell you a little backstory,
+
+01:02:44.320 --> 01:02:46.480 align:middle line:84%
+at least, why I became
+interested in this,
+
+01:02:46.480 --> 01:02:49.040 align:middle line:84%
+is because there's an
+optimization algorithm
+
+01:02:49.040 --> 01:02:51.240 align:middle line:84%
+that people at Google
+proposed called
+
+01:02:51.240 --> 01:02:57.040 align:middle line:84%
+Shampoo, which won this speed
+challenge at this industry
+
+01:02:57.040 --> 01:03:00.190 align:middle line:90%
+benchmarking competition.
+
+01:03:00.190 --> 01:03:05.432 align:middle line:84%
+But if you read the paper that
+proposes this method this,
+
+01:03:05.432 --> 01:03:07.390 align:middle line:84%
+first of all, the method
+that they actually use
+
+01:03:07.390 --> 01:03:10.110 align:middle line:84%
+is totally different to
+the method in the paper.
+
+01:03:10.110 --> 01:03:13.790 align:middle line:84%
+And it kind of feels
+like maybe there's not,
+
+01:03:13.790 --> 01:03:15.550 align:middle line:84%
+let's say, a complete
+understanding
+
+01:03:15.550 --> 01:03:18.190 align:middle line:90%
+of what the method is doing.
+
+01:03:18.190 --> 01:03:20.390 align:middle line:84%
+So I just wanted to
+look at this method
+
+01:03:20.390 --> 01:03:22.870 align:middle line:84%
+and strip away some of the
+things which people don't
+
+01:03:22.870 --> 01:03:23.690 align:middle line:90%
+actually use.
+
+01:03:23.690 --> 01:03:26.990 align:middle line:84%
+And it looks like the core
+primitive in this algorithm
+
+01:03:26.990 --> 01:03:30.070 align:middle line:84%
+is basically, for linear layers,
+it does this funny gradient
+
+01:03:30.070 --> 01:03:33.270 align:middle line:90%
+transformation.
+
+01:03:33.270 --> 01:03:36.510 align:middle line:84%
+And then realizing that this
+funny gradient transformation is
+
+01:03:36.510 --> 01:03:39.950 align:middle line:84%
+actually equivalent to
+that homework problem
+
+01:03:39.950 --> 01:03:43.970 align:middle line:84%
+that you all did, but
+when you read the paper,
+
+01:03:43.970 --> 01:03:45.330 align:middle line:90%
+they don't frame it that way.
+
+01:03:45.330 --> 01:03:47.430 align:middle line:90%
+So it's kind of interesting.
+
+01:03:47.430 --> 01:03:50.870 align:middle line:84%
+But it seems to really
+speed up the training.
+
+01:03:50.870 --> 01:03:53.830 align:middle line:84%
+So basically, what the
+claim is that hiding inside
+
+01:03:53.830 --> 01:03:56.220 align:middle line:84%
+of this optimization algorithm
+that people at Google
+
+01:03:56.220 --> 01:03:59.960 align:middle line:84%
+are really excited about is
+this very simple primitive.
+
+01:03:59.960 --> 01:04:02.620 align:middle line:90%
+
+
+01:04:02.620 --> 01:04:06.560 align:middle line:84%
+And because we were working
+on this modular norm stuff,
+
+01:04:06.560 --> 01:04:08.660 align:middle line:84%
+it's very easy to implement
+this type of algorithm
+
+01:04:08.660 --> 01:04:10.900 align:middle line:84%
+because we just override
+the normalize function
+
+01:04:10.900 --> 01:04:17.540 align:middle line:84%
+of a linear module to do
+this spectral operation.
+
+01:04:17.540 --> 01:04:21.277 align:middle line:84%
+And then I implemented it in
+a simple notebook, just as
+
+01:04:21.277 --> 01:04:22.860 align:middle line:84%
+a proof of concept,
+and could actually
+
+01:04:22.860 --> 01:04:25.920 align:middle line:84%
+see that doing this
+special normalization,
+
+01:04:25.920 --> 01:04:28.952 align:middle line:84%
+it actually leads to training
+much faster than the thing
+
+01:04:28.952 --> 01:04:30.660 align:middle line:84%
+in the middle, which
+is just like a naive
+
+01:04:30.660 --> 01:04:33.380 align:middle line:90%
+form of spectral normalization.
+
+01:04:33.380 --> 01:04:36.700 align:middle line:84%
+And both of them are much better
+than just vanilla gradient
+
+01:04:36.700 --> 01:04:37.360 align:middle line:90%
+descent.
+
+01:04:37.360 --> 01:04:39.940 align:middle line:90%
+
+
+01:04:39.940 --> 01:04:44.460 align:middle line:84%
+And then there's this
+open-source neural network
+
+01:04:44.460 --> 01:04:46.220 align:middle line:90%
+speedrunning community.
+
+01:04:46.220 --> 01:04:51.340 align:middle line:84%
+And this person, Keller Jordan,
+made a really, really fast
+
+01:04:51.340 --> 01:04:56.070 align:middle line:84%
+implementation of this
+spectral dualization procedure.
+
+01:04:56.070 --> 01:04:57.690 align:middle line:84%
+It turns out, at
+the moment, it's
+
+01:04:57.690 --> 01:05:01.830 align:middle line:84%
+the fastest way to train
+nanoGPT on this speedrun.
+
+01:05:01.830 --> 01:05:04.730 align:middle line:90%
+So it's seems that's actually--
+
+01:05:04.730 --> 01:05:07.090 align:middle line:84%
+the worry with the technique
+is maybe, in principle,
+
+01:05:07.090 --> 01:05:08.465 align:middle line:84%
+it's the right
+thing to be doing.
+
+01:05:08.465 --> 01:05:13.410 align:middle line:84%
+But it's so expensive to do
+these spectral normalization
+
+01:05:13.410 --> 01:05:15.355 align:middle line:84%
+operations that it's
+practically useless.
+
+01:05:15.355 --> 01:05:16.730 align:middle line:84%
+But it turns out
+there's actually
+
+01:05:16.730 --> 01:05:20.050 align:middle line:84%
+a way to implement this
+dualization procedure really
+
+01:05:20.050 --> 01:05:24.410 align:middle line:90%
+fast using an iterative method.
+
+01:05:24.410 --> 01:05:27.732 align:middle line:84%
+So this is to say
+that what I told you--
+
+01:05:27.732 --> 01:05:29.190 align:middle line:84%
+when we wrote this
+modular package,
+
+01:05:29.190 --> 01:05:32.730 align:middle line:84%
+we actually kind of did
+it wrong because when
+
+01:05:32.730 --> 01:05:35.530 align:middle line:84%
+we said that we
+should normalize,
+
+01:05:35.530 --> 01:05:37.270 align:middle line:90%
+that is actually not optimal.
+
+01:05:37.270 --> 01:05:40.290 align:middle line:84%
+We should actually do this
+dualization procedure.
+
+01:05:40.290 --> 01:05:44.082 align:middle line:84%
+And it should recursively
+compute the dualization
+
+01:05:44.082 --> 01:05:45.790 align:middle line:84%
+based on the architecture
+of the network.
+
+01:05:45.790 --> 01:05:48.750 align:middle line:84%
+So we still need to update
+the package to do that.
+
+01:05:48.750 --> 01:05:52.270 align:middle line:90%
+
+
+01:05:52.270 --> 01:05:57.863 align:middle line:84%
+So in conclusion, yeah,
+I really like this idea
+
+01:05:57.863 --> 01:06:00.030 align:middle line:84%
+that we should think about
+building a neural network
+
+01:06:00.030 --> 01:06:02.750 align:middle line:84%
+as building LEGO,
+and that you should
+
+01:06:02.750 --> 01:06:04.210 align:middle line:84%
+be able to build
+whatever you want,
+
+01:06:04.210 --> 01:06:07.230 align:middle line:84%
+and you should be able to have
+a theoretical understanding
+
+01:06:07.230 --> 01:06:10.550 align:middle line:84%
+of what you build,
+and it should be
+
+01:06:10.550 --> 01:06:16.030 align:middle line:84%
+based on thinking about just how
+you combine individual bricks.
+
+01:06:16.030 --> 01:06:18.890 align:middle line:84%
+And so far, we've been thinking
+about these scaling issues
+
+01:06:18.890 --> 01:06:23.210 align:middle line:84%
+and now, apparently, also
+these training speed records.
+
+01:06:23.210 --> 01:06:26.230 align:middle line:90%
+
+
+01:06:26.230 --> 01:06:29.270 align:middle line:84%
+And I think that this
+idea has not really
+
+01:06:29.270 --> 01:06:31.650 align:middle line:90%
+proliferated at all really.
+
+01:06:31.650 --> 01:06:36.230 align:middle line:84%
+But I think it can be a
+more generally useful idea.
+
+01:06:36.230 --> 01:06:41.277 align:middle line:84%
+So if you want to save
+energy and money and time,
+
+01:06:41.277 --> 01:06:43.110 align:middle line:84%
+a good way to do that
+is to make your models
+
+01:06:43.110 --> 01:06:44.590 align:middle line:90%
+really low precision.
+
+01:06:44.590 --> 01:06:48.630 align:middle line:84%
+there's no one has a
+theoretical understanding of how
+
+01:06:48.630 --> 01:06:50.840 align:middle line:84%
+precision in a neural
+network should behave.
+
+01:06:50.840 --> 01:06:58.300 align:middle line:84%
+So as far as I can tell, all the
+research is just trying stuff.
+
+01:06:58.300 --> 01:07:00.580 align:middle line:84%
+But intuitively,
+precision and continuity
+
+01:07:00.580 --> 01:07:02.260 align:middle line:84%
+are very closely,
+very intimately
+
+01:07:02.260 --> 01:07:06.322 align:middle line:84%
+related concepts
+because if you want
+
+01:07:06.322 --> 01:07:07.780 align:middle line:84%
+to quantize as much
+as you can, you
+
+01:07:07.780 --> 01:07:11.220 align:middle line:84%
+need to know what
+discretization scale the space
+
+01:07:11.220 --> 01:07:15.140 align:middle line:84%
+is kind of continuous on
+or something like that.
+
+01:07:15.140 --> 01:07:18.232 align:middle line:84%
+And similarly, these classic
+adversarial robustness things,
+
+01:07:18.232 --> 01:07:19.940 align:middle line:84%
+I think, should also
+be related to having
+
+01:07:19.940 --> 01:07:22.300 align:middle line:84%
+a good understanding
+of the continuity
+
+01:07:22.300 --> 01:07:24.940 align:middle line:90%
+properties of the space.
+
+01:07:24.940 --> 01:07:29.860 align:middle line:84%
+So you want to cast these as
+questions of module sensitivity.
+
+01:07:29.860 --> 01:07:32.920 align:middle line:84%
+And I want to turn this
+into an open-source project.
+
+01:07:32.920 --> 01:07:35.500 align:middle line:84%
+So I made this website, but
+it doesn't have very much
+
+01:07:35.500 --> 01:07:36.640 align:middle line:90%
+information there yet.
+
+01:07:36.640 --> 01:07:39.240 align:middle line:90%
+But anyway, that's it.
+
+01:07:39.240 --> 01:07:41.430 align:middle line:90%
+So yeah, thanks.
+
+01:07:41.430 --> 01:07:50.000 align:middle line:90%

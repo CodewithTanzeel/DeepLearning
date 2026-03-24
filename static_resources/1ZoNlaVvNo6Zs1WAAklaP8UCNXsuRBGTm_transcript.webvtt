@@ -1,0 +1,3214 @@
+WEBVTT
+
+00:00:00.000 --> 00:00:00.500 align:middle line:90%
+
+
+00:00:00.500 --> 00:00:02.440 align:middle line:90%
+[SQUEAKING]
+
+00:00:02.440 --> 00:00:04.380 align:middle line:90%
+[RUSTLING]
+
+00:00:04.380 --> 00:00:06.320 align:middle line:90%
+[CLICKING]
+
+00:00:06.320 --> 00:00:13.460 align:middle line:90%
+
+
+00:00:13.460 --> 00:00:14.960 align:middle line:84%
+PHILLIP ISOLA: So
+today, we're going
+
+00:00:14.960 --> 00:00:17.560 align:middle line:90%
+to talk about scaling laws.
+
+00:00:17.560 --> 00:00:22.740 align:middle line:84%
+And this lecture, we're at the
+final few weeks of this semester
+
+00:00:22.740 --> 00:00:25.320 align:middle line:84%
+so we're moving
+into territory which
+
+00:00:25.320 --> 00:00:29.200 align:middle line:90%
+is much more ongoing science.
+
+00:00:29.200 --> 00:00:32.080 align:middle line:84%
+I'm going to talk about
+recent papers and results that
+
+00:00:32.080 --> 00:00:34.440 align:middle line:84%
+are empirical in nature
+for which we don't
+
+00:00:34.440 --> 00:00:36.702 align:middle line:84%
+know if these results
+will really hold up,
+
+00:00:36.702 --> 00:00:37.660 align:middle line:90%
+stand the test of time.
+
+00:00:37.660 --> 00:00:41.840 align:middle line:84%
+But this is the latest
+research on deep learning.
+
+00:00:41.840 --> 00:00:44.500 align:middle line:84%
+And a lot of the next few
+lectures will be of that flavor.
+
+00:00:44.500 --> 00:00:47.400 align:middle line:90%
+
+
+00:00:47.400 --> 00:00:49.200 align:middle line:90%
+So what are scaling laws?
+
+00:00:49.200 --> 00:00:52.400 align:middle line:84%
+Why do we care about
+scaling in deep learning?
+
+00:00:52.400 --> 00:00:57.160 align:middle line:84%
+And the reason is
+that deep learning
+
+00:00:57.160 --> 00:00:58.960 align:middle line:84%
+is something that
+works really well
+
+00:00:58.960 --> 00:01:02.440 align:middle line:84%
+once you have a lot of scale,
+once you have a lot of data,
+
+00:01:02.440 --> 00:01:07.480 align:middle line:84%
+a lot of compute, a lot of
+flops, a lot of parameters,
+
+00:01:07.480 --> 00:01:10.000 align:middle line:84%
+big models on big data
+with large machines.
+
+00:01:10.000 --> 00:01:12.660 align:middle line:84%
+That's kind of the regime
+in which deep learning is
+
+00:01:12.660 --> 00:01:14.540 align:middle line:90%
+winning and doing very well.
+
+00:01:14.540 --> 00:01:16.860 align:middle line:84%
+And a big part of the
+story of deep learning
+
+00:01:16.860 --> 00:01:19.820 align:middle line:84%
+is how do you scale things
+to make efficient use
+
+00:01:19.820 --> 00:01:22.740 align:middle line:90%
+of the resources that you have.
+
+00:01:22.740 --> 00:01:25.340 align:middle line:84%
+And a remarkable thing
+that's been observed
+
+00:01:25.340 --> 00:01:29.500 align:middle line:84%
+is that, sometimes, the way
+that models behave as they scale
+
+00:01:29.500 --> 00:01:30.980 align:middle line:90%
+is quite predictable.
+
+00:01:30.980 --> 00:01:33.100 align:middle line:84%
+And so you can define
+these scaling laws, which
+
+00:01:33.100 --> 00:01:36.857 align:middle line:84%
+are predictions of if
+I double my compute,
+
+00:01:36.857 --> 00:01:37.940 align:middle line:90%
+how will the model behave?
+
+00:01:37.940 --> 00:01:41.460 align:middle line:84%
+If I double my model size,
+how will the model behave?
+
+00:01:41.460 --> 00:01:43.840 align:middle line:84%
+And if we can identify
+those types of laws,
+
+00:01:43.840 --> 00:01:48.340 align:middle line:84%
+then this will be really useful
+for planning our resources
+
+00:01:48.340 --> 00:01:50.000 align:middle line:84%
+and our extrapolations
+into the future.
+
+00:01:50.000 --> 00:01:51.800 align:middle line:84%
+We can predict what
+next year will bring.
+
+00:01:51.800 --> 00:01:53.717 align:middle line:84%
+How competent will be
+the models of next year?
+
+00:01:53.717 --> 00:01:55.980 align:middle line:84%
+Well, if have a law of
+how does the performance
+
+00:01:55.980 --> 00:01:58.990 align:middle line:84%
+change as a function
+of data points,
+
+00:01:58.990 --> 00:02:02.490 align:middle line:84%
+then we can know how well the
+models will perform next year.
+
+00:02:02.490 --> 00:02:05.470 align:middle line:84%
+And that's very
+useful for us to plan.
+
+00:02:05.470 --> 00:02:09.190 align:middle line:84%
+So here is one example
+of a scaling law
+
+00:02:09.190 --> 00:02:10.669 align:middle line:90%
+that people have noticed.
+
+00:02:10.669 --> 00:02:12.330 align:middle line:90%
+This is from an OpenAI blog.
+
+00:02:12.330 --> 00:02:14.410 align:middle line:84%
+And on the x-axis,
+they're plotting year.
+
+00:02:14.410 --> 00:02:15.870 align:middle line:84%
+And on the y-axis,
+they're plotting
+
+00:02:15.870 --> 00:02:20.930 align:middle line:84%
+the scale of the compute that's
+used to train each model.
+
+00:02:20.930 --> 00:02:24.508 align:middle line:84%
+So this is saying
+that as years go on,
+
+00:02:24.508 --> 00:02:26.550 align:middle line:84%
+the amount of compute that
+we use to train models
+
+00:02:26.550 --> 00:02:31.030 align:middle line:84%
+is increasing as some
+kind of exponential,
+
+00:02:31.030 --> 00:02:34.030 align:middle line:84%
+or it may, in fact, be a
+power law in this case.
+
+00:02:34.030 --> 00:02:37.230 align:middle line:84%
+But basically, for every
+additional year that we go on,
+
+00:02:37.230 --> 00:02:41.870 align:middle line:84%
+we get a kind of big increase
+in the amount of compute
+
+00:02:41.870 --> 00:02:43.250 align:middle line:90%
+that we use in these models.
+
+00:02:43.250 --> 00:02:45.850 align:middle line:84%
+So this should be reminiscent
+of things like Moore's law.
+
+00:02:45.850 --> 00:02:49.110 align:middle line:84%
+So Moore's law said that we
+double the number of transistors
+
+00:02:49.110 --> 00:02:52.710 align:middle line:84%
+in our machines every two
+years or however much it was.
+
+00:02:52.710 --> 00:02:56.710 align:middle line:84%
+And this scaling law
+says that every year--
+
+00:02:56.710 --> 00:02:58.690 align:middle line:84%
+actually, every three
+months, I think,
+
+00:02:58.690 --> 00:03:00.730 align:middle line:84%
+you double the amount
+of compute that you
+
+00:03:00.730 --> 00:03:02.610 align:middle line:90%
+use to train the models.
+
+00:03:02.610 --> 00:03:04.953 align:middle line:84%
+And I think this law has
+actually been increasing.
+
+00:03:04.953 --> 00:03:06.870 align:middle line:84%
+The slope is actually
+increasing a little bit,
+
+00:03:06.870 --> 00:03:09.290 align:middle line:84%
+so it's not quite
+even three months
+
+00:03:09.290 --> 00:03:11.550 align:middle line:84%
+now that it takes to double
+the amount of compute,
+
+00:03:11.550 --> 00:03:13.530 align:middle line:90%
+it might be even less.
+
+00:03:13.530 --> 00:03:16.730 align:middle line:90%
+See, this ends in 2018.
+
+00:03:16.730 --> 00:03:21.290 align:middle line:84%
+So deep learning, predictably,
+is using more and more scale
+
+00:03:21.290 --> 00:03:22.610 align:middle line:90%
+as time goes on.
+
+00:03:22.610 --> 00:03:25.730 align:middle line:84%
+And now, we want to understand
+how that relates to the model
+
+00:03:25.730 --> 00:03:27.770 align:middle line:84%
+performance and at what
+scale will we achieve
+
+00:03:27.770 --> 00:03:31.410 align:middle line:90%
+what types of abilities.
+
+00:03:31.410 --> 00:03:35.210 align:middle line:84%
+So another motivation for
+studying these questions comes
+
+00:03:35.210 --> 00:03:38.330 align:middle line:84%
+from this really influential
+essay called "The Bitter Lesson"
+
+00:03:38.330 --> 00:03:39.310 align:middle line:90%
+from Richard Sutton.
+
+00:03:39.310 --> 00:03:41.470 align:middle line:84%
+So raise your hand
+if you've read this.
+
+00:03:41.470 --> 00:03:43.330 align:middle line:90%
+It's a one-pager.
+
+00:03:43.330 --> 00:03:44.870 align:middle line:84%
+So you should all
+take a look at it.
+
+00:03:44.870 --> 00:03:49.050 align:middle line:84%
+It caused quite a splash in the
+field when it came out in 2019.
+
+00:03:49.050 --> 00:03:51.110 align:middle line:84%
+A lot of people
+really didn't like it.
+
+00:03:51.110 --> 00:03:52.602 align:middle line:90%
+A lot of people loved it.
+
+00:03:52.602 --> 00:03:54.310 align:middle line:84%
+But I think there's
+a lot of truth to it.
+
+00:03:54.310 --> 00:03:56.050 align:middle line:84%
+And it's an important
+lesson for us
+
+00:03:56.050 --> 00:04:00.270 align:middle line:84%
+to understand and take to heart,
+despite some nuances and caveats
+
+00:04:00.270 --> 00:04:01.590 align:middle line:90%
+that you can add to it.
+
+00:04:01.590 --> 00:04:05.890 align:middle line:84%
+So what Rich Sutton was saying
+is that-- he's an AI researcher.
+
+00:04:05.890 --> 00:04:08.550 align:middle line:84%
+He's been working in the
+field for a long time.
+
+00:04:08.550 --> 00:04:12.110 align:middle line:84%
+And what he observed is
+that all of our clever ideas
+
+00:04:12.110 --> 00:04:15.390 align:middle line:84%
+and algorithms, most of
+them don't really pan out.
+
+00:04:15.390 --> 00:04:18.390 align:middle line:84%
+And the only thing that
+systematically pans out
+
+00:04:18.390 --> 00:04:22.528 align:middle line:84%
+is designing simple
+algorithms that scale well.
+
+00:04:22.528 --> 00:04:24.070 align:middle line:84%
+And so he's basically
+saying that you
+
+00:04:24.070 --> 00:04:27.590 align:middle line:84%
+need to think about how models
+scale as a function of resources
+
+00:04:27.590 --> 00:04:32.435 align:middle line:84%
+in order to identify the winning
+models because, as time goes on,
+
+00:04:32.435 --> 00:04:34.310 align:middle line:84%
+whatever the ranking,
+whatever model is doing
+
+00:04:34.310 --> 00:04:36.970 align:middle line:84%
+better or worse than any other
+model, it doesn't really matter.
+
+00:04:36.970 --> 00:04:39.690 align:middle line:84%
+What matters is how they'll
+scale because, eventually,
+
+00:04:39.690 --> 00:04:44.982 align:middle line:84%
+as time goes on, the one
+that scales better will win.
+
+00:04:44.982 --> 00:04:46.550 align:middle line:84%
+So it was a little
+bit of a critique
+
+00:04:46.550 --> 00:04:48.930 align:middle line:84%
+of all of the clever
+algorithms in the field.
+
+00:04:48.930 --> 00:04:51.950 align:middle line:84%
+No, it turns out that the really
+simple algorithms turn out
+
+00:04:51.950 --> 00:04:55.230 align:middle line:84%
+to scale better, and
+those are taking over.
+
+00:04:55.230 --> 00:04:58.040 align:middle line:84%
+So interesting essay,
+but it has really
+
+00:04:58.040 --> 00:05:01.200 align:middle line:84%
+led us to take scale
+quite seriously.
+
+00:05:01.200 --> 00:05:04.040 align:middle line:84%
+Of course, scaling
+laws and thinking
+
+00:05:04.040 --> 00:05:06.960 align:middle line:84%
+about how algorithms scale
+as a function of resources
+
+00:05:06.960 --> 00:05:08.440 align:middle line:90%
+is not at all new.
+
+00:05:08.440 --> 00:05:11.680 align:middle line:84%
+It goes back to the foundations
+of computer science.
+
+00:05:11.680 --> 00:05:14.120 align:middle line:84%
+So in Intro CS or
+in Algorithms, you
+
+00:05:14.120 --> 00:05:17.180 align:middle line:84%
+learn about asymptotic
+analysis, big O notation.
+
+00:05:17.180 --> 00:05:18.860 align:middle line:90%
+That's a scaling law.
+
+00:05:18.860 --> 00:05:25.440 align:middle line:84%
+That's saying how does my time
+complexity of an algorithm scale
+
+00:05:25.440 --> 00:05:27.743 align:middle line:84%
+as a function of the
+input complexity.
+
+00:05:27.743 --> 00:05:29.160 align:middle line:84%
+Like if I have a
+graph, I'm trying
+
+00:05:29.160 --> 00:05:31.600 align:middle line:84%
+to find shortest path as a
+function of the number of nodes
+
+00:05:31.600 --> 00:05:34.728 align:middle line:84%
+in the graph, how does the
+model's behavior, how does
+
+00:05:34.728 --> 00:05:36.020 align:middle line:90%
+the algorithm's behavior scale?
+
+00:05:36.020 --> 00:05:38.800 align:middle line:84%
+How long does it take to
+find the shortest path?
+
+00:05:38.800 --> 00:05:40.700 align:middle line:84%
+So this idea of
+asymptotic analysis,
+
+00:05:40.700 --> 00:05:43.060 align:middle line:84%
+looking at as
+resources or complexity
+
+00:05:43.060 --> 00:05:45.520 align:middle line:84%
+or as some parameter
+of the input
+
+00:05:45.520 --> 00:05:47.560 align:middle line:84%
+scales up, how
+does some property
+
+00:05:47.560 --> 00:05:52.720 align:middle line:84%
+of the model scale, that's
+a standard part of computer
+
+00:05:52.720 --> 00:05:53.720 align:middle line:90%
+science.
+
+00:05:53.720 --> 00:05:57.860 align:middle line:84%
+And it's very much something
+that you want in order
+
+00:05:57.860 --> 00:05:59.360 align:middle line:84%
+to make predictions
+about the future
+
+00:05:59.360 --> 00:06:00.800 align:middle line:90%
+because things are scaling.
+
+00:06:00.800 --> 00:06:03.300 align:middle line:84%
+That's kind of the
+bottom line of this graph
+
+00:06:03.300 --> 00:06:05.187 align:middle line:90%
+here is that things are scaling.
+
+00:06:05.187 --> 00:06:06.520 align:middle line:90%
+Eventually, they might saturate.
+
+00:06:06.520 --> 00:06:08.062 align:middle line:84%
+We might not have
+any more resources.
+
+00:06:08.062 --> 00:06:10.060 align:middle line:84%
+But we're not really
+anywhere near that point,
+
+00:06:10.060 --> 00:06:13.400 align:middle line:84%
+so we need to be able to
+predict how things will scale.
+
+00:06:13.400 --> 00:06:16.740 align:middle line:90%
+
+
+00:06:16.740 --> 00:06:19.140 align:middle line:84%
+So one of the
+fundamental questions
+
+00:06:19.140 --> 00:06:26.580 align:middle line:84%
+of the study of scaling laws is
+if I have a budget of compute
+
+00:06:26.580 --> 00:06:28.980 align:middle line:84%
+or a budget of
+hardware, how should I
+
+00:06:28.980 --> 00:06:34.380 align:middle line:90%
+optimally allocate that budget?
+
+00:06:34.380 --> 00:06:38.340 align:middle line:90%
+So, let's see.
+
+00:06:38.340 --> 00:06:41.460 align:middle line:84%
+What model should I train
+on, how much data, in order
+
+00:06:41.460 --> 00:06:43.360 align:middle line:84%
+to make the best
+use of my budget?
+
+00:06:43.360 --> 00:06:46.240 align:middle line:90%
+
+
+00:06:46.240 --> 00:06:49.380 align:middle line:84%
+So here is a scaling
+law, another scaling law,
+
+00:06:49.380 --> 00:06:53.460 align:middle line:84%
+from OpenAI that they
+use to decide on how
+
+00:06:53.460 --> 00:06:56.240 align:middle line:90%
+to train the GPT-4 model.
+
+00:06:56.240 --> 00:06:59.920 align:middle line:84%
+So now, we have on the x-axis is
+the compute, and on the y-axis
+
+00:06:59.920 --> 00:07:01.960 align:middle line:90%
+is the performance of the model.
+
+00:07:01.960 --> 00:07:04.060 align:middle line:84%
+So performance is
+measured in bits per word.
+
+00:07:04.060 --> 00:07:07.160 align:middle line:84%
+So this is something
+related to the cross-entropy
+
+00:07:07.160 --> 00:07:09.240 align:middle line:90%
+of the next-word prediction.
+
+00:07:09.240 --> 00:07:12.600 align:middle line:84%
+So lower means that I'm making
+more accurate predictions.
+
+00:07:12.600 --> 00:07:16.520 align:middle line:84%
+And as I train my model with
+more compute, so more flops,
+
+00:07:16.520 --> 00:07:21.480 align:middle line:84%
+more steps of SGD, more
+gradients, more updates,
+
+00:07:21.480 --> 00:07:24.600 align:middle line:84%
+so compute is now measured in
+just flops on the hardware.
+
+00:07:24.600 --> 00:07:27.000 align:middle line:84%
+And that is related
+in a complicated way
+
+00:07:27.000 --> 00:07:29.652 align:middle line:84%
+to the number of
+tokens that I observe,
+
+00:07:29.652 --> 00:07:30.860 align:middle line:90%
+the depth of the transformer.
+
+00:07:30.860 --> 00:07:32.260 align:middle line:84%
+All these things
+affect the compute,
+
+00:07:32.260 --> 00:07:33.860 align:middle line:84%
+but we're just measuring
+it all in flops,
+
+00:07:33.860 --> 00:07:35.610 align:middle line:84%
+like how many floating
+point operations do
+
+00:07:35.610 --> 00:07:37.920 align:middle line:90%
+I do on my hardware?
+
+00:07:37.920 --> 00:07:40.000 align:middle line:84%
+So as I use more
+compute, of course,
+
+00:07:40.000 --> 00:07:43.920 align:middle line:84%
+I will get better
+models with lower loss.
+
+00:07:43.920 --> 00:07:49.640 align:middle line:84%
+And so 1 here is
+like a petaflop,
+
+00:07:49.640 --> 00:07:51.620 align:middle line:84%
+or I'm not entirely
+sure what the axis is,
+
+00:07:51.620 --> 00:07:53.860 align:middle line:84%
+but this is a lot,
+a lot, of compute.
+
+00:07:53.860 --> 00:07:58.700 align:middle line:84%
+And if you read this paper
+and saw that training GPT-4
+
+00:07:58.700 --> 00:08:00.940 align:middle line:84%
+cost $10 million
+or however much it
+
+00:08:00.940 --> 00:08:03.660 align:middle line:84%
+costs to do one training,
+like a petaflop of compute
+
+00:08:03.660 --> 00:08:06.560 align:middle line:84%
+was $1 million, let's say,
+then you might have thought,
+
+00:08:06.560 --> 00:08:09.340 align:middle line:84%
+well, obviously, they did
+a hyperparameter sweep,
+
+00:08:09.340 --> 00:08:11.940 align:middle line:84%
+and they tried a lot
+of model variations.
+
+00:08:11.940 --> 00:08:14.680 align:middle line:84%
+If it took $1 million to
+train the final model,
+
+00:08:14.680 --> 00:08:17.660 align:middle line:84%
+it must have taken $100
+million to design it, right?
+
+00:08:17.660 --> 00:08:19.780 align:middle line:84%
+But that's not
+actually the case.
+
+00:08:19.780 --> 00:08:21.852 align:middle line:84%
+I don't know how much it
+took to design it or run
+
+00:08:21.852 --> 00:08:23.560 align:middle line:84%
+the final model, but
+they did this trick,
+
+00:08:23.560 --> 00:08:26.980 align:middle line:84%
+which is they don't design it
+by sweeping hyperparameters
+
+00:08:26.980 --> 00:08:28.880 align:middle line:84%
+and testing models
+at this scale.
+
+00:08:28.880 --> 00:08:34.080 align:middle line:84%
+They design it at 1/1,000 the
+scale, or maybe in this case,
+
+00:08:34.080 --> 00:08:39.380 align:middle line:90%
+it's 10,000, 1/10,000 the scale.
+
+00:08:39.380 --> 00:08:42.580 align:middle line:84%
+So they do all of their design
+and hyperparameter sweeps
+
+00:08:42.580 --> 00:08:47.060 align:middle line:84%
+and ablations and model
+comparisons at small scale.
+
+00:08:47.060 --> 00:08:48.960 align:middle line:84%
+They do it at
+multiple small scales,
+
+00:08:48.960 --> 00:08:53.390 align:middle line:84%
+and they find this curve
+that will predict performance
+
+00:08:53.390 --> 00:08:55.270 align:middle line:84%
+as a function of
+compute, and then
+
+00:08:55.270 --> 00:08:57.150 align:middle line:84%
+extrapolate that
+curve to the scale
+
+00:08:57.150 --> 00:08:59.190 align:middle line:84%
+that they'll train
+their final model at.
+
+00:08:59.190 --> 00:09:02.430 align:middle line:84%
+And if they can predict
+that the final model will
+
+00:09:02.430 --> 00:09:05.765 align:middle line:84%
+get such and such
+a score, they will
+
+00:09:05.765 --> 00:09:07.390 align:middle line:84%
+choose the model that
+will get the best
+
+00:09:07.390 --> 00:09:09.310 align:middle line:84%
+score by running these
+curves for a bunch
+
+00:09:09.310 --> 00:09:11.152 align:middle line:90%
+of different variations.
+
+00:09:11.152 --> 00:09:13.110 align:middle line:84%
+Then they'll choose the
+model that they predict
+
+00:09:13.110 --> 00:09:15.670 align:middle line:84%
+will have the lowest
+score at the skill
+
+00:09:15.670 --> 00:09:17.070 align:middle line:90%
+that they actually care about.
+
+00:09:17.070 --> 00:09:20.008 align:middle line:84%
+And then they only train
+once at that massive scale.
+
+00:09:20.008 --> 00:09:22.550 align:middle line:84%
+So that's the strategy that a
+lot of companies are using now.
+
+00:09:22.550 --> 00:09:24.750 align:middle line:90%
+Yeah, question in the back.
+
+00:09:24.750 --> 00:09:28.310 align:middle line:84%
+AUDIENCE: My question is, is
+compute proportional to time?
+
+00:09:28.310 --> 00:09:30.490 align:middle line:84%
+Like, let's take into
+account the amount of time?
+
+00:09:30.490 --> 00:09:33.550 align:middle line:84%
+Or is it something
+that's time-normalized?
+
+00:09:33.550 --> 00:09:34.570 align:middle line:90%
+PHILLIP ISOLA: Yeah.
+
+00:09:34.570 --> 00:09:35.570 align:middle line:90%
+That's a great question.
+
+00:09:35.570 --> 00:09:37.270 align:middle line:90%
+Is compute proportional to time?
+
+00:09:37.270 --> 00:09:44.670 align:middle line:84%
+So here, you're just kind of
+flattening all uses of compute
+
+00:09:44.670 --> 00:09:46.170 align:middle line:90%
+into just flops.
+
+00:09:46.170 --> 00:09:50.310 align:middle line:84%
+So flops could be allocated
+sequentially or in parallel.
+
+00:09:50.310 --> 00:09:53.610 align:middle line:84%
+So compute does not have a
+direct relationship to time.
+
+00:09:53.610 --> 00:09:57.310 align:middle line:84%
+So twice the compute
+can be twice the time,
+
+00:09:57.310 --> 00:10:00.290 align:middle line:84%
+or it could be twice the
+number of GPUs in parallel.
+
+00:10:00.290 --> 00:10:01.770 align:middle line:84%
+So this is just
+measuring compute
+
+00:10:01.770 --> 00:10:06.930 align:middle line:84%
+in terms of flops, which can
+factor into different mappings
+
+00:10:06.930 --> 00:10:09.050 align:middle line:90%
+onto time.
+
+00:10:09.050 --> 00:10:10.090 align:middle line:90%
+Yeah.
+
+00:10:10.090 --> 00:10:14.250 align:middle line:84%
+AUDIENCE: Is this graph for
+a constant amount of data?
+
+00:10:14.250 --> 00:10:16.110 align:middle line:84%
+PHILLIP ISOLA: So
+I'll get to that.
+
+00:10:16.110 --> 00:10:18.000 align:middle line:84%
+Is this graph for a
+constant amount of data?
+
+00:10:18.000 --> 00:10:19.750 align:middle line:84%
+I don't know for this
+graph in particular,
+
+00:10:19.750 --> 00:10:22.050 align:middle line:84%
+but usually, for
+scaling laws, we
+
+00:10:22.050 --> 00:10:25.330 align:middle line:84%
+will try to say we're
+going to predict
+
+00:10:25.330 --> 00:10:28.450 align:middle line:84%
+the performance at a
+given compute level
+
+00:10:28.450 --> 00:10:30.830 align:middle line:84%
+for the optimal amount of
+data for that compute level.
+
+00:10:30.830 --> 00:10:32.610 align:middle line:84%
+We'll optimize it
+for all other factors
+
+00:10:32.610 --> 00:10:33.710 align:middle line:84%
+when we make one
+of these graphs,
+
+00:10:33.710 --> 00:10:35.293 align:middle line:84%
+but I'll show you
+that in more detail.
+
+00:10:35.293 --> 00:10:38.590 align:middle line:90%
+
+
+00:10:38.590 --> 00:10:40.490 align:middle line:84%
+And these types of
+scaling laws, they
+
+00:10:40.490 --> 00:10:42.630 align:middle line:90%
+don't only appear for the loss.
+
+00:10:42.630 --> 00:10:45.330 align:middle line:84%
+So bits per word
+is closely related
+
+00:10:45.330 --> 00:10:48.290 align:middle line:84%
+to the loss function of
+next-character prediction.
+
+00:10:48.290 --> 00:10:51.500 align:middle line:84%
+It's like the amount
+of information you--
+
+00:10:51.500 --> 00:10:53.750 align:middle line:84%
+the amount of uncertainty
+you have over the next word,
+
+00:10:53.750 --> 00:10:56.430 align:middle line:90%
+essentially, measured in bits.
+
+00:10:56.430 --> 00:10:58.872 align:middle line:84%
+But what if we try to
+predict performance
+
+00:10:58.872 --> 00:11:00.830 align:middle line:84%
+in terms of something
+more meaningful, like how
+
+00:11:00.830 --> 00:11:04.510 align:middle line:84%
+many problems you pass on some
+math test or some benchmark?
+
+00:11:04.510 --> 00:11:07.350 align:middle line:84%
+And it turns out that there are
+also fairly predictable trends
+
+00:11:07.350 --> 00:11:09.690 align:middle line:84%
+in scaling laws for the
+downstream performance,
+
+00:11:09.690 --> 00:11:12.085 align:middle line:90%
+not just for the loss.
+
+00:11:12.085 --> 00:11:13.710 align:middle line:84%
+So a lot of scaling,
+a lot of research,
+
+00:11:13.710 --> 00:11:16.710 align:middle line:84%
+is on predicting the
+loss on the training set
+
+00:11:16.710 --> 00:11:18.330 align:middle line:90%
+as a function of resources.
+
+00:11:18.330 --> 00:11:21.150 align:middle line:84%
+But you can also make scaling
+laws for test performance
+
+00:11:21.150 --> 00:11:23.710 align:middle line:84%
+or for downstream
+performance, in other senses,
+
+00:11:23.710 --> 00:11:27.380 align:middle line:90%
+according to other measures.
+
+00:11:27.380 --> 00:11:30.730 align:middle line:84%
+So this was capability
+on 23 coding problems.
+
+00:11:30.730 --> 00:11:32.470 align:middle line:84%
+And again, you have
+this nice curve.
+
+00:11:32.470 --> 00:11:34.950 align:middle line:84%
+And what I'll tell you is
+that these curves turn out
+
+00:11:34.950 --> 00:11:40.270 align:middle line:84%
+to be power laws with respect
+to the underlying resource.
+
+00:11:40.270 --> 00:11:44.870 align:middle line:84%
+So scaling laws
+are things that try
+
+00:11:44.870 --> 00:11:47.510 align:middle line:84%
+to predict some parameter
+of interest, so, oftentimes,
+
+00:11:47.510 --> 00:11:52.468 align:middle line:84%
+the test loss as a function of
+the amount of data you train on,
+
+00:11:52.468 --> 00:11:54.760 align:middle line:84%
+the amount of compute you
+use, the number of parameters
+
+00:11:54.760 --> 00:11:58.480 align:middle line:84%
+in your model, these critical
+resources that you care about.
+
+00:11:58.480 --> 00:12:00.280 align:middle line:84%
+And what you're
+going to try to do
+
+00:12:00.280 --> 00:12:02.520 align:middle line:84%
+is select these resources--
+these will inform you
+
+00:12:02.520 --> 00:12:05.560 align:middle line:84%
+on how to select these resources
+so as to get the lowest
+
+00:12:05.560 --> 00:12:07.013 align:middle line:90%
+possible test loss.
+
+00:12:07.013 --> 00:12:08.680 align:middle line:84%
+So that's why we care
+about scaling laws
+
+00:12:08.680 --> 00:12:12.520 align:middle line:84%
+because they tell us what
+should the batch size be
+
+00:12:12.520 --> 00:12:17.360 align:middle line:84%
+that will achieve the lowest
+cost when I scale things way up,
+
+00:12:17.360 --> 00:12:21.620 align:middle line:84%
+the lowest loss when
+I scale things way up.
+
+00:12:21.620 --> 00:12:24.000 align:middle line:84%
+So for a given architecture,
+how much data, what model,
+
+00:12:24.000 --> 00:12:25.833 align:middle line:84%
+would be needed to get
+a target performance?
+
+00:12:25.833 --> 00:12:30.320 align:middle line:84%
+If I know I need to be like 99%
+accurate on my self-driving car
+
+00:12:30.320 --> 00:12:34.980 align:middle line:84%
+assessment, then can I predict
+at what scale will I have that?
+
+00:12:34.980 --> 00:12:37.260 align:middle line:84%
+And that would be useful
+for regulatory bodies.
+
+00:12:37.260 --> 00:12:40.560 align:middle line:84%
+I want to tell them in 2025,
+we'll have 99% performance,
+
+00:12:40.560 --> 00:12:42.520 align:middle line:84%
+and you can start
+planning around that.
+
+00:12:42.520 --> 00:12:45.388 align:middle line:84%
+So it's good for making
+predictions about the future
+
+00:12:45.388 --> 00:12:46.180 align:middle line:90%
+and planning ahead.
+
+00:12:46.180 --> 00:12:50.060 align:middle line:84%
+It's also good for choosing
+parameters that maximize
+
+00:12:50.060 --> 00:12:53.540 align:middle line:90%
+performance at a given scale.
+
+00:12:53.540 --> 00:12:59.060 align:middle line:84%
+So generally, the kind of
+scaling laws we'll look at
+
+00:12:59.060 --> 00:13:02.720 align:middle line:84%
+are going to be of the form
+as a function of parameters.
+
+00:13:02.720 --> 00:13:06.560 align:middle line:84%
+And we'll look at number of--
+as a function of resources.
+
+00:13:06.560 --> 00:13:08.620 align:middle line:84%
+So we'll look at N, the
+number of parameters,
+
+00:13:08.620 --> 00:13:11.160 align:middle line:84%
+and D, the number
+of data points.
+
+00:13:11.160 --> 00:13:12.700 align:middle line:90%
+So D is data points now.
+
+00:13:12.700 --> 00:13:13.840 align:middle line:90%
+It's not depth.
+
+00:13:13.840 --> 00:13:15.995 align:middle line:84%
+Just these terms
+are all overloaded.
+
+00:13:15.995 --> 00:13:17.120 align:middle line:90%
+D could be a lot of things.
+
+00:13:17.120 --> 00:13:18.560 align:middle line:84%
+But here, D is not
+dimensionality.
+
+00:13:18.560 --> 00:13:19.220 align:middle line:90%
+It's not depth.
+
+00:13:19.220 --> 00:13:21.960 align:middle line:90%
+It's data points.
+
+00:13:21.960 --> 00:13:23.620 align:middle line:84%
+So we're going to
+try to find what
+
+00:13:23.620 --> 00:13:26.500 align:middle line:84%
+is the optimal
+number of parameters
+
+00:13:26.500 --> 00:13:29.100 align:middle line:84%
+and what is the optimal number
+of data points for a fixed
+
+00:13:29.100 --> 00:13:35.180 align:middle line:84%
+compute budget C. So C is
+going to be the flops that
+
+00:13:35.180 --> 00:13:41.340 align:middle line:84%
+are required to train a model of
+size N on a data set of size D.
+
+00:13:41.340 --> 00:13:45.900 align:middle line:84%
+So roughly, to train a
+model with N parameters
+
+00:13:45.900 --> 00:13:48.280 align:middle line:84%
+on a data set of size
+D, we'll have something
+
+00:13:48.280 --> 00:13:50.740 align:middle line:90%
+like N times D amount of flops.
+
+00:13:50.740 --> 00:13:52.740 align:middle line:84%
+It might be a little more
+complicated than that,
+
+00:13:52.740 --> 00:13:55.840 align:middle line:84%
+but every additional data point,
+I need proportionally more
+
+00:13:55.840 --> 00:13:57.520 align:middle line:84%
+flops, every
+additional parameter,
+
+00:13:57.520 --> 00:14:01.240 align:middle line:84%
+I need proportionally
+more flops.
+
+00:14:01.240 --> 00:14:04.200 align:middle line:84%
+So for a fixed compute
+budget, if I want
+
+00:14:04.200 --> 00:14:07.200 align:middle line:90%
+to minimize my performance--
+
+00:14:07.200 --> 00:14:12.340 align:middle line:84%
+sorry, I want to minimize my
+loss, so maximize performance.
+
+00:14:12.340 --> 00:14:13.520 align:middle line:90%
+There we go.
+
+00:14:13.520 --> 00:14:14.755 align:middle line:90%
+Then what should I set?
+
+00:14:14.755 --> 00:14:16.880 align:middle line:84%
+How big should my model be
+and how many data points
+
+00:14:16.880 --> 00:14:18.500 align:middle line:90%
+should I train on?
+
+00:14:18.500 --> 00:14:19.920 align:middle line:84%
+So we can train a
+really big model
+
+00:14:19.920 --> 00:14:21.840 align:middle line:84%
+on a few data points
+for the same cost
+
+00:14:21.840 --> 00:14:24.107 align:middle line:84%
+as a small model on
+a lot of data points.
+
+00:14:24.107 --> 00:14:24.940 align:middle line:90%
+So what should I do?
+
+00:14:24.940 --> 00:14:29.440 align:middle line:84%
+Should I train a huge
+trillion-parameter transformer
+
+00:14:29.440 --> 00:14:31.540 align:middle line:90%
+on 10 data points?
+
+00:14:31.540 --> 00:14:34.760 align:middle line:84%
+Or should I train a 1
+billion-parameter transformer
+
+00:14:34.760 --> 00:14:36.680 align:middle line:90%
+on a million data points?
+
+00:14:36.680 --> 00:14:40.820 align:middle line:84%
+Those might have roughly the
+same cost in terms of flops.
+
+00:14:40.820 --> 00:14:43.840 align:middle line:90%
+
+
+00:14:43.840 --> 00:14:47.570 align:middle line:84%
+So the paper that really
+introduced or popularized
+
+00:14:47.570 --> 00:14:49.650 align:middle line:84%
+the idea of scaling
+laws for neural nets
+
+00:14:49.650 --> 00:14:52.930 align:middle line:84%
+was this one from Jared
+Kaplan and Sam McCandlish
+
+00:14:52.930 --> 00:14:55.610 align:middle line:90%
+and folks at OpenAI.
+
+00:14:55.610 --> 00:14:57.890 align:middle line:84%
+This team subsequently
+peeled off
+
+00:14:57.890 --> 00:15:00.450 align:middle line:84%
+and formed the company
+Anthropic, but a few of them
+
+00:15:00.450 --> 00:15:01.270 align:middle line:90%
+stayed at OpenAI.
+
+00:15:01.270 --> 00:15:03.730 align:middle line:84%
+So basically, the
+two big AGI players,
+
+00:15:03.730 --> 00:15:09.050 align:middle line:84%
+or two of the big AGI players,
+is a schism of this team.
+
+00:15:09.050 --> 00:15:10.810 align:middle line:84%
+And so the scaling
+laws are a huge part
+
+00:15:10.810 --> 00:15:14.450 align:middle line:84%
+of the philosophy behind those
+two companies and also part
+
+00:15:14.450 --> 00:15:16.610 align:middle line:90%
+of their success, I would say.
+
+00:15:16.610 --> 00:15:20.790 align:middle line:84%
+So they studied scaling
+laws in 2020 or so,
+
+00:15:20.790 --> 00:15:24.650 align:middle line:84%
+or maybe this is like 2018,
+for autoregressive transformer
+
+00:15:24.650 --> 00:15:27.210 align:middle line:84%
+models, so language
+models with a transformer.
+
+00:15:27.210 --> 00:15:29.130 align:middle line:84%
+And they tried to
+solve the equation
+
+00:15:29.130 --> 00:15:31.010 align:middle line:90%
+I had on the last slide.
+
+00:15:31.010 --> 00:15:33.770 align:middle line:84%
+How big should the model
+be, and how many data points
+
+00:15:33.770 --> 00:15:37.910 align:middle line:84%
+should we train it on if we
+have this compute budget?
+
+00:15:37.910 --> 00:15:40.490 align:middle line:84%
+Maybe they have a
+billion dollars'
+
+00:15:40.490 --> 00:15:42.270 align:middle line:84%
+worth of flops that
+they can allocate,
+
+00:15:42.270 --> 00:15:45.430 align:middle line:84%
+and they want to how should
+we spend that billion dollars.
+
+00:15:45.430 --> 00:15:47.010 align:middle line:84%
+It's measured in
+flops, not dollars.
+
+00:15:47.010 --> 00:15:49.177 align:middle line:84%
+So again, there's a lot of
+different transformations
+
+00:15:49.177 --> 00:15:52.070 align:middle line:84%
+you'd want to apply in order
+to really ground this out
+
+00:15:52.070 --> 00:15:53.210 align:middle line:90%
+in raw economics.
+
+00:15:53.210 --> 00:15:56.590 align:middle line:84%
+But flops is the one that
+this paper looked at.
+
+00:15:56.590 --> 00:15:59.970 align:middle line:84%
+So they trained on some
+data sets of webtext.
+
+00:15:59.970 --> 00:16:02.310 align:middle line:84%
+This is just
+next-character prediction.
+
+00:16:02.310 --> 00:16:05.030 align:middle line:84%
+And they varied a lot
+of different properties
+
+00:16:05.030 --> 00:16:07.350 align:middle line:84%
+of the model, like the model
+size, how many parameters
+
+00:16:07.350 --> 00:16:10.350 align:middle line:84%
+does it have, the data set
+size, so D, how many tokens
+
+00:16:10.350 --> 00:16:12.270 align:middle line:90%
+are you training it on.
+
+00:16:12.270 --> 00:16:14.983 align:middle line:84%
+And they also tried other
+things like the batch size--
+
+00:16:14.983 --> 00:16:17.150 align:middle line:84%
+we'll come back to that at
+the end of this lecture--
+
+00:16:17.150 --> 00:16:19.233 align:middle line:84%
+the shape of the network,
+what's the aspect ratio,
+
+00:16:19.233 --> 00:16:23.590 align:middle line:84%
+like the depth compared to
+the width of the network.
+
+00:16:23.590 --> 00:16:25.290 align:middle line:84%
+So they looked at
+all of these factors.
+
+00:16:25.290 --> 00:16:26.910 align:middle line:90%
+It's a really rich paper.
+
+00:16:26.910 --> 00:16:28.910 align:middle line:84%
+So we assign this as a
+reading because it's just
+
+00:16:28.910 --> 00:16:31.830 align:middle line:84%
+a beautiful piece of
+science and full of insight.
+
+00:16:31.830 --> 00:16:34.110 align:middle line:84%
+A lot of the findings
+have been modified
+
+00:16:34.110 --> 00:16:37.330 align:middle line:84%
+since-- they found their
+empirical fits to the data,
+
+00:16:37.330 --> 00:16:39.890 align:middle line:84%
+and there's better empirical
+fits in recent years.
+
+00:16:39.890 --> 00:16:44.150 align:middle line:84%
+But it's a good lesson in
+how to do this kind of work,
+
+00:16:44.150 --> 00:16:48.290 align:middle line:84%
+and there's still a lot of
+great insights in the paper.
+
+00:16:48.290 --> 00:16:49.850 align:middle line:90%
+So here's how they computed.
+
+00:16:49.850 --> 00:16:51.690 align:middle line:84%
+Here's how they
+estimated compute.
+
+00:16:51.690 --> 00:16:54.890 align:middle line:84%
+So I said that compute
+should be something
+
+00:16:54.890 --> 00:16:58.730 align:middle line:84%
+like number of parameters
+times number of data points.
+
+00:16:58.730 --> 00:17:03.010 align:middle line:84%
+So they used that as their
+rough approximation to compute.
+
+00:17:03.010 --> 00:17:05.609 align:middle line:84%
+Again, this is just an
+approximation to how GPUs
+
+00:17:05.609 --> 00:17:10.170 align:middle line:84%
+actually run because it's
+going to depend on things like
+
+00:17:10.170 --> 00:17:13.210 align:middle line:84%
+what's the precision of--
+is it a 16-bit number?
+
+00:17:13.210 --> 00:17:15.349 align:middle line:84%
+These things, there's a
+lot of details that matter.
+
+00:17:15.349 --> 00:17:17.849 align:middle line:84%
+But basically,
+compute equals number
+
+00:17:17.849 --> 00:17:21.246 align:middle line:84%
+of parameters times number
+of data points observed.
+
+00:17:21.246 --> 00:17:23.329 align:middle line:84%
+So number of data points
+is batch size times steps
+
+00:17:23.329 --> 00:17:24.162 align:middle line:90%
+of gradient descent.
+
+00:17:24.162 --> 00:17:27.569 align:middle line:84%
+So that's batch size times
+steps of gradient descent.
+
+00:17:27.569 --> 00:17:30.110 align:middle line:84%
+And then times parameters,
+that's like how many flops.
+
+00:17:30.110 --> 00:17:31.970 align:middle line:84%
+And then for some reason,
+you multiply by 6.
+
+00:17:31.970 --> 00:17:33.850 align:middle line:84%
+I don't quite know
+where that comes from.
+
+00:17:33.850 --> 00:17:39.070 align:middle line:84%
+But that's the constant that
+turns the units into flops.
+
+00:17:39.070 --> 00:17:41.700 align:middle line:90%
+
+
+00:17:41.700 --> 00:17:44.740 align:middle line:84%
+So they ran these
+for petaflop days.
+
+00:17:44.740 --> 00:17:46.280 align:middle line:84%
+They ran this on
+a lot of compute.
+
+00:17:46.280 --> 00:17:49.420 align:middle line:90%
+
+
+00:17:49.420 --> 00:17:51.340 align:middle line:84%
+So the main finding
+of this paper
+
+00:17:51.340 --> 00:17:55.540 align:middle line:84%
+is that there is a power law
+relationship between the test
+
+00:17:55.540 --> 00:17:59.260 align:middle line:84%
+loss and the resources, either
+the number of parameters
+
+00:17:59.260 --> 00:18:01.360 align:middle line:90%
+or the number of data points.
+
+00:18:01.360 --> 00:18:04.860 align:middle line:84%
+So resource X, again, that
+could be data or parameters
+
+00:18:04.860 --> 00:18:09.740 align:middle line:84%
+or even compute in
+test loss are related
+
+00:18:09.740 --> 00:18:14.860 align:middle line:84%
+by this type of power
+law, which is a 1
+
+00:18:14.860 --> 00:18:18.955 align:middle line:84%
+over the resource value
+to the alpha exponent.
+
+00:18:18.955 --> 00:18:20.580 align:middle line:84%
+So alpha is a constant
+that will depend
+
+00:18:20.580 --> 00:18:25.120 align:middle line:84%
+on other properties, properties
+of the data, the world,
+
+00:18:25.120 --> 00:18:27.260 align:middle line:90%
+the task, the architecture.
+
+00:18:27.260 --> 00:18:30.020 align:middle line:84%
+But for a particular
+architecture or particular task
+
+00:18:30.020 --> 00:18:32.340 align:middle line:84%
+like language modeling
+with a transformer,
+
+00:18:32.340 --> 00:18:34.980 align:middle line:84%
+then we'll have some alpha
+that can be estimated,
+
+00:18:34.980 --> 00:18:38.660 align:middle line:84%
+and that's the parameter
+of the power law.
+
+00:18:38.660 --> 00:18:40.200 align:middle line:90%
+So what does a power law say?
+
+00:18:40.200 --> 00:18:43.280 align:middle line:84%
+It basically says if
+I double my resources,
+
+00:18:43.280 --> 00:18:44.860 align:middle line:84%
+I double my number
+of data points,
+
+00:18:44.860 --> 00:18:49.680 align:middle line:90%
+my loss should go down by--
+
+00:18:49.680 --> 00:18:54.320 align:middle line:84%
+if I double, my loss should
+go down by 2 to the power.
+
+00:18:54.320 --> 00:18:56.000 align:middle line:84%
+Alpha is the parameter
+of the power law
+
+00:18:56.000 --> 00:18:57.720 align:middle line:90%
+that describes its shape.
+
+00:18:57.720 --> 00:19:00.680 align:middle line:84%
+If I quadruple my
+data points, my loss
+
+00:19:00.680 --> 00:19:05.360 align:middle line:84%
+should go down by 4
+to the negative alpha.
+
+00:19:05.360 --> 00:19:08.400 align:middle line:84%
+So let's say that alpha
+is 1, just for simplicity.
+
+00:19:08.400 --> 00:19:11.280 align:middle line:84%
+Then it's like if I double
+my number of data points
+
+00:19:11.280 --> 00:19:13.445 align:middle line:84%
+I train on, then my loss
+will go down by half.
+
+00:19:13.445 --> 00:19:15.820 align:middle line:84%
+So 2 to the negative 1 will
+be my loss goes down by half.
+
+00:19:15.820 --> 00:19:21.680 align:middle line:84%
+If I quadruple, my
+loss goes down by 4.
+
+00:19:21.680 --> 00:19:23.780 align:middle line:90%
+So my loss becomes a fourth.
+
+00:19:23.780 --> 00:19:26.400 align:middle line:84%
+So that's the idea
+of a power law.
+
+00:19:26.400 --> 00:19:34.380 align:middle line:84%
+If I scale my resource,
+I will scale my loss.
+
+00:19:34.380 --> 00:19:38.860 align:middle line:90%
+
+
+00:19:38.860 --> 00:19:43.743 align:middle line:84%
+So if alpha is 2, then
+if I double my resource,
+
+00:19:43.743 --> 00:19:45.160 align:middle line:84%
+then I'll get 2
+to the negative 2.
+
+00:19:45.160 --> 00:19:48.880 align:middle line:84%
+So my loss will go down by one
+fourth of its previous value.
+
+00:19:48.880 --> 00:19:51.660 align:middle line:90%
+
+
+00:19:51.660 --> 00:19:56.280 align:middle line:84%
+So here's the empirical
+fit that they found.
+
+00:19:56.280 --> 00:19:59.040 align:middle line:84%
+So on the y-axis is going
+to be the test loss.
+
+00:19:59.040 --> 00:20:01.928 align:middle line:84%
+And on the x-axis is going
+to be the number of tokens
+
+00:20:01.928 --> 00:20:02.720 align:middle line:90%
+that they train on.
+
+00:20:02.720 --> 00:20:04.180 align:middle line:90%
+So that's the data set size.
+
+00:20:04.180 --> 00:20:06.440 align:middle line:84%
+Remember, this is
+autoregressive transformer,
+
+00:20:06.440 --> 00:20:09.178 align:middle line:84%
+so tokens is we
+tokenize the words,
+
+00:20:09.178 --> 00:20:10.720 align:middle line:84%
+and we're just
+predicting next token.
+
+00:20:10.720 --> 00:20:13.540 align:middle line:84%
+So this is how many
+tokens we predict.
+
+00:20:13.540 --> 00:20:18.380 align:middle line:84%
+One important point
+here is that we're not
+
+00:20:18.380 --> 00:20:20.880 align:middle line:84%
+taking into account
+multi-epoch training.
+
+00:20:20.880 --> 00:20:22.980 align:middle line:84%
+So remember, I could have
+a data set of some size
+
+00:20:22.980 --> 00:20:24.720 align:middle line:84%
+but revisit data
+points multiple times.
+
+00:20:24.720 --> 00:20:26.057 align:middle line:90%
+So what does that count on?
+
+00:20:26.057 --> 00:20:27.640 align:middle line:84%
+How do I measure the
+number of tokens?
+
+00:20:27.640 --> 00:20:29.880 align:middle line:84%
+This is all one epoch
+training, so it's very easy.
+
+00:20:29.880 --> 00:20:33.100 align:middle line:84%
+It's just I visit each
+data point exactly once.
+
+00:20:33.100 --> 00:20:36.820 align:middle line:84%
+And so the number of
+tokens that are processed
+
+00:20:36.820 --> 00:20:42.040 align:middle line:84%
+is exactly equal to the number
+of tokens in my data set.
+
+00:20:42.040 --> 00:20:44.360 align:middle line:90%
+So this is a log-log plot.
+
+00:20:44.360 --> 00:20:46.600 align:middle line:84%
+So a power law on a
+log-log plot looks
+
+00:20:46.600 --> 00:20:48.440 align:middle line:84%
+like a line with
+a slope, which is
+
+00:20:48.440 --> 00:20:53.360 align:middle line:84%
+equal to the exponent
+of the power law.
+
+00:20:53.360 --> 00:20:56.480 align:middle line:90%
+So there's a great fit.
+
+00:20:56.480 --> 00:21:00.480 align:middle line:84%
+That was the first main finding,
+that, empirically, there
+
+00:21:00.480 --> 00:21:03.360 align:middle line:84%
+exists a power law relationship
+between data set size and test
+
+00:21:03.360 --> 00:21:05.720 align:middle line:90%
+loss.
+
+00:21:05.720 --> 00:21:07.340 align:middle line:84%
+So what are the
+equations down here?
+
+00:21:07.340 --> 00:21:11.600 align:middle line:84%
+So this is the test loss as a
+function of the data set size.
+
+00:21:11.600 --> 00:21:13.020 align:middle line:84%
+We're going to
+have data set size.
+
+00:21:13.020 --> 00:21:15.840 align:middle line:84%
+It'll be 1 over data
+set size to the alpha.
+
+00:21:15.840 --> 00:21:21.160 align:middle line:84%
+And alpha here, it turns out,
+empirically, to be about 0.1.
+
+00:21:21.160 --> 00:21:24.168 align:middle line:84%
+And they also have this
+Dc, which is some constant.
+
+00:21:24.168 --> 00:21:25.960 align:middle line:84%
+This is another parameter
+of the power law.
+
+00:21:25.960 --> 00:21:29.160 align:middle line:84%
+That just is going to change
+the offset of this line.
+
+00:21:29.160 --> 00:21:31.720 align:middle line:84%
+So think about
+take a log-log plot
+
+00:21:31.720 --> 00:21:34.600 align:middle line:84%
+is like take a log of this side
+and a log of that side, that's
+
+00:21:34.600 --> 00:21:37.320 align:middle line:84%
+what we're plotting,
+one against the other.
+
+00:21:37.320 --> 00:21:39.810 align:middle line:84%
+If we take a log of this
+side, then the exponent
+
+00:21:39.810 --> 00:21:41.610 align:middle line:90%
+just becomes we multiply--
+
+00:21:41.610 --> 00:21:44.850 align:middle line:84%
+it's like the slope
+of log of what's
+
+00:21:44.850 --> 00:21:49.130 align:middle line:84%
+on the inside and
+log of this over that
+
+00:21:49.130 --> 00:21:51.533 align:middle line:90%
+is log of this minus that.
+
+00:21:51.533 --> 00:21:52.950 align:middle line:84%
+So this is just a
+constant offset.
+
+00:21:52.950 --> 00:21:55.530 align:middle line:84%
+That's like an
+offset on the y-axis.
+
+00:21:55.530 --> 00:21:57.570 align:middle line:90%
+This is the y-intercept.
+
+00:21:57.570 --> 00:21:58.802 align:middle line:90%
+Yeah, question.
+
+00:21:58.802 --> 00:22:01.010 align:middle line:84%
+AUDIENCE: Is the form of
+the loss function important?
+
+00:22:01.010 --> 00:22:03.365 align:middle line:84%
+Should I understand the
+loss function itself?
+
+00:22:03.365 --> 00:22:04.490 align:middle line:90%
+It doesn't matter too much?
+
+00:22:04.490 --> 00:22:07.073 align:middle line:84%
+PHILLIP ISOLA: The form of the
+loss function, is it important?
+
+00:22:07.073 --> 00:22:07.757 align:middle line:90%
+It is.
+
+00:22:07.757 --> 00:22:10.090 align:middle line:84%
+And I think people have
+observed power laws with respect
+
+00:22:10.090 --> 00:22:14.130 align:middle line:84%
+to both cross-entropy as
+well as mean squared error,
+
+00:22:14.130 --> 00:22:17.510 align:middle line:84%
+different loss functions will
+result in different power laws.
+
+00:22:17.510 --> 00:22:20.435 align:middle line:84%
+But they can be
+explained by power laws.
+
+00:22:20.435 --> 00:22:22.810 align:middle line:84%
+In this case, I think we're
+looking at cross-entropy type
+
+00:22:22.810 --> 00:22:25.410 align:middle line:90%
+loss.
+
+00:22:25.410 --> 00:22:27.690 align:middle line:84%
+So next-word prediction,
+like cross-entropy.
+
+00:22:27.690 --> 00:22:28.970 align:middle line:90%
+Yeah?
+
+00:22:28.970 --> 00:22:31.290 align:middle line:84%
+AUDIENCE: So there
+was [INAUDIBLE]
+
+00:22:31.290 --> 00:22:35.610 align:middle line:84%
+of the maximum, essentially,
+attention length or the number
+
+00:22:35.610 --> 00:22:39.070 align:middle line:90%
+of tokens [INAUDIBLE].
+
+00:22:39.070 --> 00:22:42.992 align:middle line:84%
+How does that relate to
+the [INAUDIBLE] here?
+
+00:22:42.992 --> 00:22:44.950 align:middle line:84%
+PHILLIP ISOLA: So how
+does the attention length
+
+00:22:44.950 --> 00:22:48.353 align:middle line:90%
+relate to this plot?
+
+00:22:48.353 --> 00:22:49.770 align:middle line:84%
+That's not really
+showing up here.
+
+00:22:49.770 --> 00:22:53.270 align:middle line:84%
+I think they're choosing some
+fixed attention, context length.
+
+00:22:53.270 --> 00:22:55.910 align:middle line:84%
+You could also derive
+scaling laws with respect
+
+00:22:55.910 --> 00:22:56.850 align:middle line:90%
+to context length.
+
+00:22:56.850 --> 00:22:58.600 align:middle line:84%
+I believe people have
+looked at that, too.
+
+00:22:58.600 --> 00:23:01.410 align:middle line:84%
+So as I scale my context,
+how does performance change?
+
+00:23:01.410 --> 00:23:03.590 align:middle line:84%
+Can I predictably
+say that if I want
+
+00:23:03.590 --> 00:23:08.590 align:middle line:84%
+performance to be 99% accurate,
+what's the context I need?
+
+00:23:08.590 --> 00:23:10.630 align:middle line:84%
+There probably are
+scaling laws like this.
+
+00:23:10.630 --> 00:23:12.463 align:middle line:84%
+I can't think of any
+off the top of my head,
+
+00:23:12.463 --> 00:23:14.297 align:middle line:84%
+but that's not what
+they're looking at here.
+
+00:23:14.297 --> 00:23:16.470 align:middle line:84%
+So I believe they're either
+choosing a fixed context
+
+00:23:16.470 --> 00:23:18.710 align:middle line:84%
+length for all the
+models they're comparing,
+
+00:23:18.710 --> 00:23:21.150 align:middle line:84%
+or maybe in some
+subsection of the paper,
+
+00:23:21.150 --> 00:23:22.670 align:middle line:84%
+they try different
+context lengths.
+
+00:23:22.670 --> 00:23:23.570 align:middle line:90%
+I don't remember.
+
+00:23:23.570 --> 00:23:26.820 align:middle line:90%
+
+
+00:23:26.820 --> 00:23:28.618 align:middle line:84%
+So all of these things
+are simplifications.
+
+00:23:28.618 --> 00:23:30.910 align:middle line:84%
+They're saying let's pick
+one setting, this transformer
+
+00:23:30.910 --> 00:23:33.330 align:middle line:84%
+with this context length
+with cross-entropy loss,
+
+00:23:33.330 --> 00:23:37.210 align:middle line:84%
+and let's measure how it
+scales with respect to one
+
+00:23:37.210 --> 00:23:38.530 align:middle line:90%
+interesting parameter.
+
+00:23:38.530 --> 00:23:44.530 align:middle line:84%
+And will that hold for
+an RNN with an MSE loss?
+
+00:23:44.530 --> 00:23:45.390 align:middle line:90%
+Maybe, maybe not.
+
+00:23:45.390 --> 00:23:47.723 align:middle line:84%
+So you should always keep
+that in the back of your mind.
+
+00:23:47.723 --> 00:23:50.190 align:middle line:84%
+This is characterizing one
+popular family of models.
+
+00:23:50.190 --> 00:23:52.390 align:middle line:84%
+But there are other models
+outside that family,
+
+00:23:52.390 --> 00:23:57.130 align:middle line:84%
+and we don't yet know how well
+these laws will extrapolate.
+
+00:23:57.130 --> 00:23:58.210 align:middle line:90%
+Let's go here.
+
+00:23:58.210 --> 00:24:00.690 align:middle line:84%
+AUDIENCE: Is there any
+empirical interpretation
+
+00:24:00.690 --> 00:24:02.530 align:middle line:90%
+of the value of DC?
+
+00:24:02.530 --> 00:24:05.437 align:middle line:84%
+Does it represent actually
+something meaningful?
+
+00:24:05.437 --> 00:24:06.270 align:middle line:90%
+PHILLIP ISOLA: Yeah.
+
+00:24:06.270 --> 00:24:08.550 align:middle line:84%
+Does DC represent
+something meaningful?
+
+00:24:08.550 --> 00:24:13.330 align:middle line:84%
+So I would say we have
+an equation with two
+
+00:24:13.330 --> 00:24:16.810 align:middle line:84%
+free parameters, and we're
+trying to explain points
+
+00:24:16.810 --> 00:24:18.030 align:middle line:90%
+with two free parameters.
+
+00:24:18.030 --> 00:24:20.290 align:middle line:84%
+And we say that a
+good explanation
+
+00:24:20.290 --> 00:24:24.930 align:middle line:84%
+of a set of points, it turns
+out to be a slope and an offset
+
+00:24:24.930 --> 00:24:26.410 align:middle line:90%
+on a log-log plot.
+
+00:24:26.410 --> 00:24:30.650 align:middle line:84%
+And what's the interpretation
+of that offset?
+
+00:24:30.650 --> 00:24:32.870 align:middle line:84%
+I'm not sure if I have
+a crisp explanation.
+
+00:24:32.870 --> 00:24:34.875 align:middle line:90%
+Yeah.
+
+00:24:34.875 --> 00:24:35.500 align:middle line:90%
+AUDIENCE: Yeah.
+
+00:24:35.500 --> 00:24:37.375 align:middle line:84%
+I was just wondering if
+there's a discrepancy
+
+00:24:37.375 --> 00:24:41.320 align:middle line:84%
+between the formula at the top
+of the plot and then the order
+
+00:24:41.320 --> 00:24:44.718 align:middle line:90%
+it is at the bottom of the--
+
+00:24:44.718 --> 00:24:45.760 align:middle line:90%
+PHILLIP ISOLA: Oh, I see.
+
+00:24:45.760 --> 00:24:46.740 align:middle line:90%
+Interesting.
+
+00:24:46.740 --> 00:24:50.400 align:middle line:84%
+So do we flip-- this
+is D over the offset,
+
+00:24:50.400 --> 00:24:54.120 align:middle line:84%
+and this is offset over D.
+But there's a negative here.
+
+00:24:54.120 --> 00:24:56.700 align:middle line:84%
+Yeah, so I think
+it's consistent.
+
+00:24:56.700 --> 00:24:57.533 align:middle line:90%
+Yeah.
+
+00:24:57.533 --> 00:24:59.200 align:middle line:84%
+AUDIENCE: Maybe we'll
+get to this later,
+
+00:24:59.200 --> 00:25:01.220 align:middle line:90%
+but I'm just curious.
+
+00:25:01.220 --> 00:25:04.500 align:middle line:84%
+Do you have some intuition
+for why it would be a law--
+
+00:25:04.500 --> 00:25:08.540 align:middle line:84%
+or, so sorry, a power law, say,
+an exponential decay or some
+
+00:25:08.540 --> 00:25:09.080 align:middle line:90%
+other?
+
+00:25:09.080 --> 00:25:14.060 align:middle line:84%
+PHILLIP ISOLA: Yeah, I'll
+get to a theoretical model
+
+00:25:14.060 --> 00:25:16.460 align:middle line:90%
+for why this would emerge.
+
+00:25:16.460 --> 00:25:18.380 align:middle line:84%
+But I would say I'm
+not sure how much I
+
+00:25:18.380 --> 00:25:20.320 align:middle line:90%
+trust the theory behind this.
+
+00:25:20.320 --> 00:25:21.780 align:middle line:90%
+I think that's still ongoing.
+
+00:25:21.780 --> 00:25:23.700 align:middle line:84%
+I would say it's more
+just, empirically,
+
+00:25:23.700 --> 00:25:27.148 align:middle line:84%
+a power law fits the data
+better than an exponential.
+
+00:25:27.148 --> 00:25:28.940 align:middle line:84%
+AUDIENCE: Do you feel
+like this is probably
+
+00:25:28.940 --> 00:25:32.320 align:middle line:84%
+more likely due to the data
+or the architecture or--
+
+00:25:32.320 --> 00:25:35.240 align:middle line:90%
+I guess it's not so clear.
+
+00:25:35.240 --> 00:25:37.520 align:middle line:84%
+PHILLIP ISOLA: So in the
+theory that we'll get to,
+
+00:25:37.520 --> 00:25:41.480 align:middle line:84%
+it comes out of just
+high-dimensional statistics.
+
+00:25:41.480 --> 00:25:44.560 align:middle line:84%
+If I'm trying to fit a function
+in high-dimensional space,
+
+00:25:44.560 --> 00:25:46.560 align:middle line:84%
+then there's a dependence
+on the dimensionality,
+
+00:25:46.560 --> 00:25:49.840 align:middle line:84%
+and that will turn
+into the alpha.
+
+00:25:49.840 --> 00:25:54.080 align:middle line:84%
+So I think it's something
+that's more related
+
+00:25:54.080 --> 00:25:57.560 align:middle line:84%
+to just high-dimensional
+statistics
+
+00:25:57.560 --> 00:25:59.060 align:middle line:90%
+than it is to data distribution.
+
+00:25:59.060 --> 00:26:00.240 align:middle line:90%
+It's not specific.
+
+00:26:00.240 --> 00:26:02.880 align:middle line:84%
+These power laws show up for
+all kinds of data distributions.
+
+00:26:02.880 --> 00:26:03.380 align:middle line:90%
+Yeah.
+
+00:26:03.380 --> 00:26:06.520 align:middle line:90%
+
+
+00:26:06.520 --> 00:26:10.100 align:middle line:90%
+Power law relationship.
+
+00:26:10.100 --> 00:26:12.540 align:middle line:84%
+So I said that that's true
+for the data set size.
+
+00:26:12.540 --> 00:26:14.302 align:middle line:84%
+What about for
+other things, like
+
+00:26:14.302 --> 00:26:15.760 align:middle line:84%
+as I scale the
+number of parameters
+
+00:26:15.760 --> 00:26:17.540 align:middle line:84%
+in my model, the
+weights in my model,
+
+00:26:17.540 --> 00:26:18.780 align:middle line:90%
+how does test loss behave?
+
+00:26:18.780 --> 00:26:20.580 align:middle line:84%
+And it turns out that's
+also a power law.
+
+00:26:20.580 --> 00:26:23.320 align:middle line:84%
+So empirically, the dots
+are empirical measurements,
+
+00:26:23.320 --> 00:26:26.160 align:middle line:90%
+and the line is at best fit.
+
+00:26:26.160 --> 00:26:28.832 align:middle line:84%
+So you can say this sounds
+like some physical law
+
+00:26:28.832 --> 00:26:30.540 align:middle line:84%
+that we're driving
+from first principles.
+
+00:26:30.540 --> 00:26:31.520 align:middle line:90%
+It's not, really.
+
+00:26:31.520 --> 00:26:32.620 align:middle line:90%
+It's much more empirical.
+
+00:26:32.620 --> 00:26:33.900 align:middle line:90%
+It's like science.
+
+00:26:33.900 --> 00:26:35.008 align:middle line:90%
+We observe.
+
+00:26:35.008 --> 00:26:37.300 align:middle line:84%
+We want to understand the
+relationship between a number
+
+00:26:37.300 --> 00:26:38.980 align:middle line:84%
+of parameters and
+test loss, so we just
+
+00:26:38.980 --> 00:26:40.063 align:middle line:90%
+start plotting the points.
+
+00:26:40.063 --> 00:26:42.660 align:middle line:84%
+That could have come out as some
+parabola or something crazy,
+
+00:26:42.660 --> 00:26:45.680 align:middle line:84%
+but it turned out to come out
+as a line on a log-log plot.
+
+00:26:45.680 --> 00:26:47.980 align:middle line:84%
+So that's what led people
+to say, oh, that's well
+
+00:26:47.980 --> 00:26:49.500 align:middle line:90%
+explained by a power law.
+
+00:26:49.500 --> 00:26:50.305 align:middle line:90%
+Why?
+
+00:26:50.305 --> 00:26:51.680 align:middle line:84%
+This is more of
+an open question.
+
+00:26:51.680 --> 00:26:54.500 align:middle line:90%
+We'll talk about some reasons.
+
+00:26:54.500 --> 00:26:55.453 align:middle line:90%
+Yeah.
+
+00:26:55.453 --> 00:26:56.620 align:middle line:90%
+AUDIENCE: Just one question.
+
+00:26:56.620 --> 00:26:59.900 align:middle line:84%
+Based on the two
+expressions, does
+
+00:26:59.900 --> 00:27:04.300 align:middle line:84%
+it mean that it's better to
+increase the data set to lower
+
+00:27:04.300 --> 00:27:06.107 align:middle line:90%
+than loss rather than--
+
+00:27:06.107 --> 00:27:06.940 align:middle line:90%
+PHILLIP ISOLA: Yeah.
+
+00:27:06.940 --> 00:27:08.980 align:middle line:84%
+So is it better to increase
+data set size or number
+
+00:27:08.980 --> 00:27:09.600 align:middle line:90%
+of parameters?
+
+00:27:09.600 --> 00:27:10.240 align:middle line:90%
+What can you infer?
+
+00:27:10.240 --> 00:27:10.865 align:middle line:90%
+Think about it.
+
+00:27:10.865 --> 00:27:12.980 align:middle line:84%
+We're going to show
+the answer in a minute.
+
+00:27:12.980 --> 00:27:16.080 align:middle line:90%
+And same for compute.
+
+00:27:16.080 --> 00:27:20.860 align:middle line:84%
+So now, we have three power
+laws for if I scale the compute,
+
+00:27:20.860 --> 00:27:23.260 align:middle line:84%
+test loss behaves as a power
+law with respect to compute.
+
+00:27:23.260 --> 00:27:25.073 align:middle line:84%
+If I scale the data
+set size, same thing.
+
+00:27:25.073 --> 00:27:26.740 align:middle line:84%
+But notice that each
+of these power laws
+
+00:27:26.740 --> 00:27:30.780 align:middle line:84%
+has a different constant
+offset and a different slope.
+
+00:27:30.780 --> 00:27:33.470 align:middle line:84%
+So that will have implications
+about how to optimally allocate
+
+00:27:33.470 --> 00:27:34.910 align:middle line:90%
+our resources.
+
+00:27:34.910 --> 00:27:38.090 align:middle line:84%
+We want to go down
+on the y-axis.
+
+00:27:38.090 --> 00:27:39.505 align:middle line:90%
+We want to get lower loss.
+
+00:27:39.505 --> 00:27:41.630 align:middle line:84%
+And so we can get lower
+loss by increasing data set
+
+00:27:41.630 --> 00:27:43.610 align:middle line:90%
+size or number of parameters.
+
+00:27:43.610 --> 00:27:47.950 align:middle line:84%
+And if those have equal cost,
+then we would prefer to--
+
+00:27:47.950 --> 00:27:53.242 align:middle line:84%
+we'd prefer, in this case, to
+increase our data set size.
+
+00:27:53.242 --> 00:27:54.450 align:middle line:90%
+I might be saying that wrong.
+
+00:27:54.450 --> 00:27:55.950 align:middle line:84%
+Let me wait until
+I get to the slide
+
+00:27:55.950 --> 00:27:58.910 align:middle line:84%
+so I make sure to
+say it correctly.
+
+00:27:58.910 --> 00:28:03.370 align:middle line:84%
+So in this plot, I'm pointing
+out these blue curves.
+
+00:28:03.370 --> 00:28:04.830 align:middle line:90%
+So what are these blue curves?
+
+00:28:04.830 --> 00:28:09.210 align:middle line:84%
+These blue curves are,
+as I scale my compute,
+
+00:28:09.210 --> 00:28:13.390 align:middle line:84%
+it turns out I also need to
+change the amount of data
+
+00:28:13.390 --> 00:28:17.510 align:middle line:84%
+that I train on, and I need to
+change the number of parameters
+
+00:28:17.510 --> 00:28:18.590 align:middle line:90%
+of the model.
+
+00:28:18.590 --> 00:28:20.770 align:middle line:84%
+So it turns out
+these power laws,
+
+00:28:20.770 --> 00:28:25.870 align:middle line:84%
+they show up as the Pareto
+front, the frontier of all
+
+00:28:25.870 --> 00:28:30.350 align:middle line:84%
+of the different curves, for
+different specific models
+
+00:28:30.350 --> 00:28:31.970 align:middle line:84%
+of different specific
+sizes trained
+
+00:28:31.970 --> 00:28:33.610 align:middle line:90%
+on different amounts of data.
+
+00:28:33.610 --> 00:28:37.690 align:middle line:84%
+So it's like if I optimally use
+an infinitely large data set
+
+00:28:37.690 --> 00:28:40.690 align:middle line:84%
+with an infinitely large model,
+or I pick just the perfect model
+
+00:28:40.690 --> 00:28:43.890 align:middle line:84%
+size that will
+minimize the test loss,
+
+00:28:43.890 --> 00:28:46.330 align:middle line:84%
+then the frontier
+that I arrive at
+
+00:28:46.330 --> 00:28:48.890 align:middle line:84%
+is a power law with
+respect to compute.
+
+00:28:48.890 --> 00:28:52.490 align:middle line:84%
+And I think it's the same for
+these other factors as well.
+
+00:28:52.490 --> 00:28:55.810 align:middle line:84%
+So if you are starting
+to look for a power law,
+
+00:28:55.810 --> 00:28:59.187 align:middle line:84%
+and you take one architecture,
+and you just scale the compute,
+
+00:28:59.187 --> 00:29:00.270 align:middle line:90%
+you won't see a power law.
+
+00:29:00.270 --> 00:29:01.870 align:middle line:84%
+You'll see one of
+these blue curves.
+
+00:29:01.870 --> 00:29:04.090 align:middle line:84%
+What you need to do
+is you need to tune
+
+00:29:04.090 --> 00:29:06.648 align:middle line:84%
+the data set size and parameters
+for every level of compute.
+
+00:29:06.648 --> 00:29:08.690 align:middle line:84%
+And if you tune them
+optimally, then the frontier
+
+00:29:08.690 --> 00:29:11.543 align:middle line:84%
+you'll arrive at
+is the power law.
+
+00:29:11.543 --> 00:29:12.210 align:middle line:90%
+AUDIENCE: Sorry.
+
+00:29:12.210 --> 00:29:14.233 align:middle line:84%
+What is one blue line
+across [INAUDIBLE]?
+
+00:29:14.233 --> 00:29:15.650 align:middle line:84%
+PHILLIP ISOLA: So
+one blue line is
+
+00:29:15.650 --> 00:29:19.250 align:middle line:84%
+I take one data set, a fixed
+size, one model, a fixed
+
+00:29:19.250 --> 00:29:21.410 align:middle line:84%
+number of parameters,
+and I train it
+
+00:29:21.410 --> 00:29:22.870 align:middle line:84%
+with different
+amounts of compute.
+
+00:29:22.870 --> 00:29:25.010 align:middle line:90%
+And I plot out what the loss is.
+
+00:29:25.010 --> 00:29:27.710 align:middle line:84%
+And you can see that they start
+to maybe even overfit a little.
+
+00:29:27.710 --> 00:29:30.390 align:middle line:84%
+It's like as I add
+more compute, I'm
+
+00:29:30.390 --> 00:29:32.210 align:middle line:90%
+no longer decreasing the loss.
+
+00:29:32.210 --> 00:29:34.165 align:middle line:84%
+Maybe even it goes
+up a little bit.
+
+00:29:34.165 --> 00:29:36.290 align:middle line:84%
+There's not very much
+evidence of overfitting here.
+
+00:29:36.290 --> 00:29:37.870 align:middle line:90%
+It kind of plateaus.
+
+00:29:37.870 --> 00:29:40.470 align:middle line:84%
+But for a bigger model,
+I need to scale up
+
+00:29:40.470 --> 00:29:43.030 align:middle line:84%
+the amount of data I train
+it on proportionally.
+
+00:29:43.030 --> 00:29:44.853 align:middle line:84%
+And then if I
+scale it up, then I
+
+00:29:44.853 --> 00:29:46.770 align:middle line:84%
+can use that more compute
+to get a lower loss.
+
+00:29:46.770 --> 00:29:47.530 align:middle line:90%
+That's the point.
+
+00:29:47.530 --> 00:29:51.110 align:middle line:90%
+
+
+00:29:51.110 --> 00:29:52.830 align:middle line:90%
+Cool.
+
+00:29:52.830 --> 00:29:57.670 align:middle line:84%
+So, yeah, finding one is
+there's a power law relationship
+
+00:29:57.670 --> 00:29:59.830 align:middle line:84%
+between each factor
+and performance when
+
+00:29:59.830 --> 00:30:02.430 align:middle line:84%
+all other factors
+are set optimally.
+
+00:30:02.430 --> 00:30:06.630 align:middle line:84%
+Finding number two is
+that you can actually
+
+00:30:06.630 --> 00:30:09.890 align:middle line:84%
+understand the relationship
+between parameter count,
+
+00:30:09.890 --> 00:30:12.670 align:middle line:84%
+number of flops, and data set
+size that will achieve the best
+
+00:30:12.670 --> 00:30:14.790 align:middle line:90%
+performance.
+
+00:30:14.790 --> 00:30:18.517 align:middle line:84%
+So this is really the point
+that I was just making.
+
+00:30:18.517 --> 00:30:20.850 align:middle line:84%
+But maybe it will be a little
+bit clearer on this slide.
+
+00:30:20.850 --> 00:30:23.690 align:middle line:84%
+So on the y-axis now,
+we have the loss.
+
+00:30:23.690 --> 00:30:25.490 align:middle line:84%
+And on the x-axis,
+we have the token.
+
+00:30:25.490 --> 00:30:27.350 align:middle line:90%
+So same thing as before.
+
+00:30:27.350 --> 00:30:29.840 align:middle line:84%
+But now, each of
+these curves is going
+
+00:30:29.840 --> 00:30:32.440 align:middle line:90%
+to be a different model size.
+
+00:30:32.440 --> 00:30:36.040 align:middle line:84%
+So what you're seeing is
+you get power law behavior
+
+00:30:36.040 --> 00:30:38.140 align:middle line:84%
+if the model is
+sufficiently large.
+
+00:30:38.140 --> 00:30:40.380 align:middle line:84%
+But if the model
+is not very large,
+
+00:30:40.380 --> 00:30:42.560 align:middle line:84%
+then adding more
+tokens to your data set
+
+00:30:42.560 --> 00:30:46.000 align:middle line:90%
+doesn't improve performance.
+
+00:30:46.000 --> 00:30:49.960 align:middle line:84%
+So you have to set your model
+to be large enough that it
+
+00:30:49.960 --> 00:30:52.700 align:middle line:90%
+can fit all those tokens.
+
+00:30:52.700 --> 00:30:55.490 align:middle line:84%
+And if it's a small model,
+if it's like a linear model,
+
+00:30:55.490 --> 00:30:56.740 align:middle line:90%
+it can only find a linear fit.
+
+00:30:56.740 --> 00:30:58.600 align:middle line:84%
+It just doesn't have
+enough capacity.
+
+00:30:58.600 --> 00:31:02.258 align:middle line:84%
+So you have to scale your
+data set size in tandem with--
+
+00:31:02.258 --> 00:31:04.800 align:middle line:84%
+or you have to scale your model
+size in tandem with your data
+
+00:31:04.800 --> 00:31:07.160 align:middle line:84%
+set size in order to
+observe the power law
+
+00:31:07.160 --> 00:31:10.840 align:middle line:84%
+and get your best
+possible test loss.
+
+00:31:10.840 --> 00:31:15.200 align:middle line:84%
+So we can actually now
+model L, the test loss,
+
+00:31:15.200 --> 00:31:18.440 align:middle line:84%
+as a function of both, and the
+number of parameters, the model
+
+00:31:18.440 --> 00:31:20.760 align:middle line:90%
+size, and D, the data set size.
+
+00:31:20.760 --> 00:31:25.020 align:middle line:84%
+And now, we have a more
+complicated functional fit.
+
+00:31:25.020 --> 00:31:27.820 align:middle line:84%
+Again, this is just we have
+empirical measurements,
+
+00:31:27.820 --> 00:31:30.900 align:middle line:84%
+and we're trying to find a
+simple function that fits them.
+
+00:31:30.900 --> 00:31:33.420 align:middle line:84%
+And it turns out it's like
+this power law of both factors
+
+00:31:33.420 --> 00:31:35.440 align:middle line:90%
+with some nested exponents.
+
+00:31:35.440 --> 00:31:37.820 align:middle line:84%
+So is this something
+fundamental?
+
+00:31:37.820 --> 00:31:39.620 align:middle line:90%
+Does theory predict this?
+
+00:31:39.620 --> 00:31:41.340 align:middle line:90%
+Not in this paper.
+
+00:31:41.340 --> 00:31:42.900 align:middle line:84%
+This is just a
+simple equation they
+
+00:31:42.900 --> 00:31:45.500 align:middle line:84%
+found that explains
+the data pretty well.
+
+00:31:45.500 --> 00:31:48.340 align:middle line:84%
+But it's like a power
+law in terms of we
+
+00:31:48.340 --> 00:31:49.520 align:middle line:90%
+have these constant offsets.
+
+00:31:49.520 --> 00:31:52.380 align:middle line:84%
+And then it's a power law with
+respect to the data set size
+
+00:31:52.380 --> 00:31:56.140 align:middle line:84%
+and with respect
+to the model size.
+
+00:31:56.140 --> 00:32:00.260 align:middle line:84%
+But there's an
+interaction between them.
+
+00:32:00.260 --> 00:32:02.960 align:middle line:84%
+So empirically, they
+made some measurements.
+
+00:32:02.960 --> 00:32:05.697 align:middle line:84%
+Other people make
+other measurements.
+
+00:32:05.697 --> 00:32:08.280 align:middle line:84%
+You don't need to worry about
+what those numbers mean exactly.
+
+00:32:08.280 --> 00:32:12.223 align:middle line:84%
+But this is just the fit
+they found to the data.
+
+00:32:12.223 --> 00:32:14.640 align:middle line:84%
+There might be a little bit
+of reading of tea leaves here.
+
+00:32:14.640 --> 00:32:17.520 align:middle line:84%
+One of the famous quotes
+from some physicist,
+
+00:32:17.520 --> 00:32:20.620 align:middle line:84%
+maybe John Von Neumann
+or somebody like this,
+
+00:32:20.620 --> 00:32:24.540 align:middle line:84%
+was that with five parameters,
+I can fit an elephant.
+
+00:32:24.540 --> 00:32:27.000 align:middle line:84%
+Any physicist know
+who said that?
+
+00:32:27.000 --> 00:32:27.800 align:middle line:90%
+Anyone?
+
+00:32:27.800 --> 00:32:28.540 align:middle line:90%
+Does anyone know?
+
+00:32:28.540 --> 00:32:29.040 align:middle line:90%
+Yeah?
+
+00:32:29.040 --> 00:32:30.880 align:middle line:84%
+AUDIENCE: I heard it
+attributed to Anderson.
+
+00:32:30.880 --> 00:32:32.080 align:middle line:90%
+PHILLIP ISOLA: Anderson?
+
+00:32:32.080 --> 00:32:33.740 align:middle line:90%
+OK.
+
+00:32:33.740 --> 00:32:35.860 align:middle line:84%
+So, yeah, I just attribute
+everything in physics
+
+00:32:35.860 --> 00:32:37.860 align:middle line:84%
+to Neumann or Einstein,
+but it's probably wrong.
+
+00:32:37.860 --> 00:32:40.360 align:middle line:90%
+It's probably Anderson.
+
+00:32:40.360 --> 00:32:43.722 align:middle line:84%
+But yeah, with five parameters,
+you can fit an elephant.
+
+00:32:43.722 --> 00:32:45.180 align:middle line:84%
+An elephant is a
+complicated shape,
+
+00:32:45.180 --> 00:32:47.322 align:middle line:84%
+but with five free
+parameters, you
+
+00:32:47.322 --> 00:32:48.780 align:middle line:84%
+can make really
+complicated shapes.
+
+00:32:48.780 --> 00:32:50.560 align:middle line:90%
+So here's, what?
+
+00:32:50.560 --> 00:32:51.907 align:middle line:90%
+1, 2.
+
+00:32:51.907 --> 00:32:53.240 align:middle line:90%
+N and D are not free parameters.
+
+00:32:53.240 --> 00:32:56.500 align:middle line:84%
+They're constants-- NC, DC,
+alpha-N, there's five, right?
+
+00:32:56.500 --> 00:32:57.980 align:middle line:90%
+So I can fit an elephant.
+
+00:32:57.980 --> 00:32:59.520 align:middle line:84%
+So maybe the reading
+of tea leaves
+
+00:32:59.520 --> 00:33:00.660 align:middle line:90%
+with this functional form.
+
+00:33:00.660 --> 00:33:01.680 align:middle line:84%
+Maybe there's other
+functional forms
+
+00:33:01.680 --> 00:33:03.060 align:middle line:90%
+that could do just as well.
+
+00:33:03.060 --> 00:33:07.745 align:middle line:90%
+
+
+00:33:07.745 --> 00:33:09.660 align:middle line:84%
+So we can do the
+same type of analysis
+
+00:33:09.660 --> 00:33:13.380 align:middle line:84%
+now with respect to not
+model size and data set size,
+
+00:33:13.380 --> 00:33:16.960 align:middle line:84%
+but model size and number of
+steps of gradient descent.
+
+00:33:16.960 --> 00:33:21.000 align:middle line:84%
+Remember, these are our three
+fundamental resources, model
+
+00:33:21.000 --> 00:33:24.000 align:middle line:84%
+size, data set
+size, and compute,
+
+00:33:24.000 --> 00:33:25.700 align:middle line:84%
+like number of
+steps that we take.
+
+00:33:25.700 --> 00:33:28.460 align:middle line:90%
+
+
+00:33:28.460 --> 00:33:31.540 align:middle line:84%
+Well, number of steps will
+be related to compute.
+
+00:33:31.540 --> 00:33:36.200 align:middle line:84%
+It'll be like number of steps
+times the batch size is compute.
+
+00:33:36.200 --> 00:33:39.740 align:middle line:84%
+So they found this even
+simpler functional form
+
+00:33:39.740 --> 00:33:41.980 align:middle line:84%
+for explaining the
+relationship between the test
+
+00:33:41.980 --> 00:33:44.940 align:middle line:90%
+loss and these two parameters.
+
+00:33:44.940 --> 00:33:48.860 align:middle line:84%
+So now, it just becomes
+the sum of two power laws.
+
+00:33:48.860 --> 00:33:50.380 align:middle line:84%
+And that's plotted
+on the left here,
+
+00:33:50.380 --> 00:33:53.540 align:middle line:84%
+where we have the amount
+of compute that you
+
+00:33:53.540 --> 00:33:56.720 align:middle line:90%
+need versus the test loss.
+
+00:33:56.720 --> 00:34:01.780 align:middle line:84%
+And you get kind of a power
+law, but if you increase
+
+00:34:01.780 --> 00:34:03.832 align:middle line:84%
+the number of parameters
+of your model,
+
+00:34:03.832 --> 00:34:05.040 align:middle line:90%
+then you'll get a lower loss.
+
+00:34:05.040 --> 00:34:07.123 align:middle line:84%
+And again, to reach
+that frontier,
+
+00:34:07.123 --> 00:34:09.040 align:middle line:84%
+you need to increase the
+number of parameters.
+
+00:34:09.040 --> 00:34:11.000 align:middle line:84%
+And if you increase the
+parameters sufficiently,
+
+00:34:11.000 --> 00:34:13.375 align:middle line:84%
+then you'll reach a frontier
+that looks like a power law,
+
+00:34:13.375 --> 00:34:17.360 align:middle line:84%
+just in terms of the number
+of steps of gradient descent.
+
+00:34:17.360 --> 00:34:21.300 align:middle line:90%
+
+
+00:34:21.300 --> 00:34:21.800 align:middle line:90%
+Yeah.
+
+00:34:21.800 --> 00:34:23.342 align:middle line:84%
+Some constants in
+that equation, too.
+
+00:34:23.342 --> 00:34:27.090 align:middle line:90%
+
+
+00:34:27.090 --> 00:34:31.050 align:middle line:84%
+So here are some of the
+implications that they derived.
+
+00:34:31.050 --> 00:34:33.650 align:middle line:84%
+So they fit all
+these relationships,
+
+00:34:33.650 --> 00:34:35.190 align:middle line:84%
+and then they got
+these exponents
+
+00:34:35.190 --> 00:34:36.449 align:middle line:90%
+and these constant offsets.
+
+00:34:36.449 --> 00:34:39.110 align:middle line:84%
+And they said, well, based on
+those exponents, what can we
+
+00:34:39.110 --> 00:34:41.350 align:middle line:84%
+say about how large
+should we make
+
+00:34:41.350 --> 00:34:44.710 align:middle line:84%
+our model, what batch size
+should we make the model have,
+
+00:34:44.710 --> 00:34:46.350 align:middle line:90%
+et cetera?
+
+00:34:46.350 --> 00:34:49.330 align:middle line:84%
+And they said that
+the number of--
+
+00:34:49.330 --> 00:34:54.150 align:middle line:90%
+
+
+00:34:54.150 --> 00:34:58.390 align:middle line:84%
+let's say that you have
+compute resource C,
+
+00:34:58.390 --> 00:35:00.950 align:middle line:84%
+then the number of
+parameters that you'll want
+
+00:35:00.950 --> 00:35:02.893 align:middle line:84%
+should be proportional
+to C to the 0.7.
+
+00:35:02.893 --> 00:35:05.310 align:middle line:84%
+And the number of data points
+that you'll want to train on
+
+00:35:05.310 --> 00:35:08.505 align:middle line:84%
+should be proportional
+to C to the 0.27.
+
+00:35:08.505 --> 00:35:10.130 align:middle line:84%
+Take these numbers
+with a grain of salt
+
+00:35:10.130 --> 00:35:12.830 align:middle line:84%
+because they change
+with different models
+
+00:35:12.830 --> 00:35:14.470 align:middle line:90%
+and different eras.
+
+00:35:14.470 --> 00:35:17.190 align:middle line:84%
+But they tell us some
+recipe for in order
+
+00:35:17.190 --> 00:35:23.470 align:middle line:84%
+to get the minimal loss, then
+it will be better, in this case,
+
+00:35:23.470 --> 00:35:25.210 align:middle line:90%
+to increase my--
+
+00:35:25.210 --> 00:35:27.410 align:middle line:84%
+well, I should set
+my parameter count
+
+00:35:27.410 --> 00:35:33.650 align:middle line:84%
+to be a higher proportion of
+my total compute count compared
+
+00:35:33.650 --> 00:35:35.410 align:middle line:90%
+to my data set size.
+
+00:35:35.410 --> 00:35:38.250 align:middle line:84%
+So the implication
+is, essentially, I
+
+00:35:38.250 --> 00:35:43.330 align:middle line:84%
+should train relatively big
+models on relatively small data.
+
+00:35:43.330 --> 00:35:45.570 align:middle line:84%
+So I should train a
+billion-size parameter model
+
+00:35:45.570 --> 00:35:47.830 align:middle line:90%
+on a million-size data set.
+
+00:35:47.830 --> 00:35:52.250 align:middle line:84%
+And that would be the best
+way to minimize my test
+
+00:35:52.250 --> 00:35:53.510 align:middle line:90%
+loss according to this law.
+
+00:35:53.510 --> 00:35:58.495 align:middle line:90%
+
+
+00:35:58.495 --> 00:36:02.230 align:middle line:84%
+So people have studied this in
+a lot of different contexts.
+
+00:36:02.230 --> 00:36:05.383 align:middle line:84%
+And I just want to give a
+flavor of the other power
+
+00:36:05.383 --> 00:36:06.550 align:middle line:90%
+laws that people have found.
+
+00:36:06.550 --> 00:36:09.170 align:middle line:84%
+So it's not just about
+autoregressive transformers.
+
+00:36:09.170 --> 00:36:11.650 align:middle line:84%
+These power laws have showed
+up in computer vision,
+
+00:36:11.650 --> 00:36:14.250 align:middle line:84%
+in reinforcement learning,
+in a lot of areas.
+
+00:36:14.250 --> 00:36:16.930 align:middle line:84%
+Here's a paper on
+vision power laws.
+
+00:36:16.930 --> 00:36:22.230 align:middle line:84%
+So they are fitting, I think,
+a vision transformer to do--
+
+00:36:22.230 --> 00:36:24.148 align:middle line:90%
+or a computer vision model.
+
+00:36:24.148 --> 00:36:26.190 align:middle line:84%
+I think they might have
+tried a few architectures
+
+00:36:26.190 --> 00:36:30.270 align:middle line:84%
+to do CIFAR-10 classification
+or some other type
+
+00:36:30.270 --> 00:36:32.310 align:middle line:90%
+of classification problem.
+
+00:36:32.310 --> 00:36:35.350 align:middle line:84%
+And here, they're plotting the
+power law in two dimensions.
+
+00:36:35.350 --> 00:36:38.010 align:middle line:84%
+So we have our
+loss on the y-axis.
+
+00:36:38.010 --> 00:36:43.070 align:middle line:84%
+And we have our data set
+size and our model size
+
+00:36:43.070 --> 00:36:45.150 align:middle line:90%
+on the two other axes.
+
+00:36:45.150 --> 00:36:48.085 align:middle line:84%
+So this vertical
+axis is the loss.
+
+00:36:48.085 --> 00:36:50.210 align:middle line:84%
+And there's kind of a power
+law in both dimensions,
+
+00:36:50.210 --> 00:36:51.750 align:middle line:84%
+but they interact
+in a weird way.
+
+00:36:51.750 --> 00:36:54.213 align:middle line:84%
+So again, it's not something
+that you can easily
+
+00:36:54.213 --> 00:36:55.130 align:middle line:90%
+wrap your mind around.
+
+00:36:55.130 --> 00:36:56.797 align:middle line:84%
+But we do have a
+simple functional form,
+
+00:36:56.797 --> 00:36:59.710 align:middle line:84%
+which is just the sum
+of these two power laws.
+
+00:36:59.710 --> 00:37:03.950 align:middle line:84%
+So same as they found
+in language modeling.
+
+00:37:03.950 --> 00:37:06.653 align:middle line:84%
+One of the questions
+that you might
+
+00:37:06.653 --> 00:37:08.070 align:middle line:84%
+have with this
+kind of reading tea
+
+00:37:08.070 --> 00:37:13.790 align:middle line:84%
+leaves concern is, do
+these power laws actually
+
+00:37:13.790 --> 00:37:15.910 align:middle line:84%
+make predictions
+that extrapolate
+
+00:37:15.910 --> 00:37:17.490 align:middle line:90%
+across orders of magnitude?
+
+00:37:17.490 --> 00:37:21.570 align:middle line:84%
+If I fit them on some subset
+of my data at some scale,
+
+00:37:21.570 --> 00:37:23.680 align:middle line:84%
+do they make
+predictions that are
+
+00:37:23.680 --> 00:37:27.200 align:middle line:84%
+valid on held-out
+data at larger scale?
+
+00:37:27.200 --> 00:37:29.000 align:middle line:90%
+And the answer is yes.
+
+00:37:29.000 --> 00:37:31.360 align:middle line:84%
+So in this paper, they
+ran this experiment
+
+00:37:31.360 --> 00:37:35.280 align:middle line:84%
+where they fit the model
+on these green points.
+
+00:37:35.280 --> 00:37:39.120 align:middle line:84%
+So they have models
+of different size,
+
+00:37:39.120 --> 00:37:41.760 align:middle line:84%
+but they did this
+out-of-distribution held-out
+
+00:37:41.760 --> 00:37:42.260 align:middle line:90%
+test.
+
+00:37:42.260 --> 00:37:44.360 align:middle line:84%
+So they fit the
+model on some scale.
+
+00:37:44.360 --> 00:37:48.260 align:middle line:84%
+And then they scaled up the
+model to a larger scale,
+
+00:37:48.260 --> 00:37:52.280 align:middle line:84%
+or in this case, it
+might be a smaller scale,
+
+00:37:52.280 --> 00:37:54.120 align:middle line:84%
+but you can do it
+in either direction.
+
+00:37:54.120 --> 00:37:56.380 align:middle line:84%
+So you fit the model
+on these data points.
+
+00:37:56.380 --> 00:37:58.760 align:middle line:84%
+And you ask, does it
+make valid predictions
+
+00:37:58.760 --> 00:38:01.140 align:middle line:84%
+for models that are
+of a different scale?
+
+00:38:01.140 --> 00:38:02.120 align:middle line:90%
+And it does.
+
+00:38:02.120 --> 00:38:04.083 align:middle line:90%
+So you can do cross-validation.
+
+00:38:04.083 --> 00:38:05.500 align:middle line:84%
+We're not just
+reading tea leaves.
+
+00:38:05.500 --> 00:38:08.160 align:middle line:90%
+
+
+00:38:08.160 --> 00:38:09.580 align:middle line:84%
+That's really all
+that this says.
+
+00:38:09.580 --> 00:38:13.280 align:middle line:90%
+
+
+00:38:13.280 --> 00:38:17.480 align:middle line:84%
+So finding one, we have
+a power law relationship
+
+00:38:17.480 --> 00:38:20.680 align:middle line:84%
+between resources
+and performance.
+
+00:38:20.680 --> 00:38:23.090 align:middle line:90%
+Finding two, the--

@@ -1,0 +1,33 @@
+{
+  "course_title":"Deep Learning",
+  "course_description":"This course covers the fundamentals of deep learning, including both theory and applications. Topics include neural net architectures (MLPs, CNNs, RNNs, graph nets, transformers), geometry and invariances in deep learning, backpropagation and automatic differentiation, learning theory and generalization in high dimensions, and applications to computer vision, natural language processing, and robotics.",
+  "course_description_html":"This course covers the fundamentals of deep learning, including both theory and applications. Topics include neural net architectures (MLPs, CNNs, RNNs, graph nets, transformers), geometry and invariances in deep learning, backpropagation and automatic differentiation, learning theory and generalization in high dimensions, and applications to computer vision, natural language processing, and robotics.",
+  "site_uid":"16965224-2612-4f07-be42-d884a3632b5d",
+  "legacy_uid":"","instructors": [{
+    "first_name":"Phillip",
+    "last_name":"Isola",
+    "middle_initial":"",
+    "salutation":"Prof.",
+    "title":"Prof. Phillip Isola"},{
+    "first_name":"Sara",
+    "last_name":"Beery",
+    "middle_initial":"",
+    "salutation":"Prof.",
+    "title":"Prof. Sara Beery"},{
+    "first_name":"Jeremy",
+    "last_name":"Bernstein",
+    "middle_initial":"",
+    "salutation":"Dr.",
+    "title":"Dr. Jeremy Bernstein"}],"department_numbers":["6"],
+  "learning_resource_types":["Readings","Problem Sets","Lecture Videos","Lecture Notes","Projects with Examples"],
+  "topics":[["Engineering","Computer Science","Artificial Intelligence"],["Engineering","Computer Science","Graphics and Visualization"]],
+  "mit_learn_topics":[],
+  "primary_course_number":"6.7960",
+  "extra_course_numbers":"",
+  "term":"Fall",
+  "year":"2024",
+  "level":["Undergraduate","Graduate"],
+  "hide_download":false,
+  "image_src":"./static_resources/mit6_7960_f24.jpg",
+  "course_image_metadata":{"body":"","content_type":"resource","draft":false,"file":"/courses/6-7960-deep-learning-fall-2024/mit6_7960_f24.jpg","file_size":516647,"file_type":"image/jpeg","image_metadata":{"caption":"Deep learning allows models to perform tasks on photos such as edge detection, colorization, in-painting, and more. (Courtesy of {{% resource_link \"6ff1ab04-0019-409d-b5d1-be694cf5f480\" \"Bar et al\" %}}. Used under CC BY.)","credit":"Courtesy of {{% resource_link \"6ff1ab04-0019-409d-b5d1-be694cf5f480\" \"Bar et al\" %}}. Used under CC BY.","image-alt":"Visual prompt-based in-painting model performing tasks like segmentation, colorization, in-painting, and style transfer."},"iscjklanguage":false,"learning_resource_types":[],"license":"https://creativecommons.org/licenses/by/4.0/","resourcetype":"Image","title":"mit6_7960_f24.jpg","uid":"03b604e2-97c4-416b-947d-a8319a223e48","video_files":{"archive_url":"","video_captions_file":"","video_captions_resource":{"content":"","website":"deep-learning"},"video_thumbnail_file":"","video_transcript_file":"","video_transcript_resource":{"content":"","website":"deep-learning"}},"video_metadata":{"source":"","video_speakers":"","video_tags":"","youtube_description":"","youtube_id":""}}}
+

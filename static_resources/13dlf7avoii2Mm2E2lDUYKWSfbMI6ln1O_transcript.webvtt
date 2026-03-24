@@ -1,0 +1,5208 @@
+WEBVTT
+
+00:00:00.000 --> 00:00:00.985 align:middle line:90%
+
+
+00:00:00.985 --> 00:00:02.440 align:middle line:90%
+[SQUEAK]
+
+00:00:02.440 --> 00:00:03.895 align:middle line:90%
+[RUSTLING]
+
+00:00:03.895 --> 00:00:07.290 align:middle line:90%
+[CLICKING]
+
+00:00:07.290 --> 00:00:12.940 align:middle line:90%
+
+
+00:00:12.940 --> 00:00:16.440 align:middle line:84%
+SARA BEERY: So today,
+we're moving on
+
+00:00:16.440 --> 00:00:19.000 align:middle line:84%
+from generative
+models, and we're
+
+00:00:19.000 --> 00:00:22.360 align:middle line:84%
+going to start talking
+about out-of-distribution
+
+00:00:22.360 --> 00:00:24.720 align:middle line:90%
+generalization.
+
+00:00:24.720 --> 00:00:28.080 align:middle line:84%
+And this is, I think, one of
+the biggest open challenges
+
+00:00:28.080 --> 00:00:31.080 align:middle line:84%
+for modern machine learning
+models, the ability
+
+00:00:31.080 --> 00:00:34.840 align:middle line:84%
+to generalize to data that
+is not explicitly covered
+
+00:00:34.840 --> 00:00:37.920 align:middle line:84%
+within the training
+distribution.
+
+00:00:37.920 --> 00:00:43.160 align:middle line:84%
+And so, just a bit
+of motivation here.
+
+00:00:43.160 --> 00:00:45.960 align:middle line:84%
+We've seen a lot of success
+in machine learning, right?
+
+00:00:45.960 --> 00:00:50.760 align:middle line:84%
+We have incredible models
+for image classification.
+
+00:00:50.760 --> 00:00:54.020 align:middle line:84%
+This is a aggregate of
+the ImageNet data set.
+
+00:00:54.020 --> 00:00:56.880 align:middle line:84%
+I would argue
+that, in many ways,
+
+00:00:56.880 --> 00:00:59.400 align:middle line:84%
+things like simple
+categorization, the types
+
+00:00:59.400 --> 00:01:03.130 align:middle line:84%
+of categorization we
+often try to do on data
+
+00:01:03.130 --> 00:01:06.290 align:middle line:84%
+sets like ImageNet is
+pretty much solved.
+
+00:01:06.290 --> 00:01:08.570 align:middle line:84%
+There are, of
+course, a few corner
+
+00:01:08.570 --> 00:01:12.770 align:middle line:84%
+cases that are pretty difficult,
+or sometimes, even erroneously
+
+00:01:12.770 --> 00:01:15.650 align:middle line:84%
+labeled or ambiguous that are
+still hard for modern models
+
+00:01:15.650 --> 00:01:19.410 align:middle line:84%
+within ImageNet, but mostly,
+it's a solved problem.
+
+00:01:19.410 --> 00:01:22.830 align:middle line:84%
+We've seen pretty great
+success on image generation.
+
+00:01:22.830 --> 00:01:25.410 align:middle line:84%
+We've been talking about
+that the last couple of days.
+
+00:01:25.410 --> 00:01:29.050 align:middle line:84%
+Strategy games, things
+like machine translation,
+
+00:01:29.050 --> 00:01:30.570 align:middle line:84%
+robotic manipulation,
+we're starting
+
+00:01:30.570 --> 00:01:34.130 align:middle line:90%
+to see success in all of these.
+
+00:01:34.130 --> 00:01:38.770 align:middle line:84%
+But then there are a lot of
+cases where machine learning
+
+00:01:38.770 --> 00:01:40.930 align:middle line:90%
+still isn't very successful.
+
+00:01:40.930 --> 00:01:43.310 align:middle line:84%
+And sometimes, it
+can be surprising.
+
+00:01:43.310 --> 00:01:47.690 align:middle line:84%
+So I think one
+interesting example here
+
+00:01:47.690 --> 00:01:50.790 align:middle line:84%
+is in the space of
+self-driving cars.
+
+00:01:50.790 --> 00:01:54.230 align:middle line:84%
+So we are starting to see
+self-driving cars be deployed.
+
+00:01:54.230 --> 00:01:56.530 align:middle line:84%
+I think Waymo in
+particular is starting
+
+00:01:56.530 --> 00:02:00.340 align:middle line:84%
+to actually have fleets deployed
+in many different areas.
+
+00:02:00.340 --> 00:02:03.500 align:middle line:84%
+And of course, there's
+complicated dynamics
+
+00:02:03.500 --> 00:02:06.540 align:middle line:84%
+around why we're not seeing
+self-driving cars at scale.
+
+00:02:06.540 --> 00:02:09.620 align:middle line:84%
+Regulation plays a
+huge role in that.
+
+00:02:09.620 --> 00:02:11.940 align:middle line:84%
+But I think one of
+the main reasons
+
+00:02:11.940 --> 00:02:15.020 align:middle line:84%
+is because we really don't have
+a good mechanism to guarantee
+
+00:02:15.020 --> 00:02:18.180 align:middle line:90%
+the robustness of these models.
+
+00:02:18.180 --> 00:02:20.220 align:middle line:84%
+We can't guarantee
+that they are not
+
+00:02:20.220 --> 00:02:23.980 align:middle line:84%
+going to make potentially
+harmful mistakes.
+
+00:02:23.980 --> 00:02:26.500 align:middle line:84%
+And this really begs
+the question of,
+
+00:02:26.500 --> 00:02:28.780 align:middle line:84%
+are these machine learning
+systems really ready
+
+00:02:28.780 --> 00:02:30.700 align:middle line:90%
+for the real world?
+
+00:02:30.700 --> 00:02:36.340 align:middle line:84%
+And what dimensions of
+deployment in the real world
+
+00:02:36.340 --> 00:02:37.500 align:middle line:90%
+are we still missing?
+
+00:02:37.500 --> 00:02:39.220 align:middle line:84%
+What do we need
+to be focusing on
+
+00:02:39.220 --> 00:02:41.980 align:middle line:84%
+to be able to actually
+do this effectively?
+
+00:02:41.980 --> 00:02:47.460 align:middle line:84%
+And I do think there's an
+interesting point here,
+
+00:02:47.460 --> 00:02:50.020 align:middle line:84%
+which is you could argue that
+a lot of machine learning
+
+00:02:50.020 --> 00:02:52.920 align:middle line:84%
+is actually actively being
+deployed in the real world.
+
+00:02:52.920 --> 00:02:56.940 align:middle line:84%
+I think the GPT models is
+a great example of that.
+
+00:02:56.940 --> 00:03:00.960 align:middle line:84%
+People are using AI more
+and more day to day,
+
+00:03:00.960 --> 00:03:03.000 align:middle line:84%
+but if I'm trying
+to characterize
+
+00:03:03.000 --> 00:03:05.680 align:middle line:84%
+the types of AI that
+are ready for deployment
+
+00:03:05.680 --> 00:03:09.760 align:middle line:84%
+versus the types of AI that,
+even if we try to deploy them,
+
+00:03:09.760 --> 00:03:12.200 align:middle line:84%
+we invest billions of
+dollars into figuring out
+
+00:03:12.200 --> 00:03:15.600 align:middle line:84%
+how to make them deployable,
+we're still not seeing
+
+00:03:15.600 --> 00:03:19.000 align:middle line:84%
+that progress or actually
+really seeing it happen,
+
+00:03:19.000 --> 00:03:22.600 align:middle line:90%
+I think it comes down to risk.
+
+00:03:22.600 --> 00:03:26.160 align:middle line:84%
+A lot of the cases where
+we see AI models deployed
+
+00:03:26.160 --> 00:03:29.400 align:middle line:84%
+are what I would characterize
+as high precision
+
+00:03:29.400 --> 00:03:31.020 align:middle line:90%
+human verification systems.
+
+00:03:31.020 --> 00:03:35.280 align:middle line:84%
+So you need the model to be
+good enough to be useful,
+
+00:03:35.280 --> 00:03:37.480 align:middle line:84%
+so it should work
+most of the time,
+
+00:03:37.480 --> 00:03:39.400 align:middle line:84%
+but you also have
+a human verifier
+
+00:03:39.400 --> 00:03:42.520 align:middle line:84%
+in the loop that is
+making corrections
+
+00:03:42.520 --> 00:03:44.580 align:middle line:90%
+when something's not right.
+
+00:03:44.580 --> 00:03:46.400 align:middle line:84%
+So you have this
+verification loop
+
+00:03:46.400 --> 00:03:49.040 align:middle line:84%
+that's always happening
+with human intelligence.
+
+00:03:49.040 --> 00:03:50.680 align:middle line:84%
+ChatGPT is a great
+example of this.
+
+00:03:50.680 --> 00:03:52.020 align:middle line:90%
+You prompt it with something.
+
+00:03:52.020 --> 00:03:53.620 align:middle line:84%
+You get a result.
+Maybe it's useful.
+
+00:03:53.620 --> 00:03:54.980 align:middle line:90%
+You probably edit it.
+
+00:03:54.980 --> 00:03:57.810 align:middle line:84%
+You probably interact
+with it in some way.
+
+00:03:57.810 --> 00:04:00.383 align:middle line:84%
+If it's just absolute trash,
+maybe you giggle about it,
+
+00:04:00.383 --> 00:04:02.050 align:middle line:84%
+you share it with
+your friends, and then
+
+00:04:02.050 --> 00:04:04.490 align:middle line:84%
+you prompt it with something
+completely different.
+
+00:04:04.490 --> 00:04:07.730 align:middle line:84%
+So there's this human
+brain that's in the loop,
+
+00:04:07.730 --> 00:04:10.130 align:middle line:84%
+verifying that these
+things work well.
+
+00:04:10.130 --> 00:04:12.730 align:middle line:84%
+And things like hallucination
+aren't so much of an issue
+
+00:04:12.730 --> 00:04:14.950 align:middle line:84%
+if a human is making the
+corrections themselves.
+
+00:04:14.950 --> 00:04:17.209 align:middle line:84%
+It's when we start
+trusting these models
+
+00:04:17.209 --> 00:04:18.890 align:middle line:84%
+without being human
+verified that we
+
+00:04:18.890 --> 00:04:20.705 align:middle line:90%
+start running into issues.
+
+00:04:20.705 --> 00:04:22.330 align:middle line:84%
+And I think another
+interesting example
+
+00:04:22.330 --> 00:04:25.850 align:middle line:84%
+of that is things like a lot
+of the modern machine learning
+
+00:04:25.850 --> 00:04:28.210 align:middle line:84%
+systems that are actively
+deployed in health care
+
+00:04:28.210 --> 00:04:31.210 align:middle line:84%
+are what we call
+decision support tools.
+
+00:04:31.210 --> 00:04:34.770 align:middle line:84%
+So they're a tool that
+maybe a radiologist uses
+
+00:04:34.770 --> 00:04:37.370 align:middle line:84%
+to try to highlight
+or potentially give
+
+00:04:37.370 --> 00:04:43.590 align:middle line:84%
+some advice on what, maybe,
+a diagnosis could be.
+
+00:04:43.590 --> 00:04:47.610 align:middle line:84%
+And then the human is actually
+liable to verify that and make
+
+00:04:47.610 --> 00:04:48.610 align:middle line:90%
+a decision.
+
+00:04:48.610 --> 00:04:51.530 align:middle line:84%
+And interestingly, there's been
+a bunch of fascinating work
+
+00:04:51.530 --> 00:04:54.010 align:middle line:84%
+that's come out recently that
+really argues both sides of
+
+00:04:54.010 --> 00:04:56.060 align:middle line:90%
+whether or not this is working.
+
+00:04:56.060 --> 00:04:58.900 align:middle line:84%
+There's research that showed
+that these decision support
+
+00:04:58.900 --> 00:05:03.140 align:middle line:84%
+tools are really great for
+trying to make sure that patient
+
+00:05:03.140 --> 00:05:06.598 align:middle line:84%
+outcomes are beneficial, that
+doctors aren't missing things,
+
+00:05:06.598 --> 00:05:08.140 align:middle line:84%
+and then there's
+conflicting research
+
+00:05:08.140 --> 00:05:11.060 align:middle line:84%
+that explicitly says that the
+deployment of these decision
+
+00:05:11.060 --> 00:05:14.340 align:middle line:84%
+support tools is actively
+harming patient outcomes.
+
+00:05:14.340 --> 00:05:16.120 align:middle line:84%
+Because doctors are
+becoming compliant,
+
+00:05:16.120 --> 00:05:18.140 align:middle line:84%
+they're not paying attention,
+and they're missing things
+
+00:05:18.140 --> 00:05:20.432 align:middle line:84%
+in that long tail of the
+distribution that are actually
+
+00:05:20.432 --> 00:05:22.620 align:middle line:90%
+quite important.
+
+00:05:22.620 --> 00:05:24.300 align:middle line:90%
+So the jury's still out.
+
+00:05:24.300 --> 00:05:27.780 align:middle line:84%
+And fascinatingly, if you look
+at the regulation around what it
+
+00:05:27.780 --> 00:05:29.540 align:middle line:84%
+actually takes to
+deploy decision support
+
+00:05:29.540 --> 00:05:34.220 align:middle line:84%
+tool in a hospital, the
+metrics are kind of shocking.
+
+00:05:34.220 --> 00:05:36.520 align:middle line:84%
+I'm not going to quote
+myself on the details,
+
+00:05:36.520 --> 00:05:38.020 align:middle line:84%
+but essentially,
+it's like, you have
+
+00:05:38.020 --> 00:05:42.740 align:middle line:84%
+to prove some percent accuracy
+on some small population
+
+00:05:42.740 --> 00:05:44.900 align:middle line:90%
+of data.
+
+00:05:44.900 --> 00:05:47.245 align:middle line:84%
+But it's not nearly
+what you would expect.
+
+00:05:47.245 --> 00:05:48.620 align:middle line:84%
+I remember being
+quite surprised.
+
+00:05:48.620 --> 00:05:51.780 align:middle line:84%
+Something like on the order of
+like 100 or 1,000 patients to be
+
+00:05:51.780 --> 00:05:53.447 align:middle line:84%
+able to deploy a
+decision support tool.
+
+00:05:53.447 --> 00:05:56.030 align:middle line:84%
+And you don't have to go through
+anything like clinical trials
+
+00:05:56.030 --> 00:05:58.770 align:middle line:84%
+because you're not actually
+making the decision.
+
+00:05:58.770 --> 00:06:02.590 align:middle line:84%
+You're just trying to support
+the decision of an expert.
+
+00:06:02.590 --> 00:06:08.290 align:middle line:84%
+So, really, when
+we have this case,
+
+00:06:08.290 --> 00:06:11.630 align:middle line:84%
+this is where we start to
+see things working well.
+
+00:06:11.630 --> 00:06:14.590 align:middle line:84%
+It's kind of the standard
+machine learning setting.
+
+00:06:14.590 --> 00:06:17.230 align:middle line:84%
+And it matches a lot of
+the underlying assumptions
+
+00:06:17.230 --> 00:06:20.030 align:middle line:84%
+we make in machine learning,
+even theoretically,
+
+00:06:20.030 --> 00:06:22.790 align:middle line:84%
+that the data that we
+are training the model on
+
+00:06:22.790 --> 00:06:24.950 align:middle line:84%
+is going to be
+IID, Independently
+
+00:06:24.950 --> 00:06:27.350 align:middle line:84%
+and Identically Distributed
+to the data we're
+
+00:06:27.350 --> 00:06:28.810 align:middle line:90%
+going to use the model on.
+
+00:06:28.810 --> 00:06:31.910 align:middle line:84%
+So you have some distribution
+over categories of interest,
+
+00:06:31.910 --> 00:06:36.110 align:middle line:84%
+data, different representative
+visual characteristics
+
+00:06:36.110 --> 00:06:38.590 align:middle line:84%
+within a category, and
+you're going to sample
+
+00:06:38.590 --> 00:06:40.570 align:middle line:84%
+from that at random
+for training,
+
+00:06:40.570 --> 00:06:42.270 align:middle line:84%
+and then you're
+going to do inference
+
+00:06:42.270 --> 00:06:43.770 align:middle line:90%
+on the rest of the data.
+
+00:06:43.770 --> 00:06:47.230 align:middle line:84%
+Training distribution
+equals test distribution.
+
+00:06:47.230 --> 00:06:50.510 align:middle line:84%
+This is never true
+in the real world.
+
+00:06:50.510 --> 00:06:54.360 align:middle line:84%
+So basically, there
+has never been
+
+00:06:54.360 --> 00:06:56.760 align:middle line:84%
+any such thing as a
+representative data
+
+00:06:56.760 --> 00:06:59.400 align:middle line:90%
+set of all reality.
+
+00:06:59.400 --> 00:07:03.520 align:middle line:84%
+And one of the reasons that
+this is true, even with our best
+
+00:07:03.520 --> 00:07:06.680 align:middle line:84%
+efforts, things like
+these huge data sets
+
+00:07:06.680 --> 00:07:09.480 align:middle line:84%
+lie on billions
+of image data sets
+
+00:07:09.480 --> 00:07:13.460 align:middle line:84%
+that try to just tackle this
+problem with pure scale.
+
+00:07:13.460 --> 00:07:16.880 align:middle line:84%
+We're going to train on all the
+data we have and hope that that
+
+00:07:16.880 --> 00:07:20.040 align:middle line:84%
+is close to being representative
+and IID to the data
+
+00:07:20.040 --> 00:07:21.960 align:middle line:90%
+we want to use the models on.
+
+00:07:21.960 --> 00:07:25.160 align:middle line:84%
+It still doesn't work because
+the world is changing.
+
+00:07:25.160 --> 00:07:28.160 align:middle line:84%
+So if you capture all
+the data today, it's
+
+00:07:28.160 --> 00:07:30.040 align:middle line:84%
+not going to necessarily
+be representative
+
+00:07:30.040 --> 00:07:31.820 align:middle line:84%
+of a month from now,
+a week from now.
+
+00:07:31.820 --> 00:07:34.520 align:middle line:90%
+Things happen, things change.
+
+00:07:34.520 --> 00:07:37.960 align:middle line:84%
+And so we often have
+something like this.
+
+00:07:37.960 --> 00:07:40.760 align:middle line:84%
+There's some fundamental
+difference between the training
+
+00:07:40.760 --> 00:07:45.400 align:middle line:84%
+and test distribution once we
+move to a deployment setting.
+
+00:07:45.400 --> 00:07:47.422 align:middle line:84%
+And so here, maybe
+some version of that
+
+00:07:47.422 --> 00:07:48.880 align:middle line:84%
+would be something
+like, all right,
+
+00:07:48.880 --> 00:07:51.060 align:middle line:84%
+we've trained a
+model on Cambridge.
+
+00:07:51.060 --> 00:07:52.760 align:middle line:90%
+So this is this data center.
+
+00:07:52.760 --> 00:07:55.060 align:middle line:84%
+And now, we're trying
+to use that model
+
+00:07:55.060 --> 00:07:56.160 align:middle line:90%
+in a different season.
+
+00:07:56.160 --> 00:07:59.140 align:middle line:84%
+Now there's snow on the ground
+and the model starts to fail.
+
+00:07:59.140 --> 00:08:00.598 align:middle line:84%
+And there's a lot
+of different ways
+
+00:08:00.598 --> 00:08:03.420 align:middle line:84%
+that we can think about how
+those distributions can change.
+
+00:08:03.420 --> 00:08:06.980 align:middle line:84%
+The data itself can
+become perturbed.
+
+00:08:06.980 --> 00:08:09.400 align:middle line:90%
+That could be adversarially.
+
+00:08:09.400 --> 00:08:11.700 align:middle line:90%
+We'll talk about that in a bit.
+
+00:08:11.700 --> 00:08:14.540 align:middle line:84%
+But it also can be
+simple things like,
+
+00:08:14.540 --> 00:08:20.300 align:middle line:84%
+h, the manufacturer of the
+cameras for Google Street View
+
+00:08:20.300 --> 00:08:22.788 align:middle line:84%
+cars made an update
+to their system,
+
+00:08:22.788 --> 00:08:24.580 align:middle line:84%
+and now there's some
+statistical difference
+
+00:08:24.580 --> 00:08:27.180 align:middle line:90%
+in terms of the sensor itself.
+
+00:08:27.180 --> 00:08:29.440 align:middle line:84%
+You can get a different
+label distribution.
+
+00:08:29.440 --> 00:08:34.840 align:middle line:84%
+So maybe the set of categories
+of interest has changed.
+
+00:08:34.840 --> 00:08:36.460 align:middle line:84%
+You end up with
+something that used
+
+00:08:36.460 --> 00:08:39.220 align:middle line:84%
+to be really rare
+becoming much more common,
+
+00:08:39.220 --> 00:08:42.580 align:middle line:84%
+or something just
+disappears entirely.
+
+00:08:42.580 --> 00:08:46.140 align:middle line:84%
+And then there can be lots
+of other types of shifts.
+
+00:08:46.140 --> 00:08:50.570 align:middle line:84%
+These can be shifts in the size
+of the sequences or the graphs
+
+00:08:50.570 --> 00:08:53.830 align:middle line:84%
+you're modeling, weather,
+geospatial shifts
+
+00:08:53.830 --> 00:08:55.750 align:middle line:84%
+from different
+countries or cities.
+
+00:08:55.750 --> 00:08:56.730 align:middle line:90%
+Source of measurement.
+
+00:08:56.730 --> 00:08:59.230 align:middle line:84%
+That's like the
+sensor example I said.
+
+00:08:59.230 --> 00:09:02.390 align:middle line:84%
+So what actually goes wrong
+when we have these distribution
+
+00:09:02.390 --> 00:09:04.030 align:middle line:90%
+differences?
+
+00:09:04.030 --> 00:09:06.553 align:middle line:84%
+So I thought this
+was a cute example.
+
+00:09:06.553 --> 00:09:08.470 align:middle line:84%
+It's a little hard to
+read, actually, probably
+
+00:09:08.470 --> 00:09:11.550 align:middle line:90%
+because I took a screenshot.
+
+00:09:11.550 --> 00:09:17.390 align:middle line:84%
+So this is a tweet by hardmaru
+that was basically talking about
+
+00:09:17.390 --> 00:09:21.070 align:middle line:84%
+essentially, there was a
+failure mode in Roombas
+
+00:09:21.070 --> 00:09:24.630 align:middle line:84%
+where they kept
+rolling over dog poop
+
+00:09:24.630 --> 00:09:27.350 align:middle line:84%
+and then smearing poop
+all over people's houses.
+
+00:09:27.350 --> 00:09:32.190 align:middle line:84%
+And so in order to try to avoid
+this happening, they went out
+
+00:09:32.190 --> 00:09:35.750 align:middle line:84%
+and they collected a very large,
+diverse data set of dog poop.
+
+00:09:35.750 --> 00:09:38.650 align:middle line:84%
+So I'm sure that was someone's
+like research internship.
+
+00:09:38.650 --> 00:09:42.590 align:middle line:90%
+
+
+00:09:42.590 --> 00:09:45.767 align:middle line:84%
+So they're talking about, oh,
+OK, in order to do this right,
+
+00:09:45.767 --> 00:09:47.350 align:middle line:84%
+the way that we're
+going to generalize
+
+00:09:47.350 --> 00:09:50.000 align:middle line:84%
+to of new out of distribution
+thing, which is like dog poop
+
+00:09:50.000 --> 00:09:52.500 align:middle line:84%
+that we didn't expect to be on
+the floor in someone's house,
+
+00:09:52.500 --> 00:09:54.458 align:middle line:84%
+we're going to collect
+this representative data
+
+00:09:54.458 --> 00:09:55.200 align:middle line:90%
+set of dog poop.
+
+00:09:55.200 --> 00:09:58.420 align:middle line:84%
+And then the response
+was from Dmitry.
+
+00:09:58.420 --> 00:10:01.280 align:middle line:84%
+And he said, man, I wish they'd
+also created a diverse data
+
+00:10:01.280 --> 00:10:04.940 align:middle line:84%
+set of rugs so it didn't confuse
+black stripes with cliffs
+
+00:10:04.940 --> 00:10:07.240 align:middle line:84%
+and I could finally get
+my whole house cleaned.
+
+00:10:07.240 --> 00:10:11.080 align:middle line:84%
+So this is pointing out
+you can collect data
+
+00:10:11.080 --> 00:10:13.880 align:middle line:84%
+for the distribution
+shift you do anticipate,
+
+00:10:13.880 --> 00:10:16.860 align:middle line:84%
+but there's always going to be
+things you don't anticipate.
+
+00:10:16.860 --> 00:10:19.440 align:middle line:84%
+And then you end up with
+Dmitry, who bought a Roomba
+
+00:10:19.440 --> 00:10:22.640 align:middle line:84%
+and basically gets one tiny
+square of his rug cleaned
+
+00:10:22.640 --> 00:10:25.760 align:middle line:90%
+a million times.
+
+00:10:25.760 --> 00:10:29.460 align:middle line:84%
+So this is a silly,
+silly example,
+
+00:10:29.460 --> 00:10:33.360 align:middle line:84%
+but the point here is really
+that we cannot possibly
+
+00:10:33.360 --> 00:10:36.280 align:middle line:84%
+characterize and anticipate
+every way that the world is
+
+00:10:36.280 --> 00:10:37.960 align:middle line:90%
+going to change.
+
+00:10:37.960 --> 00:10:41.300 align:middle line:84%
+And so this idea that we
+can collect representative,
+
+00:10:41.300 --> 00:10:43.800 align:middle line:84%
+sufficient data to
+just ensure that where
+
+00:10:43.800 --> 00:10:46.200 align:middle line:84%
+we're going to deploy the
+model is IID from what we train
+
+00:10:46.200 --> 00:10:48.930 align:middle line:90%
+the data on is quite difficult.
+
+00:10:48.930 --> 00:10:52.770 align:middle line:84%
+This is reflected in quite
+concrete problems when you're
+
+00:10:52.770 --> 00:10:55.010 align:middle line:84%
+talking about AI safety,
+the safety of things that
+
+00:10:55.010 --> 00:10:57.150 align:middle line:84%
+are deployed, particularly
+in high risk scenarios,
+
+00:10:57.150 --> 00:11:00.290 align:middle line:84%
+things like medicine
+or self-driving cars.
+
+00:11:00.290 --> 00:11:03.370 align:middle line:84%
+This was a paper that was
+explicitly characterizing
+
+00:11:03.370 --> 00:11:06.050 align:middle line:84%
+what they thought were the
+largest problems in AI safety,
+
+00:11:06.050 --> 00:11:10.730 align:middle line:84%
+and robustness to distributional
+change was one of them.
+
+00:11:10.730 --> 00:11:12.810 align:middle line:84%
+There was this really
+interesting workshop
+
+00:11:12.810 --> 00:11:15.370 align:middle line:84%
+that happened back
+in 2022 at Princeton
+
+00:11:15.370 --> 00:11:17.050 align:middle line:84%
+that they called
+The Reproducibility
+
+00:11:17.050 --> 00:11:20.050 align:middle line:84%
+Crisis in Machine
+Learning-Based Science.
+
+00:11:20.050 --> 00:11:23.530 align:middle line:84%
+They looked at about 1,000
+different papers across a huge
+
+00:11:23.530 --> 00:11:25.570 align:middle line:84%
+diversity of
+scientific disciplines,
+
+00:11:25.570 --> 00:11:29.690 align:middle line:84%
+and they essentially found
+that they diagnosed a bunch
+
+00:11:29.690 --> 00:11:33.410 align:middle line:84%
+of different potential reasons
+why they weren't actually seeing
+
+00:11:33.410 --> 00:11:38.930 align:middle line:84%
+reproducibility or
+generalizability in the papers
+
+00:11:38.930 --> 00:11:40.810 align:middle line:90%
+that they were analyzing.
+
+00:11:40.810 --> 00:11:47.790 align:middle line:84%
+And one of the biggest failure
+modes here was data poisoning.
+
+00:11:47.790 --> 00:11:51.750 align:middle line:84%
+So basically, the way that
+they constructed the evaluation
+
+00:11:51.750 --> 00:11:54.590 align:middle line:84%
+for these machine learning
+systems was, in some way,
+
+00:11:54.590 --> 00:11:58.070 align:middle line:84%
+artificially IID in a way
+that wasn't representative
+
+00:11:58.070 --> 00:11:59.602 align:middle line:90%
+of reality.
+
+00:11:59.602 --> 00:12:01.810 align:middle line:84%
+And this is something that
+I actually run into a lot.
+
+00:12:01.810 --> 00:12:06.870 align:middle line:84%
+I review a lot of
+papers for my other half
+
+00:12:06.870 --> 00:12:10.670 align:middle line:84%
+discipline, which is ecology
+or environmental science.
+
+00:12:10.670 --> 00:12:13.390 align:middle line:84%
+And in those papers,
+often, what I
+
+00:12:13.390 --> 00:12:16.110 align:middle line:84%
+see is a mismatch
+between the data
+
+00:12:16.110 --> 00:12:19.230 align:middle line:84%
+that people are developing
+and training and evaluating
+
+00:12:19.230 --> 00:12:23.030 align:middle line:84%
+machine learning methods on and
+the claims that they're making.
+
+00:12:23.030 --> 00:12:26.830 align:middle line:84%
+So it's fine to have
+a limited data set,
+
+00:12:26.830 --> 00:12:28.350 align:middle line:84%
+but then you have
+to understand what
+
+00:12:28.350 --> 00:12:30.710 align:middle line:84%
+that means about what you
+can claim the effectiveness
+
+00:12:30.710 --> 00:12:32.590 align:middle line:90%
+of the model is going to do.
+
+00:12:32.590 --> 00:12:36.470 align:middle line:84%
+If you have built a
+system that identifies
+
+00:12:36.470 --> 00:12:39.985 align:middle line:84%
+all of the individual
+macaques in a national park,
+
+00:12:39.985 --> 00:12:42.110 align:middle line:84%
+you can say something
+reasonable about your ability
+
+00:12:42.110 --> 00:12:45.780 align:middle line:84%
+to monitor macaques in that
+national park going forward,
+
+00:12:45.780 --> 00:12:47.840 align:middle line:84%
+as long as you've
+evaluated your ability
+
+00:12:47.840 --> 00:12:50.080 align:middle line:84%
+to understand the
+changes in time
+
+00:12:50.080 --> 00:12:51.420 align:middle line:90%
+for those individual macaques.
+
+00:12:51.420 --> 00:12:53.920 align:middle line:84%
+And so somehow, the way
+you evaluate these models
+
+00:12:53.920 --> 00:12:56.862 align:middle line:84%
+needs to be representative
+of the actual deployment use.
+
+00:12:56.862 --> 00:12:59.320 align:middle line:84%
+And I think this takes a lot
+of really careful construction
+
+00:12:59.320 --> 00:12:59.780 align:middle line:90%
+and thought.
+
+00:12:59.780 --> 00:13:02.360 align:middle line:84%
+Actually, the way we think about
+designing evaluation systems
+
+00:13:02.360 --> 00:13:05.760 align:middle line:84%
+for machine learning models
+is really non-trivial.
+
+00:13:05.760 --> 00:13:08.840 align:middle line:84%
+And if you use any of
+off-the-shelf tool, things
+
+00:13:08.840 --> 00:13:11.080 align:middle line:84%
+like Roboflow, it
+just automatically
+
+00:13:11.080 --> 00:13:13.020 align:middle line:84%
+assumes that random
+splitting is fine
+
+00:13:13.020 --> 00:13:16.048 align:middle line:84%
+and you get, often, very
+falsely high expectations
+
+00:13:16.048 --> 00:13:17.840 align:middle line:84%
+in terms of the
+performance of your machine
+
+00:13:17.840 --> 00:13:21.240 align:middle line:84%
+learning model because you've
+got data poisoning, essentially,
+
+00:13:21.240 --> 00:13:24.760 align:middle line:84%
+strong, spatial, temporal,
+or contextual correlations
+
+00:13:24.760 --> 00:13:26.520 align:middle line:84%
+in your training
+and test data that
+
+00:13:26.520 --> 00:13:30.840 align:middle line:84%
+make the model think it's doing
+well when it's actually not.
+
+00:13:30.840 --> 00:13:35.680 align:middle line:84%
+So for today, we're going to be
+talking first about specifically
+
+00:13:35.680 --> 00:13:38.960 align:middle line:84%
+adversarial examples
+and thinking
+
+00:13:38.960 --> 00:13:43.960 align:middle line:84%
+about how you might train to
+address adversarial examples.
+
+00:13:43.960 --> 00:13:46.610 align:middle line:84%
+So this is small
+perturbations, ways
+
+00:13:46.610 --> 00:13:49.290 align:middle line:84%
+that you think about robustness
+on the level of individual data
+
+00:13:49.290 --> 00:13:50.275 align:middle line:90%
+points.
+
+00:13:50.275 --> 00:13:51.650 align:middle line:84%
+And then, after
+that, we're going
+
+00:13:51.650 --> 00:13:53.317 align:middle line:84%
+to be talking about
+distribution shifts.
+
+00:13:53.317 --> 00:13:55.130 align:middle line:84%
+So actually, just these
+large-scale strips
+
+00:13:55.130 --> 00:14:00.330 align:middle line:84%
+from entire distributions
+of data and some simple
+
+00:14:00.330 --> 00:14:02.730 align:middle line:84%
+mechanisms that people use
+to try to address them.
+
+00:14:02.730 --> 00:14:04.730 align:middle line:84%
+Though I do want to point
+out that both of these
+
+00:14:04.730 --> 00:14:07.530 align:middle line:84%
+are pretty active,
+open areas of research.
+
+00:14:07.530 --> 00:14:09.090 align:middle line:84%
+So I can talk about
+progress, but we
+
+00:14:09.090 --> 00:14:12.090 align:middle line:90%
+don't have solutions for these.
+
+00:14:12.090 --> 00:14:17.450 align:middle line:84%
+So first, if we're talking
+about adversarial examples,
+
+00:14:17.450 --> 00:14:21.210 align:middle line:84%
+assume we have a simple machine
+learning classifier right.
+
+00:14:21.210 --> 00:14:23.450 align:middle line:90%
+We have this image of a pig.
+
+00:14:23.450 --> 00:14:25.250 align:middle line:84%
+The model says,
+yep, that's a pig.
+
+00:14:25.250 --> 00:14:27.210 align:middle line:90%
+91% confidence.
+
+00:14:27.210 --> 00:14:29.770 align:middle line:84%
+What an adversarial
+example does is
+
+00:14:29.770 --> 00:14:36.430 align:middle line:84%
+it adds some very small amount
+of random-- or not random,
+
+00:14:36.430 --> 00:14:41.690 align:middle line:84%
+but what looks like random
+noise to this image.
+
+00:14:41.690 --> 00:14:49.140 align:middle line:84%
+And you can see it's 0.005 times
+of this thing that looks random.
+
+00:14:49.140 --> 00:14:52.060 align:middle line:84%
+And so when you're adding this
+noise, which is explicitly not
+
+00:14:52.060 --> 00:14:56.500 align:middle line:84%
+random, it's actually optimized
+to be maximally adversarial.
+
+00:14:56.500 --> 00:14:59.380 align:middle line:84%
+You can actually change
+the prediction of a model
+
+00:14:59.380 --> 00:15:01.580 align:middle line:84%
+to be something completely
+different, maybe even
+
+00:15:01.580 --> 00:15:06.780 align:middle line:84%
+with higher confidence than
+the initial prediction,
+
+00:15:06.780 --> 00:15:10.180 align:middle line:84%
+even though, to me, this
+image looks identical.
+
+00:15:10.180 --> 00:15:13.220 align:middle line:84%
+I can see no actual
+visible difference
+
+00:15:13.220 --> 00:15:15.700 align:middle line:90%
+between the two images.
+
+00:15:15.700 --> 00:15:19.940 align:middle line:84%
+And so this points to the
+brittleness within, often,
+
+00:15:19.940 --> 00:15:21.398 align:middle line:90%
+machine learning models.
+
+00:15:21.398 --> 00:15:22.940 align:middle line:84%
+They can be mostly
+accurate, but they
+
+00:15:22.940 --> 00:15:27.060 align:middle line:84%
+can be really brittle to things
+that a human visual system is
+
+00:15:27.060 --> 00:15:28.780 align:middle line:90%
+not brittle to at all.
+
+00:15:28.780 --> 00:15:30.160 align:middle line:90%
+And this is a big challenge.
+
+00:15:30.160 --> 00:15:34.020 align:middle line:84%
+So you can imagine
+that if you could
+
+00:15:34.020 --> 00:15:36.190 align:middle line:84%
+do this of adversarial
+attack in something
+
+00:15:36.190 --> 00:15:37.940 align:middle line:84%
+like self-driving cars,
+you could actually
+
+00:15:37.940 --> 00:15:41.870 align:middle line:84%
+get models to explicitly change
+their decisions about street
+
+00:15:41.870 --> 00:15:44.390 align:middle line:90%
+signs.
+
+00:15:44.390 --> 00:15:51.510 align:middle line:84%
+And that would require that
+you're able to actually generate
+
+00:15:51.510 --> 00:15:53.262 align:middle line:84%
+something that, in
+physical reality,
+
+00:15:53.262 --> 00:15:54.970 align:middle line:84%
+is not just related
+to individual images.
+
+00:15:54.970 --> 00:15:56.450 align:middle line:84%
+It's actually in
+physical reality.
+
+00:15:56.450 --> 00:15:57.570 align:middle line:90%
+But that can also be done.
+
+00:15:57.570 --> 00:15:59.640 align:middle line:90%
+So let's see, there's a--
+
+00:15:59.640 --> 00:16:02.210 align:middle line:84%
+I have a movie here, but
+I wonder if it'll play.
+
+00:16:02.210 --> 00:16:07.870 align:middle line:90%
+
+
+00:16:07.870 --> 00:16:09.630 align:middle line:90%
+Yeah, there we go.
+
+00:16:09.630 --> 00:16:10.730 align:middle line:90%
+So this is an example.
+
+00:16:10.730 --> 00:16:12.170 align:middle line:90%
+So here's a classifier, right?
+
+00:16:12.170 --> 00:16:13.530 align:middle line:90%
+It's classifying banana.
+
+00:16:13.530 --> 00:16:16.230 align:middle line:84%
+If you put a
+toaster in there, it
+
+00:16:16.230 --> 00:16:18.150 align:middle line:90%
+doesn't change the prediction.
+
+00:16:18.150 --> 00:16:20.870 align:middle line:84%
+But if you put this very
+specially constructed
+
+00:16:20.870 --> 00:16:25.430 align:middle line:84%
+adversarial sticker in there,
+it really convinces the model
+
+00:16:25.430 --> 00:16:27.470 align:middle line:90%
+that it is, in fact, a toaster.
+
+00:16:27.470 --> 00:16:31.230 align:middle line:90%
+So if we watch that again.
+
+00:16:31.230 --> 00:16:33.950 align:middle line:84%
+So the interesting
+thing here is that I
+
+00:16:33.950 --> 00:16:35.870 align:middle line:84%
+would argue from a
+classification standpoint,
+
+00:16:35.870 --> 00:16:37.090 align:middle line:90%
+this is really ambiguous.
+
+00:16:37.090 --> 00:16:40.130 align:middle line:84%
+You would expect a model would
+actually maybe even reasonably
+
+00:16:40.130 --> 00:16:40.910 align:middle line:90%
+predict toaster.
+
+00:16:40.910 --> 00:16:42.890 align:middle line:84%
+They're about the
+same size, whatever.
+
+00:16:42.890 --> 00:16:47.850 align:middle line:84%
+Whereas here, this looks nothing
+really like a toaster to us.
+
+00:16:47.850 --> 00:16:51.530 align:middle line:84%
+And so the
+interesting thing here
+
+00:16:51.530 --> 00:16:54.330 align:middle line:84%
+is that this demonstrates
+that it's not
+
+00:16:54.330 --> 00:16:56.447 align:middle line:84%
+something about high-level
+image characteristics,
+
+00:16:56.447 --> 00:16:58.530 align:middle line:84%
+that you can actually
+really convince these models
+
+00:16:58.530 --> 00:17:02.330 align:middle line:84%
+or trick these models
+even in physical reality.
+
+00:17:02.330 --> 00:17:05.930 align:middle line:84%
+And there are fun examples
+of this, even in 3D.
+
+00:17:05.930 --> 00:17:11.170 align:middle line:84%
+So this is an adversarial 3D
+printed example of a turtle that
+
+00:17:11.170 --> 00:17:14.490 align:middle line:84%
+most image classification models
+will categorize very confidently
+
+00:17:14.490 --> 00:17:17.089 align:middle line:90%
+as a rifle.
+
+00:17:17.089 --> 00:17:20.569 align:middle line:84%
+And you can actually
+show, there's a fun video
+
+00:17:20.569 --> 00:17:22.130 align:middle line:90%
+if you go look this up.
+
+00:17:22.130 --> 00:17:23.069 align:middle line:90%
+Oh, here we go.
+
+00:17:23.069 --> 00:17:24.369 align:middle line:90%
+Perfect.
+
+00:17:24.369 --> 00:17:26.930 align:middle line:84%
+Yeah, so it stays-- the
+prediction stays rifle,
+
+00:17:26.930 --> 00:17:28.270 align:middle line:90%
+even if you move it around.
+
+00:17:28.270 --> 00:17:30.770 align:middle line:90%
+It exists in 3D.
+
+00:17:30.770 --> 00:17:35.130 align:middle line:84%
+And all you're doing is
+changing the texture.
+
+00:17:35.130 --> 00:17:40.620 align:middle line:84%
+And they basically showed that
+their 3D turtle was really
+
+00:17:40.620 --> 00:17:43.580 align:middle line:84%
+consistently predicted as either
+rifle or sometimes as something
+
+00:17:43.580 --> 00:17:46.525 align:middle line:84%
+else, but it was never actually
+categorized as a turtle.
+
+00:17:46.525 --> 00:17:48.900 align:middle line:84%
+And you can do this type of
+adversarial attack for speech
+
+00:17:48.900 --> 00:17:50.260 align:middle line:90%
+as well.
+
+00:17:50.260 --> 00:17:55.180 align:middle line:84%
+You can add just a little bit of
+very explicitly targeted noise
+
+00:17:55.180 --> 00:17:58.420 align:middle line:84%
+in a way that perceptually, if
+we listened to these, or even
+
+00:17:58.420 --> 00:18:00.020 align:middle line:84%
+visually, within
+the waveform, looks
+
+00:18:00.020 --> 00:18:02.000 align:middle line:84%
+like it's made very,
+very little difference,
+
+00:18:02.000 --> 00:18:03.340 align:middle line:90%
+and it will actually--
+
+00:18:03.340 --> 00:18:05.940 align:middle line:84%
+the model will predict that
+the translation of that speech
+
+00:18:05.940 --> 00:18:07.780 align:middle line:90%
+is completely different.
+
+00:18:07.780 --> 00:18:10.780 align:middle line:84%
+So what does this
+mean about our models?
+
+00:18:10.780 --> 00:18:11.680 align:middle line:90%
+Are they useless?
+
+00:18:11.680 --> 00:18:15.180 align:middle line:90%
+What about them is so brittle?
+
+00:18:15.180 --> 00:18:16.720 align:middle line:90%
+Why does this happen.
+
+00:18:16.720 --> 00:18:18.700 align:middle line:90%
+And can you prevent it?
+
+00:18:18.700 --> 00:18:22.247 align:middle line:84%
+So a bit of a history
+of adversarial examples.
+
+00:18:22.247 --> 00:18:24.580 align:middle line:84%
+So this has been something
+that people have been looking
+
+00:18:24.580 --> 00:18:26.180 align:middle line:90%
+at for quite a long time.
+
+00:18:26.180 --> 00:18:29.900 align:middle line:84%
+Some of the first works in this
+space were from back in 2004.
+
+00:18:29.900 --> 00:18:34.980 align:middle line:84%
+And there they were looking at
+adversarial examples for things
+
+00:18:34.980 --> 00:18:38.090 align:middle line:90%
+like simple linear classifiers.
+
+00:18:38.090 --> 00:18:40.950 align:middle line:84%
+And one of the original
+motivating examples
+
+00:18:40.950 --> 00:18:43.190 align:middle line:90%
+was a spam filter.
+
+00:18:43.190 --> 00:18:45.790 align:middle line:84%
+So if you tried to build
+some classifier that
+
+00:18:45.790 --> 00:18:47.990 align:middle line:84%
+tried to categorize
+whether an email was spam
+
+00:18:47.990 --> 00:18:51.830 align:middle line:84%
+or not, could you, basically,
+from a red team, blue team
+
+00:18:51.830 --> 00:18:54.150 align:middle line:84%
+perspective, try
+to actually build
+
+00:18:54.150 --> 00:18:58.750 align:middle line:84%
+emails that would explicitly
+get through your spam filter?
+
+00:18:58.750 --> 00:19:02.630 align:middle line:84%
+And this has only
+gone on from there.
+
+00:19:02.630 --> 00:19:04.450 align:middle line:84%
+There's been a significant
+amount of work.
+
+00:19:04.450 --> 00:19:07.230 align:middle line:84%
+This was a review
+back from even 2018.
+
+00:19:07.230 --> 00:19:09.990 align:middle line:84%
+But now, particularly
+maybe in the context
+
+00:19:09.990 --> 00:19:13.510 align:middle line:84%
+of today being voting
+day in the United States,
+
+00:19:13.510 --> 00:19:15.230 align:middle line:84%
+there's a lot of
+work in this type
+
+00:19:15.230 --> 00:19:20.950 align:middle line:84%
+of adversarial dimension looking
+at misinformation filters now.
+
+00:19:20.950 --> 00:19:24.630 align:middle line:84%
+So how do you-- how do you
+try to detect and categorize
+
+00:19:24.630 --> 00:19:29.530 align:middle line:84%
+active misinformation or
+deepfakes on the internet,
+
+00:19:29.530 --> 00:19:33.350 align:middle line:84%
+on social media platforms,
+and then the active antagonism
+
+00:19:33.350 --> 00:19:36.190 align:middle line:84%
+of trying to actually
+develop deepfakes
+
+00:19:36.190 --> 00:19:39.680 align:middle line:84%
+that are undetectable
+by these algorithms.
+
+00:19:39.680 --> 00:19:43.840 align:middle line:84%
+So it's important
+and it's difficult.
+
+00:19:43.840 --> 00:19:45.855 align:middle line:84%
+So we'll talk about how
+do you actually do this,
+
+00:19:45.855 --> 00:19:47.480 align:middle line:84%
+in maybe the simplest
+sense, how do you
+
+00:19:47.480 --> 00:19:49.920 align:middle line:90%
+create an adversarial example.
+
+00:19:49.920 --> 00:19:53.260 align:middle line:84%
+So at first, we're going to
+assume, at least for now,
+
+00:19:53.260 --> 00:19:55.500 align:middle line:84%
+that we have some fixed
+machine learning model.
+
+00:19:55.500 --> 00:19:59.200 align:middle line:84%
+And so now, what
+we're doing is we're
+
+00:19:59.200 --> 00:20:03.040 align:middle line:84%
+actually optimizing over
+data related to that model.
+
+00:20:03.040 --> 00:20:06.120 align:middle line:84%
+So what we want to do is we want
+to find a small perturbation
+
+00:20:06.120 --> 00:20:09.540 align:middle line:84%
+to a given image that doesn't
+change the meaning to a human,
+
+00:20:09.540 --> 00:20:12.760 align:middle line:84%
+but does change the meaning
+to a machine learning model.
+
+00:20:12.760 --> 00:20:17.080 align:middle line:84%
+And so the model is going to
+output some probability of given
+
+00:20:17.080 --> 00:20:19.480 align:middle line:84%
+theta, of some given
+machine learning
+
+00:20:19.480 --> 00:20:24.040 align:middle line:84%
+model weights and architecture,
+some probability of y
+
+00:20:24.040 --> 00:20:26.120 align:middle line:90%
+the category given x.
+
+00:20:26.120 --> 00:20:30.240 align:middle line:84%
+We might take some softmax
+to get that prediction.
+
+00:20:30.240 --> 00:20:34.040 align:middle line:84%
+So what an adversarial
+example does is instead,
+
+00:20:34.040 --> 00:20:38.650 align:middle line:84%
+now, you try to solve this
+optimization problem that
+
+00:20:38.650 --> 00:20:45.010 align:middle line:84%
+finds the maximum over all
+possible small delta, so
+
+00:20:45.010 --> 00:20:50.650 align:middle line:84%
+small changes to x, that
+you now instead predict
+
+00:20:50.650 --> 00:20:53.310 align:middle line:90%
+a different category.
+
+00:20:53.310 --> 00:20:56.530 align:middle line:84%
+So some target category that
+is not the original category.
+
+00:20:56.530 --> 00:20:58.150 align:middle line:84%
+And you can do this
+for any category.
+
+00:20:58.150 --> 00:21:00.210 align:middle line:84%
+You can find the noise that
+would make this pig look most
+
+00:21:00.210 --> 00:21:01.710 align:middle line:84%
+like an airliner,
+but you could also
+
+00:21:01.710 --> 00:21:03.870 align:middle line:84%
+find the noise that made
+this pig look most like,
+
+00:21:03.870 --> 00:21:06.490 align:middle line:90%
+I don't know, your friend Bob.
+
+00:21:06.490 --> 00:21:08.982 align:middle line:84%
+And so you pick some
+wrong class and then
+
+00:21:08.982 --> 00:21:10.690 align:middle line:84%
+you have some given
+input image, and then
+
+00:21:10.690 --> 00:21:15.010 align:middle line:84%
+you find a small perturbation
+that actually maximizes this.
+
+00:21:15.010 --> 00:21:17.290 align:middle line:84%
+And this will be within
+the constraints of some set
+
+00:21:17.290 --> 00:21:22.610 align:middle line:84%
+of, quote unquote,
+"allowed perturbations."
+
+00:21:22.610 --> 00:21:25.170 align:middle line:84%
+A really common thing
+here is actually
+
+00:21:25.170 --> 00:21:29.090 align:middle line:84%
+that we look at this
+taking an infinity norm
+
+00:21:29.090 --> 00:21:30.470 align:middle line:90%
+over the perturbation.
+
+00:21:30.470 --> 00:21:33.250 align:middle line:84%
+So some intuition here is,
+instead of just looking
+
+00:21:33.250 --> 00:21:37.950 align:middle line:84%
+at the aggregate difference
+between the image
+
+00:21:37.950 --> 00:21:41.830 align:middle line:84%
+and the new one, instead, you're
+actually constraining it such
+
+00:21:41.830 --> 00:21:44.590 align:middle line:84%
+that the largest change
+for any given pixel
+
+00:21:44.590 --> 00:21:47.470 align:middle line:84%
+has to be less than
+a certain amount.
+
+00:21:47.470 --> 00:21:49.030 align:middle line:84%
+So the infinity
+norm essentially is
+
+00:21:49.030 --> 00:21:54.590 align:middle line:84%
+saying you're going to actually
+just keep the maximum change
+
+00:21:54.590 --> 00:21:56.910 align:middle line:90%
+for any pixel small.
+
+00:21:56.910 --> 00:21:59.710 align:middle line:84%
+And that does tend to
+actually result in things that
+
+00:21:59.710 --> 00:22:03.830 align:middle line:90%
+are unperceptible to humans.
+
+00:22:03.830 --> 00:22:05.110 align:middle line:90%
+Cool.
+
+00:22:05.110 --> 00:22:09.110 align:middle line:90%
+So how do you actually do this?
+
+00:22:09.110 --> 00:22:11.630 align:middle line:84%
+How do you, given some
+machine learning model
+
+00:22:11.630 --> 00:22:13.590 align:middle line:84%
+that you assume is not
+changing, how do you
+
+00:22:13.590 --> 00:22:16.150 align:middle line:90%
+find that maximum perturbation?
+
+00:22:16.150 --> 00:22:19.210 align:middle line:84%
+Instead of trying to solve this
+as an optimization problem,
+
+00:22:19.210 --> 00:22:23.128 align:middle line:84%
+you can actually also
+basically flip SGD on its head
+
+00:22:23.128 --> 00:22:24.670 align:middle line:84%
+and you can do this
+thing that people
+
+00:22:24.670 --> 00:22:28.950 align:middle line:84%
+call projected gradient ascent,
+where we're updating that data
+
+00:22:28.950 --> 00:22:30.710 align:middle line:90%
+perturbation over time.
+
+00:22:30.710 --> 00:22:32.840 align:middle line:84%
+And so first, you
+would take a step
+
+00:22:32.840 --> 00:22:36.640 align:middle line:84%
+in the direction
+of the gradient,
+
+00:22:36.640 --> 00:22:41.100 align:middle line:84%
+and then you project the result
+back into your feasible set.
+
+00:22:41.100 --> 00:22:43.440 align:middle line:84%
+So you're constraining
+the amount
+
+00:22:43.440 --> 00:22:45.540 align:middle line:84%
+that these images
+can change by design.
+
+00:22:45.540 --> 00:22:49.000 align:middle line:84%
+You're making sure that it's
+obeying that optimization
+
+00:22:49.000 --> 00:22:51.360 align:middle line:84%
+constraint that delta
+can't be too large.
+
+00:22:51.360 --> 00:22:54.920 align:middle line:84%
+And then you just repeat
+this over and over again.
+
+00:22:54.920 --> 00:22:58.368 align:middle line:84%
+It's quite simple and it
+actually works quite well.
+
+00:22:58.368 --> 00:23:00.160 align:middle line:84%
+So how do you actually
+defend against this?
+
+00:23:00.160 --> 00:23:03.360 align:middle line:84%
+Is there any way to defend
+against these active adversarial
+
+00:23:03.360 --> 00:23:05.720 align:middle line:90%
+examples?
+
+00:23:05.720 --> 00:23:09.860 align:middle line:84%
+Another way to think about
+this adversarial example,
+
+00:23:09.860 --> 00:23:13.040 align:middle line:90%
+instead of trying to-- yeah?
+
+00:23:13.040 --> 00:23:17.120 align:middle line:84%
+AUDIENCE: For the previous
+slides, how do you actually--
+
+00:23:17.120 --> 00:23:21.320 align:middle line:84%
+what kind of algorithms can you
+use to actually find the delta?
+
+00:23:21.320 --> 00:23:24.080 align:middle line:84%
+Do you need, like, for example,
+access to the gradients
+
+00:23:24.080 --> 00:23:26.012 align:middle line:90%
+of the original model?
+
+00:23:26.012 --> 00:23:26.720 align:middle line:90%
+SARA BEERY: Yeah.
+
+00:23:26.720 --> 00:23:27.220 align:middle line:90%
+Yeah.
+
+00:23:27.220 --> 00:23:29.320 align:middle line:84%
+So this projected
+gradient ascent
+
+00:23:29.320 --> 00:23:32.070 align:middle line:84%
+assumes that you have the model
+weights and the architecture
+
+00:23:32.070 --> 00:23:34.050 align:middle line:84%
+so you could actually
+calculate the gradients.
+
+00:23:34.050 --> 00:23:34.550 align:middle line:90%
+Yeah.
+
+00:23:34.550 --> 00:23:37.902 align:middle line:84%
+AUDIENCE: Is there a method
+that doesn't need the gradients?
+
+00:23:37.902 --> 00:23:39.610 align:middle line:84%
+SARA BEERY: So the
+question is if there's
+
+00:23:39.610 --> 00:23:42.670 align:middle line:84%
+methods that don't need the
+actual gradients of the model.
+
+00:23:42.670 --> 00:23:43.170 align:middle line:90%
+Yeah.
+
+00:23:43.170 --> 00:23:45.730 align:middle line:84%
+I mean, you could do it in a
+brute force way too, right?
+
+00:23:45.730 --> 00:23:47.855 align:middle line:84%
+You could just think about
+trying a bunch of things
+
+00:23:47.855 --> 00:23:49.410 align:middle line:84%
+and just picking
+the one greedily
+
+00:23:49.410 --> 00:23:51.530 align:middle line:90%
+that the result was worst.
+
+00:23:51.530 --> 00:23:53.870 align:middle line:90%
+Might be more expensive.
+
+00:23:53.870 --> 00:23:57.930 align:middle line:84%
+So this is just maybe a more
+efficient way to find something.
+
+00:23:57.930 --> 00:23:58.970 align:middle line:90%
+Yeah.
+
+00:23:58.970 --> 00:24:01.370 align:middle line:84%
+And then there are
+other methods that
+
+00:24:01.370 --> 00:24:04.630 align:middle line:84%
+try to do this, maybe
+in different ways.
+
+00:24:04.630 --> 00:24:08.273 align:middle line:84%
+So not necessarily assuming
+that the model can't change.
+
+00:24:08.273 --> 00:24:10.190 align:middle line:84%
+But that's, of course,
+a bit more complicated.
+
+00:24:10.190 --> 00:24:13.570 align:middle line:90%
+
+
+00:24:13.570 --> 00:24:16.490 align:middle line:84%
+A different way to think about
+finding an adversarial example
+
+00:24:16.490 --> 00:24:19.570 align:middle line:84%
+is instead of trying
+to explicitly maximize
+
+00:24:19.570 --> 00:24:23.730 align:middle line:84%
+the probability that your
+image is predicted as a given
+
+00:24:23.730 --> 00:24:25.610 align:middle line:84%
+label, you can
+also think about it
+
+00:24:25.610 --> 00:24:32.780 align:middle line:84%
+as just maximizing the loss
+between your model's prediction
+
+00:24:32.780 --> 00:24:35.300 align:middle line:84%
+of the image plus that
+adversarial amount
+
+00:24:35.300 --> 00:24:37.220 align:middle line:90%
+and the correct label, y.
+
+00:24:37.220 --> 00:24:39.520 align:middle line:84%
+Here, you're not saying, I
+really want this to look--
+
+00:24:39.520 --> 00:24:41.800 align:middle line:84%
+I want the model to think
+it's this specific category.
+
+00:24:41.800 --> 00:24:43.900 align:middle line:84%
+You're just saying, OK,
+what's the noise that
+
+00:24:43.900 --> 00:24:46.860 align:middle line:84%
+will make this most
+wrong, it'll make the loss
+
+00:24:46.860 --> 00:24:48.780 align:middle line:90%
+highest for this example.
+
+00:24:48.780 --> 00:24:50.500 align:middle line:84%
+Whereas, in standard
+training, you're
+
+00:24:50.500 --> 00:24:53.740 align:middle line:84%
+trying to minimize that loss
+over all the possible thetas
+
+00:24:53.740 --> 00:24:56.460 align:middle line:90%
+in the model itself.
+
+00:24:56.460 --> 00:24:59.180 align:middle line:84%
+So then what you can
+think about doing
+
+00:24:59.180 --> 00:25:01.780 align:middle line:84%
+is like, if you have standard
+training where you're using SGD
+
+00:25:01.780 --> 00:25:05.020 align:middle line:84%
+and you're trying to
+minimize the loss over all
+
+00:25:05.020 --> 00:25:06.820 align:middle line:84%
+of the different data
+points in your model,
+
+00:25:06.820 --> 00:25:09.860 align:middle line:84%
+you can think about
+training adversarially,
+
+00:25:09.860 --> 00:25:11.300 align:middle line:84%
+trying to actually
+get your model
+
+00:25:11.300 --> 00:25:14.820 align:middle line:84%
+to be robust to the
+types of perturbations
+
+00:25:14.820 --> 00:25:17.380 align:middle line:84%
+that we're expecting
+this adversarial model
+
+00:25:17.380 --> 00:25:19.480 align:middle line:84%
+might have-- this adversarial
+approach might have.
+
+00:25:19.480 --> 00:25:24.320 align:middle line:84%
+So here, now, you
+have this two-loop,
+
+00:25:24.320 --> 00:25:26.580 align:middle line:90%
+this nested optimization.
+
+00:25:26.580 --> 00:25:31.320 align:middle line:84%
+So now, you're trying
+to find the model such
+
+00:25:31.320 --> 00:25:36.360 align:middle line:84%
+that for every image
+in your data set,
+
+00:25:36.360 --> 00:25:45.680 align:middle line:84%
+the worst case perturbation is
+still not too bad, essentially.
+
+00:25:45.680 --> 00:25:48.560 align:middle line:84%
+You're trying to,
+during training,
+
+00:25:48.560 --> 00:25:52.720 align:middle line:84%
+find the worst case perturbation
+and then find the model
+
+00:25:52.720 --> 00:25:55.555 align:middle line:90%
+that for all of the different--
+
+00:25:55.555 --> 00:25:57.680 align:middle line:84%
+all the different data
+points in your training data
+
+00:25:57.680 --> 00:26:00.560 align:middle line:84%
+set, is still as
+good as possible,
+
+00:26:00.560 --> 00:26:02.720 align:middle line:90%
+even in those worst cases.
+
+00:26:02.720 --> 00:26:06.000 align:middle line:90%
+Does that make sense?
+
+00:26:06.000 --> 00:26:09.120 align:middle line:84%
+This also can be called
+adaptive data augmentation.
+
+00:26:09.120 --> 00:26:13.800 align:middle line:84%
+And it's an interesting example
+of finding these hardest cases.
+
+00:26:13.800 --> 00:26:18.300 align:middle line:84%
+So we learned a while ago
+about hard example mining.
+
+00:26:18.300 --> 00:26:20.760 align:middle line:84%
+It's maybe most
+informative, sometimes,
+
+00:26:20.760 --> 00:26:23.680 align:middle line:84%
+if you show models
+explicit examples of things
+
+00:26:23.680 --> 00:26:27.160 align:middle line:84%
+are going to be hard and
+you want it still do well.
+
+00:26:27.160 --> 00:26:28.150 align:middle line:90%
+Yeah?
+
+00:26:28.150 --> 00:26:31.210 align:middle line:84%
+AUDIENCE: What happens if
+there are two similarly hard
+
+00:26:31.210 --> 00:26:35.310 align:middle line:84%
+examples, but very
+different from each other?
+
+00:26:35.310 --> 00:26:36.810 align:middle line:84%
+SARA BEERY: So the
+question is, what
+
+00:26:36.810 --> 00:26:39.250 align:middle line:84%
+happens if you have
+two hard examples that
+
+00:26:39.250 --> 00:26:41.930 align:middle line:90%
+are different from each other.
+
+00:26:41.930 --> 00:26:46.530 align:middle line:84%
+AUDIENCE: In this case, like,
+the maximally hard example
+
+00:26:46.530 --> 00:26:51.130 align:middle line:84%
+for the turtle was rifle,
+but besides rifle, there's
+
+00:26:51.130 --> 00:26:59.070 align:middle line:84%
+apple that is on a similar scale
+as being the rifle example,
+
+00:26:59.070 --> 00:27:00.850 align:middle line:84%
+but basically,
+you've only trained
+
+00:27:00.850 --> 00:27:05.610 align:middle line:84%
+for an adversarial
+example where it would be
+
+00:27:05.610 --> 00:27:08.850 align:middle line:90%
+something related to a rifle.
+
+00:27:08.850 --> 00:27:09.710 align:middle line:90%
+SARA BEERY: OK.
+
+00:27:09.710 --> 00:27:11.910 align:middle line:84%
+I think I get what
+you're asking.
+
+00:27:11.910 --> 00:27:12.630 align:middle line:90%
+No, no, no.
+
+00:27:12.630 --> 00:27:15.090 align:middle line:84%
+I actually think it's a
+pretty prescient question,
+
+00:27:15.090 --> 00:27:16.910 align:middle line:84%
+it's just worded a
+little complicatedly.
+
+00:27:16.910 --> 00:27:19.850 align:middle line:84%
+So essentially the
+question is like, what
+
+00:27:19.850 --> 00:27:23.250 align:middle line:84%
+if the data changes in a
+way you didn't anticipate.
+
+00:27:23.250 --> 00:27:26.170 align:middle line:84%
+And so this is really
+explicitly constrained
+
+00:27:26.170 --> 00:27:28.900 align:middle line:84%
+to be robust to the
+types of perturbations
+
+00:27:28.900 --> 00:27:32.700 align:middle line:84%
+that you've defined as
+within your reasonable set
+
+00:27:32.700 --> 00:27:34.553 align:middle line:90%
+of perturbations, right?
+
+00:27:34.553 --> 00:27:36.220 align:middle line:84%
+The cases we talked
+about were something
+
+00:27:36.220 --> 00:27:39.980 align:middle line:84%
+that looked very small amounts
+of noise added to images.
+
+00:27:39.980 --> 00:27:45.500 align:middle line:84%
+But we'll talk about in a bit,
+most perturbations of data
+
+00:27:45.500 --> 00:27:48.120 align:middle line:84%
+are not of that structure
+in the real world.
+
+00:27:48.120 --> 00:27:51.420 align:middle line:84%
+Often, if you have
+something that's
+
+00:27:51.420 --> 00:27:55.600 align:middle line:84%
+out of distribution in some
+way, adversarial in some way,
+
+00:27:55.600 --> 00:27:58.860 align:middle line:84%
+it's not specifically
+the static noise.
+
+00:27:58.860 --> 00:28:00.460 align:middle line:84%
+And for example,
+this type of approach
+
+00:28:00.460 --> 00:28:03.140 align:middle line:84%
+would probably not work
+very well for those stickers
+
+00:28:03.140 --> 00:28:06.620 align:middle line:84%
+because that's a different type
+of perturbation of an image.
+
+00:28:06.620 --> 00:28:07.837 align:middle line:90%
+Did you have a question?
+
+00:28:07.837 --> 00:28:09.420 align:middle line:84%
+AUDIENCE: I was
+basically going to ask
+
+00:28:09.420 --> 00:28:12.740 align:middle line:84%
+[INAUDIBLE] is that this won't
+help your self-driving car
+
+00:28:12.740 --> 00:28:14.900 align:middle line:90%
+detect a pedestrian crosswalk.
+
+00:28:14.900 --> 00:28:17.380 align:middle line:84%
+It's like, that's not a
+perturbation that would
+
+00:28:17.380 --> 00:28:18.992 align:middle line:90%
+be modeled mathematically.
+
+00:28:18.992 --> 00:28:19.700 align:middle line:90%
+SARA BEERY: Yeah.
+
+00:28:19.700 --> 00:28:22.920 align:middle line:84%
+Or, I mean, pedestrian
+in a crosswalk, probably,
+
+00:28:22.920 --> 00:28:25.710 align:middle line:84%
+you could reasonably say
+you could think about ways
+
+00:28:25.710 --> 00:28:27.470 align:middle line:84%
+to augment your
+data to capture that
+
+00:28:27.470 --> 00:28:29.720 align:middle line:84%
+in a bunch of different ways,
+but then what you end up
+
+00:28:29.720 --> 00:28:30.990 align:middle line:90%
+with is weird stuff.
+
+00:28:30.990 --> 00:28:33.310 align:middle line:84%
+Like, there's this
+classic example
+
+00:28:33.310 --> 00:28:35.910 align:middle line:84%
+of a bunch of stop
+signs being transported
+
+00:28:35.910 --> 00:28:38.130 align:middle line:84%
+by a truck in the
+back of a truck,
+
+00:28:38.130 --> 00:28:40.750 align:middle line:84%
+and there's a self-driving car
+behind a truck full of stop
+
+00:28:40.750 --> 00:28:42.390 align:middle line:84%
+signs, and it's
+just freaking out
+
+00:28:42.390 --> 00:28:46.030 align:middle line:84%
+because what is
+it supposed to do?
+
+00:28:46.030 --> 00:28:49.950 align:middle line:84%
+And so, yeah, this
+is, again, like I
+
+00:28:49.950 --> 00:28:52.550 align:middle line:84%
+said before, it's just really
+hard to anticipate every way
+
+00:28:52.550 --> 00:28:54.050 align:middle line:90%
+the world is going to change.
+
+00:28:54.050 --> 00:28:56.230 align:middle line:84%
+So if you could do that,
+then you could reasonably
+
+00:28:56.230 --> 00:29:00.230 align:middle line:84%
+try to be robust, either just
+through standard training,
+
+00:29:00.230 --> 00:29:02.410 align:middle line:84%
+or if you didn't have
+the right training data,
+
+00:29:02.410 --> 00:29:04.370 align:middle line:84%
+but you knew something about
+the way the world might change,
+
+00:29:04.370 --> 00:29:05.990 align:middle line:84%
+you could try to be
+robust explicitly
+
+00:29:05.990 --> 00:29:07.032 align:middle line:90%
+to those types of things.
+
+00:29:07.032 --> 00:29:09.590 align:middle line:84%
+You could use things
+empirical risk minimization.
+
+00:29:09.590 --> 00:29:13.690 align:middle line:84%
+But that is often not
+the case in reality.
+
+00:29:13.690 --> 00:29:17.050 align:middle line:84%
+And so a lot of the work
+in adversarial example,
+
+00:29:17.050 --> 00:29:19.530 align:middle line:84%
+adversarial robustness, they
+have to make assumptions,
+
+00:29:19.530 --> 00:29:22.550 align:middle line:84%
+and usually, those assumptions
+are violated in real world.
+
+00:29:22.550 --> 00:29:24.040 align:middle line:90%
+Unfortunately.
+
+00:29:24.040 --> 00:29:24.573 align:middle line:90%
+Yes?
+
+00:29:24.573 --> 00:29:26.240 align:middle line:84%
+AUDIENCE: Is there
+anything stopping you
+
+00:29:26.240 --> 00:29:29.720 align:middle line:84%
+from a continuous loop
+of minimizing the loss
+
+00:29:29.720 --> 00:29:32.800 align:middle line:84%
+and finding an adversarial
+example that maximizes the loss
+
+00:29:32.800 --> 00:29:34.820 align:middle line:84%
+and just continue doing
+the back and forth?
+
+00:29:34.820 --> 00:29:41.280 align:middle line:84%
+Or can a model eventually be
+trained so that you can't?
+
+00:29:41.280 --> 00:29:46.400 align:middle line:84%
+SARA BEERY: So for a reasonable
+set of perturbations,
+
+00:29:46.400 --> 00:29:50.360 align:middle line:84%
+and assuming that
+maybe you try a bunch
+
+00:29:50.360 --> 00:29:52.960 align:middle line:84%
+of different
+hyperparameters, it usually
+
+00:29:52.960 --> 00:29:55.760 align:middle line:84%
+is often possible to
+get these to converge.
+
+00:29:55.760 --> 00:29:57.960 align:middle line:84%
+But it can be difficult.
+Because you basically
+
+00:29:57.960 --> 00:30:01.200 align:middle line:84%
+have two different optimization
+objectives that are conflicting.
+
+00:30:01.200 --> 00:30:04.960 align:middle line:84%
+And so they can be
+pretty finicky to train.
+
+00:30:04.960 --> 00:30:06.840 align:middle line:90%
+Yeah.
+
+00:30:06.840 --> 00:30:07.920 align:middle line:90%
+Cool.
+
+00:30:07.920 --> 00:30:09.670 align:middle line:84%
+So now, if you're
+actually doing that type
+
+00:30:09.670 --> 00:30:12.560 align:middle line:84%
+of adversarial training, what
+you actually do in the training
+
+00:30:12.560 --> 00:30:14.520 align:middle line:84%
+loop is you would
+sample some data point
+
+00:30:14.520 --> 00:30:16.200 align:middle line:90%
+x with the ground truth y.
+
+00:30:16.200 --> 00:30:20.280 align:middle line:84%
+You would compute now the
+approximate optimal adversarial
+
+00:30:20.280 --> 00:30:21.140 align:middle line:90%
+perturbation.
+
+00:30:21.140 --> 00:30:24.635 align:middle line:84%
+And you could do that with
+that projected gradient ascent.
+
+00:30:24.635 --> 00:30:26.260 align:middle line:84%
+And then you would
+compute the gradient
+
+00:30:26.260 --> 00:30:27.820 align:middle line:90%
+given that perturbation.
+
+00:30:27.820 --> 00:30:30.180 align:middle line:84%
+And then you would
+update your loss
+
+00:30:30.180 --> 00:30:31.920 align:middle line:84%
+given that gradient
+for the parameters.
+
+00:30:31.920 --> 00:30:36.660 align:middle line:84%
+So essentially, for
+every model, you're
+
+00:30:36.660 --> 00:30:39.780 align:middle line:84%
+trained-- for every data point,
+you're training another model.
+
+00:30:39.780 --> 00:30:41.640 align:middle line:84%
+And we'll talk a bit
+about it next lecture,
+
+00:30:41.640 --> 00:30:45.080 align:middle line:84%
+but this also is similar to
+things like meta learning,
+
+00:30:45.080 --> 00:30:48.277 align:middle line:84%
+where, potentially, in your
+outer model training loop
+
+00:30:48.277 --> 00:30:49.860 align:middle line:84%
+now for every data
+point, you actually
+
+00:30:49.860 --> 00:30:51.660 align:middle line:90%
+have an inner training loop.
+
+00:30:51.660 --> 00:30:53.580 align:middle line:84%
+So it's also quite
+computationally expensive
+
+00:30:53.580 --> 00:30:55.640 align:middle line:90%
+to do this.
+
+00:30:55.640 --> 00:30:56.140 align:middle line:90%
+Cool.
+
+00:30:56.140 --> 00:30:59.100 align:middle line:84%
+So what do these
+examples tell us?
+
+00:30:59.100 --> 00:31:02.120 align:middle line:84%
+What does the fact that these
+adversarial examples exist
+
+00:31:02.120 --> 00:31:06.700 align:middle line:90%
+tell us about the models itself?
+
+00:31:06.700 --> 00:31:09.260 align:middle line:84%
+Arguably, I would
+say it tells us
+
+00:31:09.260 --> 00:31:12.840 align:middle line:84%
+something about the input
+features, the structure,
+
+00:31:12.840 --> 00:31:15.260 align:middle line:84%
+the statistical
+characteristics of the data
+
+00:31:15.260 --> 00:31:18.140 align:middle line:84%
+that we're training the
+model on that become critical
+
+00:31:18.140 --> 00:31:20.500 align:middle line:90%
+for the model's decision.
+
+00:31:20.500 --> 00:31:22.430 align:middle line:84%
+There's an interesting
+example here.
+
+00:31:22.430 --> 00:31:25.870 align:middle line:84%
+This is training data trying
+to teach a model to categorize
+
+00:31:25.870 --> 00:31:27.990 align:middle line:90%
+4's versus 9's.
+
+00:31:27.990 --> 00:31:30.930 align:middle line:84%
+And the interesting-- so
+this is MNIST, essentially.
+
+00:31:30.930 --> 00:31:34.110 align:middle line:84%
+But the interesting point
+here is that what they've done
+
+00:31:34.110 --> 00:31:37.110 align:middle line:84%
+is they've added spurious
+correlations that
+
+00:31:37.110 --> 00:31:38.350 align:middle line:90%
+are very small.
+
+00:31:38.350 --> 00:31:42.670 align:middle line:84%
+So for every 4, they've
+added a white pixel
+
+00:31:42.670 --> 00:31:45.110 align:middle line:84%
+in the top left corner,
+and for every 9,
+
+00:31:45.110 --> 00:31:48.270 align:middle line:84%
+they've added a white pixel
+just one next to that.
+
+00:31:48.270 --> 00:31:50.713 align:middle line:84%
+So now, what ends
+up happening is
+
+00:31:50.713 --> 00:31:52.630 align:middle line:84%
+if you do these adversarial
+perturbations that
+
+00:31:52.630 --> 00:31:54.190 align:middle line:84%
+are very targeted,
+you basically just
+
+00:31:54.190 --> 00:31:56.350 align:middle line:84%
+change the location
+of that pixel,
+
+00:31:56.350 --> 00:31:59.390 align:middle line:84%
+you get the exact
+opposite prediction.
+
+00:31:59.390 --> 00:32:01.830 align:middle line:84%
+And this really gets
+at this question of,
+
+00:32:01.830 --> 00:32:04.830 align:middle line:90%
+what are these models learning?
+
+00:32:04.830 --> 00:32:07.590 align:middle line:84%
+And they're going to
+learn whatever signals
+
+00:32:07.590 --> 00:32:12.190 align:middle line:84%
+are there, and ideally, whatever
+signals are easiest to pick up.
+
+00:32:12.190 --> 00:32:15.110 align:middle line:84%
+So this becomes just
+a binary classifier
+
+00:32:15.110 --> 00:32:17.595 align:middle line:84%
+if you consistently
+have these correlations.
+
+00:32:17.595 --> 00:32:19.470 align:middle line:84%
+The model just ignores
+the rest of the image.
+
+00:32:19.470 --> 00:32:22.140 align:middle line:84%
+It learns all it has to look
+at is just that top pixel
+
+00:32:22.140 --> 00:32:25.000 align:middle line:90%
+and it's a perfect categorizer.
+
+00:32:25.000 --> 00:32:28.840 align:middle line:84%
+So what this can tell
+us is that for any given
+
+00:32:28.840 --> 00:32:33.600 align:middle line:84%
+model, the features that
+are captured in that model,
+
+00:32:33.600 --> 00:32:36.920 align:middle line:84%
+some amount of them will be
+useless, some amount of them
+
+00:32:36.920 --> 00:32:38.280 align:middle line:90%
+will be robust.
+
+00:32:38.280 --> 00:32:41.540 align:middle line:84%
+So these are features that
+are correlated with the label,
+
+00:32:41.540 --> 00:32:44.560 align:middle line:84%
+even if they've been
+perturbed in some way.
+
+00:32:44.560 --> 00:32:47.740 align:middle line:84%
+So here, they're showing
+things that are quite semantic,
+
+00:32:47.740 --> 00:32:52.140 align:middle line:84%
+things like specific attributes
+of a cat ear, a dog nose,
+
+00:32:52.140 --> 00:32:56.053 align:middle line:84%
+or the structural
+shape of an animal.
+
+00:32:56.053 --> 00:32:57.720 align:middle line:84%
+And then there's
+another set of features
+
+00:32:57.720 --> 00:32:59.420 align:middle line:84%
+that you could argue
+are not robust.
+
+00:32:59.420 --> 00:33:00.840 align:middle line:84%
+And these are going
+to be features
+
+00:33:00.840 --> 00:33:04.080 align:middle line:84%
+that are correlated with the
+label in the training data set,
+
+00:33:04.080 --> 00:33:06.780 align:middle line:84%
+but can be flipped
+with perturbation.
+
+00:33:06.780 --> 00:33:10.280 align:middle line:84%
+So perturbing these
+non-robust features
+
+00:33:10.280 --> 00:33:13.120 align:middle line:84%
+can actually change
+your prediction.
+
+00:33:13.120 --> 00:33:14.920 align:middle line:84%
+And so many features
+can be correlated
+
+00:33:14.920 --> 00:33:17.040 align:middle line:84%
+with the label in your
+training data set,
+
+00:33:17.040 --> 00:33:18.460 align:middle line:90%
+and thus, be predictive.
+
+00:33:18.460 --> 00:33:19.930 align:middle line:84%
+And they might
+also be correlated
+
+00:33:19.930 --> 00:33:23.170 align:middle line:84%
+with the label in your test
+data set and be predictive.
+
+00:33:23.170 --> 00:33:25.010 align:middle line:84%
+And so they can
+help with accuracy.
+
+00:33:25.010 --> 00:33:27.690 align:middle line:84%
+Like, your accuracy
+is good, but they're
+
+00:33:27.690 --> 00:33:31.050 align:middle line:84%
+features that are beyond what a
+human would use, or sometimes,
+
+00:33:31.050 --> 00:33:35.890 align:middle line:84%
+maybe, in some subtle cases,
+things that we might use based
+
+00:33:35.890 --> 00:33:39.830 align:middle line:84%
+on stereotypes, but if we
+think rationally about it,
+
+00:33:39.830 --> 00:33:43.050 align:middle line:90%
+we might not want to use them.
+
+00:33:43.050 --> 00:33:46.930 align:middle line:84%
+There's a lot of examples of
+these types of stereotypes
+
+00:33:46.930 --> 00:33:51.410 align:middle line:84%
+or biases in training data sets
+that are against women or gender
+
+00:33:51.410 --> 00:33:52.170 align:middle line:90%
+minorities.
+
+00:33:52.170 --> 00:33:54.450 align:middle line:90%
+Like if you show--
+
+00:33:54.450 --> 00:33:56.610 align:middle line:84%
+early ChatGPT was
+very, very popular.
+
+00:33:56.610 --> 00:34:00.650 align:middle line:84%
+Oh, if you asked it to
+generate-- or not ChatGPT.
+
+00:34:00.650 --> 00:34:01.390 align:middle line:90%
+Diffusion models.
+
+00:34:01.390 --> 00:34:03.390 align:middle line:84%
+If you asked it to generate
+images of a doctor,
+
+00:34:03.390 --> 00:34:04.765 align:middle line:84%
+it gave you a
+bunch of white men.
+
+00:34:04.765 --> 00:34:09.710 align:middle line:84%
+You asked it to generate
+images of a homemaker,
+
+00:34:09.710 --> 00:34:11.889 align:middle line:84%
+it would give you
+a bunch of women.
+
+00:34:11.889 --> 00:34:15.370 align:middle line:84%
+Like, biases that are built
+into the data sets, that
+
+00:34:15.370 --> 00:34:20.420 align:middle line:84%
+might be correlated with
+society, but unfortunately,
+
+00:34:20.420 --> 00:34:22.580 align:middle line:84%
+are things that, if
+we think about it
+
+00:34:22.580 --> 00:34:24.980 align:middle line:84%
+from an ethical
+perspective, we don't want
+
+00:34:24.980 --> 00:34:27.460 align:middle line:90%
+models to make decisions on.
+
+00:34:27.460 --> 00:34:29.159 align:middle line:90%
+This gets really complicated.
+
+00:34:29.159 --> 00:34:31.699 align:middle line:84%
+So there's this
+entire deep literature
+
+00:34:31.699 --> 00:34:34.100 align:middle line:84%
+on fairness in machine
+learning models
+
+00:34:34.100 --> 00:34:36.580 align:middle line:84%
+and how you think
+about equity when
+
+00:34:36.580 --> 00:34:38.580 align:middle line:84%
+the data we're
+training models on
+
+00:34:38.580 --> 00:34:42.020 align:middle line:84%
+is just as biased as
+our modern society.
+
+00:34:42.020 --> 00:34:45.940 align:middle line:84%
+And these models tend to
+exacerbate societal biases.
+
+00:34:45.940 --> 00:34:48.940 align:middle line:84%
+So correlative
+predictive features
+
+00:34:48.940 --> 00:34:52.594 align:middle line:84%
+are not always something
+we want the model to use,
+
+00:34:52.594 --> 00:34:54.219 align:middle line:84%
+both because it can
+make it non-robust,
+
+00:34:54.219 --> 00:34:56.653 align:middle line:84%
+but also because it
+can exacerbate bias.
+
+00:34:56.653 --> 00:34:58.320 align:middle line:84%
+And where do the
+correlations come from?
+
+00:34:58.320 --> 00:34:59.612 align:middle line:90%
+They really come from the data.
+
+00:34:59.612 --> 00:35:02.140 align:middle line:90%
+
+
+00:35:02.140 --> 00:35:05.820 align:middle line:84%
+This is a fun example,
+dogs and cats.
+
+00:35:05.820 --> 00:35:07.618 align:middle line:84%
+Turns out, if you put
+a dog in a bow tie,
+
+00:35:07.618 --> 00:35:09.660 align:middle line:84%
+the model will predict
+it's a cat because there's
+
+00:35:09.660 --> 00:35:13.700 align:middle line:84%
+this weird bias where people put
+bow ties on cats more than dogs.
+
+00:35:13.700 --> 00:35:15.540 align:middle line:90%
+Or this is a really fun one.
+
+00:35:15.540 --> 00:35:18.120 align:middle line:84%
+If you look at all
+the images of fish
+
+00:35:18.120 --> 00:35:19.820 align:middle line:84%
+in the ImageNet
+training data set,
+
+00:35:19.820 --> 00:35:23.800 align:middle line:84%
+you get grumpy
+dudes in sunglasses.
+
+00:35:23.800 --> 00:35:25.420 align:middle line:84%
+Maybe very happy
+dudes in sunglasses.
+
+00:35:25.420 --> 00:35:26.160 align:middle line:90%
+They're going fishing.
+
+00:35:26.160 --> 00:35:26.702 align:middle line:90%
+They love it.
+
+00:35:26.702 --> 00:35:28.900 align:middle line:84%
+But the model's
+not learned fish.
+
+00:35:28.900 --> 00:35:33.000 align:middle line:84%
+It's learned like fish
+in the hands of a person.
+
+00:35:33.000 --> 00:35:37.680 align:middle line:84%
+And then, basically,
+this really is just
+
+00:35:37.680 --> 00:35:40.440 align:middle line:84%
+rooted in how we
+create data sets.
+
+00:35:40.440 --> 00:35:43.080 align:middle line:84%
+So in an ideal
+world, we would have
+
+00:35:43.080 --> 00:35:45.640 align:middle line:84%
+representative
+real-world images that
+
+00:35:45.640 --> 00:35:47.960 align:middle line:84%
+captured the distribution
+of everything we would ever
+
+00:35:47.960 --> 00:35:49.000 align:middle line:90%
+care about.
+
+00:35:49.000 --> 00:35:51.400 align:middle line:84%
+We would have expert
+annotators who were then
+
+00:35:51.400 --> 00:35:54.840 align:middle line:84%
+able to build perfect
+annotations on top of that,
+
+00:35:54.840 --> 00:35:57.180 align:middle line:84%
+and then we could use that
+to carefully and meaningfully
+
+00:35:57.180 --> 00:35:58.680 align:middle line:84%
+construct a benchmark
+where we could
+
+00:35:58.680 --> 00:36:02.120 align:middle line:84%
+evaluate machine learning
+performance and happy sun
+
+00:36:02.120 --> 00:36:03.280 align:middle line:90%
+and rainbows.
+
+00:36:03.280 --> 00:36:05.240 align:middle line:84%
+But in the real
+world, we often have
+
+00:36:05.240 --> 00:36:08.160 align:middle line:84%
+images scraped
+from the internet,
+
+00:36:08.160 --> 00:36:10.840 align:middle line:84%
+and then we have some form of
+automated or crowd-collected
+
+00:36:10.840 --> 00:36:14.180 align:middle line:84%
+labels, and then that
+results in these noisy,
+
+00:36:14.180 --> 00:36:16.570 align:middle line:84%
+complicated, biased
+annotations, and that
+
+00:36:16.570 --> 00:36:19.670 align:middle line:84%
+might create an easy
+to optimize benchmark,
+
+00:36:19.670 --> 00:36:21.810 align:middle line:84%
+but it's not
+necessarily something
+
+00:36:21.810 --> 00:36:24.250 align:middle line:90%
+that is rooted in reality.
+
+00:36:24.250 --> 00:36:27.690 align:middle line:84%
+And one argument is
+that all these models
+
+00:36:27.690 --> 00:36:29.190 align:middle line:90%
+are learning are shortcuts.
+
+00:36:29.190 --> 00:36:31.393 align:middle line:84%
+It's all different types
+of pattern matching.
+
+00:36:31.393 --> 00:36:32.810 align:middle line:84%
+And so shortcuts
+here are features
+
+00:36:32.810 --> 00:36:35.265 align:middle line:84%
+that are correlated with the
+label in the training data,
+
+00:36:35.265 --> 00:36:36.890 align:middle line:84%
+but maybe not correlated
+with the label
+
+00:36:36.890 --> 00:36:38.810 align:middle line:84%
+under realistic
+distribution shifts.
+
+00:36:38.810 --> 00:36:41.810 align:middle line:84%
+And it turns out that
+these models will use them
+
+00:36:41.810 --> 00:36:44.450 align:middle line:84%
+and will not generalize
+if then those features are
+
+00:36:44.450 --> 00:36:45.710 align:middle line:90%
+no longer correlated.
+
+00:36:45.710 --> 00:36:48.290 align:middle line:90%
+
+
+00:36:48.290 --> 00:36:53.050 align:middle line:84%
+Interestingly, there's a
+dimension of imbalance here.
+
+00:36:53.050 --> 00:36:55.390 align:middle line:84%
+In some of the things
+that I try to do,
+
+00:36:55.390 --> 00:36:59.090 align:middle line:84%
+I'm doing species identification
+in static cameras,
+
+00:36:59.090 --> 00:37:05.850 align:middle line:84%
+and what we get is day-night
+bias for nondiurnal species.
+
+00:37:05.850 --> 00:37:11.370 align:middle line:84%
+Raccoons show up a lot
+at night, and we still
+
+00:37:11.370 --> 00:37:14.460 align:middle line:84%
+have some images of raccoons
+during the day during training,
+
+00:37:14.460 --> 00:37:16.620 align:middle line:84%
+but the vast majority
+are at night.
+
+00:37:16.620 --> 00:37:19.740 align:middle line:84%
+So the model's learned that
+it's like, nighttime, kind
+
+00:37:19.740 --> 00:37:22.300 align:middle line:90%
+of like, fat, cat blob thing.
+
+00:37:22.300 --> 00:37:23.940 align:middle line:90%
+Probably a raccoon.
+
+00:37:23.940 --> 00:37:26.688 align:middle line:84%
+And if you show it,
+daytime raccoon images,
+
+00:37:26.688 --> 00:37:28.480 align:middle line:84%
+even though it's seen
+them during training,
+
+00:37:28.480 --> 00:37:30.220 align:middle line:84%
+the performance is
+just much worse.
+
+00:37:30.220 --> 00:37:35.740 align:middle line:84%
+Because this correlative
+predictive factor is not there.
+
+00:37:35.740 --> 00:37:38.053 align:middle line:84%
+So the models will
+use these shortcuts
+
+00:37:38.053 --> 00:37:40.720 align:middle line:84%
+when they're provided because we
+train them based on likelihood.
+
+00:37:40.720 --> 00:37:44.300 align:middle line:84%
+And this is almost--
+this is often
+
+00:37:44.300 --> 00:37:45.720 align:middle line:90%
+related to the data itself.
+
+00:37:45.720 --> 00:37:48.880 align:middle line:84%
+And so, interestingly,
+adversarial examples,
+
+00:37:48.880 --> 00:37:52.820 align:middle line:84%
+those types of perturbations
+we talked about
+
+00:37:52.820 --> 00:37:56.220 align:middle line:84%
+can transfer across models
+trained on the same data set.
+
+00:37:56.220 --> 00:37:59.820 align:middle line:84%
+So the same types of
+shortcuts will often
+
+00:37:59.820 --> 00:38:03.820 align:middle line:84%
+be learned, even if you use
+different architectures,
+
+00:38:03.820 --> 00:38:06.660 align:middle line:84%
+because it's trained
+on the same data set.
+
+00:38:06.660 --> 00:38:09.980 align:middle line:84%
+And what can these
+shortcuts look like?
+
+00:38:09.980 --> 00:38:14.670 align:middle line:84%
+Yeah, things like this is a
+picture of a green hillside,
+
+00:38:14.670 --> 00:38:18.750 align:middle line:84%
+and this model is explicitly
+saying a herd of sheep grazing
+
+00:38:18.750 --> 00:38:22.470 align:middle line:84%
+on a hillside, but
+there's no sheep.
+
+00:38:22.470 --> 00:38:25.670 align:middle line:84%
+This one says a flock of
+birds flying in the air.
+
+00:38:25.670 --> 00:38:29.062 align:middle line:84%
+These are instead these
+really nice tree-based goats.
+
+00:38:29.062 --> 00:38:30.770 align:middle line:84%
+I don't know if you
+guys have seen these.
+
+00:38:30.770 --> 00:38:31.450 align:middle line:90%
+They're amazing.
+
+00:38:31.450 --> 00:38:34.590 align:middle line:84%
+They're goats that climb
+trees in the Mediterranean.
+
+00:38:34.590 --> 00:38:36.950 align:middle line:90%
+And then, things like this.
+
+00:38:36.950 --> 00:38:40.110 align:middle line:84%
+It's people holding
+goats, but the model
+
+00:38:40.110 --> 00:38:41.590 align:middle line:84%
+predicts they're
+dogs because it's
+
+00:38:41.590 --> 00:38:44.830 align:middle line:84%
+seen less of these examples
+of people holding dogs.
+
+00:38:44.830 --> 00:38:46.310 align:middle line:90%
+And these can be--
+
+00:38:46.310 --> 00:38:48.950 align:middle line:84%
+these are all silly, but they
+can be pretty problematic
+
+00:38:48.950 --> 00:38:49.530 align:middle line:90%
+as well.
+
+00:38:49.530 --> 00:38:52.510 align:middle line:90%
+
+
+00:38:52.510 --> 00:38:54.750 align:middle line:84%
+There was some early
+work that was showing
+
+00:38:54.750 --> 00:38:58.230 align:middle line:84%
+that you could do
+a lot of really
+
+00:38:58.230 --> 00:39:01.490 align:middle line:84%
+nice predictive
+diagnostics on X-rays,
+
+00:39:01.490 --> 00:39:04.470 align:middle line:84%
+and then there was this pushback
+work that showed that, actually,
+
+00:39:04.470 --> 00:39:07.830 align:middle line:84%
+what the models were
+learning was to detect where
+
+00:39:07.830 --> 00:39:11.520 align:middle line:84%
+the X-ray was acquired, so
+which hospital, and then
+
+00:39:11.520 --> 00:39:13.120 align:middle line:84%
+calibrate the
+predictions according
+
+00:39:13.120 --> 00:39:15.880 align:middle line:84%
+to the distribution of diseases
+at that hospital, which
+
+00:39:15.880 --> 00:39:19.640 align:middle line:84%
+is, again, probably
+the type of useful,
+
+00:39:19.640 --> 00:39:22.920 align:middle line:90%
+but unwanted correlation.
+
+00:39:22.920 --> 00:39:26.540 align:middle line:84%
+Or similarly, it's learning that
+if an image has a ruler in it,
+
+00:39:26.540 --> 00:39:30.080 align:middle line:84%
+an algorithm is more likely
+to call a tumor malignant.
+
+00:39:30.080 --> 00:39:32.280 align:middle line:84%
+And so you can imagine
+now that, essentially,
+
+00:39:32.280 --> 00:39:33.760 align:middle line:84%
+what this is meaning
+is like you're
+
+00:39:33.760 --> 00:39:37.130 align:middle line:84%
+much less likely to detect the
+examples where a doctor hasn't
+
+00:39:37.130 --> 00:39:38.880 align:middle line:84%
+already thought that
+it might be malignant
+
+00:39:38.880 --> 00:39:41.320 align:middle line:84%
+and is measuring
+it with a ruler.
+
+00:39:41.320 --> 00:39:43.580 align:middle line:84%
+So not all predictive
+patterns are desirable.
+
+00:39:43.580 --> 00:39:46.040 align:middle line:84%
+And we talked about those
+fairness examples as well.
+
+00:39:46.040 --> 00:39:48.525 align:middle line:84%
+And there are tons
+of examples of this.
+
+00:39:48.525 --> 00:39:50.400 align:middle line:84%
+You can think about this
+in interesting ways.
+
+00:39:50.400 --> 00:40:00.298 align:middle line:84%
+So here, this is essentially
+going from IID to OOD--
+
+00:40:00.298 --> 00:40:01.840 align:middle line:84%
+independently
+identically distributed
+
+00:40:01.840 --> 00:40:04.400 align:middle line:90%
+to out-of-distribution.
+
+00:40:04.400 --> 00:40:08.480 align:middle line:84%
+You can see domain shift,
+adversarial examples,
+
+00:40:08.480 --> 00:40:14.400 align:middle line:84%
+types of distortions, pose
+warping, texture change,
+
+00:40:14.400 --> 00:40:15.520 align:middle line:90%
+background shifts.
+
+00:40:15.520 --> 00:40:18.700 align:middle line:84%
+All of these will often
+result in a human looking
+
+00:40:18.700 --> 00:40:21.280 align:middle line:84%
+at these images and saying
+it is the same category,
+
+00:40:21.280 --> 00:40:25.610 align:middle line:84%
+but the model ends up not
+predicting the same category.
+
+00:40:25.610 --> 00:40:27.860 align:middle line:84%
+So this is things that we
+want the model to generalize
+
+00:40:27.860 --> 00:40:29.380 align:middle line:90%
+on, but it doesn't.
+
+00:40:29.380 --> 00:40:31.000 align:middle line:84%
+And then there's
+the opposite too,
+
+00:40:31.000 --> 00:40:33.740 align:middle line:84%
+which is things where the
+machine learning model is
+
+00:40:33.740 --> 00:40:35.920 align:middle line:84%
+very convinced it's
+the same category,
+
+00:40:35.920 --> 00:40:38.300 align:middle line:90%
+but a human would not be.
+
+00:40:38.300 --> 00:40:42.300 align:middle line:84%
+And this happens for
+transformer models as well.
+
+00:40:42.300 --> 00:40:47.300 align:middle line:84%
+This was a case where people
+had trained transformer models
+
+00:40:47.300 --> 00:40:52.860 align:middle line:84%
+to look at reasoning,
+but it turned out
+
+00:40:52.860 --> 00:40:55.580 align:middle line:84%
+that they pretty explicitly
+couldn't generalize out
+
+00:40:55.580 --> 00:40:58.140 align:middle line:84%
+of the distribution of the
+number of the sequence lengths
+
+00:40:58.140 --> 00:40:59.280 align:middle line:90%
+that they were trained on.
+
+00:40:59.280 --> 00:41:02.220 align:middle line:90%
+
+
+00:41:02.220 --> 00:41:04.980 align:middle line:84%
+So adversarial
+training, when you're
+
+00:41:04.980 --> 00:41:07.220 align:middle line:84%
+training it to be
+robust to these types
+
+00:41:07.220 --> 00:41:10.110 align:middle line:84%
+of non-robust features,
+and now, here, we're
+
+00:41:10.110 --> 00:41:13.090 align:middle line:84%
+assuming that we know the
+dimensions of robustness,
+
+00:41:13.090 --> 00:41:16.590 align:middle line:84%
+which, of course,
+we don't often know,
+
+00:41:16.590 --> 00:41:19.550 align:middle line:84%
+they do tend to
+teach models that
+
+00:41:19.550 --> 00:41:22.230 align:middle line:84%
+have outputs that are hopefully
+stable under these types
+
+00:41:22.230 --> 00:41:24.450 align:middle line:90%
+of adversarial perturbations.
+
+00:41:24.450 --> 00:41:28.590 align:middle line:84%
+So you get invariance to
+these non-robust features.
+
+00:41:28.590 --> 00:41:33.790 align:middle line:84%
+And of course, this type
+of just noise addition
+
+00:41:33.790 --> 00:41:35.230 align:middle line:84%
+is not necessarily
+representative
+
+00:41:35.230 --> 00:41:39.030 align:middle line:84%
+of every possible way that
+this data could be perturbed,
+
+00:41:39.030 --> 00:41:41.510 align:middle line:84%
+but there are some
+nice papers that
+
+00:41:41.510 --> 00:41:44.110 align:middle line:84%
+show that if you train
+in this adversarial way,
+
+00:41:44.110 --> 00:41:46.910 align:middle line:84%
+it can be much more
+expensive, but you
+
+00:41:46.910 --> 00:41:54.310 align:middle line:84%
+can get features that tend
+to be more human intuitive.
+
+00:41:54.310 --> 00:41:57.910 align:middle line:84%
+I'm always a little bit
+iffy on the use of things
+
+00:41:57.910 --> 00:42:02.540 align:middle line:84%
+like these activation heat
+maps as concrete explainers
+
+00:42:02.540 --> 00:42:04.290 align:middle line:84%
+of what a machine
+learning model is doing,
+
+00:42:04.290 --> 00:42:05.870 align:middle line:90%
+but these do look interesting.
+
+00:42:05.870 --> 00:42:12.840 align:middle line:84%
+So here, if you look at a
+primate, here's just some--
+
+00:42:12.840 --> 00:42:15.540 align:middle line:84%
+if you train with an L
+infinity or an L2 norm,
+
+00:42:15.540 --> 00:42:18.080 align:middle line:84%
+you can see that the features
+are a little bit more
+
+00:42:18.080 --> 00:42:21.160 align:middle line:84%
+semantically meaningful,
+they look a little bit more
+
+00:42:21.160 --> 00:42:24.440 align:middle line:90%
+like the object of interest.
+
+00:42:24.440 --> 00:42:29.840 align:middle line:84%
+And similarly, if you're trying
+to build these adversarial
+
+00:42:29.840 --> 00:42:31.700 align:middle line:84%
+examples for robust
+models-- now,
+
+00:42:31.700 --> 00:42:34.520 align:middle line:84%
+if you've trained it to be
+adversarial adversarially
+
+00:42:34.520 --> 00:42:37.240 align:middle line:84%
+robust, then the
+thing that you're--
+
+00:42:37.240 --> 00:42:39.200 align:middle line:84%
+the data that your
+model actually
+
+00:42:39.200 --> 00:42:44.920 align:middle line:84%
+generates to be adversarial
+has to look a little bit more
+
+00:42:44.920 --> 00:42:46.560 align:middle line:84%
+like the semantic
+category you're
+
+00:42:46.560 --> 00:42:48.680 align:middle line:90%
+trying to make adversarial to.
+
+00:42:48.680 --> 00:42:50.640 align:middle line:84%
+So here, if you start
+from these pigeons
+
+00:42:50.640 --> 00:42:52.960 align:middle line:84%
+and you try to find the
+adversarial example that
+
+00:42:52.960 --> 00:42:55.560 align:middle line:84%
+makes them look maximally
+like dogs, this kind of looks
+
+00:42:55.560 --> 00:42:56.207 align:middle line:90%
+like dogs.
+
+00:42:56.207 --> 00:42:58.540 align:middle line:84%
+It just really doesn't look
+like pigeons anymore at all.
+
+00:42:58.540 --> 00:43:00.360 align:middle line:84%
+And so these are
+things that a human
+
+00:43:00.360 --> 00:43:03.800 align:middle line:84%
+is more OK with these
+types of mistakes.
+
+00:43:03.800 --> 00:43:07.490 align:middle line:84%
+And there are some papers that
+show that adversarial trend
+
+00:43:07.490 --> 00:43:10.970 align:middle line:84%
+models maybe build
+representations
+
+00:43:10.970 --> 00:43:12.930 align:middle line:84%
+that transfer
+better to other data
+
+00:43:12.930 --> 00:43:18.650 align:middle line:84%
+sets, at least specifically
+with some of the data
+
+00:43:18.650 --> 00:43:20.730 align:middle line:90%
+sets shown here.
+
+00:43:20.730 --> 00:43:21.250 align:middle line:90%
+Cool.
+
+00:43:21.250 --> 00:43:23.530 align:middle line:84%
+So adversarial
+training you can think
+
+00:43:23.530 --> 00:43:26.930 align:middle line:84%
+of as like another very targeted
+form of maybe regularization
+
+00:43:26.930 --> 00:43:29.030 align:middle line:84%
+or a different type
+of domain adaptation,
+
+00:43:29.030 --> 00:43:30.530 align:middle line:84%
+but one that's quite
+targeted to try
+
+00:43:30.530 --> 00:43:34.650 align:middle line:84%
+to make the models robust to
+some explicitly constructed form
+
+00:43:34.650 --> 00:43:36.363 align:middle line:90%
+of perturbation.
+
+00:43:36.363 --> 00:43:38.530 align:middle line:84%
+So now, what if we're not
+talking about perturbation
+
+00:43:38.530 --> 00:43:40.410 align:middle line:84%
+on individual data
+points, but we're instead
+
+00:43:40.410 --> 00:43:43.650 align:middle line:84%
+talking about perturbations
+over entire distributions?
+
+00:43:43.650 --> 00:43:46.690 align:middle line:84%
+So here, instead of having the
+same distribution for training
+
+00:43:46.690 --> 00:43:49.450 align:middle line:84%
+and inference, now, we have a
+pretty different distribution
+
+00:43:49.450 --> 00:43:52.330 align:middle line:90%
+for training and inference.
+
+00:43:52.330 --> 00:43:56.210 align:middle line:84%
+So this is basically
+the world I live in.
+
+00:43:56.210 --> 00:43:59.690 align:middle line:84%
+Here, this on the
+left, that's a map
+
+00:43:59.690 --> 00:44:02.210 align:middle line:84%
+of an estimate of
+alpha diversity
+
+00:44:02.210 --> 00:44:05.570 align:middle line:84%
+globally, which is an
+estimate of, essentially,
+
+00:44:05.570 --> 00:44:10.990 align:middle line:84%
+the number of unique species
+that exist in any given place.
+
+00:44:10.990 --> 00:44:15.910 align:middle line:84%
+And then, on the right, this is
+a heat map of the three billion
+
+00:44:15.910 --> 00:44:17.750 align:middle line:84%
+existing species
+occurrence records
+
+00:44:17.750 --> 00:44:20.590 align:middle line:84%
+in the Global Biodiversity
+Information Facility.
+
+00:44:20.590 --> 00:44:23.970 align:middle line:84%
+And you can see that they are
+clearly not super well-aligned.
+
+00:44:23.970 --> 00:44:26.270 align:middle line:90%
+They're almost anti-correlated.
+
+00:44:26.270 --> 00:44:30.430 align:middle line:84%
+So you can imagine that if this
+is my training distribution,
+
+00:44:30.430 --> 00:44:33.370 align:middle line:84%
+and somehow, that's the
+distribution of the data
+
+00:44:33.370 --> 00:44:36.070 align:middle line:84%
+maybe I want to use the model
+on that, that's a pretty
+
+00:44:36.070 --> 00:44:38.950 align:middle line:90%
+significant distribution shift.
+
+00:44:38.950 --> 00:44:41.670 align:middle line:84%
+And then, add on top of that
+the fact that all of it's
+
+00:44:41.670 --> 00:44:45.527 align:middle line:84%
+changing all the time
+and it gets pretty messy.
+
+00:44:45.527 --> 00:44:47.110 align:middle line:84%
+And this was the
+motivation, actually,
+
+00:44:47.110 --> 00:44:49.570 align:middle line:84%
+behind the creation of
+this Wilds benchmark,
+
+00:44:49.570 --> 00:44:53.443 align:middle line:84%
+which I built with many
+other very talented people.
+
+00:44:53.443 --> 00:44:55.110 align:middle line:84%
+Specifically, it was
+reflecting the fact
+
+00:44:55.110 --> 00:44:57.590 align:middle line:84%
+that a lot of the literature
+around distribution
+
+00:44:57.590 --> 00:44:59.270 align:middle line:84%
+shift in the machine
+learning community
+
+00:44:59.270 --> 00:45:03.950 align:middle line:84%
+were these types of not
+realistic distribution shifts,
+
+00:45:03.950 --> 00:45:09.280 align:middle line:84%
+like, adding noise to things,
+or taking MNIST and rotating it
+
+00:45:09.280 --> 00:45:13.880 align:middle line:84%
+by 45 degrees, or making
+it a different color.
+
+00:45:13.880 --> 00:45:16.302 align:middle line:84%
+Not necessarily
+super representative.
+
+00:45:16.302 --> 00:45:18.760 align:middle line:84%
+Even some of the examples that
+were designed on real data--
+
+00:45:18.760 --> 00:45:20.700 align:middle line:84%
+I don't know if you've ever
+heard of the waterbirds data
+
+00:45:20.700 --> 00:45:21.140 align:middle line:90%
+set.
+
+00:45:21.140 --> 00:45:22.765 align:middle line:84%
+It's basically a data
+set of waterbirds
+
+00:45:22.765 --> 00:45:27.600 align:middle line:84%
+where the training data has
+waterbirds not in the water,
+
+00:45:27.600 --> 00:45:30.160 align:middle line:84%
+and the test data has
+them in the water.
+
+00:45:30.160 --> 00:45:32.220 align:middle line:90%
+It's a background shift problem.
+
+00:45:32.220 --> 00:45:33.560 align:middle line:90%
+But it's pretty artificial.
+
+00:45:33.560 --> 00:45:36.820 align:middle line:84%
+You've constrained it so that
+the categories are balanced,
+
+00:45:36.820 --> 00:45:39.760 align:middle line:84%
+that you're only looking
+at one dimension of shift,
+
+00:45:39.760 --> 00:45:41.785 align:middle line:84%
+and the real world
+is quite messy.
+
+00:45:41.785 --> 00:45:43.160 align:middle line:84%
+So this is a
+benchmark that looks
+
+00:45:43.160 --> 00:45:46.240 align:middle line:84%
+at distribution shifts
+over a pretty diverse set
+
+00:45:46.240 --> 00:45:48.360 align:middle line:84%
+of real-world
+domains, everything
+
+00:45:48.360 --> 00:45:54.480 align:middle line:84%
+from different scans
+from hospitals,
+
+00:45:54.480 --> 00:45:59.280 align:middle line:84%
+to different locations of
+species categorization,
+
+00:45:59.280 --> 00:46:03.490 align:middle line:84%
+generalizing mapping of
+poverty across countries,
+
+00:46:03.490 --> 00:46:08.090 align:middle line:84%
+looking at comments
+across demographics.
+
+00:46:08.090 --> 00:46:11.930 align:middle line:84%
+And essentially, what
+this benchmark highlighted
+
+00:46:11.930 --> 00:46:15.450 align:middle line:84%
+was that when you move
+out of distribution
+
+00:46:15.450 --> 00:46:18.210 align:middle line:84%
+in these realistic
+ways, basically,
+
+00:46:18.210 --> 00:46:21.370 align:middle line:84%
+model performance
+degrades significantly.
+
+00:46:21.370 --> 00:46:24.530 align:middle line:84%
+And the way you actually think
+about measuring this is you
+
+00:46:24.530 --> 00:46:26.370 align:middle line:84%
+can try to explicitly
+construct benchmarks
+
+00:46:26.370 --> 00:46:30.070 align:middle line:84%
+that look at performance over
+realistic distribution shifts.
+
+00:46:30.070 --> 00:46:34.130 align:middle line:84%
+So here, we looked at the
+gap between a control,
+
+00:46:34.130 --> 00:46:36.610 align:middle line:84%
+in distribution test data--
+and note that this is not
+
+00:46:36.610 --> 00:46:38.270 align:middle line:90%
+actually identical.
+
+00:46:38.270 --> 00:46:41.370 align:middle line:84%
+It's just randomly sampled
+from within the training data
+
+00:46:41.370 --> 00:46:42.410 align:middle line:90%
+locations.
+
+00:46:42.410 --> 00:46:44.290 align:middle line:84%
+And then you have
+some new cameras
+
+00:46:44.290 --> 00:46:46.790 align:middle line:84%
+that are held out that
+are out of distribution.
+
+00:46:46.790 --> 00:46:49.250 align:middle line:84%
+And you can see that macro
+F1 performance degrades
+
+00:46:49.250 --> 00:46:52.010 align:middle line:84%
+by like, 16%, which
+is pretty significant.
+
+00:46:52.010 --> 00:46:53.770 align:middle line:84%
+And if you're
+thinking about what
+
+00:46:53.770 --> 00:46:55.450 align:middle line:84%
+are the factors that
+could lead to this,
+
+00:46:55.450 --> 00:46:56.950 align:middle line:84%
+there's a bunch of
+different things.
+
+00:46:56.950 --> 00:46:58.950 align:middle line:84%
+It could explicitly be
+things like background.
+
+00:46:58.950 --> 00:47:00.830 align:middle line:84%
+It can be things
+like pose of cameras.
+
+00:47:00.830 --> 00:47:04.322 align:middle line:84%
+So the top and the bottom
+are more horizontal.
+
+00:47:04.322 --> 00:47:06.280 align:middle line:84%
+The one in the middle is
+posed a little higher,
+
+00:47:06.280 --> 00:47:09.220 align:middle line:84%
+so you're getting different
+angles on species.
+
+00:47:09.220 --> 00:47:11.880 align:middle line:84%
+Here, you can see some of them
+have passive infrared at night.
+
+00:47:11.880 --> 00:47:13.080 align:middle line:90%
+Some of them have color.
+
+00:47:13.080 --> 00:47:16.020 align:middle line:84%
+So the dimensions of
+shift in the real world
+
+00:47:16.020 --> 00:47:18.260 align:middle line:90%
+can often be quite complex.
+
+00:47:18.260 --> 00:47:19.880 align:middle line:90%
+But not just that visual shift.
+
+00:47:19.880 --> 00:47:22.300 align:middle line:84%
+We also have pretty
+explicit what can be termed
+
+00:47:22.300 --> 00:47:23.520 align:middle line:90%
+subpopulation shift.
+
+00:47:23.520 --> 00:47:26.780 align:middle line:84%
+So essentially, for any given
+location or any given camera,
+
+00:47:26.780 --> 00:47:29.260 align:middle line:84%
+it has its own unique
+distribution over the categories
+
+00:47:29.260 --> 00:47:30.420 align:middle line:90%
+of interest.
+
+00:47:30.420 --> 00:47:31.500 align:middle line:90%
+It makes sense.
+
+00:47:31.500 --> 00:47:33.380 align:middle line:84%
+That camera is placed
+in a microhabitat.
+
+00:47:33.380 --> 00:47:35.380 align:middle line:84%
+That microhabitat
+has a local set
+
+00:47:35.380 --> 00:47:39.020 align:middle line:84%
+of species that's
+interacting with it.
+
+00:47:39.020 --> 00:47:40.700 align:middle line:84%
+And it turns out that
+this is basically
+
+00:47:40.700 --> 00:47:43.520 align:middle line:84%
+true for every ecological
+problem I've ever worked on.
+
+00:47:43.520 --> 00:47:45.060 align:middle line:84%
+So different
+ecosystems will have
+
+00:47:45.060 --> 00:47:47.220 align:middle line:84%
+both subpopulation and
+visual distribution
+
+00:47:47.220 --> 00:47:48.820 align:middle line:90%
+shifts no matter what.
+
+00:47:48.820 --> 00:47:51.780 align:middle line:84%
+This is looking at
+detecting individual trees
+
+00:47:51.780 --> 00:47:54.540 align:middle line:84%
+from aerial data across the
+National Ecological Observatory
+
+00:47:54.540 --> 00:47:55.280 align:middle line:90%
+Network.
+
+00:47:55.280 --> 00:47:58.740 align:middle line:84%
+Trees both look different and
+are at different densities.
+
+00:47:58.740 --> 00:48:04.190 align:middle line:84%
+You can similarly try to think
+about categorizing detecting
+
+00:48:04.190 --> 00:48:06.430 align:middle line:84%
+and counting fish
+in different rivers
+
+00:48:06.430 --> 00:48:10.190 align:middle line:84%
+across the Pacific
+Northwest, or things
+
+00:48:10.190 --> 00:48:17.990 align:middle line:84%
+like categorizing urban trees
+across different cities in North
+
+00:48:17.990 --> 00:48:18.990 align:middle line:90%
+America.
+
+00:48:18.990 --> 00:48:20.910 align:middle line:84%
+And you can see
+that both visually
+
+00:48:20.910 --> 00:48:22.830 align:middle line:84%
+and from the sense of
+subpopulation here,
+
+00:48:22.830 --> 00:48:26.757 align:middle line:84%
+the colors are mapping the 20
+most common genera of trees.
+
+00:48:26.757 --> 00:48:28.590 align:middle line:84%
+And the differences in
+colors between cities
+
+00:48:28.590 --> 00:48:31.487 align:middle line:84%
+capture that subpopulation
+distribution.
+
+00:48:31.487 --> 00:48:33.070 align:middle line:84%
+And it turns out the
+performance often
+
+00:48:33.070 --> 00:48:36.310 align:middle line:84%
+has a very strong correlation
+with subpopulation distribution
+
+00:48:36.310 --> 00:48:37.150 align:middle line:90%
+similarity.
+
+00:48:37.150 --> 00:48:40.510 align:middle line:84%
+So this is if you're looking at
+training on one city for urban
+
+00:48:40.510 --> 00:48:43.870 align:middle line:84%
+forests and testing on another,
+you actually get these kind
+
+00:48:43.870 --> 00:48:47.950 align:middle line:84%
+of block-wise structures
+where cities that have similar
+
+00:48:47.950 --> 00:48:50.850 align:middle line:90%
+training distributions will--
+
+00:48:50.850 --> 00:48:52.910 align:middle line:84%
+you'll generalize
+better within the set
+
+00:48:52.910 --> 00:48:55.210 align:middle line:84%
+of cities that have similar
+training distributions.
+
+00:48:55.210 --> 00:48:56.790 align:middle line:90%
+It's kind of intuitive.
+
+00:48:56.790 --> 00:48:58.850 align:middle line:84%
+These models are
+trained on likelihoods,
+
+00:48:58.850 --> 00:49:00.570 align:middle line:84%
+so you're almost
+building a prior
+
+00:49:00.570 --> 00:49:03.370 align:middle line:84%
+based on the subpopulation
+distribution within any given
+
+00:49:03.370 --> 00:49:04.410 align:middle line:90%
+training set.
+
+00:49:04.410 --> 00:49:06.710 align:middle line:84%
+And if you're matching
+that more closely,
+
+00:49:06.710 --> 00:49:10.450 align:middle line:84%
+your model is more
+likely to predict well.
+
+00:49:10.450 --> 00:49:13.090 align:middle line:84%
+And there's some nice
+examples of simple approaches
+
+00:49:13.090 --> 00:49:17.530 align:middle line:84%
+you can try to do to
+actually match the expected
+
+00:49:17.530 --> 00:49:20.330 align:middle line:84%
+distribution of
+your test data, even
+
+00:49:20.330 --> 00:49:21.630 align:middle line:90%
+without additional training.
+
+00:49:21.630 --> 00:49:25.835 align:middle line:84%
+So things like if you can build
+or if you can represent a prior,
+
+00:49:25.835 --> 00:49:27.210 align:middle line:84%
+if you have some
+way to construct
+
+00:49:27.210 --> 00:49:30.810 align:middle line:84%
+a prior over the set of
+categories you expect to see,
+
+00:49:30.810 --> 00:49:33.770 align:middle line:84%
+then you can just do a really
+simple Bayesian remapping
+
+00:49:33.770 --> 00:49:38.710 align:middle line:84%
+of the predicted probabilities
+to take into account that prior.
+
+00:49:38.710 --> 00:49:40.450 align:middle line:90%
+I'll talk about that a little.
+
+00:49:40.450 --> 00:49:42.930 align:middle line:84%
+So what do you do about
+distribution shift?
+
+00:49:42.930 --> 00:49:44.650 align:middle line:84%
+So one thing that
+people have looked at
+
+00:49:44.650 --> 00:49:48.090 align:middle line:84%
+is this that's quite similar
+to the adversarial example we
+
+00:49:48.090 --> 00:49:50.530 align:middle line:84%
+talked about before is something
+called distributionally
+
+00:49:50.530 --> 00:49:52.810 align:middle line:90%
+robust optimization.
+
+00:49:52.810 --> 00:49:56.250 align:middle line:84%
+So far, we were saying we were
+allowed to perturb each data
+
+00:49:56.250 --> 00:49:59.662 align:middle line:84%
+point by some limited
+amount, but an alternative
+
+00:49:59.662 --> 00:50:01.620 align:middle line:84%
+is that you can actually
+think about perturbing
+
+00:50:01.620 --> 00:50:06.540 align:middle line:84%
+the entire training distribution
+by some amount together.
+
+00:50:06.540 --> 00:50:10.740 align:middle line:84%
+And so now, what this looks
+like is distribution--
+
+00:50:10.740 --> 00:50:13.620 align:middle line:84%
+robust optimization
+essentially just assumes
+
+00:50:13.620 --> 00:50:17.620 align:middle line:84%
+that the worst case data
+distribution shift might occur.
+
+00:50:17.620 --> 00:50:20.580 align:middle line:84%
+So you might have
+some different samples
+
+00:50:20.580 --> 00:50:21.760 align:middle line:90%
+in terms of the densities.
+
+00:50:21.760 --> 00:50:25.420 align:middle line:84%
+You might take some of the data
+away, et cetera, et cetera.
+
+00:50:25.420 --> 00:50:28.500 align:middle line:84%
+And so they think about ways
+you can perturb the distribution
+
+00:50:28.500 --> 00:50:29.980 align:middle line:90%
+of your training data set.
+
+00:50:29.980 --> 00:50:32.260 align:middle line:84%
+And then they take
+a similar approach
+
+00:50:32.260 --> 00:50:34.680 align:middle line:84%
+to what we did with the
+adversarial examples,
+
+00:50:34.680 --> 00:50:37.460 align:middle line:84%
+but now, you're trying
+to find the model such
+
+00:50:37.460 --> 00:50:42.260 align:middle line:84%
+that-- in expectation over all
+of the possible distribution
+
+00:50:42.260 --> 00:50:45.620 align:middle line:84%
+shifts on a data
+set, you're still
+
+00:50:45.620 --> 00:50:48.860 align:middle line:90%
+going to minimize the loss.
+
+00:50:48.860 --> 00:50:51.580 align:middle line:84%
+And so you're basically, again,
+finding that worst case scenario
+
+00:50:51.580 --> 00:50:53.538 align:middle line:84%
+and trying to make sure
+that the model is still
+
+00:50:53.538 --> 00:50:59.010 align:middle line:84%
+robust to that for any given--
+for any given distribution.
+
+00:50:59.010 --> 00:51:03.630 align:middle line:84%
+But again, this assumes that
+now you can only move the data
+
+00:51:03.630 --> 00:51:06.110 align:middle line:90%
+distribution a certain amount.
+
+00:51:06.110 --> 00:51:09.157 align:middle line:84%
+And measuring the difference
+in pixels is one thing,
+
+00:51:09.157 --> 00:51:10.990 align:middle line:84%
+but actually trying to
+think about measuring
+
+00:51:10.990 --> 00:51:13.110 align:middle line:84%
+the distance between
+probability distributions
+
+00:51:13.110 --> 00:51:14.210 align:middle line:90%
+can be quite complicated.
+
+00:51:14.210 --> 00:51:16.350 align:middle line:84%
+So there's Chi squared
+distance, people
+
+00:51:16.350 --> 00:51:17.990 align:middle line:84%
+use things like
+Wasserstein distance,
+
+00:51:17.990 --> 00:51:20.270 align:middle line:90%
+maximum mean discrepancy.
+
+00:51:20.270 --> 00:51:24.870 align:middle line:84%
+But how you actually measure how
+far away two distributions are,
+
+00:51:24.870 --> 00:51:28.470 align:middle line:84%
+if they're simple, like
+measurable distributions
+
+00:51:28.470 --> 00:51:30.373 align:middle line:90%
+in one dimension is one thing.
+
+00:51:30.373 --> 00:51:32.790 align:middle line:84%
+If you're trying to measure
+the difference in distribution
+
+00:51:32.790 --> 00:51:35.470 align:middle line:84%
+between 1 million image data
+set and another million image
+
+00:51:35.470 --> 00:51:37.285 align:middle line:84%
+data set, it gets a
+lot more complicated.
+
+00:51:37.285 --> 00:51:38.910 align:middle line:84%
+And a lot of times,
+what people will do
+
+00:51:38.910 --> 00:51:40.410 align:middle line:84%
+is they'll actually
+leverage learned
+
+00:51:40.410 --> 00:51:42.550 align:middle line:84%
+representations of those
+data sets and then try
+
+00:51:42.550 --> 00:51:45.030 align:middle line:84%
+to make some metric
+for the similarity
+
+00:51:45.030 --> 00:51:47.990 align:middle line:84%
+across, maybe, the clustering,
+the representation space.
+
+00:51:47.990 --> 00:51:50.590 align:middle line:90%
+This stuff is pretty tricky.
+
+00:51:50.590 --> 00:51:52.070 align:middle line:84%
+It's not definitely
+something that
+
+00:51:52.070 --> 00:51:55.880 align:middle line:90%
+works super well in practice.
+
+00:51:55.880 --> 00:51:59.240 align:middle line:84%
+So when you're actually trying
+to think about what this means
+
+00:51:59.240 --> 00:52:01.720 align:middle line:84%
+for generalization,
+essentially, DRO
+
+00:52:01.720 --> 00:52:05.400 align:middle line:84%
+optimizes for this set of
+possible training data sets
+
+00:52:05.400 --> 00:52:07.000 align:middle line:90%
+and distributions.
+
+00:52:07.000 --> 00:52:10.640 align:middle line:84%
+And so if you have some
+underlying data distribution, p,
+
+00:52:10.640 --> 00:52:12.920 align:middle line:84%
+and your empirical
+training data is
+
+00:52:12.920 --> 00:52:15.000 align:middle line:84%
+p sub n, so some
+subset of that or
+
+00:52:15.000 --> 00:52:17.880 align:middle line:84%
+some specific
+characterization of that,
+
+00:52:17.880 --> 00:52:20.820 align:middle line:84%
+then if you've built
+some distance metric
+
+00:52:20.820 --> 00:52:24.880 align:middle line:84%
+and you say that the new
+distribution of where you're
+
+00:52:24.880 --> 00:52:28.120 align:middle line:84%
+going to use the model
+is within some distance
+
+00:52:28.120 --> 00:52:31.960 align:middle line:84%
+of the true
+distribution, then you're
+
+00:52:31.960 --> 00:52:34.620 align:middle line:84%
+guaranteed to perform well
+on the true distribution.
+
+00:52:34.620 --> 00:52:36.222 align:middle line:84%
+So you're guaranteed
+to generalize.
+
+00:52:36.222 --> 00:52:37.680 align:middle line:84%
+But of course, I'm
+sure you can see
+
+00:52:37.680 --> 00:52:39.180 align:middle line:84%
+the challenge of
+the limitation here,
+
+00:52:39.180 --> 00:52:41.013 align:middle line:84%
+which is that you have
+to be able to measure
+
+00:52:41.013 --> 00:52:43.180 align:middle line:84%
+the distance between
+distributions,
+
+00:52:43.180 --> 00:52:44.760 align:middle line:84%
+and you have to
+be able to sample
+
+00:52:44.760 --> 00:52:47.462 align:middle line:84%
+these hypothetical distributions
+in a way that's realistic.
+
+00:52:47.462 --> 00:52:48.920 align:middle line:84%
+And of course, the
+more complicated
+
+00:52:48.920 --> 00:52:52.680 align:middle line:84%
+your data structures are,
+the harder that gets.
+
+00:52:52.680 --> 00:52:55.930 align:middle line:84%
+So interestingly, this has been
+applied pretty effectively when
+
+00:52:55.930 --> 00:52:58.450 align:middle line:84%
+you're talking about some
+of these class imbalance
+
+00:52:58.450 --> 00:53:00.050 align:middle line:90%
+challenges.
+
+00:53:00.050 --> 00:53:03.210 align:middle line:90%
+So here, you can use DRO.
+
+00:53:03.210 --> 00:53:06.250 align:middle line:84%
+So you assume your population
+has some number of subgroups.
+
+00:53:06.250 --> 00:53:08.770 align:middle line:84%
+Population here could
+be any given category.
+
+00:53:08.770 --> 00:53:10.330 align:middle line:90%
+So let's say the raccoons.
+
+00:53:10.330 --> 00:53:12.530 align:middle line:84%
+And now, maybe our raccoons
+have two subgroups,
+
+00:53:12.530 --> 00:53:16.738 align:middle line:84%
+like nighttime and daytime
+images of raccoons.
+
+00:53:16.738 --> 00:53:18.530 align:middle line:84%
+Traditionally, you
+would think about trying
+
+00:53:18.530 --> 00:53:21.810 align:middle line:84%
+to minimize the empirical
+risk or the average error
+
+00:53:21.810 --> 00:53:23.670 align:middle line:84%
+across these
+different subgroups,
+
+00:53:23.670 --> 00:53:26.730 align:middle line:84%
+assuming you have access
+to the actual labels
+
+00:53:26.730 --> 00:53:29.610 align:middle line:84%
+of those subgroups, which maybe
+for day versus night, we do.
+
+00:53:29.610 --> 00:53:33.730 align:middle line:84%
+Because we have a clock for
+our time or for our camera.
+
+00:53:33.730 --> 00:53:39.250 align:middle line:84%
+But it turns out that if you
+have a minority subgroup, if you
+
+00:53:39.250 --> 00:53:44.570 align:middle line:84%
+get 50% error on that minority
+group in terms of accuracy,
+
+00:53:44.570 --> 00:53:46.670 align:middle line:90%
+that's only 10% overall error.
+
+00:53:46.670 --> 00:53:48.930 align:middle line:84%
+So your model might
+learn, if it's effective,
+
+00:53:48.930 --> 00:53:51.990 align:middle line:84%
+to just ignore the
+minority group.
+
+00:53:51.990 --> 00:53:54.750 align:middle line:84%
+So you can ignore the minority
+group and still get decent loss.
+
+00:53:54.750 --> 00:53:58.990 align:middle line:84%
+And so the idea is that DRO
+can learn to effectively
+
+00:53:58.990 --> 00:54:02.790 align:middle line:84%
+automatically reweight your
+data to pay more attention
+
+00:54:02.790 --> 00:54:06.430 align:middle line:90%
+to those minority classes.
+
+00:54:06.430 --> 00:54:09.590 align:middle line:84%
+And so what that might
+actually look like is it's
+
+00:54:09.590 --> 00:54:12.110 align:middle line:84%
+forcing the model to
+place less emphasis
+
+00:54:12.110 --> 00:54:13.990 align:middle line:84%
+on noisy features
+and more emphasis
+
+00:54:13.990 --> 00:54:17.190 align:middle line:84%
+on useful and
+predictive features.
+
+00:54:17.190 --> 00:54:20.590 align:middle line:84%
+And it also seems to be
+explicitly, empirically,
+
+00:54:20.590 --> 00:54:23.170 align:middle line:84%
+at least, shifting
+the distribution
+
+00:54:23.170 --> 00:54:25.910 align:middle line:90%
+so that they're more separable.
+
+00:54:25.910 --> 00:54:29.410 align:middle line:84%
+But there's some really
+nice work, actually,
+
+00:54:29.410 --> 00:54:33.710 align:middle line:84%
+that shows that you can do this,
+and there's adaptations of DRO
+
+00:54:33.710 --> 00:54:36.590 align:middle line:84%
+to do this, even if you don't
+know what the subgroups are
+
+00:54:36.590 --> 00:54:38.950 align:middle line:90%
+or how many subgroups there are.
+
+00:54:38.950 --> 00:54:42.150 align:middle line:84%
+So people use DRO a lot
+for some of these fairness
+
+00:54:42.150 --> 00:54:43.090 align:middle line:90%
+type of problems.
+
+00:54:43.090 --> 00:54:45.893 align:middle line:84%
+You want a model to learn
+to recognize doctors,
+
+00:54:45.893 --> 00:54:47.310 align:middle line:84%
+and you don't want
+it to be biased
+
+00:54:47.310 --> 00:54:49.710 align:middle line:84%
+against female doctors
+or Black doctors,
+
+00:54:49.710 --> 00:54:53.160 align:middle line:84%
+even though the training data
+is biased against those groups.
+
+00:54:53.160 --> 00:54:56.220 align:middle line:84%
+And so in that worst
+case distribution shift,
+
+00:54:56.220 --> 00:54:58.895 align:middle line:84%
+you could imagine, you might
+only sample those minority
+
+00:54:58.895 --> 00:55:00.520 align:middle line:84%
+groups, and then your
+model performance
+
+00:55:00.520 --> 00:55:03.960 align:middle line:84%
+would be significantly worse
+if you aren't making sure
+
+00:55:03.960 --> 00:55:06.040 align:middle line:90%
+that you're robust to that.
+
+00:55:06.040 --> 00:55:08.400 align:middle line:84%
+So what do we do about
+distribution shift?
+
+00:55:08.400 --> 00:55:11.160 align:middle line:84%
+First, you can try
+distributionally robust
+
+00:55:11.160 --> 00:55:13.960 align:middle line:84%
+optimization, or
+there's many other ways
+
+00:55:13.960 --> 00:55:16.980 align:middle line:84%
+to think about building
+robustness, extensions of this,
+
+00:55:16.980 --> 00:55:21.280 align:middle line:84%
+cetera, that take an algorithmic
+approach to trying to reduce--
+
+00:55:21.280 --> 00:55:24.560 align:middle line:84%
+to trying to make models
+more robust to these types
+
+00:55:24.560 --> 00:55:27.720 align:middle line:84%
+of distribution shifts
+or make them more fair.
+
+00:55:27.720 --> 00:55:31.400 align:middle line:84%
+You can also do things
+explicitly learn
+
+00:55:31.400 --> 00:55:34.620 align:middle line:84%
+priors over the distribution
+shifts that you see.
+
+00:55:34.620 --> 00:55:38.440 align:middle line:84%
+So, for example,
+subpopulation shift.
+
+00:55:38.440 --> 00:55:42.880 align:middle line:84%
+So this is a case-- this is an
+example by [INAUDIBLE] where
+
+00:55:42.880 --> 00:55:45.180 align:middle line:84%
+they looked at species
+identification,
+
+00:55:45.180 --> 00:55:47.760 align:middle line:84%
+and they explicitly
+learned separately
+
+00:55:47.760 --> 00:55:53.130 align:middle line:84%
+a modular, like, spatiotemporal
+prior over places and times
+
+00:55:53.130 --> 00:55:56.490 align:middle line:84%
+that then they use to remap
+the likelihoods of any given
+
+00:55:56.490 --> 00:55:59.130 align:middle line:84%
+probability or any
+given species based
+
+00:55:59.130 --> 00:56:00.790 align:middle line:90%
+on where the image was taken.
+
+00:56:00.790 --> 00:56:01.470 align:middle line:90%
+Makes sense.
+
+00:56:01.470 --> 00:56:03.770 align:middle line:90%
+This is what ecologists do.
+
+00:56:03.770 --> 00:56:06.890 align:middle line:84%
+Often, there are categories
+that look really similar.
+
+00:56:06.890 --> 00:56:13.232 align:middle line:84%
+And if you just saw the image
+without any context about where,
+
+00:56:13.232 --> 00:56:14.690 align:middle line:84%
+when it was taken,
+it might be hard
+
+00:56:14.690 --> 00:56:16.930 align:middle line:84%
+even for an expert to be
+able to distinguish them.
+
+00:56:16.930 --> 00:56:21.210 align:middle line:84%
+But if you have that additional
+information, it's quite useful.
+
+00:56:21.210 --> 00:56:24.850 align:middle line:84%
+And so this is just addressing
+this generalization problem
+
+00:56:24.850 --> 00:56:29.050 align:middle line:84%
+as an image categorization with
+this kind of specialization
+
+00:56:29.050 --> 00:56:32.690 align:middle line:84%
+that's coming from a prior
+based on space and time.
+
+00:56:32.690 --> 00:56:35.250 align:middle line:84%
+So you can think about capturing
+some of the information you
+
+00:56:35.250 --> 00:56:37.410 align:middle line:84%
+might have about the
+structure of your domain
+
+00:56:37.410 --> 00:56:41.422 align:middle line:84%
+or the distributions spatially,
+temporally, et cetera,
+
+00:56:41.422 --> 00:56:43.130 align:middle line:84%
+within your domain,
+and actually building
+
+00:56:43.130 --> 00:56:46.570 align:middle line:84%
+that directly into your model
+as a way to do a better job.
+
+00:56:46.570 --> 00:56:48.410 align:middle line:84%
+And those models
+improve species accuracy
+
+00:56:48.410 --> 00:56:51.580 align:middle line:90%
+by like, 10% on a naturalist.
+
+00:56:51.580 --> 00:56:55.500 align:middle line:84%
+You can think about mechanisms
+like domain adaptation.
+
+00:56:55.500 --> 00:56:58.940 align:middle line:84%
+So this is actually
+an entire category
+
+00:56:58.940 --> 00:57:03.380 align:middle line:84%
+of models that tries
+to learn given a source
+
+00:57:03.380 --> 00:57:06.940 align:middle line:84%
+domain and a target domain where
+maybe you don't necessarily
+
+00:57:06.940 --> 00:57:08.840 align:middle line:84%
+have labels for
+your target domain,
+
+00:57:08.840 --> 00:57:11.760 align:middle line:84%
+how to align their
+representations during training
+
+00:57:11.760 --> 00:57:13.660 align:middle line:84%
+so that you can
+enforce generalization
+
+00:57:13.660 --> 00:57:15.360 align:middle line:84%
+or adaptation to a
+new target domain,
+
+00:57:15.360 --> 00:57:17.900 align:middle line:84%
+even if you don't have a
+lot of data or labeled data.
+
+00:57:17.900 --> 00:57:22.020 align:middle line:84%
+I'll talk a little bit more
+about that in next lecture.
+
+00:57:22.020 --> 00:57:23.200 align:middle line:90%
+This is pretty interesting.
+
+00:57:23.200 --> 00:57:24.620 align:middle line:84%
+You can come up
+with creative ways
+
+00:57:24.620 --> 00:57:28.083 align:middle line:84%
+to try to diagnose the failure
+modes of your model, which often
+
+00:57:28.083 --> 00:57:30.500 align:middle line:84%
+teaches you more about the
+biases in your initial training
+
+00:57:30.500 --> 00:57:33.180 align:middle line:84%
+data than anything else, but
+they can be really interesting.
+
+00:57:33.180 --> 00:57:35.740 align:middle line:84%
+And so there's ways to think
+about doing that by just
+
+00:57:35.740 --> 00:57:37.660 align:middle line:90%
+striving your evaluation.
+
+00:57:37.660 --> 00:57:40.960 align:middle line:84%
+So breaking down
+evaluation per category,
+
+00:57:40.960 --> 00:57:43.140 align:middle line:84%
+along different dimensions,
+like night versus day,
+
+00:57:43.140 --> 00:57:46.120 align:middle line:84%
+or different sexes
+of the participants,
+
+00:57:46.120 --> 00:57:48.400 align:middle line:84%
+assuming you have the labels
+to be able to do that,
+
+00:57:48.400 --> 00:57:50.560 align:middle line:84%
+break that down and
+look at the relative
+
+00:57:50.560 --> 00:57:54.600 align:middle line:84%
+maybe call it fairness
+across the category set.
+
+00:57:54.600 --> 00:57:57.320 align:middle line:84%
+This is an interesting example
+coming from Aleksander Madry's
+
+00:57:57.320 --> 00:58:01.160 align:middle line:84%
+group, where they actually
+use modern generative AI
+
+00:58:01.160 --> 00:58:06.200 align:middle line:84%
+models to generate hypothetical
+counterfactuals to try
+
+00:58:06.200 --> 00:58:11.840 align:middle line:84%
+to understand or diagnose
+failure modes in training.
+
+00:58:11.840 --> 00:58:14.655 align:middle line:84%
+And so here, for example,
+what they found--
+
+00:58:14.655 --> 00:58:16.280 align:middle line:84%
+one interesting
+example that they found
+
+00:58:16.280 --> 00:58:18.197 align:middle line:84%
+through this diagnosis,
+and then they actually
+
+00:58:18.197 --> 00:58:20.280 align:middle line:84%
+were able to demonstrate
+it on real data,
+
+00:58:20.280 --> 00:58:22.960 align:middle line:84%
+is that these models are really
+good at recognizing plates
+
+00:58:22.960 --> 00:58:25.700 align:middle line:84%
+if they have food on them, but
+if it doesn't have food on it,
+
+00:58:25.700 --> 00:58:27.480 align:middle line:84%
+it's consistently
+being categorized
+
+00:58:27.480 --> 00:58:30.640 align:middle line:90%
+as like, trays or buckets.
+
+00:58:30.640 --> 00:58:32.780 align:middle line:84%
+So you can try to
+diagnose the failures,
+
+00:58:32.780 --> 00:58:34.200 align:middle line:84%
+and that might be
+so that you can
+
+00:58:34.200 --> 00:58:35.960 align:middle line:84%
+try to then collect
+training data to be
+
+00:58:35.960 --> 00:58:37.260 align:middle line:90%
+robust to those failures.
+
+00:58:37.260 --> 00:58:41.000 align:middle line:84%
+It also can just be useful if
+you're trying to think about how
+
+00:58:41.000 --> 00:58:43.820 align:middle line:84%
+and in what way you should
+trust a model in deployment.
+
+00:58:43.820 --> 00:58:47.160 align:middle line:90%
+
+
+00:58:47.160 --> 00:58:50.170 align:middle line:84%
+I would argue that
+probably the best
+
+00:58:50.170 --> 00:58:52.930 align:middle line:84%
+thing you can do in
+any of these cases
+
+00:58:52.930 --> 00:58:55.890 align:middle line:84%
+is just get training data that's
+representative of your test
+
+00:58:55.890 --> 00:58:56.770 align:middle line:90%
+domain.
+
+00:58:56.770 --> 00:59:00.370 align:middle line:84%
+So in practice, a lot of
+these algorithmic approaches,
+
+00:59:00.370 --> 00:59:05.530 align:middle line:84%
+these creative ways to try to
+train these models to be robust,
+
+00:59:05.530 --> 00:59:07.410 align:middle line:84%
+to be effective,
+usually, they're
+
+00:59:07.410 --> 00:59:09.970 align:middle line:84%
+just significantly worse
+than just more training
+
+00:59:09.970 --> 00:59:12.410 align:middle line:84%
+data that's representative
+of your test domain.
+
+00:59:12.410 --> 00:59:16.050 align:middle line:84%
+So from a practical perspective,
+if you really need something
+
+00:59:16.050 --> 00:59:19.290 align:middle line:84%
+to work well, you have to invest
+in the right kind of training
+
+00:59:19.290 --> 00:59:20.130 align:middle line:90%
+data.
+
+00:59:20.130 --> 00:59:23.130 align:middle line:84%
+And if that's something that
+you just cannot get for various
+
+00:59:23.130 --> 00:59:26.090 align:middle line:84%
+reasons, various constraints,
+maybe the species is super
+
+00:59:26.090 --> 00:59:30.410 align:middle line:84%
+endangered, or you're trying to
+get a model to work on a planet
+
+00:59:30.410 --> 00:59:33.970 align:middle line:84%
+that we've never landed
+something on, or we're trying
+
+00:59:33.970 --> 00:59:37.850 align:middle line:84%
+to get models to work under the
+Arctic or in the deep sea where
+
+00:59:37.850 --> 00:59:41.970 align:middle line:84%
+we just are not actually able
+to collect large-scale training
+
+00:59:41.970 --> 00:59:45.410 align:middle line:84%
+data, then you're probably going
+to have to have a human look
+
+00:59:45.410 --> 00:59:47.940 align:middle line:90%
+at a lot of the data still.
+
+00:59:47.940 --> 00:59:49.980 align:middle line:84%
+This kind of where
+do we actually
+
+00:59:49.980 --> 00:59:52.460 align:middle line:84%
+see these things
+work in practice,
+
+00:59:52.460 --> 00:59:55.660 align:middle line:84%
+often, it's really just where
+we have in-distribution training
+
+00:59:55.660 --> 00:59:56.700 align:middle line:90%
+data.
+
+00:59:56.700 --> 00:59:59.980 align:middle line:84%
+And so this is a really
+active area of research.
+
+00:59:59.980 --> 01:00:01.448 align:middle line:84%
+And for any of you
+that are working
+
+01:00:01.448 --> 01:00:03.740 align:middle line:84%
+on trying to bring deep
+learning to your own scientific
+
+01:00:03.740 --> 01:00:07.300 align:middle line:84%
+challenges or problems, I would
+totally recommend that you look
+
+01:00:07.300 --> 01:00:09.080 align:middle line:84%
+into this literature
+when you think about,
+
+01:00:09.080 --> 01:00:11.540 align:middle line:84%
+how do I get the model to
+work where I want it to work?
+
+01:00:11.540 --> 01:00:14.880 align:middle line:84%
+But I also think that if you
+have limited time and effort,
+
+01:00:14.880 --> 01:00:17.820 align:middle line:84%
+sometimes, it's just worth
+it to label more data.
+
+01:00:17.820 --> 01:00:20.500 align:middle line:84%
+At least, practically,
+that's what I've found.
+
+01:00:20.500 --> 01:00:22.220 align:middle line:90%
+Cool.
+
+01:00:22.220 --> 01:00:26.500 align:middle line:84%
+So, in summary,
+out-of-distribution
+
+01:00:26.500 --> 01:00:28.160 align:middle line:84%
+generalization is
+a big challenge.
+
+01:00:28.160 --> 01:00:30.580 align:middle line:90%
+It's still a big challenge.
+
+01:00:30.580 --> 01:00:32.740 align:middle line:84%
+But digging into it
+helps us understand
+
+01:00:32.740 --> 01:00:34.940 align:middle line:84%
+what neural networks learn,
+and it also really helps
+
+01:00:34.940 --> 01:00:38.780 align:middle line:84%
+us try to understand this very
+tight and complex relationship
+
+01:00:38.780 --> 01:00:41.580 align:middle line:84%
+between the training data
+and where we can effectively
+
+01:00:41.580 --> 01:00:42.820 align:middle line:90%
+use models.
+
+01:00:42.820 --> 01:00:45.230 align:middle line:84%
+And then we talked about
+adversarial examples
+
+01:00:45.230 --> 01:00:47.450 align:middle line:90%
+and distribution shifts today.
+
+01:00:47.450 --> 01:00:51.230 align:middle line:90%
+Are there any other questions?
+
+01:00:51.230 --> 01:00:51.910 align:middle line:90%
+Yeah?
+
+01:00:51.910 --> 01:00:54.350 align:middle line:84%
+AUDIENCE: Has anyone looked
+at activation functions?
+
+01:00:54.350 --> 01:00:57.870 align:middle line:84%
+Like, do activation functions
+change how easy or difficult
+
+01:00:57.870 --> 01:01:02.030 align:middle line:90%
+it is to fool one of these?
+
+01:01:02.030 --> 01:01:05.070 align:middle line:84%
+SARA BEERY: So you mean
+like things like Grad-CAM?
+
+01:01:05.070 --> 01:01:06.470 align:middle line:90%
+AUDIENCE: [INAUDIBLE]
+
+01:01:06.470 --> 01:01:07.670 align:middle line:90%
+SARA BEERY: Oh.
+
+01:01:07.670 --> 01:01:09.470 align:middle line:84%
+AUDIENCE: There's a
+stark non-linearity
+
+01:01:09.470 --> 01:01:11.590 align:middle line:90%
+between [INAUDIBLE] it's not.
+
+01:01:11.590 --> 01:01:13.150 align:middle line:90%
+SARA BEERY: Gotcha.
+
+01:01:13.150 --> 01:01:15.790 align:middle line:84%
+The question was,
+have people explored
+
+01:01:15.790 --> 01:01:18.590 align:middle line:84%
+how the choice of activation
+functions, so something
+
+01:01:18.590 --> 01:01:20.970 align:middle line:84%
+like a ReLU or a
+GELU Or something,
+
+01:01:20.970 --> 01:01:25.750 align:middle line:84%
+how that affects
+generalization or robustness.
+
+01:01:25.750 --> 01:01:30.270 align:middle line:84%
+I bet, but I don't know
+any literature on it.
+
+01:01:30.270 --> 01:01:36.220 align:middle line:84%
+I think my intuition says it
+wouldn't have a huge effect.
+
+01:01:36.220 --> 01:01:38.470 align:middle line:84%
+But it would be interesting
+to dig in and try and see.
+
+01:01:38.470 --> 01:01:40.512 align:middle line:84%
+And it might have a bigger
+effect on simpler data
+
+01:01:40.512 --> 01:01:41.773 align:middle line:90%
+sets than more complex ones.
+
+01:01:41.773 --> 01:01:43.190 align:middle line:84%
+So there might be
+papers that show
+
+01:01:43.190 --> 01:01:46.520 align:middle line:84%
+that has an effect on MNIST
+style training or CIFAR style
+
+01:01:46.520 --> 01:01:49.895 align:middle line:84%
+training, but that might not
+actually generalize versus all
+
+01:01:49.895 --> 01:01:51.520 align:middle line:84%
+of the other different
+complicated ways
+
+01:01:51.520 --> 01:01:55.560 align:middle line:84%
+that models and architectures
+affect performance.
+
+01:01:55.560 --> 01:01:59.040 align:middle line:84%
+But that's totally
+just my best guess.
+
+01:01:59.040 --> 01:02:00.300 align:middle line:90%
+I'm actually kind of curious.
+
+01:02:00.300 --> 01:02:03.000 align:middle line:90%
+I'm going to go look into it.
+
+01:02:03.000 --> 01:02:04.820 align:middle line:84%
+Does anyone else--
+does anyone else know?
+
+01:02:04.820 --> 01:02:07.832 align:middle line:84%
+Have people looked
+into robustness and--
+
+01:02:07.832 --> 01:02:09.540 align:middle line:84%
+AUDIENCE: Sorry, that's
+another question.
+
+01:02:09.540 --> 01:02:10.460 align:middle line:90%
+SARA BEERY: Yeah, OK.
+
+01:02:10.460 --> 01:02:13.200 align:middle line:84%
+AUDIENCE: So this you
+talk about, this more like
+
+01:02:13.200 --> 01:02:14.620 align:middle line:90%
+supervised fine-tuning.
+
+01:02:14.620 --> 01:02:18.020 align:middle line:84%
+So having robust-- finding
+robustness examples.
+
+01:02:18.020 --> 01:02:20.960 align:middle line:84%
+But would that be
+more cost saving
+
+01:02:20.960 --> 01:02:25.520 align:middle line:84%
+to just reinforcement learning
+when you have that noise
+
+01:02:25.520 --> 01:02:29.440 align:middle line:84%
+and then add whatever noise
+happens and then just label it
+
+01:02:29.440 --> 01:02:31.540 align:middle line:90%
+by just like, human feedback.
+
+01:02:31.540 --> 01:02:35.640 align:middle line:84%
+Seems like a much more cost
+saving instead of this example
+
+01:02:35.640 --> 01:02:37.280 align:middle line:90%
+by example.
+
+01:02:37.280 --> 01:02:39.320 align:middle line:84%
+SARA BEERY: So the
+question was, instead
+
+01:02:39.320 --> 01:02:42.240 align:middle line:84%
+of trying to do this
+type of robust training
+
+01:02:42.240 --> 01:02:46.640 align:middle line:84%
+to hypothetical
+different perturbations,
+
+01:02:46.640 --> 01:02:48.940 align:middle line:84%
+both to the images
+or the distributions,
+
+01:02:48.940 --> 01:02:51.580 align:middle line:84%
+does it make sense
+to use other types
+
+01:02:51.580 --> 01:02:54.935 align:middle line:84%
+direct feedback, like
+active human intervention,
+
+01:02:54.935 --> 01:02:56.560 align:middle line:84%
+things like human in
+the loop learning,
+
+01:02:56.560 --> 01:02:58.700 align:middle line:84%
+or possibly something like
+reinforcement learning,
+
+01:02:58.700 --> 01:03:03.140 align:middle line:84%
+or DPO might be an example,
+Direct Preference Optimization.
+
+01:03:03.140 --> 01:03:05.080 align:middle line:84%
+So, yeah, people
+totally do that.
+
+01:03:05.080 --> 01:03:08.340 align:middle line:84%
+It can be much more efficient
+if you have a specific target
+
+01:03:08.340 --> 01:03:09.700 align:middle line:90%
+data set in mind.
+
+01:03:09.700 --> 01:03:13.780 align:middle line:84%
+This idea of how do you get
+to a good result on that data
+
+01:03:13.780 --> 01:03:16.760 align:middle line:84%
+quickly is, again, a pretty
+active area of research,
+
+01:03:16.760 --> 01:03:21.540 align:middle line:84%
+and people do lots of different
+things to do that effectively.
+
+01:03:21.540 --> 01:03:23.420 align:middle line:84%
+Domain adaptation that
+I mentioned is one.
+
+01:03:23.420 --> 01:03:25.920 align:middle line:84%
+Fine-tuning, if you're talking
+about supervised fine-tuning,
+
+01:03:25.920 --> 01:03:27.540 align:middle line:84%
+assuming you have
+labels already,
+
+01:03:27.540 --> 01:03:29.660 align:middle line:84%
+or you can try to be more
+efficient in collecting
+
+01:03:29.660 --> 01:03:33.180 align:middle line:84%
+the labels to get to that
+good result on that data.
+
+01:03:33.180 --> 01:03:36.100 align:middle line:84%
+But I think a lot of the work
+I talked about today was really
+
+01:03:36.100 --> 01:03:40.910 align:middle line:84%
+with this goal of being
+generalizably robust, like,
+
+01:03:40.910 --> 01:03:45.933 align:middle line:84%
+robust to any imagined
+hypothetical change.
+
+01:03:45.933 --> 01:03:47.350 align:middle line:84%
+And of course,
+then the limitation
+
+01:03:47.350 --> 01:03:49.945 align:middle line:84%
+is you don't know the way
+the data is going to change.
+
+01:03:49.945 --> 01:03:52.570 align:middle line:84%
+And so if you know exactly the
+way the data is going to change,
+
+01:03:52.570 --> 01:03:55.030 align:middle line:84%
+you have a target in
+mind, then optimizing
+
+01:03:55.030 --> 01:03:57.410 align:middle line:84%
+for that efficiently
+is totally possible.
+
+01:03:57.410 --> 01:03:59.310 align:middle line:84%
+Does that distinction
+make sense?
+
+01:03:59.310 --> 01:04:02.070 align:middle line:84%
+So it's maybe the
+difference between trying
+
+01:04:02.070 --> 01:04:05.910 align:middle line:84%
+to be robust to distribution
+shifts versus trying
+
+01:04:05.910 --> 01:04:08.530 align:middle line:84%
+to adapt to a specific
+distribution shift,
+
+01:04:08.530 --> 01:04:11.590 align:middle line:84%
+or specialize to a specific
+distribution shift.
+
+01:04:11.590 --> 01:04:13.390 align:middle line:90%
+Yeah.
+
+01:04:13.390 --> 01:04:14.530 align:middle line:90%
+Any other questions?
+
+01:04:14.530 --> 01:04:19.470 align:middle line:90%
+
+
+01:04:19.470 --> 01:04:20.150 align:middle line:90%
+Cool.
+
+01:04:20.150 --> 01:04:21.430 align:middle line:90%
+All right.
+
+01:04:21.430 --> 01:04:23.940 align:middle line:90%
+Take the extra time and go vote.
+
+01:04:23.940 --> 01:04:41.000 align:middle line:90%

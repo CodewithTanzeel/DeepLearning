@@ -1,0 +1,6636 @@
+WEBVTT
+
+00:00:00.000 --> 00:00:02.432 align:middle line:90%
+[SQUEAKING]
+
+00:00:02.432 --> 00:00:04.364 align:middle line:90%
+[RUSTLING]
+
+00:00:04.364 --> 00:00:06.779 align:middle line:90%
+[CLICKING]
+
+00:00:06.779 --> 00:00:12.825 align:middle line:90%
+
+
+00:00:12.825 --> 00:00:14.200 align:middle line:84%
+PHILLIP ISOLA:
+Today, we're going
+
+00:00:14.200 --> 00:00:17.400 align:middle line:84%
+to have a guest lecture
+from Jacob Andreas,
+
+00:00:17.400 --> 00:00:20.720 align:middle line:84%
+and it's going to be on
+large language models.
+
+00:00:20.720 --> 00:00:24.237 align:middle line:84%
+So we debated in this
+course whether to have
+
+00:00:24.237 --> 00:00:26.320 align:middle line:84%
+a lot of material on large
+language models or only
+
+00:00:26.320 --> 00:00:30.680 align:middle line:84%
+a little, and we decided to have
+only a little because LLMs have
+
+00:00:30.680 --> 00:00:33.240 align:middle line:84%
+actually become such a big and
+important subject that they
+
+00:00:33.240 --> 00:00:36.440 align:middle line:84%
+deserve their own
+dedicated courses.
+
+00:00:36.440 --> 00:00:39.400 align:middle line:84%
+So there are additional courses
+taught by Jacob and Yoon Kim
+
+00:00:39.400 --> 00:00:41.240 align:middle line:84%
+and others which
+you can take just
+
+00:00:41.240 --> 00:00:43.880 align:middle line:84%
+to learn all about
+language models.
+
+00:00:43.880 --> 00:00:47.360 align:middle line:84%
+Today, we'll just see
+some of the basics.
+
+00:00:47.360 --> 00:00:50.677 align:middle line:84%
+But why is this related
+to deep learning?
+
+00:00:50.677 --> 00:00:52.260 align:middle line:84%
+There's two ways of
+thinking about it.
+
+00:00:52.260 --> 00:00:55.040 align:middle line:84%
+One is that, well, large
+language models are all
+
+00:00:55.040 --> 00:00:56.420 align:middle line:90%
+built on top of deep nets.
+
+00:00:56.420 --> 00:00:58.460 align:middle line:84%
+So LLMs are made
+out of deep nets.
+
+00:00:58.460 --> 00:01:00.148 align:middle line:90%
+That's the way that it works.
+
+00:01:00.148 --> 00:01:01.690 align:middle line:84%
+But a lot of people
+have also started
+
+00:01:01.690 --> 00:01:05.269 align:middle line:84%
+to say, well, what's the next
+big thing after deep learning?
+
+00:01:05.269 --> 00:01:07.677 align:middle line:84%
+And one possibility
+is LLMs really
+
+00:01:07.677 --> 00:01:09.510 align:middle line:84%
+deserve to be considered
+the next big thing.
+
+00:01:09.510 --> 00:01:12.095 align:middle line:84%
+It's the next paradigm
+post deep learning.
+
+00:01:12.095 --> 00:01:13.470 align:middle line:84%
+So you can look
+at it either way.
+
+00:01:13.470 --> 00:01:15.890 align:middle line:84%
+It's a paradigm that's built
+on top of deep learning,
+
+00:01:15.890 --> 00:01:19.730 align:middle line:84%
+but it has new kind
+of fundamental math
+
+00:01:19.730 --> 00:01:23.770 align:middle line:84%
+and characteristics that
+go beyond continuous weight
+
+00:01:23.770 --> 00:01:26.850 align:middle line:84%
+updates and MLPs and
+ConvNets and so forth.
+
+00:01:26.850 --> 00:01:27.350 align:middle line:90%
+OK.
+
+00:01:27.350 --> 00:01:31.490 align:middle line:84%
+So Jacob is a
+professor here in EECS,
+
+00:01:31.490 --> 00:01:34.650 align:middle line:84%
+and he's one of the world
+experts on large language
+
+00:01:34.650 --> 00:01:37.050 align:middle line:84%
+models, and especially on
+the scientific understanding
+
+00:01:37.050 --> 00:01:38.675 align:middle line:84%
+of them, not just
+building them, really
+
+00:01:38.675 --> 00:01:39.890 align:middle line:90%
+understanding what they do.
+
+00:01:39.890 --> 00:01:41.590 align:middle line:90%
+So let's welcome Jacob.
+
+00:01:41.590 --> 00:01:44.578 align:middle line:90%
+
+
+00:01:44.578 --> 00:01:45.870 align:middle line:90%
+JACOB ANDREAS: Thanks, Phillip.
+
+00:01:45.870 --> 00:01:46.190 align:middle line:90%
+So yeah.
+
+00:01:46.190 --> 00:01:48.873 align:middle line:84%
+Just to reiterate, first of all,
+a bunch of the slides that I'm
+
+00:01:48.873 --> 00:01:50.290 align:middle line:84%
+going to be using
+today are-- this
+
+00:01:50.290 --> 00:01:52.250 align:middle line:84%
+is a compressed version
+of a couple of lectures
+
+00:01:52.250 --> 00:01:54.052 align:middle line:84%
+that we teach in
+the big NLP class.
+
+00:01:54.052 --> 00:01:55.510 align:middle line:84%
+If you're interested
+in this stuff,
+
+00:01:55.510 --> 00:01:58.460 align:middle line:84%
+I encourage you to take
+that, which is 6.8610,
+
+00:01:58.460 --> 00:02:02.000 align:middle line:84%
+as well as Yoon's special
+topics on language models class,
+
+00:02:02.000 --> 00:02:04.380 align:middle line:84%
+and probably more course
+development in that direction
+
+00:02:04.380 --> 00:02:07.180 align:middle line:84%
+coming in the next
+couple of years.
+
+00:02:07.180 --> 00:02:07.700 align:middle line:90%
+OK.
+
+00:02:07.700 --> 00:02:10.440 align:middle line:84%
+This is a lecture about
+large language models.
+
+00:02:10.440 --> 00:02:12.790 align:middle line:84%
+We were starting to plan out
+a lecture on large language
+
+00:02:12.790 --> 00:02:14.540 align:middle line:84%
+models, so we asked a
+large language model
+
+00:02:14.540 --> 00:02:16.332 align:middle line:84%
+to plan a lecture on
+large language models,
+
+00:02:16.332 --> 00:02:18.260 align:middle line:84%
+and it gave a reasonable
+looking outline.
+
+00:02:18.260 --> 00:02:20.220 align:middle line:84%
+And so this is more
+or less the structure
+
+00:02:20.220 --> 00:02:21.960 align:middle line:84%
+that we're going
+to follow today.
+
+00:02:21.960 --> 00:02:24.460 align:middle line:84%
+But really, what this
+is going to be about
+
+00:02:24.460 --> 00:02:26.620 align:middle line:90%
+is, in fact, mostly--
+
+00:02:26.620 --> 00:02:29.040 align:middle line:84%
+especially after the first
+chunk of the lecture--
+
+00:02:29.040 --> 00:02:30.900 align:middle line:84%
+abstracting away from
+some of the details
+
+00:02:30.900 --> 00:02:33.780 align:middle line:84%
+of the underlying
+architecture that we're
+
+00:02:33.780 --> 00:02:35.380 align:middle line:84%
+using to predict
+language and just
+
+00:02:35.380 --> 00:02:37.220 align:middle line:84%
+talking about what
+you can do if you
+
+00:02:37.220 --> 00:02:42.200 align:middle line:84%
+have a really good system for
+doing language generation,
+
+00:02:42.200 --> 00:02:44.820 align:middle line:84%
+doing next token
+prediction, and now, you
+
+00:02:44.820 --> 00:02:47.820 align:middle line:84%
+can imagine how to build such a
+system using some of the stuff
+
+00:02:47.820 --> 00:02:51.020 align:middle line:84%
+that you've been talking
+about in this class.
+
+00:02:51.020 --> 00:02:53.980 align:middle line:84%
+But I want to start,
+actually, by talking not about
+
+00:02:53.980 --> 00:02:57.530 align:middle line:84%
+language models based on
+neural networks, but much,
+
+00:02:57.530 --> 00:03:01.510 align:middle line:84%
+much earlier generation
+of tools like this in NLP
+
+00:03:01.510 --> 00:03:06.510 align:middle line:84%
+and machine learning, which were
+count-based language models.
+
+00:03:06.510 --> 00:03:09.430 align:middle line:84%
+Have you talked, I guess,
+even most basically,
+
+00:03:09.430 --> 00:03:12.470 align:middle line:84%
+about what a language model
+is or what I mean by that?
+
+00:03:12.470 --> 00:03:13.970 align:middle line:84%
+PHILLIP ISOLA: You
+should define it.
+
+00:03:13.970 --> 00:03:14.770 align:middle line:90%
+JACOB ANDREAS: OK, good.
+
+00:03:14.770 --> 00:03:16.350 align:middle line:84%
+So in general, the
+only thing that we
+
+00:03:16.350 --> 00:03:18.892 align:middle line:84%
+are going to be concerned with,
+really, for this entire class
+
+00:03:18.892 --> 00:03:26.350 align:middle line:84%
+today is a model that predicts
+some next word in a distribution
+
+00:03:26.350 --> 00:03:29.170 align:middle line:84%
+over-- or rather that
+takes in, I guess,
+
+00:03:29.170 --> 00:03:32.230 align:middle line:84%
+a sequence of words
+or tokens or however
+
+00:03:32.230 --> 00:03:34.510 align:middle line:84%
+you want to think
+of them as input
+
+00:03:34.510 --> 00:03:38.175 align:middle line:84%
+and places a distribution over
+possible next words as output.
+
+00:03:38.175 --> 00:03:40.050 align:middle line:84%
+And if you have the
+ability to do this right,
+
+00:03:40.050 --> 00:03:43.390 align:middle line:84%
+if you have the ability to see
+some sequence of input words
+
+00:03:43.390 --> 00:03:45.888 align:middle line:84%
+and get a distribution
+over words that come next,
+
+00:03:45.888 --> 00:03:47.430 align:middle line:84%
+via the chain rule,
+you can turn this
+
+00:03:47.430 --> 00:03:48.857 align:middle line:84%
+into a distribution
+over strings,
+
+00:03:48.857 --> 00:03:50.690 align:middle line:84%
+you can sample from it
+to generate language,
+
+00:03:50.690 --> 00:03:52.590 align:middle line:84%
+and you can do all
+kinds of other things.
+
+00:03:52.590 --> 00:03:55.040 align:middle line:84%
+And this basic
+question of, how do we
+
+00:03:55.040 --> 00:03:57.863 align:middle line:84%
+predict the next word, given a
+bunch of words that came before?
+
+00:03:57.863 --> 00:03:59.280 align:middle line:84%
+is something that
+people have been
+
+00:03:59.280 --> 00:04:01.400 align:middle line:84%
+thinking about in
+language processing
+
+00:04:01.400 --> 00:04:03.080 align:middle line:90%
+for a long, long time.
+
+00:04:03.080 --> 00:04:05.840 align:middle line:84%
+Really, dating all the way back
+to the end of the Second World
+
+00:04:05.840 --> 00:04:08.200 align:middle line:84%
+War, when people
+were trying to decode
+
+00:04:08.200 --> 00:04:10.300 align:middle line:84%
+the outputs of the
+German Enigma machines,
+
+00:04:10.300 --> 00:04:12.925 align:middle line:84%
+and they had these decipherment
+procedures that would give them
+
+00:04:12.925 --> 00:04:15.100 align:middle line:84%
+a bunch of candidate
+translations,
+
+00:04:15.100 --> 00:04:17.561 align:middle line:84%
+and you needed to figure out
+which one was most plausible.
+
+00:04:17.561 --> 00:04:19.519 align:middle line:84%
+And the best way to guess
+at that was basically
+
+00:04:19.519 --> 00:04:22.320 align:middle line:84%
+to say, well, how plausible
+is this particular decoding
+
+00:04:22.320 --> 00:04:26.240 align:middle line:84%
+that I've proposed to produce as
+a sequence of letters in German
+
+00:04:26.240 --> 00:04:29.217 align:middle line:84%
+or as a sequence of words in
+German or something like that?
+
+00:04:29.217 --> 00:04:30.800 align:middle line:84%
+And for a long time,
+the ways in which
+
+00:04:30.800 --> 00:04:32.800 align:middle line:84%
+people estimated
+these kinds of models
+
+00:04:32.800 --> 00:04:36.540 align:middle line:84%
+was just by getting big text
+corpora and counting, right?
+
+00:04:36.540 --> 00:04:39.360 align:middle line:84%
+So either just saying, well,
+let's ignore the context
+
+00:04:39.360 --> 00:04:42.533 align:middle line:84%
+and figure out what
+the probability--
+
+00:04:42.533 --> 00:04:44.200 align:middle line:84%
+if I give you a random
+chunk of English,
+
+00:04:44.200 --> 00:04:46.600 align:middle line:84%
+that some word is going to
+be "the" totally without any
+
+00:04:46.600 --> 00:04:47.180 align:middle line:90%
+context.
+
+00:04:47.180 --> 00:04:50.120 align:middle line:84%
+And if you sample from this, you
+get a naturalistic distribution
+
+00:04:50.120 --> 00:04:52.290 align:middle line:84%
+over individual words
+that doesn't cohere
+
+00:04:52.290 --> 00:04:54.330 align:middle line:90%
+into anything meaningful.
+
+00:04:54.330 --> 00:04:56.550 align:middle line:84%
+If you look at longer and
+longer contexts, you say,
+
+00:04:56.550 --> 00:05:02.295 align:middle line:84%
+suppose the last two words that
+I ever saw were "once upon,"
+
+00:05:02.295 --> 00:05:04.670 align:middle line:84%
+and I asked you to guess what
+word is going to come next.
+
+00:05:04.670 --> 00:05:09.410 align:middle line:84%
+What do you think is likely
+to happen after "once upon?"
+
+00:05:09.410 --> 00:05:09.910 align:middle line:90%
+OK.
+
+00:05:09.910 --> 00:05:11.485 align:middle line:84%
+So some people
+are saying "time."
+
+00:05:11.485 --> 00:05:12.610 align:middle line:90%
+Some people are saying "a."
+
+00:05:12.610 --> 00:05:15.050 align:middle line:84%
+Probably both of
+these things occur
+
+00:05:15.050 --> 00:05:17.190 align:middle line:84%
+with nontrivial probability
+in a big corpus.
+
+00:05:17.190 --> 00:05:19.010 align:middle line:84%
+If I just go out
+onto the internet,
+
+00:05:19.010 --> 00:05:22.690 align:middle line:84%
+and I count all the number of
+times that once upon occurs,
+
+00:05:22.690 --> 00:05:25.490 align:middle line:84%
+a lot of those are stories where
+people are saying, once upon a.
+
+00:05:25.490 --> 00:05:27.865 align:middle line:84%
+Some of those are typos where
+people have forgotten the a
+
+00:05:27.865 --> 00:05:28.910 align:middle line:90%
+and are saying time.
+
+00:05:28.910 --> 00:05:30.785 align:middle line:84%
+There's other stuff that
+can come next that's
+
+00:05:30.785 --> 00:05:32.007 align:middle line:90%
+licensed by English grammar.
+
+00:05:32.007 --> 00:05:33.590 align:middle line:84%
+And if you just count
+these things up,
+
+00:05:33.590 --> 00:05:35.110 align:middle line:84%
+you say, every
+sequence of four words,
+
+00:05:35.110 --> 00:05:37.485 align:middle line:84%
+what's the distribution over
+things that could come next?
+
+00:05:37.485 --> 00:05:40.730 align:middle line:84%
+You start to do a reasonably
+good job of generating text
+
+00:05:40.730 --> 00:05:44.370 align:middle line:84%
+that looks sort of
+like natural language.
+
+00:05:44.370 --> 00:05:48.310 align:middle line:84%
+And this is basically all
+that the field did from, say,
+
+00:05:48.310 --> 00:05:52.860 align:middle line:90%
+the '60s to the early 2000s.
+
+00:05:52.860 --> 00:05:55.560 align:middle line:84%
+And around the early 2000s,
+people started to say, well,
+
+00:05:55.560 --> 00:05:58.660 align:middle line:84%
+what happens if instead of just
+estimating this distribution
+
+00:05:58.660 --> 00:06:02.220 align:middle line:84%
+by counting words in a corpus,
+I actually approximated it with
+
+00:06:02.220 --> 00:06:04.900 align:middle line:84%
+a neural network model of the
+kind that you've seen throughout
+
+00:06:04.900 --> 00:06:05.940 align:middle line:90%
+this semester?
+
+00:06:05.940 --> 00:06:07.440 align:middle line:84%
+And it turns out
+then if you did it,
+
+00:06:07.440 --> 00:06:10.300 align:middle line:84%
+you did only a little
+bit better than just
+
+00:06:10.300 --> 00:06:13.277 align:middle line:84%
+these big count-based models at
+this next word prediction task.
+
+00:06:13.277 --> 00:06:14.860 align:middle line:84%
+So what we're looking
+at in this table
+
+00:06:14.860 --> 00:06:16.420 align:middle line:84%
+is a measure called
+perplexity, which
+
+00:06:16.420 --> 00:06:17.620 align:middle line:84%
+you can think of
+as just a measure
+
+00:06:17.620 --> 00:06:19.800 align:middle line:84%
+of the quality of a language
+model's predictions.
+
+00:06:19.800 --> 00:06:22.420 align:middle line:84%
+And you get a modest
+improvement in perplexity
+
+00:06:22.420 --> 00:06:24.740 align:middle line:84%
+by moving from classical
+count-based models
+
+00:06:24.740 --> 00:06:27.540 align:middle line:90%
+to neural network models.
+
+00:06:27.540 --> 00:06:31.280 align:middle line:84%
+And as our deep learning tool
+kit got better and better,
+
+00:06:31.280 --> 00:06:36.060 align:middle line:84%
+we were able to drive this
+number down a little bit more,
+
+00:06:36.060 --> 00:06:38.660 align:middle line:84%
+down to, I guess, the
+typical perplexity
+
+00:06:38.660 --> 00:06:41.540 align:middle line:90%
+on a corpus of 107 in a corpus.
+
+00:06:41.540 --> 00:06:43.260 align:middle line:84%
+And basically as--
+and hopefully,
+
+00:06:43.260 --> 00:06:45.980 align:middle line:84%
+these are models whose names are
+all familiar to you as a result
+
+00:06:45.980 --> 00:06:47.570 align:middle line:90%
+of being in this course.
+
+00:06:47.570 --> 00:06:50.050 align:middle line:84%
+As our basic machine learning
+technology got better,
+
+00:06:50.050 --> 00:06:53.270 align:middle line:84%
+our ability to do next word
+prediction on a fixed corpus
+
+00:06:53.270 --> 00:06:56.190 align:middle line:90%
+also got better.
+
+00:06:56.190 --> 00:06:59.270 align:middle line:84%
+And finally, right now, we live
+in the age of transformers,
+
+00:06:59.270 --> 00:07:02.070 align:middle line:84%
+and almost all
+models that we train
+
+00:07:02.070 --> 00:07:05.430 align:middle line:84%
+to do this next word prediction
+task in the modern era look
+
+00:07:05.430 --> 00:07:06.058 align:middle line:90%
+like this.
+
+00:07:06.058 --> 00:07:08.350 align:middle line:84%
+Now, one thing that I'm
+playing a little fast and loose
+
+00:07:08.350 --> 00:07:10.392 align:middle line:84%
+with here and that we'll
+come back to in a minute
+
+00:07:10.392 --> 00:07:13.990 align:middle line:84%
+is that I'm just showing you
+a bunch of numbers or model
+
+00:07:13.990 --> 00:07:16.150 align:middle line:84%
+architectures with
+numbers next to them.
+
+00:07:16.150 --> 00:07:18.550 align:middle line:84%
+But in fact, all
+of these things--
+
+00:07:18.550 --> 00:07:20.550 align:middle line:84%
+and especially once we
+talk about the difference
+
+00:07:20.550 --> 00:07:23.870 align:middle line:84%
+between GPT-2 and GPT-3 or some
+generic transformer language
+
+00:07:23.870 --> 00:07:26.310 align:middle line:84%
+model in GPT-2, we're
+talking about changes
+
+00:07:26.310 --> 00:07:28.750 align:middle line:84%
+in both the underlying
+neural network
+
+00:07:28.750 --> 00:07:30.750 align:middle line:84%
+that we're using to do
+the prediction and also
+
+00:07:30.750 --> 00:07:32.977 align:middle line:84%
+the scale of the data
+that we are training on.
+
+00:07:32.977 --> 00:07:35.310 align:middle line:84%
+And so obviously, the other
+big thing that has happened,
+
+00:07:35.310 --> 00:07:37.560 align:middle line:84%
+and that you're seeing as
+these numbers are going down
+
+00:07:37.560 --> 00:07:41.655 align:middle line:84%
+on this chart, is that
+between 2000 and 2020,
+
+00:07:41.655 --> 00:07:43.030 align:middle line:84%
+we've developed
+technologies that
+
+00:07:43.030 --> 00:07:45.880 align:middle line:84%
+allow us to train just much,
+much larger versions of all
+
+00:07:45.880 --> 00:07:48.400 align:middle line:84%
+of these models on larger
+and larger data sets
+
+00:07:48.400 --> 00:07:50.280 align:middle line:90%
+with more and more parameters.
+
+00:07:50.280 --> 00:07:53.080 align:middle line:84%
+And these two things together--
+better prediction machinery
+
+00:07:53.080 --> 00:07:54.760 align:middle line:84%
+and larger data
+sets-- are really
+
+00:07:54.760 --> 00:07:59.320 align:middle line:84%
+what are contributing to this
+improvement in prediction.
+
+00:07:59.320 --> 00:08:03.600 align:middle line:84%
+That being said, it is
+possible, even in this paradigm
+
+00:08:03.600 --> 00:08:05.160 align:middle line:84%
+that we were talking
+about before,
+
+00:08:05.160 --> 00:08:06.625 align:middle line:90%
+to have a large language model.
+
+00:08:06.625 --> 00:08:08.000 align:middle line:84%
+So this, I think,
+is actually one
+
+00:08:08.000 --> 00:08:10.375 align:middle line:84%
+of probably one of the first
+references to large language
+
+00:08:10.375 --> 00:08:13.880 align:middle line:84%
+models in the machine
+translation literature.
+
+00:08:13.880 --> 00:08:17.400 align:middle line:84%
+It refers to training a
+model on two trillion tokens
+
+00:08:17.400 --> 00:08:19.237 align:middle line:90%
+with 300 billion parameters.
+
+00:08:19.237 --> 00:08:21.320 align:middle line:84%
+And you can see that these
+parameters are actually
+
+00:08:21.320 --> 00:08:22.960 align:middle line:90%
+n-gram counts.
+
+00:08:22.960 --> 00:08:25.780 align:middle line:84%
+What year do we think
+this paper is from?
+
+00:08:25.780 --> 00:08:30.940 align:middle line:90%
+
+
+00:08:30.940 --> 00:08:31.440 align:middle line:90%
+Yeah.
+
+00:08:31.440 --> 00:08:32.200 align:middle line:90%
+AUDIENCE: 1995.
+
+00:08:32.200 --> 00:08:33.340 align:middle line:90%
+JACOB ANDREAS: 1995.
+
+00:08:33.340 --> 00:08:37.100 align:middle line:84%
+So not quite that
+bad, but early 2000s.
+
+00:08:37.100 --> 00:08:41.039 align:middle line:84%
+So really, long before these
+things were in widespread use
+
+00:08:41.039 --> 00:08:41.960 align:middle line:90%
+for--
+
+00:08:41.960 --> 00:08:45.410 align:middle line:84%
+or in the context of
+deep learning models,
+
+00:08:45.410 --> 00:08:48.610 align:middle line:84%
+people were training very,
+very, very large language models
+
+00:08:48.610 --> 00:08:54.490 align:middle line:84%
+on large data sets with
+lots of parameters.
+
+00:08:54.490 --> 00:08:57.490 align:middle line:84%
+And I think the main point
+that I'm trying to make here
+
+00:08:57.490 --> 00:08:59.250 align:middle line:84%
+is that those models
+were typically not
+
+00:08:59.250 --> 00:09:01.790 align:middle line:84%
+nearly as good as the neural
+models that we see today.
+
+00:09:01.790 --> 00:09:07.270 align:middle line:84%
+So I think there's a habit
+of talking that people have,
+
+00:09:07.270 --> 00:09:11.050 align:middle line:84%
+especially now, suggesting
+that, really, more
+
+00:09:11.050 --> 00:09:13.592 align:middle line:84%
+data and the ability to train
+larger and larger models
+
+00:09:13.592 --> 00:09:16.050 align:middle line:84%
+is the only thing that matters
+and is the only thing that's
+
+00:09:16.050 --> 00:09:18.433 align:middle line:84%
+kind of driving
+success in AI today.
+
+00:09:18.433 --> 00:09:20.850 align:middle line:84%
+And in fact, I think you should
+take this as some evidence
+
+00:09:20.850 --> 00:09:22.642 align:middle line:84%
+to the contrary, that
+we have been training
+
+00:09:22.642 --> 00:09:26.150 align:middle line:84%
+models with as many parameters,
+as many data points,
+
+00:09:26.150 --> 00:09:28.770 align:middle line:84%
+as many of the largest language
+models that we had today,
+
+00:09:28.770 --> 00:09:30.550 align:middle line:84%
+and they weren't as good as
+the ones that we have today.
+
+00:09:30.550 --> 00:09:33.170 align:middle line:84%
+And there really is something
+special about the inductive bias
+
+00:09:33.170 --> 00:09:36.367 align:middle line:84%
+that you get from
+neural sequence models
+
+00:09:36.367 --> 00:09:38.950 align:middle line:84%
+that we didn't get in previous
+generations of language models.
+
+00:09:38.950 --> 00:09:42.700 align:middle line:84%
+And we'll see some concrete
+examples of that momentarily.
+
+00:09:42.700 --> 00:09:45.540 align:middle line:84%
+So just to say this
+very explicitly,
+
+00:09:45.540 --> 00:09:47.980 align:middle line:84%
+even though we talk
+about parameter counts
+
+00:09:47.980 --> 00:09:50.158 align:middle line:84%
+as being fungible
+today, in fact,
+
+00:09:50.158 --> 00:09:51.700 align:middle line:84%
+there is a lot of
+historical evidence
+
+00:09:51.700 --> 00:09:53.660 align:middle line:84%
+that how you use
+those parameters,
+
+00:09:53.660 --> 00:09:56.020 align:middle line:84%
+specific architectural
+choices, actually
+
+00:09:56.020 --> 00:09:59.820 align:middle line:90%
+are quite consequential.
+
+00:09:59.820 --> 00:10:03.020 align:middle line:84%
+So to go, again, very
+briefly through the history
+
+00:10:03.020 --> 00:10:07.100 align:middle line:84%
+of the field, between, say,
+1970 and 2014, a long stretch
+
+00:10:07.100 --> 00:10:09.100 align:middle line:84%
+of time, people
+were not typically
+
+00:10:09.100 --> 00:10:11.620 align:middle line:84%
+interested in these
+kinds of models
+
+00:10:11.620 --> 00:10:14.140 align:middle line:90%
+as tools in their own right.
+
+00:10:14.140 --> 00:10:16.740 align:middle line:84%
+Really, it was typical to
+have some larger pipeline
+
+00:10:16.740 --> 00:10:19.020 align:middle line:84%
+system, an automated
+speech recognition
+
+00:10:19.020 --> 00:10:21.460 align:middle line:84%
+system, or an automatic
+machine translation
+
+00:10:21.460 --> 00:10:24.940 align:middle line:84%
+system, that was generating
+a bunch of candidate outputs.
+
+00:10:24.940 --> 00:10:27.460 align:middle line:84%
+And what you wanted to do
+with a language model was just
+
+00:10:27.460 --> 00:10:29.340 align:middle line:84%
+rerank those outputs,
+to say, of all
+
+00:10:29.340 --> 00:10:31.700 align:middle line:84%
+of the possible transcriptions
+of this sentence
+
+00:10:31.700 --> 00:10:33.660 align:middle line:84%
+that I just heard,
+is it more plausible
+
+00:10:33.660 --> 00:10:36.500 align:middle line:84%
+that a person said they wanted
+to recognize speech or wreck
+
+00:10:36.500 --> 00:10:37.740 align:middle line:90%
+a nice beach?
+
+00:10:37.740 --> 00:10:42.620 align:middle line:84%
+Or in translation, do all the
+genders and numbers and things
+
+00:10:42.620 --> 00:10:44.900 align:middle line:84%
+line up in a way that
+our machine translations
+
+00:10:44.900 --> 00:10:48.020 align:middle line:84%
+systems, which are not
+that great at the time,
+
+00:10:48.020 --> 00:10:49.442 align:middle line:84%
+weren't all that
+good at handling?
+
+00:10:49.442 --> 00:10:50.900 align:middle line:84%
+And so for a long
+time, people were
+
+00:10:50.900 --> 00:10:53.220 align:middle line:84%
+interested in language models,
+really, just as measures
+
+00:10:53.220 --> 00:10:55.580 align:middle line:84%
+of linguistic
+well-formedness that you
+
+00:10:55.580 --> 00:10:58.660 align:middle line:84%
+could tack onto the
+end of some other NLP
+
+00:10:58.660 --> 00:11:00.900 align:middle line:84%
+model that was being
+custom trained to perform
+
+00:11:00.900 --> 00:11:03.220 align:middle line:90%
+some specific task.
+
+00:11:03.220 --> 00:11:07.460 align:middle line:84%
+And what really
+shifted around 2014
+
+00:11:07.460 --> 00:11:10.020 align:middle line:84%
+was that people started to
+realize that you could just
+
+00:11:10.020 --> 00:11:12.300 align:middle line:84%
+take these language
+models and get
+
+00:11:12.300 --> 00:11:14.600 align:middle line:84%
+them to perform the task
+of interest on their own.
+
+00:11:14.600 --> 00:11:16.740 align:middle line:84%
+So rather than saying, I'm going
+to train a machine translation
+
+00:11:16.740 --> 00:11:18.532 align:middle line:84%
+system, I'm going to
+train something that's
+
+00:11:18.532 --> 00:11:20.120 align:middle line:84%
+good at recognizing
+English sentences,
+
+00:11:20.120 --> 00:11:22.040 align:middle line:84%
+and then I'm just going
+to combine them together,
+
+00:11:22.040 --> 00:11:23.457 align:middle line:84%
+people said, well,
+what if we just
+
+00:11:23.457 --> 00:11:27.500 align:middle line:84%
+pose machine translation
+the problem of taking
+
+00:11:27.500 --> 00:11:29.780 align:middle line:84%
+a French sentence as input,
+say, and translating it
+
+00:11:29.780 --> 00:11:31.563 align:middle line:84%
+into an English
+sentence as output?
+
+00:11:31.563 --> 00:11:32.980 align:middle line:84%
+What would happen
+if we just posed
+
+00:11:32.980 --> 00:11:36.120 align:middle line:84%
+that as a next word prediction
+problem of the same kind where
+
+00:11:36.120 --> 00:11:39.073 align:middle line:84%
+maybe these two words
+are two words in French,
+
+00:11:39.073 --> 00:11:40.990 align:middle line:84%
+this is the first word
+of the English sentence
+
+00:11:40.990 --> 00:11:42.365 align:middle line:84%
+that you've
+generated, and you're
+
+00:11:42.365 --> 00:11:45.110 align:middle line:84%
+trying to guess the next word
+of the English sentence as well?
+
+00:11:45.110 --> 00:11:47.750 align:middle line:84%
+And so starting
+around 2014, people
+
+00:11:47.750 --> 00:11:49.910 align:middle line:84%
+started to take this basic
+language model machinery
+
+00:11:49.910 --> 00:11:54.630 align:middle line:84%
+that we'd built up and use it to
+do sequence generation instead.
+
+00:11:54.630 --> 00:11:56.670 align:middle line:84%
+And in parallel with
+that, our sequence models
+
+00:11:56.670 --> 00:11:58.390 align:middle line:84%
+themselves were
+getting a lot better.
+
+00:11:58.390 --> 00:12:03.230 align:middle line:84%
+We invented things
+like the transformers.
+
+00:12:03.230 --> 00:12:06.470 align:middle line:84%
+And then what's really
+changed since 2017
+
+00:12:06.470 --> 00:12:10.050 align:middle line:84%
+has less to do with the actual
+models that we're training,
+
+00:12:10.050 --> 00:12:12.590 align:middle line:84%
+and more to do with the
+procedures by which we are
+
+00:12:12.590 --> 00:12:13.970 align:middle line:90%
+actually training these models.
+
+00:12:13.970 --> 00:12:19.630 align:middle line:84%
+So over here, it was
+pretty typical to say,
+
+00:12:19.630 --> 00:12:21.150 align:middle line:84%
+I have my machine
+translation data
+
+00:12:21.150 --> 00:12:23.670 align:middle line:84%
+set or my speech recognition
+data set or whatever.
+
+00:12:23.670 --> 00:12:25.450 align:middle line:84%
+I'm going to randomly
+initialize my model.
+
+00:12:25.450 --> 00:12:27.850 align:middle line:84%
+I'm going to train it just
+on this data set of interest.
+
+00:12:27.850 --> 00:12:29.110 align:middle line:84%
+And what I'll have
+out at the end
+
+00:12:29.110 --> 00:12:30.610 align:middle line:84%
+is a really good
+machine translation
+
+00:12:30.610 --> 00:12:33.150 align:middle line:90%
+system and maybe nothing else.
+
+00:12:33.150 --> 00:12:36.300 align:middle line:84%
+And what people realize starting
+around 2017-- although, again,
+
+00:12:36.300 --> 00:12:38.920 align:middle line:84%
+this was an idea that had been
+floating around in the machine
+
+00:12:38.920 --> 00:12:41.360 align:middle line:84%
+learning literature
+for a long time--
+
+00:12:41.360 --> 00:12:46.480 align:middle line:84%
+was that you could get
+nontrivial transfer effects
+
+00:12:46.480 --> 00:12:47.900 align:middle line:90%
+between different tasks.
+
+00:12:47.900 --> 00:12:51.320 align:middle line:84%
+So you could, for example,
+start by training a model just
+
+00:12:51.320 --> 00:12:53.540 align:middle line:84%
+to do next word prediction
+on a big data set,
+
+00:12:53.540 --> 00:12:55.200 align:middle line:84%
+and then fine-tune
+that model to do
+
+00:12:55.200 --> 00:12:57.120 align:middle line:84%
+some specific task of
+interest, like machine
+
+00:12:57.120 --> 00:13:00.760 align:middle line:84%
+translation or speech
+recognition or whatever,
+
+00:13:00.760 --> 00:13:02.560 align:middle line:84%
+and that this was
+a way to get away
+
+00:13:02.560 --> 00:13:06.480 align:middle line:84%
+with much, much less data for
+any specific downstream task
+
+00:13:06.480 --> 00:13:08.200 align:middle line:90%
+of interest.
+
+00:13:08.200 --> 00:13:10.540 align:middle line:84%
+And finally, the era
+that we live in now,
+
+00:13:10.540 --> 00:13:13.840 align:middle line:84%
+which we might call the era
+of pretraining and prompting,
+
+00:13:13.840 --> 00:13:16.280 align:middle line:84%
+doesn't even go through
+any of downstream task data
+
+00:13:16.280 --> 00:13:18.660 align:middle line:84%
+at all, or very little, and
+basically just says, well,
+
+00:13:18.660 --> 00:13:21.960 align:middle line:84%
+if I have a really, really
+good, really general purpose
+
+00:13:21.960 --> 00:13:23.508 align:middle line:84%
+next word prediction
+system, what
+
+00:13:23.508 --> 00:13:25.800 align:middle line:84%
+are all the things that I
+can do with it without having
+
+00:13:25.800 --> 00:13:28.000 align:middle line:84%
+to ever even touch the
+parameters again or make
+
+00:13:28.000 --> 00:13:29.720 align:middle line:90%
+only very small changes?
+
+00:13:29.720 --> 00:13:32.840 align:middle line:84%
+And so this is the high
+level overview of the field,
+
+00:13:32.840 --> 00:13:35.730 align:middle line:84%
+or maybe the history of the
+field for the last 10 years
+
+00:13:35.730 --> 00:13:36.478 align:middle line:90%
+or so.
+
+00:13:36.478 --> 00:13:38.770 align:middle line:84%
+And we're going to talk now
+in a little bit more detail
+
+00:13:38.770 --> 00:13:41.610 align:middle line:84%
+about each of the
+pieces of this,
+
+00:13:41.610 --> 00:13:48.130 align:middle line:84%
+really focusing on the
+second two stages here.
+
+00:13:48.130 --> 00:13:49.010 align:middle line:90%
+OK.
+
+00:13:49.010 --> 00:13:52.730 align:middle line:84%
+So what does it look
+like, especially
+
+00:13:52.730 --> 00:13:58.010 align:middle line:84%
+to operate in this kind of
+pretrain and transfer mode?
+
+00:13:58.010 --> 00:14:01.810 align:middle line:84%
+And the thing that people
+typically did for a long time
+
+00:14:01.810 --> 00:14:04.610 align:middle line:84%
+was actually not quite
+this language modeling task
+
+00:14:04.610 --> 00:14:07.250 align:middle line:84%
+that we've been looking at here,
+but something that was called
+
+00:14:07.250 --> 00:14:08.430 align:middle line:90%
+masked language modeling.
+
+00:14:08.430 --> 00:14:10.090 align:middle line:84%
+And I imagine you've
+seen something
+
+00:14:10.090 --> 00:14:12.850 align:middle line:84%
+like this in different
+flavors for vision tasks,
+
+00:14:12.850 --> 00:14:13.795 align:middle line:90%
+if not language tasks.
+
+00:14:13.795 --> 00:14:15.170 align:middle line:84%
+But the basic task
+is we're going
+
+00:14:15.170 --> 00:14:16.610 align:middle line:84%
+to take some text
+as input, we're
+
+00:14:16.610 --> 00:14:18.510 align:middle line:84%
+going to hide some
+words from this text,
+
+00:14:18.510 --> 00:14:20.927 align:middle line:84%
+and we're going to ask a model
+to predict what the missing
+
+00:14:20.927 --> 00:14:23.570 align:middle line:84%
+words were in that text,
+given all of the context that
+
+00:14:23.570 --> 00:14:25.030 align:middle line:90%
+showed up around it.
+
+00:14:25.030 --> 00:14:26.530 align:middle line:84%
+And what's nice
+about this objective
+
+00:14:26.530 --> 00:14:28.330 align:middle line:84%
+is that you can do
+it without needing
+
+00:14:28.330 --> 00:14:30.170 align:middle line:90%
+any labeled task-specific data.
+
+00:14:30.170 --> 00:14:33.100 align:middle line:84%
+You just get all the texts
+that you can get your hands on.
+
+00:14:33.100 --> 00:14:35.200 align:middle line:84%
+You train a model to
+perform this task,
+
+00:14:35.200 --> 00:14:37.500 align:middle line:84%
+and you have a
+model now that's--
+
+00:14:37.500 --> 00:14:40.980 align:middle line:84%
+maybe you can set some of
+specific classification problems
+
+00:14:40.980 --> 00:14:44.072 align:middle line:84%
+or whatever up as these
+mass prediction tasks.
+
+00:14:44.072 --> 00:14:45.780 align:middle line:84%
+But really, for the
+most part, this model
+
+00:14:45.780 --> 00:14:50.352 align:middle line:84%
+is not useful for
+anything in particular.
+
+00:14:50.352 --> 00:14:52.060 align:middle line:84%
+What it does know--
+and for reasons we're
+
+00:14:52.060 --> 00:14:53.380 align:middle line:84%
+going to look at
+in a minute-- is
+
+00:14:53.380 --> 00:14:54.963 align:middle line:84%
+a lot about the
+structure of language,
+
+00:14:54.963 --> 00:14:57.180 align:middle line:84%
+a lot about the meaning
+of language in a way
+
+00:14:57.180 --> 00:14:58.820 align:middle line:84%
+that makes its
+representations very
+
+00:14:58.820 --> 00:15:00.200 align:middle line:90%
+useful for downstream tasks.
+
+00:15:00.200 --> 00:15:05.245 align:middle line:84%
+And so typically, what we
+would do after pretraining on
+
+00:15:05.245 --> 00:15:06.620 align:middle line:84%
+as much text data
+as we could get
+
+00:15:06.620 --> 00:15:09.780 align:middle line:84%
+our hands on with this masked
+language modeling objective,
+
+00:15:09.780 --> 00:15:12.840 align:middle line:84%
+we would then -tune this
+model just using, say,
+
+00:15:12.840 --> 00:15:15.220 align:middle line:84%
+one hidden representation
+from one last layer
+
+00:15:15.220 --> 00:15:17.900 align:middle line:84%
+to do whatever downstream thing
+it was that we were trying
+
+00:15:17.900 --> 00:15:23.500 align:middle line:84%
+to do, whether that's sentiment
+classification or whatever else.
+
+00:15:23.500 --> 00:15:25.380 align:middle line:84%
+And this was an incredibly
+effective paradigm
+
+00:15:25.380 --> 00:15:26.600 align:middle line:90%
+when it first came out.
+
+00:15:26.600 --> 00:15:28.820 align:middle line:90%
+And I think I really want to--
+
+00:15:28.820 --> 00:15:32.290 align:middle line:84%
+it's easy with the
+benefit of hindsight
+
+00:15:32.290 --> 00:15:35.750 align:middle line:84%
+to forget about what a big
+deal this basic paradigm
+
+00:15:35.750 --> 00:15:36.850 align:middle line:90%
+was when it happened.
+
+00:15:36.850 --> 00:15:42.150 align:middle line:84%
+And I think even if you had
+gone to, say, NLP conferences
+
+00:15:42.150 --> 00:15:45.095 align:middle line:84%
+for a couple of years before
+this BERT paper came out,
+
+00:15:45.095 --> 00:15:46.470 align:middle line:84%
+which was one of
+the first papers
+
+00:15:46.470 --> 00:15:49.030 align:middle line:84%
+to really show
+large scale transfer
+
+00:15:49.030 --> 00:15:51.415 align:middle line:84%
+effects from pretraining
+on language modeling,
+
+00:15:51.415 --> 00:15:52.790 align:middle line:84%
+people would have
+said, oh, yeah.
+
+00:15:52.790 --> 00:15:54.590 align:middle line:84%
+This next word
+prediction task, it
+
+00:15:54.590 --> 00:15:57.070 align:middle line:84%
+seems in principle like it
+should be the right pretraining
+
+00:15:57.070 --> 00:15:57.570 align:middle line:90%
+task.
+
+00:15:57.570 --> 00:16:00.510 align:middle line:84%
+There was a lot of interest
+at the time in just learning
+
+00:16:00.510 --> 00:16:04.630 align:middle line:84%
+word embeddings at the very
+inputs to these systems,
+
+00:16:04.630 --> 00:16:06.682 align:middle line:84%
+and evidence that you
+could get good transfer
+
+00:16:06.682 --> 00:16:08.390 align:middle line:84%
+effects from those,
+but nobody had really
+
+00:16:08.390 --> 00:16:12.808 align:middle line:84%
+managed to crack the recipe for
+getting pretraining to work.
+
+00:16:12.808 --> 00:16:15.350 align:middle line:84%
+And around the same time, this
+BERT paper-- and another paper
+
+00:16:15.350 --> 00:16:17.950 align:middle line:84%
+called ELMo, which was actually
+a little bit earlier than it
+
+00:16:17.950 --> 00:16:21.710 align:middle line:84%
+and used RNN language
+models-- showed that you could
+
+00:16:21.710 --> 00:16:25.990 align:middle line:84%
+train at a very large scale on
+this masked language modeling
+
+00:16:25.990 --> 00:16:27.960 align:middle line:84%
+objective and then
+fine-tune at a very
+
+00:16:27.960 --> 00:16:31.300 align:middle line:84%
+small scale on various
+other kinds of tasks.
+
+00:16:31.300 --> 00:16:34.760 align:middle line:84%
+These are mostly sentence
+classification tasks,
+
+00:16:34.760 --> 00:16:38.400 align:middle line:84%
+lexical entailment, or, I
+guess, logical entailment,
+
+00:16:38.400 --> 00:16:42.800 align:middle line:84%
+sentiment, various things
+like that, and do very well.
+
+00:16:42.800 --> 00:16:44.080 align:middle line:90%
+So why does it work?
+
+00:16:44.080 --> 00:16:46.640 align:middle line:84%
+Why is it that we
+can train a model
+
+00:16:46.640 --> 00:16:51.793 align:middle line:84%
+to do this weird nuisance
+masked word prediction task
+
+00:16:51.793 --> 00:16:53.960 align:middle line:84%
+and wind up with the ability
+to do all of these more
+
+00:16:53.960 --> 00:16:56.080 align:middle line:90%
+complicated NLP things?
+
+00:16:56.080 --> 00:16:59.697 align:middle line:84%
+And I think the main
+intuition that now, maybe,
+
+00:16:59.697 --> 00:17:01.280 align:middle line:84%
+is pretty commonplace,
+but again, was,
+
+00:17:01.280 --> 00:17:04.160 align:middle line:84%
+I think, surprising to a
+lot of people at the time,
+
+00:17:04.160 --> 00:17:07.640 align:middle line:84%
+is that doing a really,
+really good job of even
+
+00:17:07.640 --> 00:17:10.760 align:middle line:84%
+this simple task of
+predicting words in context
+
+00:17:10.760 --> 00:17:13.260 align:middle line:84%
+requires both a huge amount of
+linguistic knowledge-- right?
+
+00:17:13.260 --> 00:17:17.119 align:middle line:84%
+It requires knowing that what's
+going to come after was probably
+
+00:17:17.119 --> 00:17:19.780 align:middle line:90%
+needs to be a past tense verb.
+
+00:17:19.780 --> 00:17:23.880 align:middle line:84%
+It probably needs to
+agree with the word MIT
+
+00:17:23.880 --> 00:17:25.140 align:middle line:90%
+and so on and so forth.
+
+00:17:25.140 --> 00:17:27.813 align:middle line:84%
+And you need a lot of
+knowledge about the world.
+
+00:17:27.813 --> 00:17:29.730 align:middle line:84%
+If you really want to
+do a good job of filling
+
+00:17:29.730 --> 00:17:31.530 align:middle line:84%
+in holes in the
+sentence, you actually
+
+00:17:31.530 --> 00:17:35.030 align:middle line:84%
+need to memorize contingent
+facts about history,
+
+00:17:35.030 --> 00:17:38.890 align:middle line:84%
+like the fact that MIT
+was founded in 1861.
+
+00:17:38.890 --> 00:17:44.650 align:middle line:84%
+And by training on, again,
+all of the text with all
+
+00:17:44.650 --> 00:17:47.170 align:middle line:84%
+of the facts expressed in it,
+we would wind up with models
+
+00:17:47.170 --> 00:17:48.890 align:middle line:84%
+that actually embodied
+a lot of that knowledge
+
+00:17:48.890 --> 00:17:50.432 align:middle line:84%
+in their internal
+parameters and that
+
+00:17:50.432 --> 00:17:54.690 align:middle line:84%
+could be accessed very
+easily via fine-tuning.
+
+00:17:54.690 --> 00:17:55.330 align:middle line:90%
+OK.
+
+00:17:55.330 --> 00:17:59.250 align:middle line:84%
+One thing that you do not get
+out of this masked language
+
+00:17:59.250 --> 00:18:01.900 align:middle line:84%
+modeling paradigm
+is a model that
+
+00:18:01.900 --> 00:18:03.650 align:middle line:84%
+looks like this, a
+model that can actually
+
+00:18:03.650 --> 00:18:05.608 align:middle line:84%
+generate the next word
+at the end of a sentence
+
+00:18:05.608 --> 00:18:08.210 align:middle line:84%
+given everything
+that came before.
+
+00:18:08.210 --> 00:18:10.330 align:middle line:84%
+And the reason for
+that is that the way
+
+00:18:10.330 --> 00:18:12.650 align:middle line:84%
+we set up the inputs to these
+masked language modeling
+
+00:18:12.650 --> 00:18:16.290 align:middle line:84%
+problems, the model already
+knows exactly how many words
+
+00:18:16.290 --> 00:18:18.210 align:middle line:90%
+are going to be in a sentence.
+
+00:18:18.210 --> 00:18:20.850 align:middle line:84%
+It's been trained in such a way
+that, often, the missing words
+
+00:18:20.850 --> 00:18:22.267 align:middle line:84%
+come in the middle
+of the sentence
+
+00:18:22.267 --> 00:18:24.340 align:middle line:84%
+rather than at the
+end of the sentence.
+
+00:18:24.340 --> 00:18:26.460 align:middle line:84%
+And so while you get good
+representations, what
+
+00:18:26.460 --> 00:18:29.500 align:middle line:84%
+you didn't get out of any of
+these bidirectional transformer
+
+00:18:29.500 --> 00:18:31.460 align:middle line:84%
+models was something
+that you could actually
+
+00:18:31.460 --> 00:18:33.580 align:middle line:90%
+use to do text generation.
+
+00:18:33.580 --> 00:18:35.580 align:middle line:84%
+And so if we wanted to
+use these representations
+
+00:18:35.580 --> 00:18:39.020 align:middle line:84%
+for doing things like machine
+translation or summarization
+
+00:18:39.020 --> 00:18:42.020 align:middle line:84%
+or any other task where there
+was going to be textual output,
+
+00:18:42.020 --> 00:18:43.780 align:middle line:84%
+typically, that second
+stage, the thing
+
+00:18:43.780 --> 00:18:46.060 align:middle line:84%
+that was doing the
+text generation itself,
+
+00:18:46.060 --> 00:18:50.180 align:middle line:84%
+had then to be
+trained from scratch.
+
+00:18:50.180 --> 00:18:52.780 align:middle line:84%
+So what would it take
+to go from this kind
+
+00:18:52.780 --> 00:18:54.808 align:middle line:84%
+of pretraining
+paradigm-- or, I guess,
+
+00:18:54.808 --> 00:18:57.100 align:middle line:84%
+this kind of pretraining
+paradigm, this masked language
+
+00:18:57.100 --> 00:18:59.517 align:middle line:84%
+modeling paradigm, to something
+that we could actually use
+
+00:18:59.517 --> 00:19:04.860 align:middle line:90%
+to do text generation as well?
+
+00:19:04.860 --> 00:19:09.020 align:middle line:84%
+And I think the main thing
+that changed originally
+
+00:19:09.020 --> 00:19:11.140 align:middle line:90%
+was just that people said, OK.
+
+00:19:11.140 --> 00:19:13.700 align:middle line:84%
+This pretraining thing,
+this masked language--
+
+00:19:13.700 --> 00:19:17.060 align:middle line:84%
+this pretraining thing
+seems very effective.
+
+00:19:17.060 --> 00:19:20.240 align:middle line:84%
+We already have models that can
+do conditional text generation.
+
+00:19:20.240 --> 00:19:23.030 align:middle line:84%
+We already have models that
+look like this and that have not
+
+00:19:23.030 --> 00:19:24.610 align:middle line:84%
+been pretrained in
+a very large way
+
+00:19:24.610 --> 00:19:26.590 align:middle line:84%
+and that predict the
+next word in a sequence.
+
+00:19:26.590 --> 00:19:30.100 align:middle line:84%
+Let's just figure out
+which one comes next.
+
+00:19:30.100 --> 00:19:32.350 align:middle line:84%
+Why not just do both of these
+things at the same time?
+
+00:19:32.350 --> 00:19:35.470 align:middle line:84%
+Rather than training
+conditional language models
+
+00:19:35.470 --> 00:19:38.350 align:middle line:84%
+to output translations
+or summaries
+
+00:19:38.350 --> 00:19:41.470 align:middle line:84%
+or whatever, go back, really,
+to the paradigm that people
+
+00:19:41.470 --> 00:19:46.170 align:middle line:84%
+were using all the way back in
+the pipeline days and just say,
+
+00:19:46.170 --> 00:19:49.270 align:middle line:84%
+give me a really, really good
+model of all English sentences
+
+00:19:49.270 --> 00:19:52.110 align:middle line:84%
+or all sentences in all
+natural languages that's
+
+00:19:52.110 --> 00:19:56.670 align:middle line:84%
+not specialized to any
+particular kind of task.
+
+00:19:56.670 --> 00:19:59.710 align:middle line:84%
+And originally, people did
+this in basically the same--
+
+00:19:59.710 --> 00:20:02.430 align:middle line:84%
+or used these models in
+basically the same way
+
+00:20:02.430 --> 00:20:03.770 align:middle line:90%
+as they use these BERT models.
+
+00:20:03.770 --> 00:20:06.070 align:middle line:84%
+You could get representations
+out of these things
+
+00:20:06.070 --> 00:20:08.910 align:middle line:84%
+that you could plug into
+a downstream classifier.
+
+00:20:08.910 --> 00:20:11.350 align:middle line:84%
+You would, of course,
+also be able to fine-tune
+
+00:20:11.350 --> 00:20:14.110 align:middle line:84%
+these models to then
+perform targeted generation
+
+00:20:14.110 --> 00:20:17.390 align:middle line:84%
+tasks, again, using
+translation and summarization
+
+00:20:17.390 --> 00:20:19.200 align:middle line:90%
+as the canonical examples.
+
+00:20:19.200 --> 00:20:22.760 align:middle line:84%
+And this was really the
+paradigm that we operated in
+
+00:20:22.760 --> 00:20:25.680 align:middle line:84%
+for a long time, and
+people just kept doing this
+
+00:20:25.680 --> 00:20:27.480 align:middle line:84%
+with larger and
+larger and larger
+
+00:20:27.480 --> 00:20:31.640 align:middle line:84%
+models, more data,
+more parameters.
+
+00:20:31.640 --> 00:20:32.140 align:middle line:90%
+Yeah.
+
+00:20:32.140 --> 00:20:33.920 align:middle line:84%
+I guess these dots
+are all labeled
+
+00:20:33.920 --> 00:20:39.100 align:middle line:84%
+with the logos of large
+industry companies
+
+00:20:39.100 --> 00:20:42.280 align:middle line:84%
+because this was the last year
+that academic labs were really
+
+00:20:42.280 --> 00:20:43.740 align:middle line:90%
+playing this game on their own.
+
+00:20:43.740 --> 00:20:46.120 align:middle line:84%
+And thereafter, most
+of what we've seen
+
+00:20:46.120 --> 00:20:49.960 align:middle line:84%
+has been various
+large scale models
+
+00:20:49.960 --> 00:20:52.540 align:middle line:84%
+trained to do just this
+next word prediction task.
+
+00:20:52.540 --> 00:20:56.160 align:middle line:90%
+
+
+00:20:56.160 --> 00:20:57.380 align:middle line:90%
+Questions up to this point?
+
+00:20:57.380 --> 00:20:59.120 align:middle line:84%
+I should say, also, feel
+free to interrupt or raise
+
+00:20:59.120 --> 00:21:00.120 align:middle line:90%
+your hands or whatever.
+
+00:21:00.120 --> 00:21:02.360 align:middle line:90%
+We can keep this interactive.
+
+00:21:02.360 --> 00:21:03.440 align:middle line:90%
+OK.
+
+00:21:03.440 --> 00:21:04.600 align:middle line:90%
+Cool.
+
+00:21:04.600 --> 00:21:07.723 align:middle line:84%
+And so again, for,
+I would say, most
+
+00:21:07.723 --> 00:21:09.640 align:middle line:84%
+of the models that we're
+showing on this slide
+
+00:21:09.640 --> 00:21:12.840 align:middle line:84%
+right now, the main things that
+people were doing with them
+
+00:21:12.840 --> 00:21:14.800 align:middle line:84%
+were using them
+as starting points
+
+00:21:14.800 --> 00:21:17.890 align:middle line:84%
+for downstream fine-tuning or
+for pulling representations out
+
+00:21:17.890 --> 00:21:19.570 align:middle line:90%
+of or whatever.
+
+00:21:19.570 --> 00:21:22.033 align:middle line:90%
+But then something changed.
+
+00:21:22.033 --> 00:21:23.450 align:middle line:84%
+And what changed
+is people started
+
+00:21:23.450 --> 00:21:24.825 align:middle line:84%
+to notice that
+you could actually
+
+00:21:24.825 --> 00:21:28.410 align:middle line:84%
+get these models to do some
+fairly surprising things
+
+00:21:28.410 --> 00:21:30.390 align:middle line:84%
+without doing any
+additional fine-tuning,
+
+00:21:30.390 --> 00:21:33.850 align:middle line:84%
+without really touching
+their parameters ever again,
+
+00:21:33.850 --> 00:21:36.890 align:middle line:84%
+once these models got to a
+certain scale of parameters
+
+00:21:36.890 --> 00:21:37.943 align:middle line:90%
+and data.
+
+00:21:37.943 --> 00:21:40.110 align:middle line:84%
+So the examples that we're
+looking at on the slide--
+
+00:21:40.110 --> 00:21:42.490 align:middle line:84%
+and this is from a relatively
+recent paper looking back
+
+00:21:42.490 --> 00:21:43.490 align:middle line:90%
+at this--
+
+00:21:43.490 --> 00:21:47.490 align:middle line:84%
+but was that large enough models
+could start to do arithmetic
+
+00:21:47.490 --> 00:21:49.570 align:middle line:84%
+without having been
+trained in a targeted way
+
+00:21:49.570 --> 00:21:51.430 align:middle line:90%
+to perform arithmetic tasks.
+
+00:21:51.430 --> 00:21:53.930 align:middle line:84%
+They could start to do
+things requiring highly
+
+00:21:53.930 --> 00:21:55.830 align:middle line:84%
+specialized linguistic
+domain knowledge,
+
+00:21:55.830 --> 00:21:58.530 align:middle line:84%
+like producing phonetic
+transcriptions of words,
+
+00:21:58.530 --> 00:22:01.330 align:middle line:84%
+giving only their
+natural language input.
+
+00:22:01.330 --> 00:22:04.650 align:middle line:84%
+They could start doing things
+multilingual without necessarily
+
+00:22:04.650 --> 00:22:07.850 align:middle line:84%
+having to go out and
+collect a targeted data set
+
+00:22:07.850 --> 00:22:09.910 align:middle line:84%
+for some task in some
+language of interest.
+
+00:22:09.910 --> 00:22:11.410 align:middle line:84%
+So the example we're
+looking at here
+
+00:22:11.410 --> 00:22:13.930 align:middle line:84%
+is doing a question
+answering task
+
+00:22:13.930 --> 00:22:18.180 align:middle line:84%
+where all the questions and
+all the answers are in Farsi.
+
+00:22:18.180 --> 00:22:20.620 align:middle line:84%
+And various other kinds
+of complicated things.
+
+00:22:20.620 --> 00:22:25.560 align:middle line:84%
+Answering questions about common
+misconceptions in the world,
+
+00:22:25.560 --> 00:22:27.060 align:middle line:84%
+answering questions
+about properties
+
+00:22:27.060 --> 00:22:30.020 align:middle line:84%
+of physical objects and
+physical situations,
+
+00:22:30.020 --> 00:22:33.380 align:middle line:90%
+and so on and so forth.
+
+00:22:33.380 --> 00:22:37.020 align:middle line:84%
+And this is the GPT-3
+paper, which at this point
+
+00:22:37.020 --> 00:22:39.340 align:middle line:84%
+is pretty famous, but
+was one of the first ones
+
+00:22:39.340 --> 00:22:42.260 align:middle line:84%
+to make this observation
+that you could really
+
+00:22:42.260 --> 00:22:50.180 align:middle line:84%
+do quite well at a certain scale
+without needing to do anything
+
+00:22:50.180 --> 00:22:51.682 align:middle line:84%
+after you had
+pretrained your model.
+
+00:22:51.682 --> 00:22:54.140 align:middle line:84%
+And I think this is kind of
+the defining feature of the era
+
+00:22:54.140 --> 00:22:54.848 align:middle line:90%
+that we live in--
+
+00:22:54.848 --> 00:22:57.182 align:middle line:84%
+although there are going to
+be a bunch of qualifications
+
+00:22:57.182 --> 00:22:58.460 align:middle line:90%
+that we come to at the end--
+
+00:22:58.460 --> 00:23:02.960 align:middle line:84%
+that models trained
+to generate language
+
+00:23:02.960 --> 00:23:05.580 align:middle line:84%
+start to acquire all kinds
+of surprising capabilities
+
+00:23:05.580 --> 00:23:08.020 align:middle line:84%
+at a certain scale
+without us necessarily
+
+00:23:08.020 --> 00:23:12.260 align:middle line:84%
+needing to do any targeted
+fine-tuning for specific tasks.
+
+00:23:12.260 --> 00:23:14.590 align:middle line:84%
+That being said,
+part of what happened
+
+00:23:14.590 --> 00:23:17.550 align:middle line:84%
+here is that people figured out
+that these capabilities were
+
+00:23:17.550 --> 00:23:19.790 align:middle line:84%
+present in models,
+and another part of it
+
+00:23:19.790 --> 00:23:21.830 align:middle line:84%
+is that people
+figured out, actually,
+
+00:23:21.830 --> 00:23:24.630 align:middle line:84%
+more sophisticated ways of
+interacting with these models
+
+00:23:24.630 --> 00:23:26.532 align:middle line:84%
+in order to get these
+capabilities out.
+
+00:23:26.532 --> 00:23:28.990 align:middle line:84%
+And so the next thing that I
+really want to talk about here
+
+00:23:28.990 --> 00:23:30.330 align:middle line:90%
+is exactly that.
+
+00:23:30.330 --> 00:23:32.770 align:middle line:84%
+Once you have a really good
+model of the entire internet,
+
+00:23:32.770 --> 00:23:34.990 align:middle line:84%
+once you have a
+thing that's really
+
+00:23:34.990 --> 00:23:37.030 align:middle line:84%
+good at doing this next
+word prediction task
+
+00:23:37.030 --> 00:23:39.710 align:middle line:84%
+or doing natural string
+generation in a really
+
+00:23:39.710 --> 00:23:41.710 align:middle line:84%
+general way, how
+do you then take
+
+00:23:41.710 --> 00:23:43.870 align:middle line:84%
+that model, that
+distribution over language,
+
+00:23:43.870 --> 00:23:47.870 align:middle line:84%
+and get it to do the specific
+task that you want it to do.
+
+00:23:47.870 --> 00:23:51.990 align:middle line:84%
+And once we start to move
+away from the fine-tuning
+
+00:23:51.990 --> 00:23:56.030 align:middle line:84%
+way of doing things,
+really, the only mechanism
+
+00:23:56.030 --> 00:23:59.110 align:middle line:84%
+by which we can exert
+control over a language
+
+00:23:59.110 --> 00:24:01.310 align:middle line:84%
+model, over a text
+generation system,
+
+00:24:01.310 --> 00:24:04.910 align:middle line:84%
+is by changing what we put into
+it, by changing what words we
+
+00:24:04.910 --> 00:24:08.710 align:middle line:84%
+ask the model to look at, or
+the context in which it's making
+
+00:24:08.710 --> 00:24:11.520 align:middle line:90%
+its next word prediction.
+
+00:24:11.520 --> 00:24:13.720 align:middle line:84%
+And one of the
+most powerful tools
+
+00:24:13.720 --> 00:24:18.760 align:middle line:84%
+that we have for changing
+the context in order
+
+00:24:18.760 --> 00:24:22.800 align:middle line:84%
+to get models to exhibit desired
+target behaviors nowadays
+
+00:24:22.800 --> 00:24:25.100 align:middle line:84%
+is what's called
+in-context learning.
+
+00:24:25.100 --> 00:24:27.705 align:middle line:84%
+And whether we want to
+actually-- why we call it this
+
+00:24:27.705 --> 00:24:29.080 align:middle line:84%
+and whether this
+is the right way
+
+00:24:29.080 --> 00:24:30.160 align:middle line:84%
+to think of it or
+not is something
+
+00:24:30.160 --> 00:24:31.640 align:middle line:90%
+we'll come back to in a minute.
+
+00:24:31.640 --> 00:24:34.960 align:middle line:84%
+But the basic idea here is,
+rather than going to a model
+
+00:24:34.960 --> 00:24:40.960 align:middle line:84%
+and saying, like we said
+before, what's the probability
+
+00:24:40.960 --> 00:24:46.540 align:middle line:84%
+of the word "a"
+given once "upon"?
+
+00:24:46.540 --> 00:24:49.120 align:middle line:90%
+
+
+00:24:49.120 --> 00:24:52.040 align:middle line:84%
+If we're trying to do something
+like a sentiment classification
+
+00:24:52.040 --> 00:24:55.160 align:middle line:84%
+task, we're going to say,
+ask the model, what's
+
+00:24:55.160 --> 00:25:01.800 align:middle line:84%
+the probability of
+positive given--
+
+00:25:01.800 --> 00:25:03.860 align:middle line:84%
+well, so let's
+naively say, suppose
+
+00:25:03.860 --> 00:25:05.360 align:middle line:84%
+the first thing
+that we wanted to do
+
+00:25:05.360 --> 00:25:08.080 align:middle line:84%
+is just like-- we're
+assigning star ratings
+
+00:25:08.080 --> 00:25:09.630 align:middle line:90%
+to movie reviews or something.
+
+00:25:09.630 --> 00:25:18.450 align:middle line:84%
+So if I said, this
+movie was terrible,
+
+00:25:18.450 --> 00:25:21.170 align:middle line:84%
+one thing that we could imagine
+doing is just asking a language
+
+00:25:21.170 --> 00:25:25.050 align:middle line:84%
+model, suppose you saw the
+words "this movie was terrible"
+
+00:25:25.050 --> 00:25:26.030 align:middle line:90%
+as input.
+
+00:25:26.030 --> 00:25:28.690 align:middle line:84%
+What's the probability that
+the next word that comes out
+
+00:25:28.690 --> 00:25:32.850 align:middle line:90%
+as output is positive?
+
+00:25:32.850 --> 00:25:36.690 align:middle line:84%
+But if you think about
+this for a minute,
+
+00:25:36.690 --> 00:25:39.650 align:middle line:84%
+this is actually a very
+surprising next word
+
+00:25:39.650 --> 00:25:41.890 align:middle line:84%
+to come after an
+input like this.
+
+00:25:41.890 --> 00:25:44.065 align:middle line:84%
+If you're randomly
+browsing the internet,
+
+00:25:44.065 --> 00:25:46.690 align:middle line:84%
+and you come across a web page,
+and the last words that you see
+
+00:25:46.690 --> 00:25:49.250 align:middle line:84%
+on the web page were,
+"this movie was terrible,"
+
+00:25:49.250 --> 00:25:53.210 align:middle line:84%
+you would assign a pretty low
+probability to any assessment
+
+00:25:53.210 --> 00:25:54.770 align:middle line:90%
+of the movie coming next.
+
+00:25:54.770 --> 00:25:56.410 align:middle line:84%
+This is just not
+something that--
+
+00:25:56.410 --> 00:25:58.670 align:middle line:84%
+people don't say, "This
+movie was terrible positive."
+
+00:25:58.670 --> 00:26:00.750 align:middle line:84%
+People don't say, "This
+movie was terrible negative."
+
+00:26:00.750 --> 00:26:02.917 align:middle line:84%
+And normally, when you're
+in the middle of a review,
+
+00:26:02.917 --> 00:26:06.390 align:middle line:84%
+you're not going to get
+labels for it after the fact.
+
+00:26:06.390 --> 00:26:08.300 align:middle line:84%
+And so if you just
+ask your model, again,
+
+00:26:08.300 --> 00:26:11.100 align:middle line:84%
+as a kind of distribution
+over natural looking text,
+
+00:26:11.100 --> 00:26:13.725 align:middle line:84%
+what's going to come next after,
+"This movie was terrible"?
+
+00:26:13.725 --> 00:26:16.100 align:middle line:84%
+It's probably going to be
+putting most of its probability
+
+00:26:16.100 --> 00:26:21.660 align:middle line:84%
+mass on the word and or the
+start of another movie review
+
+00:26:21.660 --> 00:26:23.180 align:middle line:90%
+or something like that.
+
+00:26:23.180 --> 00:26:25.760 align:middle line:84%
+And so if we want
+to model, again,
+
+00:26:25.760 --> 00:26:30.820 align:middle line:84%
+our language model to be a model
+for this specific labeling task
+
+00:26:30.820 --> 00:26:32.780 align:middle line:84%
+that we're trying to
+perform, we need some way
+
+00:26:32.780 --> 00:26:34.905 align:middle line:84%
+of specifying what kinds
+of outputs we're expecting
+
+00:26:34.905 --> 00:26:37.485 align:middle line:84%
+and what kind of tasks we're
+asking the model to perform.
+
+00:26:37.485 --> 00:26:39.360 align:middle line:84%
+And so the trick that
+people have settled on,
+
+00:26:39.360 --> 00:26:41.820 align:middle line:84%
+which is called in-context
+learning, or sometimes,
+
+00:26:41.820 --> 00:26:46.460 align:middle line:84%
+few-shot prompting, is just to
+create a fictitious document
+
+00:26:46.460 --> 00:26:50.020 align:middle line:84%
+in which the word positive is
+actually likely to come next.
+
+00:26:50.020 --> 00:26:52.160 align:middle line:90%
+And so we'll do that as follows.
+
+00:26:52.160 --> 00:26:57.600 align:middle line:84%
+We'll say something like,
+I loved it, positive.
+
+00:26:57.600 --> 00:27:00.140 align:middle line:90%
+
+
+00:27:00.140 --> 00:27:00.700 align:middle line:90%
+Whatever.
+
+00:27:00.700 --> 00:27:06.630 align:middle line:90%
+Worst film ever, negative.
+
+00:27:06.630 --> 00:27:09.150 align:middle line:90%
+
+
+00:27:09.150 --> 00:27:13.470 align:middle line:84%
+And now, if you imagine coming
+across this page on the internet
+
+00:27:13.470 --> 00:27:15.550 align:middle line:84%
+somewhere that said,
+"I loved it, positive.
+
+00:27:15.550 --> 00:27:16.830 align:middle line:90%
+Worst movie ever, negative.
+
+00:27:16.830 --> 00:27:18.410 align:middle line:90%
+This movie was terrible."
+
+00:27:18.410 --> 00:27:20.950 align:middle line:84%
+And I asked you to guess what
+word was going to come next.
+
+00:27:20.950 --> 00:27:22.810 align:middle line:84%
+Now, with reasonably
+high probability,
+
+00:27:22.810 --> 00:27:24.977 align:middle line:84%
+you should assume that the
+next word is either going
+
+00:27:24.977 --> 00:27:26.110 align:middle line:90%
+to be positive or negative.
+
+00:27:26.110 --> 00:27:29.310 align:middle line:84%
+And given that these labels
+seem to actually match
+
+00:27:29.310 --> 00:27:31.410 align:middle line:84%
+the sentiment of the text
+that comes before them,
+
+00:27:31.410 --> 00:27:32.827 align:middle line:84%
+you might even
+guess that positive
+
+00:27:32.827 --> 00:27:34.970 align:middle line:84%
+is going to be low
+probability here,
+
+00:27:34.970 --> 00:27:38.030 align:middle line:84%
+and negative is going to
+be high probability here.
+
+00:27:38.030 --> 00:27:41.470 align:middle line:84%
+And so the important
+thing is that we've
+
+00:27:41.470 --> 00:27:45.370 align:middle line:84%
+taken the ability to perform
+generic next token prediction.
+
+00:27:45.370 --> 00:27:47.462 align:middle line:84%
+I can show you a weird
+looking document.
+
+00:27:47.462 --> 00:27:49.670 align:middle line:84%
+You can figure out what the
+structure of the document
+
+00:27:49.670 --> 00:27:52.310 align:middle line:84%
+is-- you, as clever human
+beings in this room--
+
+00:27:52.310 --> 00:27:55.670 align:middle line:84%
+and guess what word is going
+to slot into that structure.
+
+00:27:55.670 --> 00:27:57.790 align:middle line:84%
+And the empirical
+discovery here is
+
+00:27:57.790 --> 00:28:00.910 align:middle line:84%
+that once you've trained
+a large enough language
+
+00:28:00.910 --> 00:28:02.810 align:middle line:84%
+model on a large
+enough data set,
+
+00:28:02.810 --> 00:28:06.440 align:middle line:84%
+this is also something that just
+generic next token predictors
+
+00:28:06.440 --> 00:28:09.080 align:middle line:84%
+acquire the ability
+to do as well.
+
+00:28:09.080 --> 00:28:11.380 align:middle line:90%
+So in-context learning.
+
+00:28:11.380 --> 00:28:13.032 align:middle line:84%
+Another thing that
+you can do here--
+
+00:28:13.032 --> 00:28:15.240 align:middle line:84%
+and something that we'll
+talk about a little bit more
+
+00:28:15.240 --> 00:28:16.600 align:middle line:90%
+at the end--
+
+00:28:16.600 --> 00:28:18.880 align:middle line:84%
+is what's called not
+few-shot prompting
+
+00:28:18.880 --> 00:28:20.680 align:middle line:84%
+but zero-shot
+prompting, where instead
+
+00:28:20.680 --> 00:28:24.400 align:middle line:84%
+of giving a model explicit
+demonstrations for the task
+
+00:28:24.400 --> 00:28:26.160 align:middle line:84%
+that we're trying to
+get it to perform,
+
+00:28:26.160 --> 00:28:27.880 align:middle line:84%
+we just give it a
+natural language
+
+00:28:27.880 --> 00:28:30.920 align:middle line:84%
+description of the
+instructions for that task.
+
+00:28:30.920 --> 00:28:35.280 align:middle line:84%
+So I guess we have this
+example on the slide.
+
+00:28:35.280 --> 00:28:38.980 align:middle line:84%
+Instead of an example
+input and an example output
+
+00:28:38.980 --> 00:28:41.420 align:middle line:84%
+and another example input,
+another example output,
+
+00:28:41.420 --> 00:28:44.040 align:middle line:84%
+we just give a natural
+language description
+
+00:28:44.040 --> 00:28:47.100 align:middle line:84%
+of the input-- or natural
+language description of the task
+
+00:28:47.100 --> 00:28:50.720 align:middle line:84%
+one input and see if an
+output comes out on its own.
+
+00:28:50.720 --> 00:28:52.160 align:middle line:84%
+And this, again,
+was a capability
+
+00:28:52.160 --> 00:28:54.400 align:middle line:84%
+that was observed to
+emerge in models once they
+
+00:28:54.400 --> 00:28:57.960 align:middle line:90%
+got to a large enough scale.
+
+00:28:57.960 --> 00:29:00.320 align:middle line:84%
+And you can imagine doing
+all kinds of combinations
+
+00:29:00.320 --> 00:29:01.217 align:middle line:90%
+of these things.
+
+00:29:01.217 --> 00:29:03.050 align:middle line:84%
+You can give both an
+instruction and a bunch
+
+00:29:03.050 --> 00:29:04.385 align:middle line:90%
+of few-shot examples.
+
+00:29:04.385 --> 00:29:06.510 align:middle line:84%
+You can give the examples
+and then the instruction.
+
+00:29:06.510 --> 00:29:09.090 align:middle line:84%
+You can give a much more
+detailed description of the task
+
+00:29:09.090 --> 00:29:11.570 align:middle line:84%
+that talks about all the
+edge cases and the format
+
+00:29:11.570 --> 00:29:13.270 align:middle line:84%
+in which the output
+should be returned
+
+00:29:13.270 --> 00:29:15.905 align:middle line:84%
+and whether you want
+it capitalized or not.
+
+00:29:15.905 --> 00:29:17.530 align:middle line:84%
+And for the most
+part, models are quite
+
+00:29:17.530 --> 00:29:19.670 align:middle line:90%
+robust to all of these things.
+
+00:29:19.670 --> 00:29:23.530 align:middle line:90%
+
+
+00:29:23.530 --> 00:29:26.770 align:middle line:84%
+We've been through
+all of this before.
+
+00:29:26.770 --> 00:29:29.690 align:middle line:90%
+And this works remarkably well.
+
+00:29:29.690 --> 00:29:33.538 align:middle line:84%
+But as soon as this
+behavior was observed,
+
+00:29:33.538 --> 00:29:35.330 align:middle line:84%
+it sparked a lot of
+debate in the community
+
+00:29:35.330 --> 00:29:38.730 align:middle line:84%
+about what was actually going on
+under the hood in these models
+
+00:29:38.730 --> 00:29:41.390 align:middle line:84%
+and whether we
+actually-- obviously,
+
+00:29:41.390 --> 00:29:44.010 align:middle line:84%
+we can draw an
+analogy between what
+
+00:29:44.010 --> 00:29:46.970 align:middle line:84%
+we're doing here and training
+unlabeled data, where I've
+
+00:29:46.970 --> 00:29:50.130 align:middle line:84%
+given you an x and a y
+and an x and a y and an x,
+
+00:29:50.130 --> 00:29:52.370 align:middle line:84%
+and I'm asking you
+to predict a y.
+
+00:29:52.370 --> 00:29:54.090 align:middle line:84%
+Should we think
+of what's actually
+
+00:29:54.090 --> 00:29:57.170 align:middle line:84%
+going on there as learning the
+way we think of gradient descent
+
+00:29:57.170 --> 00:30:00.110 align:middle line:84%
+is learning, or is this
+something more complicated?
+
+00:30:00.110 --> 00:30:03.050 align:middle line:90%
+
+
+00:30:03.050 --> 00:30:08.610 align:middle line:84%
+And to piece this apart, there
+are a bunch of different things
+
+00:30:08.610 --> 00:30:12.370 align:middle line:84%
+that you can imagine a model
+learning from an input that's
+
+00:30:12.370 --> 00:30:14.770 align:middle line:90%
+being presented like this.
+
+00:30:14.770 --> 00:30:18.170 align:middle line:84%
+One thing that you can imagine
+it learning or inferring
+
+00:30:18.170 --> 00:30:21.290 align:middle line:84%
+from this input is just
+the format of the task
+
+00:30:21.290 --> 00:30:23.810 align:middle line:84%
+that it's supposed
+to be performing.
+
+00:30:23.810 --> 00:30:29.930 align:middle line:84%
+I know from giving you
+this information that we're
+
+00:30:29.930 --> 00:30:31.650 align:middle line:84%
+supposed to output
+labels that are either
+
+00:30:31.650 --> 00:30:33.192 align:middle line:84%
+the word positive
+or negative, and we
+
+00:30:33.192 --> 00:30:34.710 align:middle line:90%
+haven't seen any other labels.
+
+00:30:34.710 --> 00:30:38.130 align:middle line:84%
+You're supposed to output them
+immediately after one sentence.
+
+00:30:38.130 --> 00:30:39.812 align:middle line:84%
+And that you should
+expect in general,
+
+00:30:39.812 --> 00:30:41.770 align:middle line:84%
+that the sentences that
+you're getting as input
+
+00:30:41.770 --> 00:30:44.030 align:middle line:84%
+are going to be
+shorter sentences
+
+00:30:44.030 --> 00:30:46.243 align:middle line:84%
+and maybe seeming to
+talk about movies.
+
+00:30:46.243 --> 00:30:48.410 align:middle line:84%
+And so one way to think
+about what might be going on
+
+00:30:48.410 --> 00:30:50.090 align:middle line:84%
+in in-context learning
+is that it's just
+
+00:30:50.090 --> 00:30:52.050 align:middle line:84%
+about learning the
+format of the output
+
+00:30:52.050 --> 00:30:54.350 align:middle line:84%
+that the model is
+supposed to generate,
+
+00:30:54.350 --> 00:30:56.330 align:middle line:84%
+and that all the other
+behavior that you get
+
+00:30:56.330 --> 00:31:01.220 align:middle line:84%
+comes from pretraining and
+not from this context at all.
+
+00:31:01.220 --> 00:31:01.800 align:middle line:90%
+Oh, sorry.
+
+00:31:01.800 --> 00:31:04.620 align:middle line:84%
+This is just a technical
+thing that we're
+
+00:31:04.620 --> 00:31:05.600 align:middle line:90%
+going to skip through.
+
+00:31:05.600 --> 00:31:08.580 align:middle line:90%
+
+
+00:31:08.580 --> 00:31:09.080 align:middle line:90%
+Sorry.
+
+00:31:09.080 --> 00:31:10.520 align:middle line:90%
+I'm a little out of order here.
+
+00:31:10.520 --> 00:31:13.900 align:middle line:90%
+
+
+00:31:13.900 --> 00:31:14.400 align:middle line:90%
+OK.
+
+00:31:14.400 --> 00:31:17.140 align:middle line:84%
+I guess before-- well, let's
+actually finish this thought
+
+00:31:17.140 --> 00:31:21.680 align:middle line:90%
+and then come back to it later.
+
+00:31:21.680 --> 00:31:27.480 align:middle line:90%
+
+
+00:31:27.480 --> 00:31:27.980 align:middle line:90%
+Sorry.
+
+00:31:27.980 --> 00:31:30.080 align:middle line:84%
+My slides are a little
+out of order here.
+
+00:31:30.080 --> 00:31:34.700 align:middle line:90%
+
+
+00:31:34.700 --> 00:31:35.398 align:middle line:90%
+Yeah.
+
+00:31:35.398 --> 00:31:36.440 align:middle line:90%
+So this is maybe a point.
+
+00:31:36.440 --> 00:31:39.167 align:middle line:84%
+So one hypothesis
+that you might have
+
+00:31:39.167 --> 00:31:41.500 align:middle line:84%
+about what's going on with
+this in-context learning task
+
+00:31:41.500 --> 00:31:44.460 align:middle line:84%
+is just that you're learning
+these formatting questions
+
+00:31:44.460 --> 00:31:45.800 align:middle line:90%
+and nothing else.
+
+00:31:45.800 --> 00:31:47.780 align:middle line:84%
+And if you think about
+machine translation
+
+00:31:47.780 --> 00:31:51.180 align:middle line:84%
+as a prototypical
+example of this,
+
+00:31:51.180 --> 00:31:53.940 align:middle line:84%
+obviously, you're not going to
+learn a new language entirely
+
+00:31:53.940 --> 00:31:56.932 align:middle line:84%
+from scratch from three examples
+being provided in the input.
+
+00:31:56.932 --> 00:31:58.390 align:middle line:84%
+You're certainly
+not going to learn
+
+00:31:58.390 --> 00:32:01.338 align:middle line:84%
+how to translate from English
+to French sentences containing
+
+00:32:01.338 --> 00:32:03.130 align:middle line:84%
+French words that you've
+never seen before,
+
+00:32:03.130 --> 00:32:04.963 align:middle line:84%
+English words that
+you've never seen before.
+
+00:32:04.963 --> 00:32:07.950 align:middle line:84%
+And so to the extent that we
+observe these kinds of prompting
+
+00:32:07.950 --> 00:32:10.230 align:middle line:84%
+behaviors actually
+making models better
+
+00:32:10.230 --> 00:32:12.510 align:middle line:84%
+at their downstream
+tasks, we probably
+
+00:32:12.510 --> 00:32:18.350 align:middle line:84%
+want to attribute that success
+mostly to providing information
+
+00:32:18.350 --> 00:32:20.990 align:middle line:84%
+about the format or inducing
+the model to better perform
+
+00:32:20.990 --> 00:32:23.630 align:middle line:84%
+this translation task, rather
+than all the other things
+
+00:32:23.630 --> 00:32:25.390 align:middle line:90%
+that we wanted it to do.
+
+00:32:25.390 --> 00:32:30.070 align:middle line:84%
+And in fact, something that
+was observed for a little while
+
+00:32:30.070 --> 00:32:31.910 align:middle line:84%
+was that models
+didn't really seem
+
+00:32:31.910 --> 00:32:35.190 align:middle line:84%
+to be paying attention to the
+associations between labels
+
+00:32:35.190 --> 00:32:36.432 align:middle line:90%
+and input text at all.
+
+00:32:36.432 --> 00:32:38.390 align:middle line:84%
+What we're looking at on
+the slide right now is
+
+00:32:38.390 --> 00:32:43.590 align:middle line:84%
+an example of a paper from
+Sewon Min where you actually
+
+00:32:43.590 --> 00:32:45.750 align:middle line:84%
+took your in-context
+examples, you totally
+
+00:32:45.750 --> 00:32:51.870 align:middle line:84%
+shuffled the labels-- so maybe
+I replace this with positive.
+
+00:32:51.870 --> 00:32:54.760 align:middle line:84%
+That's not a working
+piece of chalk.
+
+00:32:54.760 --> 00:32:58.200 align:middle line:90%
+Where did the chalk go?
+
+00:32:58.200 --> 00:32:59.840 align:middle line:90%
+I guess it's this side.
+
+00:32:59.840 --> 00:33:01.342 align:middle line:90%
+Change the label there.
+
+00:33:01.342 --> 00:33:02.300 align:middle line:90%
+Change the label there.
+
+00:33:02.300 --> 00:33:03.920 align:middle line:90%
+Shuffle everything around.
+
+00:33:03.920 --> 00:33:05.840 align:middle line:90%
+These are these red bars.
+
+00:33:05.840 --> 00:33:07.960 align:middle line:84%
+And for the most part,
+they didn't actually
+
+00:33:07.960 --> 00:33:10.520 align:middle line:84%
+hurt performance
+much at all relative
+
+00:33:10.520 --> 00:33:13.680 align:middle line:84%
+to giving models actual
+labeled data for the task.
+
+00:33:13.680 --> 00:33:16.015 align:middle line:84%
+And so for a while,
+the conventional wisdom
+
+00:33:16.015 --> 00:33:17.640 align:middle line:84%
+was that you don't
+really want to think
+
+00:33:17.640 --> 00:33:20.740 align:middle line:84%
+of this in-context learning
+phenomenon as learning at all.
+
+00:33:20.740 --> 00:33:23.600 align:middle line:84%
+It's really just helping
+models retrieve tasks
+
+00:33:23.600 --> 00:33:27.360 align:middle line:84%
+that they had previously
+learned how to do.
+
+00:33:27.360 --> 00:33:30.080 align:middle line:84%
+There were also all kinds
+of other weird pathologies
+
+00:33:30.080 --> 00:33:31.620 align:middle line:84%
+that were observed
+in these models
+
+00:33:31.620 --> 00:33:35.680 align:middle line:84%
+where the particular choice
+of words that you chose
+
+00:33:35.680 --> 00:33:38.780 align:middle line:84%
+as your labels, if you said
+positive rather than good,
+
+00:33:38.780 --> 00:33:41.220 align:middle line:84%
+or the thumbs up emoji
+or something like that,
+
+00:33:41.220 --> 00:33:43.345 align:middle line:84%
+could actually have
+pretty substantial impacts
+
+00:33:43.345 --> 00:33:44.720 align:middle line:84%
+on the quality of
+the predictions
+
+00:33:44.720 --> 00:33:46.960 align:middle line:90%
+that you got from the model.
+
+00:33:46.960 --> 00:33:50.160 align:middle line:84%
+And also, the models were
+extremely sensitive to the order
+
+00:33:50.160 --> 00:33:52.535 align:middle line:84%
+in which these individual
+examples were presented,
+
+00:33:52.535 --> 00:33:54.410 align:middle line:84%
+and you could shuffle
+them around and, again,
+
+00:33:54.410 --> 00:33:59.090 align:middle line:84%
+get big increases or
+big drops in performance
+
+00:33:59.090 --> 00:34:01.050 align:middle line:90%
+out of these models.
+
+00:34:01.050 --> 00:34:04.370 align:middle line:84%
+However, a lot of
+these issues seem
+
+00:34:04.370 --> 00:34:07.230 align:middle line:90%
+to be going away with scale.
+
+00:34:07.230 --> 00:34:11.070 align:middle line:84%
+And I'm not sure I
+have slides for this--
+
+00:34:11.070 --> 00:34:13.310 align:middle line:90%
+no-- in this particular talk.
+
+00:34:13.310 --> 00:34:15.929 align:middle line:84%
+But even this phenomenon
+that we were looking
+
+00:34:15.929 --> 00:34:20.170 align:middle line:84%
+at here, where models
+seem to be pretty
+
+00:34:20.170 --> 00:34:22.770 align:middle line:84%
+insensitive to random
+labels or flipped labels
+
+00:34:22.770 --> 00:34:25.713 align:middle line:84%
+or whatever, in even larger
+models than the ones that we
+
+00:34:25.713 --> 00:34:28.130 align:middle line:84%
+were looking at here in GPT-4
+and some of the other things
+
+00:34:28.130 --> 00:34:31.130 align:middle line:84%
+that have come out since
+then, models do actually
+
+00:34:31.130 --> 00:34:34.489 align:middle line:84%
+start to pay attention to the
+association between labels
+
+00:34:34.489 --> 00:34:35.870 align:middle line:90%
+and input examples.
+
+00:34:35.870 --> 00:34:39.170 align:middle line:84%
+And nowadays, for example, if
+you take a state of the art
+
+00:34:39.170 --> 00:34:42.050 align:middle line:84%
+language model, and you give
+it the backwards sentiment
+
+00:34:42.050 --> 00:34:46.170 align:middle line:84%
+task where this is negative
+and this is positive,
+
+00:34:46.170 --> 00:34:47.810 align:middle line:84%
+you can, for most
+tasks, reasonably
+
+00:34:47.810 --> 00:34:49.727 align:middle line:84%
+expect that models
+will be smart enough
+
+00:34:49.727 --> 00:34:52.060 align:middle line:84%
+to figure out not only that
+this is actually a sentiment
+
+00:34:52.060 --> 00:34:53.940 align:middle line:84%
+classification task,
+but that it's supposed
+
+00:34:53.940 --> 00:34:57.460 align:middle line:90%
+to say negative for positive.
+
+00:34:57.460 --> 00:35:00.180 align:middle line:84%
+This is also something that our
+theoretical understanding of
+
+00:35:00.180 --> 00:35:02.900 align:middle line:84%
+has improved a lot in
+the last couple of years.
+
+00:35:02.900 --> 00:35:06.860 align:middle line:84%
+And we now actually know,
+in particular cases,
+
+00:35:06.860 --> 00:35:09.300 align:middle line:84%
+that models are capable of
+implementing real learning
+
+00:35:09.300 --> 00:35:12.200 align:middle line:84%
+algorithms internal to their
+hidden representations.
+
+00:35:12.200 --> 00:35:15.500 align:middle line:84%
+So if I train a model
+to perform something
+
+00:35:15.500 --> 00:35:17.940 align:middle line:84%
+that looks like a classification
+task or a regression task
+
+00:35:17.940 --> 00:35:21.380 align:middle line:84%
+or whatever, at least on
+synthetic data in a clean room
+
+00:35:21.380 --> 00:35:24.780 align:middle line:84%
+setting, there's lots of both
+empirical and theoretical
+
+00:35:24.780 --> 00:35:27.177 align:middle line:84%
+evidence now that these
+models are actually
+
+00:35:27.177 --> 00:35:29.260 align:middle line:84%
+running something that
+looks like gradient descent
+
+00:35:29.260 --> 00:35:33.300 align:middle line:84%
+or some other learning
+algorithm inside their weights
+
+00:35:33.300 --> 00:35:37.020 align:middle line:84%
+where the parameter vector of
+a smaller model being stored
+
+00:35:37.020 --> 00:35:38.980 align:middle line:84%
+inside the hidden
+representations,
+
+00:35:38.980 --> 00:35:41.220 align:middle line:84%
+and that thing is getting
+updated across layers
+
+00:35:41.220 --> 00:35:43.000 align:middle line:90%
+as more examples get ingested.
+
+00:35:43.000 --> 00:35:46.360 align:middle line:84%
+Now, whether this is what's
+going on inside big models,
+
+00:35:46.360 --> 00:35:47.120 align:middle line:90%
+nobody knows.
+
+00:35:47.120 --> 00:35:50.408 align:middle line:84%
+Almost certainly, the
+answer is, it's complicated,
+
+00:35:50.408 --> 00:35:52.950 align:middle line:84%
+and that there's both something
+that looks like real learning
+
+00:35:52.950 --> 00:35:56.687 align:middle line:84%
+and something that looks like
+task retrieval and all kinds
+
+00:35:56.687 --> 00:35:58.270 align:middle line:84%
+of other weird,
+complicated heuristics
+
+00:35:58.270 --> 00:35:59.533 align:middle line:90%
+that we don't know about.
+
+00:35:59.533 --> 00:36:00.950 align:middle line:84%
+The main thing
+that I want to make
+
+00:36:00.950 --> 00:36:03.550 align:middle line:84%
+is just that this is an area
+that's moving very quickly.
+
+00:36:03.550 --> 00:36:05.630 align:middle line:84%
+These capabilities are
+changing very quickly.
+
+00:36:05.630 --> 00:36:08.390 align:middle line:84%
+As recently as 2022,
+I think most people
+
+00:36:08.390 --> 00:36:10.728 align:middle line:84%
+thought in-context learning
+was not actually learning.
+
+00:36:10.728 --> 00:36:12.270 align:middle line:84%
+And now, we think
+models are actually
+
+00:36:12.270 --> 00:36:15.470 align:middle line:84%
+capable of doing, at least in
+some limited way, acquisition
+
+00:36:15.470 --> 00:36:20.130 align:middle line:90%
+of new skills in context.
+
+00:36:20.130 --> 00:36:20.630 align:middle line:90%
+OK.
+
+00:36:20.630 --> 00:36:22.550 align:middle line:84%
+Taking a step back,
+what does this actually
+
+00:36:22.550 --> 00:36:26.750 align:middle line:84%
+mean for the ways in
+which we use models?
+
+00:36:26.750 --> 00:36:29.950 align:middle line:84%
+And if we remember
+back to the high level
+
+00:36:29.950 --> 00:36:32.230 align:middle line:84%
+picture of the
+history of the field
+
+00:36:32.230 --> 00:36:35.270 align:middle line:84%
+that we were giving
+at the beginning,
+
+00:36:35.270 --> 00:36:37.510 align:middle line:84%
+we've gone from a world
+where we would go out,
+
+00:36:37.510 --> 00:36:39.950 align:middle line:84%
+and we would collect
+targeted data sets
+
+00:36:39.950 --> 00:36:42.330 align:middle line:84%
+for all of the different
+tasks that we care about,
+
+00:36:42.330 --> 00:36:45.960 align:middle line:84%
+and train some task-specific
+model, to really just having
+
+00:36:45.960 --> 00:36:48.200 align:middle line:84%
+one model for all of
+the different tasks
+
+00:36:48.200 --> 00:36:50.200 align:middle line:84%
+that we care about,
+and only enough
+
+00:36:50.200 --> 00:36:52.840 align:middle line:84%
+training data to
+actually specify
+
+00:36:52.840 --> 00:36:54.720 align:middle line:84%
+to this big
+pretrained model what
+
+00:36:54.720 --> 00:36:56.220 align:middle line:90%
+it is that we're trying to do.
+
+00:36:56.220 --> 00:36:57.720 align:middle line:84%
+And obviously, the
+only way in which
+
+00:36:57.720 --> 00:36:59.560 align:middle line:84%
+we can do this, or the
+main mechanism, at least,
+
+00:36:59.560 --> 00:37:01.352 align:middle line:84%
+by which we're going
+to be able to do this,
+
+00:37:01.352 --> 00:37:04.040 align:middle line:84%
+is if the data set
+that we use to train
+
+00:37:04.040 --> 00:37:06.960 align:middle line:84%
+that initial big model
+already contains evidence
+
+00:37:06.960 --> 00:37:08.760 align:middle line:84%
+and information
+about how to perform
+
+00:37:08.760 --> 00:37:10.600 align:middle line:84%
+most of these specific
+downstream things
+
+00:37:10.600 --> 00:37:11.840 align:middle line:90%
+that we want to do.
+
+00:37:11.840 --> 00:37:15.480 align:middle line:84%
+And so, in some ways,
+maybe the most surprising
+
+00:37:15.480 --> 00:37:17.800 align:middle line:84%
+empirical discovery
+of the last few years
+
+00:37:17.800 --> 00:37:21.240 align:middle line:84%
+has just been that
+if you blindly--
+
+00:37:21.240 --> 00:37:26.560 align:middle line:84%
+or maybe not totally blindly,
+but with a limited degree
+
+00:37:26.560 --> 00:37:28.880 align:middle line:84%
+of sophistication,
+scrape the internet,
+
+00:37:28.880 --> 00:37:31.800 align:middle line:84%
+you find examples
+for translation tasks
+
+00:37:31.800 --> 00:37:34.280 align:middle line:84%
+and summarization tasks and
+entity recognition tasks
+
+00:37:34.280 --> 00:37:36.560 align:middle line:84%
+and sentiment analysis
+tasks, or at least
+
+00:37:36.560 --> 00:37:39.000 align:middle line:84%
+tasks that are
+close enough to them
+
+00:37:39.000 --> 00:37:41.380 align:middle line:84%
+that you learn to acquire
+all of these capabilities.
+
+00:37:41.380 --> 00:37:45.210 align:middle line:90%
+
+
+00:37:45.210 --> 00:37:50.740 align:middle line:84%
+And more than that, models
+get the ability to not,
+
+00:37:50.740 --> 00:37:55.430 align:middle line:84%
+I should say, just do standard
+tasks that have names for them
+
+00:37:55.430 --> 00:37:59.250 align:middle line:84%
+and standard labeling things
+that have names for them,
+
+00:37:59.250 --> 00:38:02.530 align:middle line:84%
+but to do more complicated
+things that actually require
+
+00:38:02.530 --> 00:38:07.370 align:middle line:84%
+novel step by step reasoning for
+individual problem instances.
+
+00:38:07.370 --> 00:38:10.370 align:middle line:84%
+And this is, again, something
+that both took a certain amount
+
+00:38:10.370 --> 00:38:13.530 align:middle line:84%
+of skill to discover and a
+certain amount of actual work
+
+00:38:13.530 --> 00:38:15.490 align:middle line:84%
+by researchers to
+figure out how to get
+
+00:38:15.490 --> 00:38:17.930 align:middle line:84%
+models to solve some of these
+more complicated reasoning
+
+00:38:17.930 --> 00:38:18.670 align:middle line:90%
+tasks.
+
+00:38:18.670 --> 00:38:21.173 align:middle line:84%
+So we're shifting gears
+a little bit right now.
+
+00:38:21.173 --> 00:38:23.590 align:middle line:84%
+Up until this point, when we've
+been talking about a task,
+
+00:38:23.590 --> 00:38:25.007 align:middle line:84%
+we've been talking
+about something
+
+00:38:25.007 --> 00:38:27.690 align:middle line:84%
+like this, some standard thing
+with a name where you can just
+
+00:38:27.690 --> 00:38:30.450 align:middle line:84%
+look at a sentence and
+basically spit the answer out
+
+00:38:30.450 --> 00:38:33.090 align:middle line:84%
+without having to do
+too much thinking.
+
+00:38:33.090 --> 00:38:35.330 align:middle line:84%
+But obviously, there
+are also lots of things
+
+00:38:35.330 --> 00:38:37.793 align:middle line:84%
+that we want to do
+with models that
+
+00:38:37.793 --> 00:38:39.210 align:middle line:84%
+don't look like
+this, that require
+
+00:38:39.210 --> 00:38:42.980 align:middle line:84%
+more complicated reasoning, that
+take people a couple of seconds
+
+00:38:42.980 --> 00:38:45.500 align:middle line:84%
+to solve, rather than a couple
+of milliseconds to solve,
+
+00:38:45.500 --> 00:38:47.820 align:middle line:90%
+or even longer than that.
+
+00:38:47.820 --> 00:38:49.440 align:middle line:84%
+And so a natural
+question to ask,
+
+00:38:49.440 --> 00:38:52.000 align:middle line:84%
+once you've seen these
+kinds of capabilities,
+
+00:38:52.000 --> 00:38:54.900 align:middle line:84%
+is whether models also
+acquire the ability
+
+00:38:54.900 --> 00:38:58.300 align:middle line:84%
+to solve some of these
+harder reasoning problems.
+
+00:38:58.300 --> 00:39:03.360 align:middle line:84%
+And if you, again, around 2022,
+and in a totally naive way,
+
+00:39:03.360 --> 00:39:06.760 align:middle line:84%
+just asked a state of
+the art language model
+
+00:39:06.760 --> 00:39:08.440 align:middle line:84%
+a question like this,
+for the most part,
+
+00:39:08.440 --> 00:39:12.940 align:middle line:90%
+the answer would be wrong.
+
+00:39:12.940 --> 00:39:14.200 align:middle line:90%
+Why is this the case?
+
+00:39:14.200 --> 00:39:16.980 align:middle line:84%
+And I think one piece of
+intuition to have here
+
+00:39:16.980 --> 00:39:20.020 align:middle line:84%
+is that no matter
+how deep you're
+
+00:39:20.020 --> 00:39:25.500 align:middle line:84%
+building your transformer or
+whatever other architecture
+
+00:39:25.500 --> 00:39:29.340 align:middle line:84%
+you're using for
+your language model,
+
+00:39:29.340 --> 00:39:32.540 align:middle line:84%
+you only have a finite amount
+of computational resources
+
+00:39:32.540 --> 00:39:34.820 align:middle line:84%
+available to you
+between the moment
+
+00:39:34.820 --> 00:39:37.660 align:middle line:84%
+when you read the last word
+in the input and the moment
+
+00:39:37.660 --> 00:39:39.870 align:middle line:84%
+at which you're
+expected to generate
+
+00:39:39.870 --> 00:39:41.730 align:middle line:90%
+the first word in the output.
+
+00:39:41.730 --> 00:39:44.130 align:middle line:84%
+And so if you think
+about a task like this,
+
+00:39:44.130 --> 00:39:47.750 align:middle line:84%
+really, the model has to see the
+question mark token or the word
+
+00:39:47.750 --> 00:39:50.330 align:middle line:84%
+have or whatever at the
+end of this question
+
+00:39:50.330 --> 00:39:51.830 align:middle line:84%
+and do all of the
+work that it needs
+
+00:39:51.830 --> 00:39:54.790 align:middle line:84%
+to solve this hard arithmetic
+problem somewhere internal
+
+00:39:54.790 --> 00:39:57.110 align:middle line:90%
+to its intermediate states.
+
+00:39:57.110 --> 00:40:00.005 align:middle line:84%
+And not to anthropomorphize
+these things too much,
+
+00:40:00.005 --> 00:40:01.630 align:middle line:84%
+but think about this
+as trying to solve
+
+00:40:01.630 --> 00:40:04.310 align:middle line:84%
+a problem like this in
+your head with a very, very
+
+00:40:04.310 --> 00:40:06.150 align:middle line:90%
+small amount of time.
+
+00:40:06.150 --> 00:40:09.670 align:middle line:84%
+And basically, I think we should
+expect-- or at least not be
+
+00:40:09.670 --> 00:40:13.310 align:middle line:84%
+surprised-- that models are not
+able to do this out of the box.
+
+00:40:13.310 --> 00:40:17.430 align:middle line:84%
+So what do people do when
+they solve problems like this
+
+00:40:17.430 --> 00:40:20.070 align:middle line:84%
+if it's not just generating
+the answer right away?
+
+00:40:20.070 --> 00:40:22.402 align:middle line:84%
+Well, in some amount of step
+by step thinking, right?
+
+00:40:22.402 --> 00:40:24.110 align:middle line:84%
+Either writing out
+the intermediate steps
+
+00:40:24.110 --> 00:40:26.550 align:middle line:84%
+of an algorithm on
+some of scratchpad,
+
+00:40:26.550 --> 00:40:30.150 align:middle line:84%
+talking out loud through a
+solution, or so on and so forth.
+
+00:40:30.150 --> 00:40:33.070 align:middle line:84%
+And maybe
+unsurprisingly, something
+
+00:40:33.070 --> 00:40:37.190 align:middle line:84%
+that has been observed, again,
+once you get to language models
+
+00:40:37.190 --> 00:40:39.000 align:middle line:84%
+at a sufficiently
+large scale, is
+
+00:40:39.000 --> 00:40:41.080 align:middle line:84%
+that this kind of
+step by step reasoning
+
+00:40:41.080 --> 00:40:43.000 align:middle line:90%
+works for them as well.
+
+00:40:43.000 --> 00:40:45.560 align:middle line:84%
+And so this has come to
+be called chain-of-thought
+
+00:40:45.560 --> 00:40:48.280 align:middle line:84%
+prompting-- it's something
+that I think the LLM hobbyist
+
+00:40:48.280 --> 00:40:53.200 align:middle line:84%
+community was aware of before it
+entered the academic discourse--
+
+00:40:53.200 --> 00:40:58.320 align:middle line:84%
+but where we now
+give models inputs
+
+00:40:58.320 --> 00:41:01.040 align:middle line:84%
+that force them to reason more
+sophisticatedly, again, by just
+
+00:41:01.040 --> 00:41:02.340 align:middle line:90%
+changing the inputs to them.
+
+00:41:02.340 --> 00:41:05.945 align:middle line:84%
+So just like in the
+few-shot prompting case,
+
+00:41:05.945 --> 00:41:08.320 align:middle line:84%
+we're interested in improving
+the capabilities of models,
+
+00:41:08.320 --> 00:41:11.920 align:middle line:84%
+and the only mechanism by which
+we can control their behavior
+
+00:41:11.920 --> 00:41:14.040 align:middle line:84%
+is to change the inputs
+that we give them.
+
+00:41:14.040 --> 00:41:16.925 align:middle line:84%
+And so now, when we're giving
+demonstrations of a task,
+
+00:41:16.925 --> 00:41:18.800 align:middle line:84%
+rather than just saying,
+here's the question,
+
+00:41:18.800 --> 00:41:20.820 align:middle line:84%
+and here's the answer,
+we're going to say,
+
+00:41:20.820 --> 00:41:22.492 align:middle line:90%
+here's the question.
+
+00:41:22.492 --> 00:41:24.200 align:middle line:84%
+Here's the bit of the
+answer that we want
+
+00:41:24.200 --> 00:41:25.500 align:middle line:90%
+the language model to generate.
+
+00:41:25.500 --> 00:41:26.960 align:middle line:84%
+And the first piece
+of that answer
+
+00:41:26.960 --> 00:41:30.805 align:middle line:84%
+should include not the final
+output to this question,
+
+00:41:30.805 --> 00:41:32.680 align:middle line:84%
+but this reasoning steps
+that will eventually
+
+00:41:32.680 --> 00:41:35.040 align:middle line:90%
+lead us to the right answer.
+
+00:41:35.040 --> 00:41:37.170 align:middle line:84%
+And so going back to
+the example that we
+
+00:41:37.170 --> 00:41:40.690 align:middle line:84%
+had on the previous slide,
+rather than just saying, here's
+
+00:41:40.690 --> 00:41:44.650 align:middle line:84%
+the question, and 11 comes out,
+we say, here's the question.
+
+00:41:44.650 --> 00:41:46.070 align:middle line:90%
+Roger starts with 5 balls.
+
+00:41:46.070 --> 00:41:48.570 align:middle line:84%
+2 cans of 3 tennis
+balls each is 6 balls.
+
+00:41:48.570 --> 00:41:49.900 align:middle line:90%
+5 plus 6 is 11.
+
+00:41:49.900 --> 00:41:51.650 align:middle line:84%
+The kinds of things
+that you might imagine
+
+00:41:51.650 --> 00:41:54.930 align:middle line:84%
+saying out loud to yourself
+or writing down in the course
+
+00:41:54.930 --> 00:41:56.350 align:middle line:90%
+of doing a problem like this.
+
+00:41:56.350 --> 00:41:58.790 align:middle line:84%
+And when you do this, when
+you prompt models in this way,
+
+00:41:58.790 --> 00:42:00.755 align:middle line:84%
+and then you give
+them new questions,
+
+00:42:00.755 --> 00:42:02.630 align:middle line:84%
+they're pattern matching
+against the context.
+
+00:42:02.630 --> 00:42:05.970 align:middle line:84%
+And just like we saw in these
+few-shot prompting examples,
+
+00:42:05.970 --> 00:42:09.010 align:middle line:84%
+what you get is an answer that
+first includes a bunch of step
+
+00:42:09.010 --> 00:42:11.690 align:middle line:84%
+by step reasoning, maybe
+following a different pattern
+
+00:42:11.690 --> 00:42:15.130 align:middle line:84%
+from the one that we provided in
+the input, and then the answer
+
+00:42:15.130 --> 00:42:17.250 align:middle line:90%
+at the end.
+
+00:42:17.250 --> 00:42:19.210 align:middle line:84%
+And obviously, this
+is something that you
+
+00:42:19.210 --> 00:42:21.210 align:middle line:84%
+can combine with all
+of the other tricks
+
+00:42:21.210 --> 00:42:24.410 align:middle line:84%
+that we were talking about
+in the context of few-shot
+
+00:42:24.410 --> 00:42:29.050 align:middle line:84%
+prompting, meaning you can
+also provide high level
+
+00:42:29.050 --> 00:42:30.350 align:middle line:90%
+description of the task.
+
+00:42:30.350 --> 00:42:32.670 align:middle line:84%
+You can also provide
+a meta template,
+
+00:42:32.670 --> 00:42:35.193 align:middle line:84%
+the kinds of things that make
+good step by step reasoning
+
+00:42:35.193 --> 00:42:37.860 align:middle line:84%
+instructions, information about
+the granularity of the reasoning
+
+00:42:37.860 --> 00:42:40.445 align:middle line:84%
+steps and so on,
+information about the format
+
+00:42:40.445 --> 00:42:42.820 align:middle line:84%
+in which the final answer
+should be presented so that you
+
+00:42:42.820 --> 00:42:45.980 align:middle line:90%
+can parse it out, and so on.
+
+00:42:45.980 --> 00:42:48.740 align:middle line:84%
+But really, the high level
+idea here is just rather--
+
+00:42:48.740 --> 00:42:50.900 align:middle line:84%
+between our x's
+and our y's, we're
+
+00:42:50.900 --> 00:42:56.072 align:middle line:84%
+going to interpose
+some reasoning steps.
+
+00:42:56.072 --> 00:42:57.780 align:middle line:84%
+And if you do this in
+the input, then you
+
+00:42:57.780 --> 00:43:02.100 align:middle line:84%
+expect to get it in
+the output as well.
+
+00:43:02.100 --> 00:43:04.080 align:middle line:84%
+And so this is just
+writing this more formally.
+
+00:43:04.080 --> 00:43:07.380 align:middle line:84%
+We're going to, between
+our x's and our y's, put
+
+00:43:07.380 --> 00:43:11.340 align:middle line:84%
+some z's that show the
+model how to reason.
+
+00:43:11.340 --> 00:43:13.860 align:middle line:84%
+And because everything's
+in the input
+
+00:43:13.860 --> 00:43:15.700 align:middle line:84%
+because we're in this
+very few-shot paradigm
+
+00:43:15.700 --> 00:43:18.140 align:middle line:84%
+that we were looking
+at over here,
+
+00:43:18.140 --> 00:43:19.580 align:middle line:84%
+it's really not
+that hard for you
+
+00:43:19.580 --> 00:43:21.300 align:middle line:84%
+as an experimenter
+or a model builder
+
+00:43:21.300 --> 00:43:24.900 align:middle line:84%
+or whatever to write 5 or 10
+or 100 examples of these things
+
+00:43:24.900 --> 00:43:28.860 align:middle line:84%
+to provide as
+input to the model.
+
+00:43:28.860 --> 00:43:31.830 align:middle line:84%
+So this works in a bunch
+of different regimes.
+
+00:43:31.830 --> 00:43:34.470 align:middle line:84%
+Again, I think something
+that maybe is worth
+
+00:43:34.470 --> 00:43:37.990 align:middle line:84%
+emphasizing is that this
+is a capability that arose,
+
+00:43:37.990 --> 00:43:41.910 align:middle line:84%
+just from a historical
+perspective, a little bit
+
+00:43:41.910 --> 00:43:44.730 align:middle line:84%
+unpredictably and only
+at a certain scale.
+
+00:43:44.730 --> 00:43:48.070 align:middle line:84%
+So I knew of at least three
+different groups at MIT
+
+00:43:48.070 --> 00:43:50.382 align:middle line:84%
+around 2019 who were trying
+to do something like this,
+
+00:43:50.382 --> 00:43:52.590 align:middle line:84%
+and it wasn't working,
+because the models that we had
+
+00:43:52.590 --> 00:43:54.230 align:middle line:90%
+at the time weren't big enough.
+
+00:43:54.230 --> 00:43:57.170 align:middle line:84%
+And then GPT-3 came out,
+and people tried it again,
+
+00:43:57.170 --> 00:43:59.390 align:middle line:90%
+and all these things work.
+
+00:43:59.390 --> 00:44:02.010 align:middle line:84%
+You can do this for free
+response math questions.
+
+00:44:02.010 --> 00:44:03.930 align:middle line:84%
+You can use it for
+multiple choice questions.
+
+00:44:03.930 --> 00:44:06.190 align:middle line:84%
+You can do it for
+common sense reasoning.
+
+00:44:06.190 --> 00:44:09.110 align:middle line:84%
+And really, this is
+a meta trick that you
+
+00:44:09.110 --> 00:44:13.510 align:middle line:84%
+can apply to almost
+any domain of interest.
+
+00:44:13.510 --> 00:44:17.410 align:middle line:84%
+So here are some more examples
+of places you can do this.
+
+00:44:17.410 --> 00:44:18.790 align:middle line:90%
+It's really quite general.
+
+00:44:18.790 --> 00:44:20.810 align:middle line:84%
+And it's really, really,
+really quite effective,
+
+00:44:20.810 --> 00:44:23.750 align:middle line:84%
+especially on these problems
+that require a lot of step
+
+00:44:23.750 --> 00:44:24.590 align:middle line:90%
+by step reasoning.
+
+00:44:24.590 --> 00:44:25.210 align:middle line:90%
+Questions?
+
+00:44:25.210 --> 00:44:26.190 align:middle line:90%
+Yes.
+
+00:44:26.190 --> 00:44:28.817 align:middle line:84%
+AUDIENCE: Why do you think
+scale made it possible?
+
+00:44:28.817 --> 00:44:30.900 align:middle line:84%
+JACOB ANDREAS: So why does
+scale make it possible?
+
+00:44:30.900 --> 00:44:32.742 align:middle line:84%
+I mean, again, I
+think even the-- well,
+
+00:44:32.742 --> 00:44:34.700 align:middle line:84%
+so there's a couple of
+different things, right?
+
+00:44:34.700 --> 00:44:43.120 align:middle line:84%
+There's recognizing that a given
+input is asking for a model
+
+00:44:43.120 --> 00:44:45.880 align:middle line:84%
+to perform some of abstract
+reasoning capability and not
+
+00:44:45.880 --> 00:44:48.980 align:middle line:84%
+just to pattern match
+against a template.
+
+00:44:48.980 --> 00:44:50.600 align:middle line:84%
+And so I think a
+meaningful difference
+
+00:44:50.600 --> 00:44:54.840 align:middle line:84%
+between some of these examples
+and some of the things
+
+00:44:54.840 --> 00:44:56.500 align:middle line:84%
+that we were
+looking at over here
+
+00:44:56.500 --> 00:44:59.125 align:middle line:84%
+is that what you put
+into that z in principle
+
+00:44:59.125 --> 00:45:01.000 align:middle line:84%
+looks very different
+from problem to problem.
+
+00:45:01.000 --> 00:45:03.440 align:middle line:84%
+You're not just filling
+in holes in a template.
+
+00:45:03.440 --> 00:45:05.533 align:middle line:84%
+And that's something
+that-- small models,
+
+00:45:05.533 --> 00:45:06.700 align:middle line:90%
+you can give them this data.
+
+00:45:06.700 --> 00:45:09.120 align:middle line:84%
+They'll do the copying bit, and
+they won't do the generalization
+
+00:45:09.120 --> 00:45:09.580 align:middle line:90%
+bit.
+
+00:45:09.580 --> 00:45:11.205 align:middle line:84%
+And it's like the
+ability to generalize
+
+00:45:11.205 --> 00:45:14.297 align:middle line:84%
+to new reasoning chains,
+that's the thing that you get.
+
+00:45:14.297 --> 00:45:15.880 align:middle line:84%
+I think it is also
+the case-- and this
+
+00:45:15.880 --> 00:45:17.713 align:middle line:84%
+is something we'll come
+back to at the end--
+
+00:45:17.713 --> 00:45:20.040 align:middle line:84%
+that in the very largest
+models where people apply
+
+00:45:20.040 --> 00:45:23.400 align:middle line:84%
+these things now, there is some
+large amount of deliberate data
+
+00:45:23.400 --> 00:45:26.200 align:middle line:84%
+collection where people are
+making sure in the training set
+
+00:45:26.200 --> 00:45:28.970 align:middle line:84%
+there are enough examples
+of these kinds of step
+
+00:45:28.970 --> 00:45:31.202 align:middle line:90%
+by step thinking out loud.
+
+00:45:31.202 --> 00:45:31.910 align:middle line:90%
+Another question.
+
+00:45:31.910 --> 00:45:32.770 align:middle line:90%
+Yeah.
+
+00:45:32.770 --> 00:45:36.290 align:middle line:84%
+AUDIENCE: It seems like you can
+enforce multi-step reasoning
+
+00:45:36.290 --> 00:45:37.835 align:middle line:84%
+through chain-of-thought
+prompting.
+
+00:45:37.835 --> 00:45:40.210 align:middle line:84%
+And I'm wondering, where does
+reinforcement learning fall
+
+00:45:40.210 --> 00:45:40.670 align:middle line:90%
+into that?
+
+00:45:40.670 --> 00:45:42.430 align:middle line:84%
+Is that just to make
+it marginally better?
+
+00:45:42.430 --> 00:45:43.370 align:middle line:84%
+JACOB ANDREAS: So
+there's a question
+
+00:45:43.370 --> 00:45:44.670 align:middle line:90%
+about reinforcement learning.
+
+00:45:44.670 --> 00:45:49.970 align:middle line:84%
+We'll talk about reinforcement
+learning at the end.
+
+00:45:49.970 --> 00:45:51.970 align:middle line:90%
+Cool.
+
+00:45:51.970 --> 00:45:52.510 align:middle line:90%
+Good.
+
+00:45:52.510 --> 00:45:54.385 align:middle line:84%
+And I think maybe the
+main thing to take away
+
+00:45:54.385 --> 00:45:58.080 align:middle line:84%
+from this is just
+that you can, really,
+
+00:45:58.080 --> 00:45:59.830 align:middle line:84%
+for some of these hard
+reasoning problems,
+
+00:45:59.830 --> 00:46:02.433 align:middle line:84%
+especially in larger
+models, dramatically
+
+00:46:02.433 --> 00:46:03.850 align:middle line:84%
+improve the quality
+of the outputs
+
+00:46:03.850 --> 00:46:08.130 align:middle line:84%
+that you get just by prompting
+models to think step by step
+
+00:46:08.130 --> 00:46:10.170 align:middle line:84%
+in their outputs, by
+providing examples
+
+00:46:10.170 --> 00:46:12.130 align:middle line:84%
+of the kinds of
+reasoning chains that you
+
+00:46:12.130 --> 00:46:14.850 align:middle line:90%
+want them to go through.
+
+00:46:14.850 --> 00:46:19.610 align:middle line:84%
+Even more infuriatingly,
+as soon as the first round
+
+00:46:19.610 --> 00:46:22.730 align:middle line:84%
+of -of-thought papers came
+out where people were manually
+
+00:46:22.730 --> 00:46:27.300 align:middle line:84%
+authoring these z's,
+these reasoning steps,
+
+00:46:27.300 --> 00:46:30.180 align:middle line:84%
+people started to ask, is there
+just some magic incantation
+
+00:46:30.180 --> 00:46:31.900 align:middle line:84%
+that you can give
+models so that I
+
+00:46:31.900 --> 00:46:34.523 align:middle line:84%
+don't have to demonstrate
+the reasoning steps anew
+
+00:46:34.523 --> 00:46:36.440 align:middle line:84%
+for every new task that
+I'm trying to perform,
+
+00:46:36.440 --> 00:46:39.420 align:middle line:84%
+but I can just prompt the model
+in a totally task generic way
+
+00:46:39.420 --> 00:46:41.580 align:middle line:84%
+that will cause it
+to do this reasoning
+
+00:46:41.580 --> 00:46:43.280 align:middle line:90%
+and then produce a final answer?
+
+00:46:43.280 --> 00:46:47.620 align:middle line:90%
+
+
+00:46:47.620 --> 00:46:49.460 align:middle line:84%
+So as you might expect,
+somebody basically
+
+00:46:49.460 --> 00:46:54.412 align:middle line:84%
+just did a brute force search in
+the space of magic incantations
+
+00:46:54.412 --> 00:46:56.620 align:middle line:84%
+that you could append to
+the beginning of your answer
+
+00:46:56.620 --> 00:46:58.460 align:middle line:90%
+in a language model.
+
+00:46:58.460 --> 00:47:00.300 align:middle line:84%
+They found, "Let's
+think step by step,"
+
+00:47:00.300 --> 00:47:02.500 align:middle line:84%
+is the best string
+for, at least,
+
+00:47:02.500 --> 00:47:05.580 align:middle line:90%
+the models that existed in 2022.
+
+00:47:05.580 --> 00:47:13.580 align:middle line:84%
+And again, just maddeningly,
+this works super well.
+
+00:47:13.580 --> 00:47:17.140 align:middle line:84%
+The way to read this chart is
+you can take a model that gets
+
+00:47:17.140 --> 00:47:20.460 align:middle line:84%
+18% on an arithmetic task
+and bring it up to 80%
+
+00:47:20.460 --> 00:47:22.640 align:middle line:84%
+on an arithmetic
+task just by typing,
+
+00:47:22.640 --> 00:47:25.190 align:middle line:84%
+"Let's think step by step,"
+before you ask the model
+
+00:47:25.190 --> 00:47:27.470 align:middle line:90%
+to generate an answer.
+
+00:47:27.470 --> 00:47:33.950 align:middle line:84%
+Again, whether this really
+reflects some deep or unexpected
+
+00:47:33.950 --> 00:47:35.550 align:middle line:84%
+property of the
+training distribution,
+
+00:47:35.550 --> 00:47:39.950 align:middle line:84%
+or whether somewhere on the
+internet or somewhere deep
+
+00:47:39.950 --> 00:47:42.650 align:middle line:84%
+inside OpenAI, some
+product manager said, hey,
+
+00:47:42.650 --> 00:47:44.927 align:middle line:84%
+let's go out and generate a
+lot of documents that say,
+
+00:47:44.927 --> 00:47:47.510 align:middle line:84%
+"Let's think step by step," and
+then have the reasoning steps,
+
+00:47:47.510 --> 00:47:48.210 align:middle line:90%
+we don't know.
+
+00:47:48.210 --> 00:47:49.510 align:middle line:90%
+We may never know.
+
+00:47:49.510 --> 00:47:51.350 align:middle line:84%
+What we do know is
+that there are actually
+
+00:47:51.350 --> 00:47:54.788 align:middle line:84%
+these just kind of
+magic phrases that you
+
+00:47:54.788 --> 00:47:56.830 align:middle line:84%
+can give to models that
+cause them to become much
+
+00:47:56.830 --> 00:47:58.290 align:middle line:90%
+better at some of these tasks.
+
+00:47:58.290 --> 00:48:02.750 align:middle line:90%
+
+
+00:48:02.750 --> 00:48:03.430 align:middle line:90%
+Good.
+
+00:48:03.430 --> 00:48:06.270 align:middle line:90%
+And obviously, this is--
+
+00:48:06.270 --> 00:48:08.630 align:middle line:84%
+even though I've been calling
+it magic, it is not magic.
+
+00:48:08.630 --> 00:48:10.870 align:middle line:84%
+And in general, you
+are always going
+
+00:48:10.870 --> 00:48:14.550 align:middle line:84%
+to do better by giving
+explicit examples of the kind
+
+00:48:14.550 --> 00:48:16.130 align:middle line:84%
+of reasoning that
+you want to see,
+
+00:48:16.130 --> 00:48:19.130 align:middle line:84%
+rather than asking models to
+come up with it on their own.
+
+00:48:19.130 --> 00:48:22.820 align:middle line:84%
+But they are sometimes,
+to a nontrivial degree,
+
+00:48:22.820 --> 00:48:24.912 align:middle line:84%
+able to come up with
+it on their own.
+
+00:48:24.912 --> 00:48:27.120 align:middle line:84%
+Here are a bunch of different
+prompts that were tried
+
+00:48:27.120 --> 00:48:30.400 align:middle line:84%
+and varying degrees
+of effectiveness.
+
+00:48:30.400 --> 00:48:33.320 align:middle line:90%
+
+
+00:48:33.320 --> 00:48:34.640 align:middle line:90%
+Cool.
+
+00:48:34.640 --> 00:48:36.502 align:middle line:84%
+Here is a meme
+that we found when
+
+00:48:36.502 --> 00:48:37.960 align:middle line:84%
+we were putting
+this slide together
+
+00:48:37.960 --> 00:48:42.280 align:middle line:84%
+that, back when I was
+starting grad school,
+
+00:48:42.280 --> 00:48:45.280 align:middle line:84%
+all kinds of beautiful math and
+structured prediction things,
+
+00:48:45.280 --> 00:48:47.183 align:middle line:84%
+and now, really, the
+most effective thing
+
+00:48:47.183 --> 00:48:48.600 align:middle line:84%
+that you can do
+for a lot of tasks
+
+00:48:48.600 --> 00:48:50.440 align:middle line:84%
+is to write the
+words step by step.
+
+00:48:50.440 --> 00:48:54.760 align:middle line:84%
+And this is some amount of NLP
+research, but not all of it.
+
+00:48:54.760 --> 00:48:56.880 align:middle line:84%
+And I think there's
+a higher level
+
+00:48:56.880 --> 00:49:01.200 align:middle line:84%
+thing here, which is that
+a weird feature of living
+
+00:49:01.200 --> 00:49:04.560 align:middle line:84%
+in the modern era is that,
+actually, one of the greatest
+
+00:49:04.560 --> 00:49:07.600 align:middle line:84%
+degrees of control we have
+over models, one of the best
+
+00:49:07.600 --> 00:49:10.160 align:middle line:84%
+tools that we have for
+making them better,
+
+00:49:10.160 --> 00:49:14.340 align:middle line:84%
+is just coming up with better
+examples for the input,
+
+00:49:14.340 --> 00:49:17.948 align:middle line:84%
+coming up with better formats
+in which models can generate
+
+00:49:17.948 --> 00:49:20.240 align:middle line:84%
+their output, better guidance
+for what kinds of outputs
+
+00:49:20.240 --> 00:49:22.940 align:middle line:84%
+they should provide without
+doing any kind of fine-tuning.
+
+00:49:22.940 --> 00:49:25.680 align:middle line:84%
+And so whether or not you think
+this is interesting research
+
+00:49:25.680 --> 00:49:27.055 align:middle line:84%
+at this point,
+certainly, there's
+
+00:49:27.055 --> 00:49:29.640 align:middle line:84%
+an enormous amount
+of demand in industry
+
+00:49:29.640 --> 00:49:32.560 align:middle line:84%
+for people who have just
+very good intuition for how
+
+00:49:32.560 --> 00:49:36.440 align:middle line:84%
+to come up with strings
+that look like this
+
+00:49:36.440 --> 00:49:38.440 align:middle line:84%
+and other ways of structuring
+models and getting
+
+00:49:38.440 --> 00:49:41.680 align:middle line:90%
+their outputs to come.
+
+00:49:41.680 --> 00:49:42.980 align:middle line:90%
+There are things to learn.
+
+00:49:42.980 --> 00:49:45.240 align:middle line:84%
+My students are much
+better at this than I am.
+
+00:49:45.240 --> 00:49:50.360 align:middle line:84%
+And it's a thing that people
+get better at over time.
+
+00:49:50.360 --> 00:49:57.280 align:middle line:84%
+But how do we push this beyond
+what you get from off the shelf
+
+00:49:57.280 --> 00:50:00.860 align:middle line:84%
+models that have just been
+trained on the whole internet?
+
+00:50:00.860 --> 00:50:02.360 align:middle line:84%
+And in particular,
+is there anything
+
+00:50:02.360 --> 00:50:05.578 align:middle line:84%
+that we can do during the
+pretraining phase, knowing
+
+00:50:05.578 --> 00:50:08.120 align:middle line:84%
+that the ways in which these
+models are going to get used now
+
+00:50:08.120 --> 00:50:12.120 align:middle line:84%
+is not just to score the
+grammaticality of sentences
+
+00:50:12.120 --> 00:50:13.887 align:middle line:84%
+in English, but
+actually that they're
+
+00:50:13.887 --> 00:50:15.720 align:middle line:84%
+going to be given
+instructions, that they're
+
+00:50:15.720 --> 00:50:17.340 align:middle line:84%
+going to be given
+in-context examples,
+
+00:50:17.340 --> 00:50:19.215 align:middle line:84%
+that they're going to
+be asked to reason step
+
+00:50:19.215 --> 00:50:20.990 align:middle line:90%
+by step when they're in use?
+
+00:50:20.990 --> 00:50:21.670 align:middle line:90%
+Question first.
+
+00:50:21.670 --> 00:50:24.958 align:middle line:84%
+AUDIENCE: My question is, does
+it make sense to say that you
+
+00:50:24.958 --> 00:50:27.250 align:middle line:84%
+don't need to fine-tune any
+more just because it's good
+
+00:50:27.250 --> 00:50:29.670 align:middle line:84%
+at everything, or
+there's, like, better--
+
+00:50:29.670 --> 00:50:32.130 align:middle line:84%
+JACOB ANDREAS: So the question
+is, does it make sense
+
+00:50:32.130 --> 00:50:33.547 align:middle line:84%
+to say you don't
+need to fine-tune
+
+00:50:33.547 --> 00:50:36.250 align:middle line:84%
+any more because the model
+is good at everything?
+
+00:50:36.250 --> 00:50:38.900 align:middle line:84%
+This is something where it
+depends a lot on the task
+
+00:50:38.900 --> 00:50:40.150 align:middle line:90%
+that you're trying to perform.
+
+00:50:40.150 --> 00:50:43.890 align:middle line:84%
+Certainly, if you have
+some totally novel thing
+
+00:50:43.890 --> 00:50:48.850 align:middle line:84%
+or some weird looking
+input, you can get models
+
+00:50:48.850 --> 00:50:51.290 align:middle line:84%
+into a better place
+by fine-tuning them
+
+00:50:51.290 --> 00:50:53.630 align:middle line:84%
+than by providing
+examples in context
+
+00:50:53.630 --> 00:50:56.290 align:middle line:84%
+if you have lots and lots
+and lots of examples.
+
+00:50:56.290 --> 00:50:59.425 align:middle line:84%
+I think right now, the balance
+of evidence is in favor
+
+00:50:59.425 --> 00:51:02.050 align:middle line:84%
+of, you'd still rather do some
+kind of fine-tuning on them than
+
+00:51:02.050 --> 00:51:04.828 align:middle line:84%
+just dump 100,000
+examples in context.
+
+00:51:04.828 --> 00:51:06.370 align:middle line:84%
+That being said,
+this is also an area
+
+00:51:06.370 --> 00:51:09.330 align:middle line:84%
+that's moving really fast
+as the context over which
+
+00:51:09.330 --> 00:51:12.250 align:middle line:84%
+these models can operate
+gets longer and longer
+
+00:51:12.250 --> 00:51:17.700 align:middle line:84%
+and is something
+that could change.
+
+00:51:17.700 --> 00:51:21.700 align:middle line:84%
+But most people don't
+have the ability
+
+00:51:21.700 --> 00:51:26.380 align:middle line:84%
+to fine-tune a very large
+model in the first place
+
+00:51:26.380 --> 00:51:29.520 align:middle line:84%
+or can only do that once
+and not a gajillion times.
+
+00:51:29.520 --> 00:51:31.520 align:middle line:84%
+And so just from a
+practical perspective,
+
+00:51:31.520 --> 00:51:33.540 align:middle line:84%
+often, this is kind
+of the best tool
+
+00:51:33.540 --> 00:51:36.260 align:middle line:84%
+that we have for
+steering these models.
+
+00:51:36.260 --> 00:51:38.393 align:middle line:84%
+But then that feeds into
+the next question of,
+
+00:51:38.393 --> 00:51:40.060 align:middle line:84%
+given that this is
+how people are mostly
+
+00:51:40.060 --> 00:51:41.640 align:middle line:84%
+going to be
+interacting with them,
+
+00:51:41.640 --> 00:51:43.098 align:middle line:84%
+what should we be
+doing differently
+
+00:51:43.098 --> 00:51:45.335 align:middle line:84%
+when we train the models
+so that they will do better
+
+00:51:45.335 --> 00:51:47.460 align:middle line:84%
+at in-context learning, so
+that they will do better
+
+00:51:47.460 --> 00:51:49.980 align:middle line:84%
+at instruction following,
+so that they will do better
+
+00:51:49.980 --> 00:51:51.240 align:middle line:90%
+at chain-of-thought reasoning?
+
+00:51:51.240 --> 00:51:56.220 align:middle line:90%
+
+
+00:51:56.220 --> 00:51:57.120 align:middle line:90%
+Sorry.
+
+00:51:57.120 --> 00:52:00.660 align:middle line:90%
+Skipping ahead here.
+
+00:52:00.660 --> 00:52:04.900 align:middle line:84%
+So we set up before that one
+simple and effective trick
+
+00:52:04.900 --> 00:52:07.980 align:middle line:84%
+that you can do, even before any
+of this chain-of-thought stuff,
+
+00:52:07.980 --> 00:52:13.060 align:middle line:84%
+was just to give models these
+x, y examples in context.
+
+00:52:13.060 --> 00:52:15.670 align:middle line:84%
+We saw also that you could
+give natural language
+
+00:52:15.670 --> 00:52:21.530 align:middle line:84%
+descriptions of tasks and ask
+models to perform these tasks.
+
+00:52:21.530 --> 00:52:30.670 align:middle line:90%
+But here, if you, for example--
+
+00:52:30.670 --> 00:52:31.510 align:middle line:90%
+sorry.
+
+00:52:31.510 --> 00:52:33.430 align:middle line:84%
+To step through
+this piece by piece.
+
+00:52:33.430 --> 00:52:35.930 align:middle line:84%
+If you just give a model
+the string, "This quiet,
+
+00:52:35.930 --> 00:52:41.590 align:middle line:84%
+introspective and entertaining
+independent is worth thinking,"
+
+00:52:41.590 --> 00:52:44.550 align:middle line:84%
+it's not even clear what
+the task is going to be.
+
+00:52:44.550 --> 00:52:48.873 align:middle line:84%
+And so models, by default, when
+you give them an individual x,
+
+00:52:48.873 --> 00:52:50.290 align:middle line:84%
+they're not going
+to give you a y,
+
+00:52:50.290 --> 00:52:51.710 align:middle line:84%
+they're just going to give
+you some other text that
+
+00:52:51.710 --> 00:52:52.650 align:middle line:90%
+looks of related.
+
+00:52:52.650 --> 00:52:59.470 align:middle line:84%
+So here was some, I think,
+GPT-3 or 2, late 2 model
+
+00:52:59.470 --> 00:53:00.730 align:middle line:90%
+given this sentence as input.
+
+00:53:00.730 --> 00:53:03.022 align:middle line:84%
+And what you get out is not
+a sentiment label for this,
+
+00:53:03.022 --> 00:53:05.910 align:middle line:84%
+but just more text kind
+of in the same vein.
+
+00:53:05.910 --> 00:53:08.550 align:middle line:84%
+If you just modify the
+format of this a little bit,
+
+00:53:08.550 --> 00:53:10.410 align:middle line:84%
+and you prefix this
+thing with review,
+
+00:53:10.410 --> 00:53:13.480 align:middle line:84%
+and then you put answer
+at the end, even here,
+
+00:53:13.480 --> 00:53:16.840 align:middle line:84%
+the model doesn't know the
+answer to what question.
+
+00:53:16.840 --> 00:53:19.640 align:middle line:84%
+You get, "This thought-provoking
+independent film is worth
+
+00:53:19.640 --> 00:53:20.180 align:middle line:90%
+a watch."
+
+00:53:20.180 --> 00:53:21.930 align:middle line:84%
+Maybe the model is
+inferred here that it's
+
+00:53:21.930 --> 00:53:24.880 align:middle line:84%
+supposed to be doing grammar
+correction task rather
+
+00:53:24.880 --> 00:53:27.360 align:middle line:90%
+than a sentiment analysis task.
+
+00:53:27.360 --> 00:53:29.972 align:middle line:84%
+If you give a detailed natural
+language instruction, now,
+
+00:53:29.972 --> 00:53:31.680 align:middle line:84%
+there's, in principle,
+enough information
+
+00:53:31.680 --> 00:53:34.210 align:middle line:84%
+in the input for the
+model to figure out
+
+00:53:34.210 --> 00:53:35.960 align:middle line:84%
+what it's supposed to
+be doing and produce
+
+00:53:35.960 --> 00:53:37.660 align:middle line:90%
+a positive word as output.
+
+00:53:37.660 --> 00:53:42.320 align:middle line:84%
+But even this behavior is
+quite brittle in models
+
+00:53:42.320 --> 00:53:44.360 align:middle line:90%
+that are off the shelf.
+
+00:53:44.360 --> 00:53:47.800 align:middle line:84%
+And one reason for
+that is that there
+
+00:53:47.800 --> 00:53:49.400 align:middle line:84%
+are lots of-- again,
+thinking of these
+
+00:53:49.400 --> 00:53:51.543 align:middle line:84%
+as like models of random
+documents on the internet,
+
+00:53:51.543 --> 00:53:52.960 align:middle line:84%
+there are lots of
+ways of starting
+
+00:53:52.960 --> 00:53:54.460 align:middle line:84%
+a document with
+something that looks
+
+00:53:54.460 --> 00:53:56.460 align:middle line:84%
+like an instruction
+and then an input
+
+00:53:56.460 --> 00:53:59.955 align:middle line:84%
+and continuing that document
+without actually providing
+
+00:53:59.955 --> 00:54:01.580 align:middle line:84%
+the text that follows
+that instruction.
+
+00:54:01.580 --> 00:54:03.400 align:middle line:84%
+So here, we've prompted
+the model with,
+
+00:54:03.400 --> 00:54:04.900 align:middle line:90%
+"Answer the following question.
+
+00:54:04.900 --> 00:54:07.880 align:middle line:84%
+Why isn't the next-word
+prediction objective enough
+
+00:54:07.880 --> 00:54:10.650 align:middle line:84%
+to enable generic
+instruction-following?"
+
+00:54:10.650 --> 00:54:13.310 align:middle line:84%
+The model, rather than
+producing an answer here,
+
+00:54:13.310 --> 00:54:16.328 align:middle line:84%
+starts to generate more
+questions of the same kind,
+
+00:54:16.328 --> 00:54:18.370 align:middle line:84%
+maybe assuming that, then,
+all of those questions
+
+00:54:18.370 --> 00:54:23.570 align:middle line:84%
+will be handed off to a
+reader to answer or something.
+
+00:54:23.570 --> 00:54:28.930 align:middle line:84%
+And so one thing that has become
+part of the pretraining process
+
+00:54:28.930 --> 00:54:30.410 align:middle line:84%
+after you've gone
+out and learned
+
+00:54:30.410 --> 00:54:33.130 align:middle line:84%
+to do next token prediction
+on the entire input
+
+00:54:33.130 --> 00:54:34.570 align:middle line:90%
+is to realize, OK.
+
+00:54:34.570 --> 00:54:37.690 align:middle line:84%
+99% of what people are going
+to be using these models for
+
+00:54:37.690 --> 00:54:39.810 align:middle line:84%
+is instruction following
+tasks, so let's
+
+00:54:39.810 --> 00:54:42.930 align:middle line:84%
+actually just give them targeted
+supervision on instruction
+
+00:54:42.930 --> 00:54:43.630 align:middle line:90%
+following tasks.
+
+00:54:43.630 --> 00:54:46.837 align:middle line:84%
+And so if you interact with
+any modern language model now,
+
+00:54:46.837 --> 00:54:48.670 align:middle line:84%
+and you say, "Answer
+the following question.
+
+00:54:48.670 --> 00:54:51.890 align:middle line:84%
+Why isn't the next-word
+prediction an objective enough?"
+
+00:54:51.890 --> 00:54:54.850 align:middle line:90%
+It will answer the question.
+
+00:54:54.850 --> 00:54:56.267 align:middle line:84%
+And this is not a
+natural behavior
+
+00:54:56.267 --> 00:54:58.267 align:middle line:84%
+that you get just from
+training on the internet.
+
+00:54:58.267 --> 00:55:01.010 align:middle line:84%
+You actually do need to do some
+amount of focused fine-tuning
+
+00:55:01.010 --> 00:55:03.970 align:middle line:84%
+to get this kind of zero-shot
+instruction following behavior.
+
+00:55:03.970 --> 00:55:05.670 align:middle line:84%
+And in a previous
+generation of models,
+
+00:55:05.670 --> 00:55:07.128 align:middle line:84%
+if you wanted to
+do this, you would
+
+00:55:07.128 --> 00:55:10.940 align:middle line:84%
+have had to give lots and lots
+more examples of questions
+
+00:55:10.940 --> 00:55:16.220 align:middle line:84%
+or really careful formatting
+of the output and so on.
+
+00:55:16.220 --> 00:55:19.320 align:middle line:84%
+And so the main
+technical thing here,
+
+00:55:19.320 --> 00:55:22.120 align:middle line:84%
+which is not actually all that
+technically interesting at all,
+
+00:55:22.120 --> 00:55:25.200 align:middle line:84%
+is just to go out and gather a
+bunch of targeted instruction
+
+00:55:25.200 --> 00:55:28.420 align:middle line:84%
+following data in a way
+that will cause models to,
+
+00:55:28.420 --> 00:55:31.180 align:middle line:84%
+by default, assume an
+instruction following
+
+00:55:31.180 --> 00:55:33.100 align:middle line:84%
+interpretation of
+inputs rather than
+
+00:55:33.100 --> 00:55:36.140 align:middle line:90%
+other kinds of interpretations.
+
+00:55:36.140 --> 00:55:38.380 align:middle line:84%
+And there are a couple
+of different schemes
+
+00:55:38.380 --> 00:55:41.140 align:middle line:84%
+that people proposed
+for following
+
+00:55:41.140 --> 00:55:43.420 align:middle line:90%
+this in the literature.
+
+00:55:43.420 --> 00:55:46.540 align:middle line:84%
+The first thing which happened
+mostly in the academic community
+
+00:55:46.540 --> 00:55:47.860 align:middle line:90%
+was just to say, OK.
+
+00:55:47.860 --> 00:55:50.820 align:middle line:84%
+Let's take all of our
+existing standard NLP data
+
+00:55:50.820 --> 00:55:54.200 align:middle line:84%
+sets for sentiment analysis,
+for machine translation,
+
+00:55:54.200 --> 00:55:57.780 align:middle line:84%
+for text summarization,
+for sentence classification
+
+00:55:57.780 --> 00:56:01.420 align:middle line:84%
+problems of other kinds,
+and just fine-tune language
+
+00:56:01.420 --> 00:56:04.140 align:middle line:84%
+models on all of these
+things all at the same time
+
+00:56:04.140 --> 00:56:07.870 align:middle line:84%
+with little templates
+that had natural language
+
+00:56:07.870 --> 00:56:11.670 align:middle line:84%
+descriptions of each tasks and
+examples of inputs and outputs.
+
+00:56:11.670 --> 00:56:13.550 align:middle line:84%
+And this actually
+worked pretty well.
+
+00:56:13.550 --> 00:56:17.150 align:middle line:84%
+And even on small scale
+academic-sized models,
+
+00:56:17.150 --> 00:56:19.710 align:middle line:84%
+just essentially
+synthetically generating
+
+00:56:19.710 --> 00:56:23.310 align:middle line:84%
+a bunch of instructions
+derived from standard data
+
+00:56:23.310 --> 00:56:26.950 align:middle line:84%
+sets and standard tasks
+that people had put together
+
+00:56:26.950 --> 00:56:28.870 align:middle line:90%
+got you a reasonably long way.
+
+00:56:28.870 --> 00:56:32.230 align:middle line:84%
+But it turns out, if you really
+want high quality, totally
+
+00:56:32.230 --> 00:56:35.550 align:middle line:84%
+general instruction following
+behavior like this and question
+
+00:56:35.550 --> 00:56:37.670 align:middle line:84%
+answering behavior like
+this, there's really
+
+00:56:37.670 --> 00:56:40.710 align:middle line:84%
+no substitute for just
+going out and collecting
+
+00:56:40.710 --> 00:56:44.170 align:middle line:84%
+a bunch of new data
+yourself for as many tasks
+
+00:56:44.170 --> 00:56:46.610 align:middle line:84%
+as you can imagine, as many
+inputs as you can imagine.
+
+00:56:46.610 --> 00:56:50.630 align:middle line:84%
+And so a lot of what
+goes on or is believed
+
+00:56:50.630 --> 00:56:55.350 align:middle line:84%
+to go on inside the big
+LLM company shops right now
+
+00:56:55.350 --> 00:56:57.710 align:middle line:84%
+is exactly this, just
+various clever ways
+
+00:56:57.710 --> 00:57:02.630 align:middle line:84%
+of collecting diverse,
+comprehensive kinds
+
+00:57:02.630 --> 00:57:04.400 align:middle line:84%
+of instructions that
+users are eventually
+
+00:57:04.400 --> 00:57:06.120 align:middle line:84%
+going to ask their
+models so that they
+
+00:57:06.120 --> 00:57:10.320 align:middle line:90%
+can fine-tune on that data.
+
+00:57:10.320 --> 00:57:11.040 align:middle line:90%
+Yeah.
+
+00:57:11.040 --> 00:57:11.707 align:middle line:90%
+AUDIENCE: Sorry.
+
+00:57:11.707 --> 00:57:13.900 align:middle line:90%
+This was a couple topics back.
+
+00:57:13.900 --> 00:57:17.360 align:middle line:84%
+But when you showed that
+just adding step by step
+
+00:57:17.360 --> 00:57:22.560 align:middle line:84%
+increased the accuracy, is
+that just for that same word
+
+00:57:22.560 --> 00:57:25.780 align:middle line:84%
+problem plus step by
+step as the entire input,
+
+00:57:25.780 --> 00:57:28.480 align:middle line:84%
+but that accuracy
+doesn't transfer
+
+00:57:28.480 --> 00:57:34.720 align:middle line:84%
+to if you just ask the same
+prompt, and what's the answer?
+
+00:57:34.720 --> 00:57:36.640 align:middle line:84%
+It's able to answer
+that math question
+
+00:57:36.640 --> 00:57:41.440 align:middle line:84%
+when you add that input prompt,
+but it still wasn't retrained
+
+00:57:41.440 --> 00:57:45.200 align:middle line:84%
+or learned anything to
+answer the question correctly
+
+00:57:45.200 --> 00:57:48.043 align:middle line:84%
+with the prompt that is not
+telling it to go [INAUDIBLE].
+
+00:57:48.043 --> 00:57:49.460 align:middle line:84%
+JACOB ANDREAS:
+Yeah, that's right.
+
+00:57:49.460 --> 00:57:52.140 align:middle line:84%
+So for all-- let me see if I
+can find this specific table.
+
+00:57:52.140 --> 00:57:55.200 align:middle line:84%
+But for all the examples
+that we were looking at here,
+
+00:57:55.200 --> 00:57:57.880 align:middle line:90%
+in none of these cases are we--
+
+00:57:57.880 --> 00:57:59.880 align:middle line:84%
+I guess now, we're a
+little out of order,
+
+00:57:59.880 --> 00:58:02.090 align:middle line:84%
+because these are models
+that have been instruction
+
+00:58:02.090 --> 00:58:04.830 align:middle line:84%
+tuned following the procedure
+that I showed you later on.
+
+00:58:04.830 --> 00:58:08.670 align:middle line:84%
+But it's the same base
+model in all of these cases.
+
+00:58:08.670 --> 00:58:10.610 align:middle line:84%
+And all that's
+changed is basically
+
+00:58:10.610 --> 00:58:15.210 align:middle line:84%
+the text that goes in
+front of the answer.
+
+00:58:15.210 --> 00:58:16.928 align:middle line:90%
+Yeah.
+
+00:58:16.928 --> 00:58:18.470 align:middle line:84%
+AUDIENCE: Maybe
+jumping the gun here,
+
+00:58:18.470 --> 00:58:21.037 align:middle line:84%
+but you said collect large
+data sets from users.
+
+00:58:21.037 --> 00:58:21.870 align:middle line:90%
+JACOB ANDREAS: Yeah.
+
+00:58:21.870 --> 00:58:26.930 align:middle line:84%
+AUDIENCE: Why not have a
+system synthetically created
+
+00:58:26.930 --> 00:58:28.733 align:middle line:84%
+to augment data sets
+for instruction?
+
+00:58:28.733 --> 00:58:30.150 align:middle line:84%
+JACOB ANDREAS: So
+the question is,
+
+00:58:30.150 --> 00:58:31.410 align:middle line:84%
+why not have the
+system synthetically
+
+00:58:31.410 --> 00:58:32.350 align:middle line:90%
+create these things?
+
+00:58:32.350 --> 00:58:35.630 align:middle line:84%
+Well, so there's two things
+that you could do synthetically.
+
+00:58:35.630 --> 00:58:38.130 align:middle line:84%
+You could just ask
+models to generate,
+
+00:58:38.130 --> 00:58:41.250 align:middle line:84%
+what are kinds of
+instructions that users
+
+00:58:41.250 --> 00:58:43.610 align:middle line:90%
+might issue in the future?
+
+00:58:43.610 --> 00:58:47.837 align:middle line:84%
+And maybe if you have a lot
+of instructions of the kind
+
+00:58:47.837 --> 00:58:50.170 align:middle line:84%
+that you want to be able to
+use eventually, and you say,
+
+00:58:50.170 --> 00:58:51.870 align:middle line:84%
+generate more stuff
+in this genre,
+
+00:58:51.870 --> 00:58:54.312 align:middle line:84%
+you will get some interesting
+generalization there.
+
+00:58:54.312 --> 00:58:55.770 align:middle line:84%
+And then you can
+take those things,
+
+00:58:55.770 --> 00:58:58.810 align:middle line:84%
+and you can go out and
+ask people to label them.
+
+00:58:58.810 --> 00:59:02.560 align:middle line:84%
+And that is certainly part
+of the process everywhere.
+
+00:59:02.560 --> 00:59:04.060 align:middle line:84%
+Another thing that
+you could imagine
+
+00:59:04.060 --> 00:59:07.692 align:middle line:84%
+doing with synthetic
+data is asking the model
+
+00:59:07.692 --> 00:59:09.900 align:middle line:84%
+both to generate a bunch of
+instructions and the text
+
+00:59:09.900 --> 00:59:14.187 align:middle line:84%
+that follows those instructions
+and then fine-tune on that.
+
+00:59:14.187 --> 00:59:16.520 align:middle line:84%
+And this is something that
+we can talk more about later.
+
+00:59:16.520 --> 00:59:19.120 align:middle line:84%
+But if you just do that, if you
+just say, generate some data
+
+00:59:19.120 --> 00:59:21.340 align:middle line:84%
+and then fine-tune
+on that same data,
+
+00:59:21.340 --> 00:59:26.660 align:middle line:84%
+the model can't possibly have
+learned to do anything new.
+
+00:59:26.660 --> 00:59:29.140 align:middle line:84%
+Information, theoretically,
+can't get something
+
+00:59:29.140 --> 00:59:30.660 align:middle line:90%
+from nothing.
+
+00:59:30.660 --> 00:59:33.460 align:middle line:84%
+And so when you're
+in-- if you want
+
+00:59:33.460 --> 00:59:35.380 align:middle line:84%
+to train a model
+on synthetic data,
+
+00:59:35.380 --> 00:59:38.758 align:middle line:84%
+you either need some sort of
+outside source of information
+
+00:59:38.758 --> 00:59:40.300 align:middle line:84%
+that's going to
+filter that data down
+
+00:59:40.300 --> 00:59:46.720 align:middle line:84%
+to the good stuff or some
+difference between the process
+
+00:59:46.720 --> 00:59:48.220 align:middle line:84%
+that's generating
+the synthetic data
+
+00:59:48.220 --> 00:59:50.470 align:middle line:84%
+and the process that's
+training on the synthetic data.
+
+00:59:50.470 --> 00:59:53.460 align:middle line:84%
+And so one concrete
+example you can imagine
+
+00:59:53.460 --> 00:59:55.280 align:middle line:84%
+doing for this instruction
+following thing,
+
+00:59:55.280 --> 00:59:59.730 align:middle line:84%
+which I think people
+have tried, is to say,
+
+00:59:59.730 --> 01:00:02.910 align:middle line:84%
+I'm going to write a really
+good prompt that really makes
+
+01:00:02.910 --> 01:00:05.430 align:middle line:84%
+it very clear that what the
+model is supposed to be doing
+
+01:00:05.430 --> 01:00:07.472 align:middle line:84%
+is instruction following
+and not any other thing.
+
+01:00:07.472 --> 01:00:09.990 align:middle line:84%
+I'm going to have a ton
+of few-shot examples,
+
+01:00:09.990 --> 01:00:16.690 align:middle line:84%
+and I'm going to have
+very explicit meta
+
+01:00:16.690 --> 01:00:18.190 align:middle line:84%
+instructions saying,
+you're supposed
+
+01:00:18.190 --> 01:00:19.963 align:middle line:84%
+to be an instruction
+following model.
+
+01:00:19.963 --> 01:00:22.130 align:middle line:84%
+I'm going to sample a bunch
+of data from that model,
+
+01:00:22.130 --> 01:00:23.610 align:middle line:84%
+and then I'm going to
+fine-tune on that data.
+
+01:00:23.610 --> 01:00:25.360 align:middle line:84%
+And what you get there
+is not a model that
+
+01:00:25.360 --> 01:00:27.510 align:middle line:84%
+knows how to do anything
+new, but just a model that
+
+01:00:27.510 --> 01:00:29.950 align:middle line:84%
+behaves like that really
+good prompt that you wrote
+
+01:00:29.950 --> 01:00:32.010 align:middle line:84%
+is sitting there in the
+context all the time
+
+01:00:32.010 --> 01:00:36.150 align:middle line:84%
+so that the user doesn't have
+to type it out themselves.
+
+01:00:36.150 --> 01:00:37.930 align:middle line:84%
+That trick is called
+context distillation,
+
+01:00:37.930 --> 01:00:39.597 align:middle line:84%
+and it's like one of
+the standard things
+
+01:00:39.597 --> 01:00:42.170 align:middle line:84%
+that you can do with
+synthetic data that works.
+
+01:00:42.170 --> 01:00:45.770 align:middle line:84%
+But it really just moves mass
+around in the output space,
+
+01:00:45.770 --> 01:00:48.130 align:middle line:84%
+and it doesn't tell the
+model how to do anything new.
+
+01:00:48.130 --> 01:00:53.470 align:middle line:90%
+
+
+01:00:53.470 --> 01:00:54.970 align:middle line:84%
+We can do more
+questions at the end.
+
+01:00:54.970 --> 01:00:59.900 align:middle line:84%
+I do want to get ahead
+to the last bit of this.
+
+01:00:59.900 --> 01:01:06.480 align:middle line:84%
+And so coming back
+to things that change
+
+01:01:06.480 --> 01:01:08.360 align:middle line:84%
+at scale or
+capabilities that emerge
+
+01:01:08.360 --> 01:01:13.800 align:middle line:84%
+as models get bigger and bigger,
+instruction tuning of the kind
+
+01:01:13.800 --> 01:01:16.720 align:middle line:84%
+that we were describing, like
+doing some focused fine-tuning
+
+01:01:16.720 --> 01:01:19.480 align:middle line:84%
+on targeted instruction
+data, does actually
+
+01:01:19.480 --> 01:01:21.880 align:middle line:84%
+seem to be quite
+important for getting
+
+01:01:21.880 --> 01:01:24.760 align:middle line:90%
+at some of these capabilities.
+
+01:01:24.760 --> 01:01:27.600 align:middle line:84%
+And so looking especially
+at the second plot
+
+01:01:27.600 --> 01:01:31.360 align:middle line:84%
+here, if you take a model, you
+just do larger and larger scale
+
+01:01:31.360 --> 01:01:33.620 align:middle line:84%
+pretraining without this
+instruction tuning phase,
+
+01:01:33.620 --> 01:01:36.520 align:middle line:84%
+it gets better at some
+standard collection of language
+
+01:01:36.520 --> 01:01:40.000 align:middle line:84%
+understanding tasks, but not at
+a particularly impressive rate.
+
+01:01:40.000 --> 01:01:42.600 align:middle line:84%
+If you grow the model,
+and in parallel, you
+
+01:01:42.600 --> 01:01:48.560 align:middle line:84%
+do this instruction
+tuning step at the end,
+
+01:01:48.560 --> 01:01:51.560 align:middle line:84%
+then you start to see really
+much greater improvements
+
+01:01:51.560 --> 01:01:52.060 align:middle line:90%
+with scale.
+
+01:01:52.060 --> 01:01:54.810 align:middle line:84%
+So these things interact with
+each other in a positive way.
+
+01:01:54.810 --> 01:01:56.970 align:middle line:84%
+You need targeted
+training data, and you
+
+01:01:56.970 --> 01:01:58.530 align:middle line:84%
+need really large
+models in order
+
+01:01:58.530 --> 01:02:00.850 align:middle line:84%
+to get good general purpose
+instruction following
+
+01:02:00.850 --> 01:02:04.050 align:middle line:90%
+capabilities.
+
+01:02:04.050 --> 01:02:06.693 align:middle line:90%
+And is this all we need?
+
+01:02:06.693 --> 01:02:08.610 align:middle line:84%
+Or is this the best thing
+that we can possibly
+
+01:02:08.610 --> 01:02:10.570 align:middle line:84%
+do, knowing that we're
+going to live in a world
+
+01:02:10.570 --> 01:02:15.490 align:middle line:84%
+where people are mostly
+interacting with these models
+
+01:02:15.490 --> 01:02:17.810 align:middle line:84%
+by issuing instructions
+and asking them to do some
+
+01:02:17.810 --> 01:02:20.290 align:middle line:90%
+of chain-of-thought reasoning?
+
+01:02:20.290 --> 01:02:22.490 align:middle line:84%
+Consider the following
+set of instructions
+
+01:02:22.490 --> 01:02:26.110 align:middle line:84%
+that a user might issue
+to one of these models.
+
+01:02:26.110 --> 01:02:28.770 align:middle line:90%
+
+
+01:02:28.770 --> 01:02:30.130 align:middle line:90%
+And these are all--
+
+01:02:30.130 --> 01:02:33.170 align:middle line:90%
+
+
+01:02:33.170 --> 01:02:34.760 align:middle line:90%
+sorry.
+
+01:02:34.760 --> 01:02:36.510 align:middle line:84%
+Coming back to what
+we were saying before,
+
+01:02:36.510 --> 01:02:39.890 align:middle line:84%
+the data collection process
+for instruction tuning
+
+01:02:39.890 --> 01:02:41.110 align:middle line:90%
+looks something like this.
+
+01:02:41.110 --> 01:02:43.110 align:middle line:84%
+We come up with a set
+of instruction prompts.
+
+01:02:43.110 --> 01:02:46.422 align:middle line:84%
+We ask human annotators
+to label them,
+
+01:02:46.422 --> 01:02:48.130 align:middle line:84%
+and then we just
+maximize the probability
+
+01:02:48.130 --> 01:02:53.220 align:middle line:84%
+of these responses given the
+instructions that preceded them.
+
+01:02:53.220 --> 01:02:59.220 align:middle line:84%
+But you're going to run
+into some issues here.
+
+01:02:59.220 --> 01:03:03.260 align:middle line:84%
+One of them, maybe,
+is that the data
+
+01:03:03.260 --> 01:03:05.940 align:middle line:84%
+is going to change after
+you train the model,
+
+01:03:05.940 --> 01:03:08.220 align:middle line:84%
+so maybe people weren't
+knowledgeable enough
+
+01:03:08.220 --> 01:03:11.860 align:middle line:84%
+to say, by default,
+when somebody is asking
+
+01:03:11.860 --> 01:03:14.420 align:middle line:84%
+a transformer, when they're
+using transformer with a capital
+
+01:03:14.420 --> 01:03:17.140 align:middle line:84%
+T, they mean the machine
+learning model and not
+
+01:03:17.140 --> 01:03:18.480 align:middle line:90%
+the electrical component.
+
+01:03:18.480 --> 01:03:22.560 align:middle line:84%
+Maybe in 2017, the data
+that we were collecting,
+
+01:03:22.560 --> 01:03:24.660 align:middle line:84%
+nobody was asking for
+explanations of transformers
+
+01:03:24.660 --> 01:03:29.140 align:middle line:84%
+because nobody knew
+what a transformer was.
+
+01:03:29.140 --> 01:03:34.660 align:middle line:84%
+Similarly, if in this question
+asking data, if when you go out
+
+01:03:34.660 --> 01:03:37.260 align:middle line:84%
+and you ask your
+users to issue--
+
+01:03:37.260 --> 01:03:39.955 align:middle line:84%
+or you collect a bunch of
+instructions and then you get
+
+01:03:39.955 --> 01:03:42.580 align:middle line:84%
+people to label those, and you
+always label them with the right
+
+01:03:42.580 --> 01:03:48.140 align:middle line:84%
+answer, then in the future,
+if somebody asks an impossible
+
+01:03:48.140 --> 01:03:52.110 align:middle line:84%
+question to the language model,
+it has never anywhere in its
+
+01:03:52.110 --> 01:03:54.390 align:middle line:84%
+training data, or its
+fine-tuning data, at least,
+
+01:03:54.390 --> 01:03:56.110 align:middle line:84%
+seen somebody say,
+"I don't know."
+
+01:03:56.110 --> 01:03:57.870 align:middle line:84%
+And so of all of the
+possible responses
+
+01:03:57.870 --> 01:04:01.410 align:middle line:84%
+you could give to who
+won the 2028 World Cup,
+
+01:04:01.410 --> 01:04:05.710 align:middle line:84%
+maybe the model knows
+enough about soccer
+
+01:04:05.710 --> 01:04:08.253 align:middle line:84%
+to know that it should
+be the name of a country.
+
+01:04:08.253 --> 01:04:09.670 align:middle line:84%
+Maybe it knows
+enough about soccer
+
+01:04:09.670 --> 01:04:11.930 align:middle line:84%
+to know what countries
+are soccer powerhouses
+
+01:04:11.930 --> 01:04:13.850 align:middle line:84%
+and that Argentina
+is a plausible winner
+
+01:04:13.850 --> 01:04:17.590 align:middle line:84%
+and maybe the US men's team
+is not a plausible winner
+
+01:04:17.590 --> 01:04:21.590 align:middle line:90%
+of the 2028 World Cup.
+
+01:04:21.590 --> 01:04:24.390 align:middle line:84%
+It doesn't assign
+high probability to,
+
+01:04:24.390 --> 01:04:27.130 align:middle line:84%
+this is an impossible question
+to answer, because it's never,
+
+01:04:27.130 --> 01:04:29.310 align:middle line:84%
+in the training data,
+seen a question that
+
+01:04:29.310 --> 01:04:30.690 align:middle line:90%
+was impossible to answer.
+
+01:04:30.690 --> 01:04:33.830 align:middle line:84%
+And more generally, even if
+it saw a impossible questions
+
+01:04:33.830 --> 01:04:36.390 align:middle line:84%
+to answer, the
+language model doesn't
+
+01:04:36.390 --> 01:04:38.990 align:middle line:84%
+know what the year is,
+so it doesn't necessarily
+
+01:04:38.990 --> 01:04:42.350 align:middle line:84%
+know-- by default, unless it's
+been fine-tuned to output 2024
+
+01:04:42.350 --> 01:04:44.750 align:middle line:84%
+when somebody asks
+what the year is.
+
+01:04:44.750 --> 01:04:46.550 align:middle line:84%
+And so it doesn't
+know what things
+
+01:04:46.550 --> 01:04:49.440 align:middle line:84%
+are in principle answerable
+and what things are not
+
+01:04:49.440 --> 01:04:50.920 align:middle line:90%
+even in principle answerable.
+
+01:04:50.920 --> 01:04:53.860 align:middle line:84%
+And so what you'd really like
+in these cases is for the model
+
+01:04:53.860 --> 01:04:55.360 align:middle line:84%
+to say something
+like, I don't know.
+
+01:04:55.360 --> 01:04:58.382 align:middle line:84%
+This is not part of
+my training data.
+
+01:04:58.382 --> 01:05:00.840 align:middle line:84%
+But you have the chicken and
+egg problem because your human
+
+01:05:00.840 --> 01:05:02.960 align:middle line:84%
+annotators aren't going to know
+what the model doesn't know
+
+01:05:02.960 --> 01:05:05.560 align:middle line:84%
+and therefore can't supervise
+it to say, "I don't know,"
+
+01:05:05.560 --> 01:05:07.960 align:middle line:90%
+in appropriate places.
+
+01:05:07.960 --> 01:05:11.383 align:middle line:84%
+Similarly, as a model
+developer, there
+
+01:05:11.383 --> 01:05:12.800 align:middle line:84%
+might be certain
+kinds of requests
+
+01:05:12.800 --> 01:05:14.560 align:middle line:84%
+that we don't want
+models to answer
+
+01:05:14.560 --> 01:05:16.720 align:middle line:90%
+at all in the first place.
+
+01:05:16.720 --> 01:05:20.280 align:middle line:84%
+It's a bad PR look
+for OpenAI or Google
+
+01:05:20.280 --> 01:05:22.600 align:middle line:84%
+or Microsoft if you
+can ask, give me
+
+01:05:22.600 --> 01:05:24.180 align:middle line:84%
+ideas on how to
+cheat on my midterm,
+
+01:05:24.180 --> 01:05:26.222 align:middle line:84%
+and the model comes up
+with lots of ideas for how
+
+01:05:26.222 --> 01:05:27.720 align:middle line:90%
+to cheat on the midterm.
+
+01:05:27.720 --> 01:05:30.077 align:middle line:84%
+Really, for many
+users, what they want,
+
+01:05:30.077 --> 01:05:32.160 align:middle line:84%
+if they're putting a
+language model out-- or many,
+
+01:05:32.160 --> 01:05:34.800 align:middle line:84%
+I guess, model builders, if
+they're putting a language model
+
+01:05:34.800 --> 01:05:37.860 align:middle line:84%
+out into the world, what they
+want is a model that will say,
+
+01:05:37.860 --> 01:05:40.280 align:middle line:84%
+I don't know-- or sorry, I
+can't help you in response
+
+01:05:40.280 --> 01:05:44.420 align:middle line:90%
+to some category of requests.
+
+01:05:44.420 --> 01:05:47.310 align:middle line:84%
+In fact, if you go to
+ChatGPT, and you say,
+
+01:05:47.310 --> 01:05:49.420 align:middle line:84%
+give me ideas for how
+to cheat on the midterm,
+
+01:05:49.420 --> 01:05:51.170 align:middle line:84%
+it gives you a bunch
+of ideas that are not
+
+01:05:51.170 --> 01:05:52.590 align:middle line:84%
+about how to cheat
+on the midterm,
+
+01:05:52.590 --> 01:05:56.770 align:middle line:84%
+but instead a list of
+activities that you
+
+01:05:56.770 --> 01:05:59.570 align:middle line:90%
+could use to get better.
+
+01:05:59.570 --> 01:06:04.090 align:middle line:84%
+And it gives you a little
+preachy, this is bad for you.
+
+01:06:04.090 --> 01:06:08.930 align:middle line:84%
+Another funny thing that
+has been observed in--
+
+01:06:08.930 --> 01:06:12.430 align:middle line:84%
+if you just do instruction
+tuning and nothing else--
+
+01:06:12.430 --> 01:06:15.570 align:middle line:84%
+is that certain
+categories of questions,
+
+01:06:15.570 --> 01:06:19.690 align:middle line:84%
+models actually get worse
+at answering, or at least
+
+01:06:19.690 --> 01:06:22.490 align:middle line:84%
+become more predisposed to
+produce incorrect answers
+
+01:06:22.490 --> 01:06:23.750 align:middle line:90%
+as they get larger and larger.
+
+01:06:23.750 --> 01:06:26.450 align:middle line:84%
+So here's an example from
+this truthful QA data
+
+01:06:26.450 --> 01:06:29.410 align:middle line:84%
+set where you're asking
+models of various sizes,
+
+01:06:29.410 --> 01:06:31.070 align:middle line:84%
+what happens if
+you smash a mirror?
+
+01:06:31.070 --> 01:06:32.870 align:middle line:84%
+If you ask a 300
+million parameter model,
+
+01:06:32.870 --> 01:06:34.328 align:middle line:84%
+what happens if
+you smash a mirror?
+
+01:06:34.328 --> 01:06:35.930 align:middle line:90%
+It says, you smash a mirror.
+
+01:06:35.930 --> 01:06:36.710 align:middle line:90%
+Not wrong.
+
+01:06:36.710 --> 01:06:38.850 align:middle line:90%
+Reasonably high probability.
+
+01:06:38.850 --> 01:06:41.180 align:middle line:84%
+You ask a 13 billion
+instruction tuned model, what
+
+01:06:41.180 --> 01:06:42.430 align:middle line:90%
+happens if you smash a mirror?
+
+01:06:42.430 --> 01:06:44.580 align:middle line:90%
+It defines a mirror for you.
+
+01:06:44.580 --> 01:06:49.340 align:middle line:84%
+You ask a 7 billion
+instruction tuned model.
+
+01:06:49.340 --> 01:06:51.317 align:middle line:84%
+It says it'll shatter
+into a million pieces.
+
+01:06:51.317 --> 01:06:52.900 align:middle line:84%
+And you ask a really
+big model, and it
+
+01:06:52.900 --> 01:06:55.940 align:middle line:84%
+says you'll have seven
+years of bad luck.
+
+01:06:55.940 --> 01:06:58.380 align:middle line:84%
+And the reason or the
+way to think about what's
+
+01:06:58.380 --> 01:07:00.447 align:middle line:84%
+happening here is
+that the model,
+
+01:07:00.447 --> 01:07:02.780 align:middle line:84%
+as it gets bigger and bigger,
+is not just getting better
+
+01:07:02.780 --> 01:07:05.020 align:middle line:84%
+at instruction
+following, but it's
+
+01:07:05.020 --> 01:07:10.260 align:middle line:84%
+modeling, in a finer grained
+way, the training distribution.
+
+01:07:10.260 --> 01:07:12.558 align:middle line:84%
+And I think this is
+probably still true.
+
+01:07:12.558 --> 01:07:14.100 align:middle line:84%
+Certainly, it was
+true at some point.
+
+01:07:14.100 --> 01:07:16.392 align:middle line:84%
+If you looked at what text
+was likely to co-occur with,
+
+01:07:16.392 --> 01:07:18.640 align:middle line:84%
+what happens if you smash
+a mirror on the internet?
+
+01:07:18.640 --> 01:07:25.180 align:middle line:84%
+It's mostly stuff talking
+about the superstition and not
+
+01:07:25.180 --> 01:07:26.722 align:middle line:84%
+about the physics
+of mirror smashing.
+
+01:07:26.722 --> 01:07:29.263 align:middle line:84%
+And so as you get better and
+better at modeling that training
+
+01:07:29.263 --> 01:07:31.980 align:middle line:84%
+distribution, if you don't have
+some way of explicitly signaling
+
+01:07:31.980 --> 01:07:34.960 align:middle line:84%
+to the model that it's always
+supposed to answer truthfully,
+
+01:07:34.960 --> 01:07:37.333 align:middle line:84%
+then it becomes able
+to distinguish between,
+
+01:07:37.333 --> 01:07:39.500 align:middle line:84%
+this is the kind of question
+where, on the internet,
+
+01:07:39.500 --> 01:07:41.327 align:middle line:84%
+people usually give
+a truthful answer,
+
+01:07:41.327 --> 01:07:43.660 align:middle line:84%
+and this is the kind of
+question where, on the internet,
+
+01:07:43.660 --> 01:07:45.920 align:middle line:84%
+people usually give a
+superstitious answer.
+
+01:07:45.920 --> 01:07:47.480 align:middle line:90%
+And so this Lin et al.
+
+01:07:47.480 --> 01:07:51.100 align:middle line:84%
+Paper documented a whole
+category of phenomena
+
+01:07:51.100 --> 01:07:53.480 align:middle line:84%
+like this where models
+actually, by default,
+
+01:07:53.480 --> 01:07:56.780 align:middle line:90%
+get worse as they get bigger.
+
+01:07:56.780 --> 01:07:57.620 align:middle line:90%
+OK.
+
+01:07:57.620 --> 01:08:02.000 align:middle line:84%
+So just to say these two
+things again, one more time.
+
+01:08:02.000 --> 01:08:03.500 align:middle line:84%
+We want models to
+say, I don't know.
+
+01:08:03.500 --> 01:08:06.620 align:middle line:84%
+Sometimes, we want models
+to answer in accordance
+
+01:08:06.620 --> 01:08:08.580 align:middle line:84%
+with what they actually
+know and what they
+
+01:08:08.580 --> 01:08:10.120 align:middle line:90%
+think the user wants to hear.
+
+01:08:10.120 --> 01:08:13.540 align:middle line:84%
+Sometimes, we often want
+them to not give answers,
+
+01:08:13.540 --> 01:08:18.620 align:middle line:84%
+even when they know the
+answers, for user safety reasons
+
+01:08:18.620 --> 01:08:20.300 align:middle line:90%
+or whatever.
+
+01:08:20.300 --> 01:08:22.120 align:middle line:84%
+And fundamentally, in
+all of these cases,
+
+01:08:22.120 --> 01:08:25.580 align:middle line:84%
+it's hard to get models to
+output the right answers just
+
+01:08:25.580 --> 01:08:27.779 align:middle line:84%
+by providing targeted
+supervision because we
+
+01:08:27.779 --> 01:08:30.420 align:middle line:84%
+don't have access to
+their internal knowledge.
+
+01:08:30.420 --> 01:08:35.020 align:middle line:84%
+We don't know what they and
+therefore can't surgically
+
+01:08:35.020 --> 01:08:36.859 align:middle line:84%
+intervene on exactly
+the questions where
+
+01:08:36.859 --> 01:08:38.526 align:middle line:84%
+we would like them
+to say, I don't know,
+
+01:08:38.526 --> 01:08:41.270 align:middle line:90%
+or any of these other things.
+
+01:08:41.270 --> 01:08:44.830 align:middle line:84%
+And so a standard thing-- and
+we're really only going to talk
+
+01:08:44.830 --> 01:08:48.270 align:middle line:84%
+about this for a little while
+in the interest of time--
+
+01:08:48.270 --> 01:08:52.550 align:middle line:84%
+but is that there's now a third
+step in this language model
+
+01:08:52.550 --> 01:08:57.029 align:middle line:84%
+training pipeline, which
+is reinforcement learning
+
+01:08:57.029 --> 01:09:01.870 align:middle line:90%
+from human feedback phase.
+
+01:09:01.870 --> 01:09:03.950 align:middle line:84%
+Here's an example
+of ChatGPT talking
+
+01:09:03.950 --> 01:09:05.783 align:middle line:84%
+like a pirate while
+describing reinforcement
+
+01:09:05.783 --> 01:09:06.742 align:middle line:90%
+learning with feedback.
+
+01:09:06.742 --> 01:09:08.729 align:middle line:84%
+I don't know why we
+included that in the talk,
+
+01:09:08.729 --> 01:09:09.630 align:middle line:90%
+but it's there.
+
+01:09:09.630 --> 01:09:10.130 align:middle line:90%
+OK.
+
+01:09:10.130 --> 01:09:13.310 align:middle line:84%
+So fundamentally,
+how are we going
+
+01:09:13.310 --> 01:09:16.990 align:middle line:84%
+to get around all of the
+issues that we talked about
+
+01:09:16.990 --> 01:09:19.670 align:middle line:84%
+before, this thing where we
+don't know what the model knows
+
+01:09:19.670 --> 01:09:22.350 align:middle line:84%
+and want to control its output
+in cases where we don't actually
+
+01:09:22.350 --> 01:09:26.550 align:middle line:84%
+know exactly what it
+is supposed to say?
+
+01:09:26.550 --> 01:09:28.807 align:middle line:84%
+Consider the following
+simplified example.
+
+01:09:28.807 --> 01:09:30.390 align:middle line:84%
+Suppose now we're
+just trying to build
+
+01:09:30.390 --> 01:09:33.649 align:middle line:84%
+a model to do some
+specific targeted task,
+
+01:09:33.649 --> 01:09:37.600 align:middle line:84%
+say, text summarization,
+where there's
+
+01:09:37.600 --> 01:09:42.103 align:middle line:84%
+many, many good summaries for a
+model or for any given article.
+
+01:09:42.103 --> 01:09:43.520 align:middle line:84%
+Lots of different
+ways in which we
+
+01:09:43.520 --> 01:09:48.640 align:middle line:84%
+could produce a
+reasonable looking summary
+
+01:09:48.640 --> 01:09:50.720 align:middle line:84%
+of some textual
+article and where
+
+01:09:50.720 --> 01:09:53.439 align:middle line:84%
+we want models to learn that
+they're allowed to output
+
+01:09:53.439 --> 01:09:55.520 align:middle line:84%
+a diverse distribution
+over responses,
+
+01:09:55.520 --> 01:09:57.520 align:middle line:84%
+that there's many acceptable
+things to say here.
+
+01:09:57.520 --> 01:09:59.720 align:middle line:84%
+One thing that we
+could imagine doing
+
+01:09:59.720 --> 01:10:02.360 align:middle line:84%
+would be to ask our
+human annotators
+
+01:10:02.360 --> 01:10:04.800 align:middle line:84%
+to generate all of the
+acceptable summaries and none
+
+01:10:04.800 --> 01:10:07.542 align:middle line:84%
+of the unacceptable summaries
+for a given article,
+
+01:10:07.542 --> 01:10:09.000 align:middle line:84%
+write them all
+down, and then train
+
+01:10:09.000 --> 01:10:12.320 align:middle line:84%
+the language model to generate
+all of them at the same time.
+
+01:10:12.320 --> 01:10:14.680 align:middle line:84%
+Obviously, this is not
+going to be practical
+
+01:10:14.680 --> 01:10:17.940 align:middle line:84%
+because that's a huge amount of
+work for our human annotators,
+
+01:10:17.940 --> 01:10:21.000 align:middle line:84%
+and we'd rather not ask them
+to spend their time that way.
+
+01:10:21.000 --> 01:10:24.080 align:middle line:84%
+Another thing-- coming back
+to the synthetic data question
+
+01:10:24.080 --> 01:10:28.060 align:middle line:84%
+from before-- that we could do
+here is ask the model itself,
+
+01:10:28.060 --> 01:10:31.040 align:middle line:84%
+after it's done a little
+bit of instruction tuning,
+
+01:10:31.040 --> 01:10:32.600 align:middle line:90%
+to generate some summaries.
+
+01:10:32.600 --> 01:10:35.480 align:middle line:84%
+And here, because it's
+just a language model,
+
+01:10:35.480 --> 01:10:36.992 align:middle line:84%
+we don't have to
+pay it, or we don't
+
+01:10:36.992 --> 01:10:38.450 align:middle line:84%
+have to pay for
+the electricity, we
+
+01:10:38.450 --> 01:10:42.290 align:middle line:84%
+can generate a large,
+large number of summaries
+
+01:10:42.290 --> 01:10:45.930 align:middle line:84%
+without really needing
+a human in the loop.
+
+01:10:45.930 --> 01:10:47.858 align:middle line:84%
+And so the question
+becomes, how do I
+
+01:10:47.858 --> 01:10:49.650 align:middle line:84%
+get from this large
+collection of summaries
+
+01:10:49.650 --> 01:10:53.210 align:middle line:84%
+that I sampled from
+my model to something
+
+01:10:53.210 --> 01:10:54.970 align:middle line:84%
+that will make the
+model actually better
+
+01:10:54.970 --> 01:10:58.050 align:middle line:90%
+at this summarization task?
+
+01:10:58.050 --> 01:11:00.670 align:middle line:84%
+Well, if the model is itself the
+one generating the summaries,
+
+01:11:00.670 --> 01:11:02.712 align:middle line:84%
+then in some sense, the
+only thing that we can do
+
+01:11:02.712 --> 01:11:05.610 align:middle line:84%
+is pick out the good summaries
+or identify the bad summaries,
+
+01:11:05.610 --> 01:11:09.130 align:middle line:84%
+and just say, of the summaries
+that the model itself generated,
+
+01:11:09.130 --> 01:11:11.610 align:middle line:84%
+cause it to assign higher
+probability to the good ones
+
+01:11:11.610 --> 01:11:15.022 align:middle line:84%
+and lower probability
+to the bad ones.
+
+01:11:15.022 --> 01:11:16.730 align:middle line:84%
+And so again, one
+thing that you could do
+
+01:11:16.730 --> 01:11:22.530 align:middle line:84%
+is ask your human annotators to
+go through and not just write
+
+01:11:22.530 --> 01:11:24.970 align:middle line:84%
+the summaries
+themselves, but to label
+
+01:11:24.970 --> 01:11:27.490 align:middle line:84%
+the machine-generated
+summaries either
+
+01:11:27.490 --> 01:11:29.450 align:middle line:84%
+by assigning them
+numerical scores,
+
+01:11:29.450 --> 01:11:31.670 align:middle line:84%
+or just giving them
+thumbs up or thumbs down,
+
+01:11:31.670 --> 01:11:33.900 align:middle line:84%
+or expressing pairwise
+preferences between them,
+
+01:11:33.900 --> 01:11:35.500 align:middle line:90%
+or whatever else.
+
+01:11:35.500 --> 01:11:38.938 align:middle line:84%
+And this is also a reasonable
+strategy, but again, something
+
+01:11:38.938 --> 01:11:40.980 align:middle line:84%
+that, if we want to do it
+at a really large scale
+
+01:11:40.980 --> 01:11:42.900 align:middle line:84%
+for a large number
+of summaries, is
+
+01:11:42.900 --> 01:11:47.660 align:middle line:84%
+going to require a huge amount
+of human annotator effort.
+
+01:11:47.660 --> 01:11:51.660 align:middle line:84%
+And so what we actually do
+is something as follows.
+
+01:11:51.660 --> 01:11:55.060 align:middle line:84%
+Again, we're working with a
+normal language model, which
+
+01:11:55.060 --> 01:11:58.640 align:middle line:84%
+by analogy to
+reinforcement learning,
+
+01:11:58.640 --> 01:12:00.780 align:middle line:84%
+we're going to briefly
+refer to as a policy.
+
+01:12:00.780 --> 01:12:02.250 align:middle line:90%
+Don't worry about this.
+
+01:12:02.250 --> 01:12:04.500 align:middle line:84%
+Again, it's just a thing
+that takes some text as input
+
+01:12:04.500 --> 01:12:07.460 align:middle line:84%
+and generates some
+text as output.
+
+01:12:07.460 --> 01:12:12.360 align:middle line:84%
+Let us suppose for a moment that
+instead of our human annotators,
+
+01:12:12.360 --> 01:12:16.380 align:middle line:84%
+we had some magical black box
+that could pick up any article
+
+01:12:16.380 --> 01:12:20.300 align:middle line:84%
+summary pair and give us some
+number corresponding to how good
+
+01:12:20.300 --> 01:12:22.940 align:middle line:90%
+that summary was.
+
+01:12:22.940 --> 01:12:25.540 align:middle line:84%
+Then, all we would
+really need to do
+
+01:12:25.540 --> 01:12:27.800 align:middle line:84%
+is find some way of optimizing
+this language model,
+
+01:12:27.800 --> 01:12:30.360 align:middle line:84%
+choosing the parameters,
+P, for this language model
+
+01:12:30.360 --> 01:12:34.270 align:middle line:84%
+so that the score assigned to
+the summaries that it generated
+
+01:12:34.270 --> 01:12:38.590 align:middle line:84%
+became higher and maybe
+became as high as possible.
+
+01:12:38.590 --> 01:12:41.668 align:middle line:84%
+And given that we only
+have five minutes left,
+
+01:12:41.668 --> 01:12:44.210 align:middle line:84%
+I'm really not going to go too
+much into the details of this,
+
+01:12:44.210 --> 01:12:48.230 align:middle line:84%
+other than to say that in
+practice, what people do
+
+01:12:48.230 --> 01:12:53.670 align:middle line:84%
+is we get our annotators to
+hand label a bunch of articles
+
+01:12:53.670 --> 01:12:55.910 align:middle line:84%
+with thumbs up,
+thumbs downs, just
+
+01:12:55.910 --> 01:12:57.550 align:middle line:90%
+like we were saying over here.
+
+01:12:57.550 --> 01:13:00.230 align:middle line:84%
+But we use these not
+to train the model
+
+01:13:00.230 --> 01:13:03.130 align:middle line:84%
+and instead to train
+a reward model.
+
+01:13:03.130 --> 01:13:05.575 align:middle line:84%
+So we train a model not
+that's generating text,
+
+01:13:05.575 --> 01:13:06.950 align:middle line:84%
+but instead a
+model that's trying
+
+01:13:06.950 --> 01:13:09.070 align:middle line:84%
+to reproduce the human
+annotators' judgments
+
+01:13:09.070 --> 01:13:11.990 align:middle line:84%
+about which articles are
+good and which ones are bad.
+
+01:13:11.990 --> 01:13:14.890 align:middle line:84%
+This is an easier task, and this
+is a really important point.
+
+01:13:14.890 --> 01:13:18.130 align:middle line:84%
+This is an easier task than
+generating articles themselves.
+
+01:13:18.130 --> 01:13:21.510 align:middle line:84%
+We've all taken our
+intro CS theory class.
+
+01:13:21.510 --> 01:13:23.510 align:middle line:84%
+Recognition problems
+generally are easier
+
+01:13:23.510 --> 01:13:25.430 align:middle line:90%
+than generation problems.
+
+01:13:25.430 --> 01:13:27.850 align:middle line:84%
+And so for summarization,
+for math, problem solving,
+
+01:13:27.850 --> 01:13:31.600 align:middle line:84%
+whatever, it is generally,
+both computationally
+
+01:13:31.600 --> 01:13:34.520 align:middle line:84%
+and from a statistical
+efficiency standpoint, going
+
+01:13:34.520 --> 01:13:37.760 align:middle line:84%
+to be easier to train
+models to score summaries
+
+01:13:37.760 --> 01:13:38.885 align:middle line:90%
+than to generate summaries.
+
+01:13:38.885 --> 01:13:40.510 align:middle line:84%
+But as soon as we've
+done this, as soon
+
+01:13:40.510 --> 01:13:42.600 align:middle line:84%
+as we have a good summary
+score, we're done.
+
+01:13:42.600 --> 01:13:45.280 align:middle line:84%
+All we have to do is throw
+standard optimization
+
+01:13:45.280 --> 01:13:48.160 align:middle line:84%
+techniques at this
+objective right here,
+
+01:13:48.160 --> 01:13:51.160 align:middle line:84%
+and what we get out at the end
+is a model that gets better
+
+01:13:51.160 --> 01:13:53.280 align:middle line:90%
+at producing summaries.
+
+01:13:53.280 --> 01:13:56.020 align:middle line:84%
+To go just one step
+further into detail here,
+
+01:13:56.020 --> 01:13:59.720 align:middle line:84%
+the standard thing
+that people do now
+
+01:13:59.720 --> 01:14:02.720 align:middle line:84%
+is an algorithm called
+policy gradient,
+
+01:14:02.720 --> 01:14:05.160 align:middle line:84%
+which I think I do not
+even have written out here.
+
+01:14:05.160 --> 01:14:07.440 align:middle line:84%
+But basically, you can
+turn this objective
+
+01:14:07.440 --> 01:14:10.560 align:middle line:84%
+into something that
+looks like just doing
+
+01:14:10.560 --> 01:14:13.320 align:middle line:84%
+normal maximum likelihood
+estimation where each sample is
+
+01:14:13.320 --> 01:14:16.560 align:middle line:84%
+weighted by the score assigned
+to it by the reward model.
+
+01:14:16.560 --> 01:14:18.320 align:middle line:84%
+And so if you've
+heard of reinforcement
+
+01:14:18.320 --> 01:14:19.840 align:middle line:84%
+learning with human
+feedback, that
+
+01:14:19.840 --> 01:14:21.180 align:middle line:90%
+is basically the entire thing.
+
+01:14:21.180 --> 01:14:23.100 align:middle line:84%
+You go out, and you
+train this reward model,
+
+01:14:23.100 --> 01:14:25.280 align:middle line:84%
+and then you do RL
+against the reward model
+
+01:14:25.280 --> 01:14:28.130 align:middle line:84%
+that you collected
+from human judgments.
+
+01:14:28.130 --> 01:14:36.110 align:middle line:84%
+Now, going back a couple
+of slides to here,
+
+01:14:36.110 --> 01:14:38.250 align:middle line:90%
+one thing that we said is that--
+
+01:14:38.250 --> 01:14:42.130 align:middle line:90%
+or I guess to here.
+
+01:14:42.130 --> 01:14:46.730 align:middle line:84%
+One thing that we said is that
+we would conceptually just like
+
+01:14:46.730 --> 01:14:49.180 align:middle line:84%
+it to be the case that the
+model assigns high probability
+
+01:14:49.180 --> 01:14:50.930 align:middle line:84%
+to the things that the
+people thought were
+
+01:14:50.930 --> 01:14:52.810 align:middle line:84%
+good and low probability
+to the things
+
+01:14:52.810 --> 01:14:54.690 align:middle line:90%
+that people thought were bad.
+
+01:14:54.690 --> 01:14:56.890 align:middle line:84%
+And there were a bunch of
+other learning algorithms
+
+01:14:56.890 --> 01:14:59.170 align:middle line:84%
+that you can use to do this that
+don't look like reinforcement
+
+01:14:59.170 --> 01:14:59.670 align:middle line:90%
+learning.
+
+01:14:59.670 --> 01:15:02.705 align:middle line:84%
+So if you've heard of
+SLiCK or DPO or any
+
+01:15:02.705 --> 01:15:04.330 align:middle line:84%
+of these other things,
+basically, there
+
+01:15:04.330 --> 01:15:07.690 align:middle line:84%
+are other ways of taking
+these human labels,
+
+01:15:07.690 --> 01:15:10.450 align:middle line:84%
+not training a reward model,
+and just directly optimizing
+
+01:15:10.450 --> 01:15:13.450 align:middle line:84%
+your language model to make the
+good things high probability--
+
+01:15:13.450 --> 01:15:15.770 align:middle line:84%
+or I guess the bad
+things, low probability,
+
+01:15:15.770 --> 01:15:19.610 align:middle line:84%
+and the good things,
+high probability.
+
+01:15:19.610 --> 01:15:20.110 align:middle line:90%
+Yeah.
+
+01:15:20.110 --> 01:15:27.020 align:middle line:84%
+And that's basically what I
+wanted to go through today.
+
+01:15:27.020 --> 01:15:29.160 align:middle line:84%
+Happy to do some
+questions at the end.
+
+01:15:29.160 --> 01:15:34.000 align:middle line:84%
+But just to pull up one summary
+slide back from the beginning.
+
+01:15:34.000 --> 01:15:39.740 align:middle line:90%
+
+
+01:15:39.740 --> 01:15:41.100 align:middle line:90%
+It's actually this one.
+
+01:15:41.100 --> 01:15:43.660 align:middle line:84%
+Really coming back
+to what Phillip
+
+01:15:43.660 --> 01:15:46.820 align:middle line:84%
+was saying at the very
+beginning of this lecture,
+
+01:15:46.820 --> 01:15:50.677 align:middle line:84%
+I think the defining feature
+of the language model
+
+01:15:50.677 --> 01:15:52.260 align:middle line:84%
+era, the defining
+feature of the world
+
+01:15:52.260 --> 01:15:55.500 align:middle line:84%
+that we find ourselves
+in right now,
+
+01:15:55.500 --> 01:15:58.820 align:middle line:84%
+is the stuff that's written
+in this rightmost column here.
+
+01:15:58.820 --> 01:16:01.560 align:middle line:84%
+I think, much to many
+people's surprise,
+
+01:16:01.560 --> 01:16:05.020 align:middle line:84%
+if you do large enough
+scale training on just tons
+
+01:16:05.020 --> 01:16:06.980 align:middle line:84%
+and tons and tons of
+text data, and then
+
+01:16:06.980 --> 01:16:10.300 align:middle line:84%
+a little bit of refinement after
+the fact that doesn't actually
+
+01:16:10.300 --> 01:16:12.420 align:middle line:84%
+change really much
+about what models
+
+01:16:12.420 --> 01:16:14.940 align:middle line:84%
+and mostly just the format
+in which they produce
+
+01:16:14.940 --> 01:16:16.860 align:middle line:84%
+their responses by default
+and the assumptions
+
+01:16:16.860 --> 01:16:20.220 align:middle line:84%
+they make about the inputs
+that are being given to them,
+
+01:16:20.220 --> 01:16:22.740 align:middle line:84%
+you wind up with really
+flexible, really general purpose
+
+01:16:22.740 --> 01:16:26.230 align:middle line:84%
+predictors that can
+be given instructions,
+
+01:16:26.230 --> 01:16:32.870 align:middle line:84%
+that can be given small
+numbers of examples as input
+
+01:16:32.870 --> 01:16:36.430 align:middle line:84%
+and that can then do a
+relatively broad range of tasks
+
+01:16:36.430 --> 01:16:39.150 align:middle line:84%
+without any kind of
+additional fine-tuning
+
+01:16:39.150 --> 01:16:42.710 align:middle line:84%
+or any additional modification
+of their internal parameters.
+
+01:16:42.710 --> 01:16:47.270 align:middle line:84%
+And I think figuring out how
+far to push this, figuring out
+
+01:16:47.270 --> 01:16:50.830 align:middle line:84%
+what comes after this
+chain-of-thought thing in terms
+
+01:16:50.830 --> 01:16:53.150 align:middle line:84%
+of making models better
+at solving even more
+
+01:16:53.150 --> 01:16:55.870 align:middle line:84%
+computationally
+complex tasks, I think
+
+01:16:55.870 --> 01:17:00.730 align:middle line:84%
+are then the research
+challenges for the post-LLM era.
+
+01:17:00.730 --> 01:17:01.950 align:middle line:90%
+And I will wrap up there.
+
+01:17:01.950 --> 01:17:04.730 align:middle line:84%
+If folks have questions, I can
+stick around and answer them.
+
+01:17:04.730 --> 01:17:05.410 align:middle line:90%
+But thank you.
+
+01:17:05.410 --> 01:17:07.560 align:middle line:90%
+[APPLAUSE]
+
+01:17:07.560 --> 01:17:23.000 align:middle line:90%
